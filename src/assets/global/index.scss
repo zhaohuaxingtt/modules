@@ -1,0 +1,437 @@
+@charset "utf-8";
+@import './variables.scss';
+/*-----------------------------------------------
+ |                                              |
+ |         项目全局scss。作为全局引入，对项目做      |
+ |         样式基本控制                           |
+ |                                              |
+ ------------------------------------------------
+*/
+*{
+  box-sizing: border-box;
+  font-family: 'Arial',"Microsoft YaHei";
+  &::-webkit-scrollbar {
+        width:9px;
+        height:9px;
+    }
+    &::-webkit-scrollbar-track {
+        width: 6px;
+        background-color:#e4e4e5;
+        -webkit-border-radius: 2em;
+        -moz-border-radius: 2em;
+        border-radius:2em;
+    }
+      &::-webkit-scrollbar-thumb {
+      background-color:#d0d2d3;
+      background-clip:padding-box;
+      min-height:28px;
+      -webkit-border-radius: 2em;
+      -moz-border-radius: 2em;
+      border-radius:2em;
+    }
+}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0;
+}
+html,body{
+  height: 100%;
+  overflow: hidden;
+  background-color: $color-background;
+  color:$color-font;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+body,div,ul,ol,dl,dt,dd,li,dl,h1,h2,h3,h4,p{
+  margin:0;
+  padding:0;
+  font-style:normal;
+}
+ul,li{
+  list-style: none;
+}
+a{
+  text-decoration: none;
+}
+
+/*-------------------------------------
+ |                                     |
+ |             .font(10-30)            |
+ |                                     |
+ ---------------------------------------
+*/
+@for $i from 10 through 30{
+  .font#{$i}{
+    font-size: #{$i}px;
+  }
+}
+/*-------------------------------------
+ |                                     |
+ |             .margin/padding(0-100)   |
+ |                                     |
+ ---------------------------------------
+*/
+@for $i from 0 through 100{
+  .padding#{$i}{
+    padding: #{$i}px;
+  }
+  .padding-top#{$i}{
+    padding-top: #{$i}px;
+  }
+  .padding-bottom#{$i}{
+    padding-bottom: #{$i}px;
+  }
+  .padding-left#{$i}{
+    padding-left: #{$i}px;
+  }
+  .padding-right#{$i}{
+    padding-right: #{$i}px;
+  }
+  .margin#{$i}{
+    margin: #{$i}px;
+  }
+  .margin-left#{$i}{
+    margin-left: #{$i}px;
+  }
+  .margin-right#{$i}{
+    margin-right: #{$i}px;
+  }
+  .margin-bottom#{$i}{
+    margin-bottom: #{$i}px;
+  }
+  .margin-top#{$i}{
+    margin-top: #{$i}px;
+  }
+}
+/*-------------------------------------
+ |                                     |
+ |           组件间距class名                |
+ |                                     |
+ ---------------------------------------
+*/
+/*-------------------------------------
+ |                                     |
+ |             常用class                |
+ |                                     |
+ ---------------------------------------
+*/
+/*-------------------------------------
+ |                                     |
+ |            flex布局class                |
+ |                                     |
+ ---------------------------------------
+*/
+.flex{
+	display: flex;
+}
+.flex-center-center{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.flex-align-center{
+	display: flex;
+	align-items: center;
+}
+.flex-between-center{
+	display: flex;
+	justify-content: space-between;
+}
+.flex-between-center-center{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+/*-------------------------------------
+ |                                     |
+ |             分页往右                 |
+ |                                     |
+ ---------------------------------------
+*/
+.el-pagination{
+  text-align: right;
+  margin-top: 10px;
+}
+/*-------------------------------------
+ |                                     |
+ |             强行控制element 表格      |
+ |                                     |
+ ---------------------------------------
+*/
+.el-table{
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  font-size: 14px;
+  .el-table__header{
+    background-color: $color-table-header;
+    tr{
+      background-color: transparent;
+    }
+  }
+  th{
+    padding: 9px 0;
+    background-color: transparent;
+  }
+  tr{
+    &:nth-child(even){
+      background-color: $color-table-td;
+    }
+  }
+  td{
+    padding:9px 0px;
+  }
+  // table里面 select样式调整
+  .el-table__row .el-input {
+  	height: 35px !important;
+
+  	.el-input__inner {
+  		height: 35px !important;
+  	}
+  }
+  .el-select {
+  	margin: 2px 0;
+  }
+  .el-input{
+	  margin: 2px 0;
+  }
+}
+/*-------------------------------------
+ |                                     |
+ |    强行控制element checkbox & radio  |
+ |                                     |
+ ---------------------------------------
+*/
+.el-checkbox__inner{
+  border:1px solid $color-blue
+}
+.el-radio__inner{
+  border:1px solid $color-blue
+}
+/*-------------------------------------
+ |                                     |
+ |             强行控制表格中的element    |
+ |                                     |
+ ---------------------------------------
+*/
+.el-table__row{
+  .el-input{
+    height: $input-height24!important;
+    .el-input__inner{
+      height: $input-height24!important;
+      line-height: $input-height24!important;
+    }
+  }
+}
+.el-table th.gutter {
+	display: table-cell !important;//解决错位
+}
+.underline{
+  //text-decoration: underline;
+  color: $color-blue;
+  cursor: pointer;
+}
+.floatleft{
+  float: left;
+}
+.floatright{
+  float: right;
+}
+.cursor{
+  cursor: pointer;
+  &:hover{
+    opacity: 0.7;
+  }
+}
+.font-weight{
+  font-weight: bold;
+}
+.tableTextAreaBorderNone{
+  .el-textarea__inner{
+    border:none;
+    font-size: 12px;
+    height: 100%;
+    width: 100%;
+  }
+}
+.tableTextAreaTransparent{
+  .el-textarea__inner{
+    background-color: transparent;
+    resize:none;
+  }
+}
+.border-bottom-none{
+  border-bottom: none!important;
+}
+.border-top-none{
+  border-top: none!important;
+}
+.tableTitle {
+  position: relative;
+  .rightBtn {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    .iFromBtn {
+      margin-left: 10px;
+    }
+  }
+}
+.overflowhidden{
+  overflow: hidden;
+}
+.echarts-padding10{
+  padding: 0px!important;
+  .content{
+      padding: 10px!important;
+  }
+}
+.echarts-padding0{
+  padding: 0px!important;
+  .content{
+      padding: 0px!important;
+  }
+}
+.padding-right12{
+  padding-right: 12px!important;
+}
+.content-container{
+  overflow: hidden!important;
+}
+.noscroll{
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 99;
+  padding-top: 40px;
+}
+.center{
+  height: 100%;
+  display: table;
+  width: 100%;
+  text-align: center;
+  span{
+    display: table-cell;
+    vertical-align: middle;
+    font-size: 14px;
+  }
+}
+
+.box-shadow-none{
+  .el-input__inner{
+    box-shadow: none!important;
+  }
+}
+
+.is-leaf:last-child{
+  border-right: none;
+}
+.bule {
+  color: $color-blue;
+}
+
+/*-------------------------------------
+ |                                     |
+ |   强行控制element中的selectoptions    |
+ |                                     |
+ ---------------------------------------
+*/
+.el-select-dropdown{
+  .popper__arrow{
+    display: none!important;
+  }
+}
+.el-dialog__body{
+  padding-top: 0px!important;
+  padding-bottom: 0px!important;
+}
+.font-weight{
+  font-weight: 600;
+}
+.link {
+  color: $color-blue;
+  cursor: pointer;
+}
+.link-underline {
+  @extend .link;
+  text-decoration: underline;
+}
+/*-------------------------------------
+ |                                     |
+ |   强行控制element中的MessageBox样式    |
+ |                                     |
+ ---------------------------------------
+*/
+.el-message-box{
+	padding: 30px 30px 20px;
+	width: 420px;
+	height: 216px;
+	background: #FFFFFF;
+	box-shadow: 0px 0px 20px rgba(27, 29, 33, 0.08);
+	border-radius: 10px !important;
+	.el-message-box__header{
+		padding: 0;
+		.el-message-box__title{
+			font-size: 18px;
+			font-weight:bold;
+			font-family: Arial;
+		}
+		.el-message-box__headerbtn{
+			transition: 150ms all;
+			width: 24px;
+			height: 24px;
+			background: #A0BFFC;
+			border-radius: 50%;
+			top: 0px;
+			right: 0px;
+
+			&:hover {
+			  background: $color-blue;
+			}
+
+			i {
+			  line-height: 24px;
+			  color: $color-white;
+			  font-weight: bold;
+			}
+		}
+
+	}
+	.el-message-box__content{
+		padding: 0;
+		margin-top: 34px;
+		font-size: 14px;
+		color: #000000;
+	}
+	.el-message-box__btns{
+		margin-top: 53px;
+		padding: 0;
+		.el-button {
+			background-color: $color-btn-background;
+			font-size: 16px;
+			color:$color-blue;
+			border: none;
+			letter-spacing: 2px;
+			border-radius: 5px;
+			&:hover{
+			  background-color: $color-blue;
+			  color:$color-white;
+			}
+		}
+		.el-button--small{
+			padding: 9px 36px;
+		}
+		& button:nth-child(2){
+			margin-left: 30px;
+		}
+
+	}
+}
+
+.el-table thead.is-group th{
+  background: rgb(231,239,254);
+}
+
+
+// input['=disabel']{
+	// background:
+// }
