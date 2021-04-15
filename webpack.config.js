@@ -1,7 +1,7 @@
 /*
  * @Author: yuszhou
  * @Date: 2021-04-07 13:37:58
- * @LastEditTime: 2021-04-12 13:23:08
+ * @LastEditTime: 2021-04-15 09:47:25
  * @LastEditors: Please set LastEditors
  * @Description: 为组件库打包一个可以全量引入的webpack配置
  * @FilePath: \front-common\webpack.config.js
@@ -10,7 +10,7 @@ var path = require('path')
 var webpack = require('webpack')
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const px2rem = require('postcss-px2rem')
-const postcss = px2rem({
+const postcss = new px2rem({
     remUnit: 16
 })
 module.exports = {
@@ -20,7 +20,7 @@ module.exports = {
     path: path.resolve(__dirname, './dist/lib'),
     publicPath: '/dist/',
     filename: 'rise.min.js',
-    library: 'ysyl',
+    library: 'rise',
     libraryTarget: 'umd',
     libraryExport: 'default'
   },
@@ -30,7 +30,8 @@ module.exports = {
         test: /\.css$/,
         use: [
           'vue-style-loader',
-          'css-loader'
+          'css-loader',
+          "postcss"
         ]
       },  
       {
@@ -38,7 +39,7 @@ module.exports = {
         use: [
           'vue-style-loader',
           'css-loader',
-          {
+            {
             loader: 'postcss-loader',
             options: {
               plugins:[postcss]

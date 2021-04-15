@@ -1,5 +1,5 @@
 {
-  "name": "ysyl",
+  "name": "rise",
   "version": "0.2.4",
   "private": false,
   "main":"./lib/rise.min.js"

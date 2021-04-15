@@ -1,7 +1,7 @@
 /*
  * @Author: yuszhou
  * @Date: 2021-04-07 13:37:58
- * @LastEditTime: 2021-04-12 13:21:36
+ * @LastEditTime: 2021-04-15 09:47:05
  * @LastEditors: Please set LastEditors
  * @Description: 按需引入的时候，需要在dist下面为每个组件都生成一个组件的打包文件，多入口统一出口。
  * @FilePath: \front-common\webpack.config.js
@@ -12,7 +12,7 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const compoents = require('./components.json')
 const Packageloader = require('./build/initPackage')
 const px2rem = require('postcss-px2rem')
-const postcss = px2rem({
+const postcss = new px2rem({
     remUnit: 16
 })
 module.exports = {
@@ -24,7 +24,7 @@ module.exports = {
     filename: '[name].js',
     chunkFilename: '[id].js',
     libraryTarget: 'umd',
-    library: 'ysyl',
+    library: 'rise',
     libraryExport: 'default'
   },
   module: {
@@ -33,7 +33,8 @@ module.exports = {
         test: /\.css$/,
         use: [
           'vue-style-loader',
-          'css-loader'
+          'css-loader',
+          "postcss"
         ]
       },  
       {
