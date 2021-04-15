@@ -17,6 +17,7 @@ import iNavMvp from './components/iNavMvp'
 import iPage from './components/iPage'
 import iFormGroup from './components/iPageItemsGroup/iFormGroup'
 import iFormItem from './components/iPageItemsGroup/iFormItem'
+import iLabel from './components/iPageItemsGroup/iLabel'
 import iText from './components/iPageItemsGroup/iText'
 import iPagination from './components/iPagination'
 import iRadio from './components/iRadio'
@@ -24,7 +25,7 @@ import iSearch from './components/iSearch'
 import iSelect from './components/iSelect'
 import iTabs from './components/iTabs'
 import iTabsList from './components/iTabsList'
-const components = [iInput,iButton,iCard,icon,iDialog,iDrawer,iNavMvp,iPage,iFormGroup,iFormItem,iText,iPagination,iRadio,iSearch,iSelect,iTabs,iTabsList];
+const components = [iInput,iButton,iCard,icon,iDialog,iDrawer,iNavMvp,iPage,iFormGroup,iFormItem,iLabel,iText,iPagination,iRadio,iSearch,iSelect,iTabs,iTabsList];
 const install = function(Vue) {
   components.map(component => {Vue.component(component.name, component);})
 }
@@ -44,6 +45,7 @@ export {
   iPage,
   iFormGroup,
   iFormItem,
+  iLabel,
   iText,
   iPagination,
   iRadio,

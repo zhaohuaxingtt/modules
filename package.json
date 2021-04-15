@@ -9,7 +9,8 @@
     "build:publish": "cross-env NODE_ENV=production webpack --config webpack.config.js && webpack --config webpack.components.js && node ./build/babelcss.js --progress"
   },
   "dependencies": {
-    "core-js": "^3.6.5"
+    "core-js": "^3.6.5",
+    "rise": "^0.0.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
