@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 11:21:51
- * @LastEditTime: 2021-04-12 13:16:29
+ * @LastEditTime: 2021-04-15 11:35:30
  * @LastEditors: Please set LastEditors
  * @Description: 作为打包的入口，批量打包为一个vue可以use的minjs，但是在rise项目中，基本上不会用到全量使用的情况，
  * 为了组件库的完整性而设计的。
@@ -24,7 +24,9 @@ import iSearch from './components/iSearch'
 import iSelect from './components/iSelect'
 import iTabs from './components/iTabs'
 import iTabsList from './components/iTabsList'
-const components = [iInput,iButton,iCard,icon,iDialog,iDrawer,iNavMvp,iPage,iFormGroup,iFormItem,iText,iPagination,iRadio,iSearch,iSelect,iTabs,iTabsList];
+import iMessage from './components/iMessage'
+import iMessageBox from './components/iMessageBox'
+const components = [iMessage,iMessageBox,iInput,iButton,iCard,icon,iDialog,iDrawer,iNavMvp,iPage,iFormGroup,iFormItem,iText,iPagination,iRadio,iSearch,iSelect,iTabs,iTabsList];
 const install = function(Vue) {
   components.map(component => {Vue.component(component.name, component);})
 }
@@ -49,5 +51,7 @@ export {
   iRadio,
   iSearch,
   iTabs,
-  iTabsList
+  iTabsList,
+  iMessage,
+  iMessageBox
 };

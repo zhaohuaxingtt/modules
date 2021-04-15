@@ -15,5 +15,7 @@
   "i-search":"./src/components/iSearch/index.js",
   "i-select":"./src/components/iSelect/index.js",
   "i-tabs":"./src/components/iTabs/index.js",
-  "i-tabs-list":"./src/components/iTabsList/index.js"
+  "i-tabs-list":"./src/components/iTabsList/index.js",
+  "i-message":"./src/components/iMessage/index.js",
+  "i-message-box":"./src/components/iMessageBox/index.js"
 }
