@@ -2,17 +2,15 @@
 	<div class="flex-align-center">
 		<span v-if="label">{{label}}</span>
 		<span v-if="required" class="start">*</span>
-		<div v-if="icon" class="tips">
-			<icon symbol :name="icon"></icon>
+		<div v-if="icons" class="tips">
+			<icon symbol :name="icons"></icon>
 			<span class="text" v-if="tip">{{tip}}</span>
 		</div>
 	</div>
 </template>
 
 <script>
-	import {
-		icon
-	} from "../../icon"
+	import icon from "../../icon"
 	export default {
 		name:"iLabel",
 		components: {
@@ -23,7 +21,7 @@
 				type: String,
 				default: ""
 			},
-			icon: {
+			icons: {
 				type: String,
 				default: ""
 			},

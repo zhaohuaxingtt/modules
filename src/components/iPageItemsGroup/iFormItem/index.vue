@@ -159,4 +159,9 @@ export default{
       }
     }
   }
+
+  .el-form-item.is-required:not(.is-no-asterisk)>.el-form-item__label:before {
+		content: "";
+		display: none;
+  }
 </style>
