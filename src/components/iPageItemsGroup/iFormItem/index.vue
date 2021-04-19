@@ -28,7 +28,6 @@ export default{
     width: calc((100% - 3*60px) / 4);
     display: flex;
     float: left;
-	align-items: center;
     &:nth-child(4n){
       margin-right: 0px;
     }
@@ -51,7 +50,6 @@ export default{
     margin-bottom: 25px;
     display: flex;
     float: left;
-	align-items: center;
     &:nth-child(3n){
       margin-right: 0px;
     }
@@ -73,7 +71,6 @@ export default{
     margin-bottom: 25px;
     display: flex;
     float: left;
-	align-items: center;
     &:nth-child(2n){
       margin-right: 0px;
     }
@@ -95,7 +92,6 @@ export default{
     margin-bottom: 25px;
     display: flex;
     float: left;
-	align-items: center;
     &:nth-child(1n){
       margin-right: 0px;
     }
