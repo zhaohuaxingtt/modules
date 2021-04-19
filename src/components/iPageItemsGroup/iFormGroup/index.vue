@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-03-01 17:10:03
- * @LastEditTime: 2021-04-12 02:37:39
+ * @LastEditTime: 2021-03-04 17:31:27
  * @LastEditors: Please set LastEditors
  * @Description: 基于element的from封装。让在详情里的三列 或者 4列的列表数据能够在固定的格式下面快速展示出来。
                  el-form 新增一个props row --- number（3，4）
@@ -10,14 +10,17 @@
 <script>
 import {Form} from 'element-ui'
 export default{
-    name:'iFormGroup',
     extends:Form,
     props:{
       row:{type:Number,default:3},
       icon:Boolean
     },
     mounted(){
-      this.addClassElformItems()
+		/**
+		*  由于items里面使用了模板继承的方式.可以直接操作class 不需要再mounted里面再去addClass 进行二次修改
+		*  author: yuszhou
+		* */
+      //this.addClassElformItems()
     },
     methods:{
     getRowItemsNumber(){
@@ -31,7 +34,9 @@ export default{
     addClassElformItems(){
       this.$el.querySelectorAll('.el-form-item').forEach(nodes=>{
         let hasRowClass = nodes.getAttribute('class').indexOf('row') == -1
-        if(this.getRowItemsNumber()&& hasRowClass) nodes.classList.add(this.getRowItemsNumber())
+        if(this.getRowItemsNumber()&& hasRowClass) {
+			nodes.classList.add(this.getRowItemsNumber())
+		}
         if(this.getRowItemsIcon()) nodes.classList.add(this.getRowItemsIcon())
       })
     }
