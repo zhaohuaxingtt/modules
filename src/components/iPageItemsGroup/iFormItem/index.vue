@@ -221,4 +221,7 @@
 		content: "";
 		display: none;
 	}
+	.el-form-item__error{
+		padding-left:15px;
+	}
 </style>
