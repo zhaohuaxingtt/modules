@@ -5,7 +5,7 @@
 * @Description: mvp顶部导航栏
  -->
 <template>
-	<div class="nav flex-align-center" :class="[center && 'justify-center',right && 'justify-right']">
+	<div class="nav flex-align-center" :class="[center && 'justify-center',right && 'justify-right',{lev1:lev == 1}]">
 		<div v-for="(item,index) in list" :key="index" @click="change(item,index)">
 			<span class="name" :class="index==activeIndex && 'active'">{{$t(item.key)}}</span>
 			<!-- <span class="circle" v-show="item.message>0">{{item.message}}</span> -->
@@ -150,4 +150,10 @@
 	.justify-right {
 		justify-content: flex-end;
 	}
+	.lev1{
+			.active{
+				font-size: 20px!important;
+				box-shadow: initial!important;
+			}
+		}
 </style>
