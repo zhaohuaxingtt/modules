@@ -1,7 +1,7 @@
 /*
  * @Author: yuszhou
  * @Date: 2021-04-08 15:22:29
- * @LastEditTime: 2021-04-12 13:20:21
+ * @LastEditTime: 2021-04-21 19:54:56
  * @LastEditors: Please set LastEditors
  * @Description: 开发人员本地开发时候，跑demo的时候，需要启动的webpack配置
  * @FilePath: \front-modules\src\vue.config.js

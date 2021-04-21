@@ -14,18 +14,43 @@
 	</div>
 </template>
 <script>
+	/**
+	 * @example ./README.me
+	*/
 	export default {
 		name:'iNavMvp',
 		props: {
+			/**
+			 * 当前导航等级，处于第几级
+			*/
+			lev:{
+				type:Number,
+				default:2
+			},
+			/**
+			 * 是点击是否切换路由，目标路由为list中的 url
+			*/
 			routerPage:Boolean,
+			/**
+			 * 居中对齐
+			*/
 			center: {
 				type: Boolean,
 				default: false
 			},
+			/**
+			 * 向右对齐
+			*/
 			right: {
 				type: Boolean,
 				default: false
 			},
+			/**
+			 * 列表数据 value：作为tab切换时的标识
+			 * 				 name： 当前页签的名字
+			 * 				 url：  当前 routerPage 为true时有效
+			 * 				 key：  国际化翻译key
+			*/
 			list: {
 				type: Array,
 				default: () => [{
@@ -64,7 +89,9 @@
 			}
 		},
 		methods: {
-			// 切换nav
+			/**
+			 * @parmars
+			*/
 			change(item) {
 				this.$emit('change',item)
 				this.activeIndex = item.value - 1
