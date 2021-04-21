@@ -1,13 +1,16 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-03-01 10:06:56
- * @LastEditTime: 2021-04-12 02:37:24
+ * @LastEditTime: 2021-04-21 21:39:55
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \rise\src\components\iDialog\index.vue
 -->
 <script>
 import { Dialog } from 'element-ui' 
+/**
+ * @example ./README.me
+*/
 export default{
   name:'iDialog',
   extends:Dialog

@@ -1,13 +1,16 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-02-20 14:35:10
- * @LastEditTime: 2021-04-12 03:14:31
+ * @LastEditTime: 2021-04-21 21:41:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \rise\src\components\iSelect\index.vue
 -->
 <script>
 import {Select} from 'element-ui' 
+/**
+ * @example ./README.me
+*/
 export default{
   name:'iSelect',
   extends:Select,

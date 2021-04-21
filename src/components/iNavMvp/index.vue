@@ -10,14 +10,19 @@
 			<span class="name" :class="index==activeIndex && 'active'">{{$t(item.key)}}</span>
 			<!-- <span class="circle" v-show="item.message>0">{{item.message}}</span> -->
 			<el-badge class="badge" :max="99" :hidden="!item.message" :value="item.message"></el-badge>
+			<CollapseTransition>sssss</CollapseTransition>
 		</div>
 	</div>
 </template>
 <script>
+import 'element-ui/lib/theme-chalk/base.css';
+// collapse 展开折叠
+import CollapseTransition from 'element-ui/lib/transitions/collapse-transition';
 	/**
 	 * @example ./README.me
 	*/
 	export default {
+		components:{CollapseTransition},
 		name:'iNavMvp',
 		props: {
 			/**
@@ -151,9 +156,31 @@
 		justify-content: flex-end;
 	}
 	.lev1{
+			.name{
+				font-size: 20px!important;
+				position: relative;
+				padding: 0px!important;
+				margin-right: 10px;
+				&::after{
+					opacity: 0;
+					transition: all 0.5s;
+					position: absolute;
+					left:0px;
+					top: 32px;
+					content: '';
+					background-color: $color-blue;
+					height: 3px;
+					width: 0px;
+				}
+			}
 			.active{
 				font-size: 20px!important;
 				box-shadow: initial!important;
+				color:#000000!important;
+					&::after{
+						opacity: 1;
+						width: 100%;
+				}
 			}
 		}
 </style>

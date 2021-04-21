@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-08 14:44:44
- * @LastEditTime: 2021-04-11 16:14:52
- * @LastEditors: your name
+ * @LastEditTime: 2021-04-21 21:39:48
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\src\components\icon\index.vue
 -->
@@ -14,6 +14,9 @@
 </template>
 
 <script>
+/**
+ * @example ./README.me
+*/
 export default {
   name:'icon',
   props: {

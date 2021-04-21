@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-03-01 17:10:03
- * @LastEditTime: 2021-03-04 17:31:27
+ * @LastEditTime: 2021-04-21 21:40:51
  * @LastEditors: Please set LastEditors
  * @Description: 基于element的from封装。让在详情里的三列 或者 4列的列表数据能够在固定的格式下面快速展示出来。
                  el-form 新增一个props row --- number（3，4）
@@ -9,6 +9,9 @@
 -->
 <script>
 import {Form} from 'element-ui'
+/**
+ * @example ./README.me
+*/
 export default{
     extends:Form,
     props:{
