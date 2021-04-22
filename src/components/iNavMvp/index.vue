@@ -15,14 +15,10 @@
 	</div>
 </template>
 <script>
-import 'element-ui/lib/theme-chalk/base.css';
-// collapse 展开折叠
-import CollapseTransition from 'element-ui/lib/transitions/collapse-transition';
 	/**
 	 * @example ./README.me
 	*/
 	export default {
-		components:{CollapseTransition},
 		name:'iNavMvp',
 		props: {
 			/**
