@@ -10,7 +10,6 @@
 			<span class="name" :class="index==activeIndex && 'active'">{{$t(item.key)}}</span>
 			<!-- <span class="circle" v-show="item.message>0">{{item.message}}</span> -->
 			<el-badge class="badge" :max="99" :hidden="!item.message" :value="item.message"></el-badge>
-			<CollapseTransition>sssss</CollapseTransition>
 		</div>
 	</div>
 </template>
