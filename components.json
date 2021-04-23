@@ -18,5 +18,6 @@
   "i-tabs-list":"./src/components/iTabsList/index.js",
   "i-message":"./src/components/iMessage/index.js",
   "i-message-box":"./src/components/iMessageBox/index.js",
-  "i-label": "./src/components/iPageItemsGroup/iLabel/index.js"
+  "i-label": "./src/components/iPageItemsGroup/iLabel/index.js",
+  "i-date-picker":"./src/components/iDatePicker/index.js"
 }
