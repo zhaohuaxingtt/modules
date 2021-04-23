@@ -9,6 +9,9 @@
 
 <script>
 import { Pagination } from 'element-ui'
+/**
+ * @example ./README.me
+*/
 export default {
   name:'iPagination',
   props: {

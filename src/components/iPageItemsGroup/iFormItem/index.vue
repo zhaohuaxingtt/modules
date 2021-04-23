@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-03-01 17:17:17
- * @LastEditTime: 2021-04-03 11:23:12
+ * @LastEditTime: 2021-04-21 21:41:02
  * @LastEditors: Please set LastEditors
  * @Description: 为不同的宽度item做出UI还原
  * @FilePath: \rise\src\components\iFromItem\index.vue
@@ -51,6 +51,9 @@
 	import {
 		FormItem
 	} from 'element-ui'
+	/**
+ * @example ./README.me
+*/
 	export default {
 		extends: FormItem,
 	}

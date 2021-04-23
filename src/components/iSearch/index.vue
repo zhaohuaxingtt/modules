@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-02-25 16:34:49
- * @LastEditTime: 2021-04-12 11:36:34
+ * @LastEditTime: 2021-04-21 21:41:50
  * @LastEditors: Please set LastEditors
  * @Description: 界面中存在的搜索区域，公共组件。
  * @FilePath: \rise\src\components\iSearch\index.vue
@@ -27,6 +27,9 @@
 <script>
 import iCard from '../iCard'
 import iButton from '../iButton'
+/**
+ * @example ./README.me
+*/
 export default {
   name:'iSearch',
   components: {iCard, iButton},

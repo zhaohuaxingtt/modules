@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-02-24 09:30:41
- * @LastEditTime: 2021-04-11 16:16:12
+ * @LastEditTime: 2021-04-21 21:40:44
  * @LastEditors: Please set LastEditors
  * @Description: 界面根组件
  * @FilePath: \rise\src\components\iPage\index.vue
@@ -12,6 +12,9 @@
 </div>
 </template>
 <script>
+/**
+ * @example ./README.me
+*/
 export default{
   name:'iPage',
 }

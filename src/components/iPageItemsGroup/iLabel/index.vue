@@ -1,3 +1,11 @@
+<!--
+ * @Author: your name
+ * @Date: 2021-04-21 13:51:54
+ * @LastEditTime: 2021-04-21 21:41:09
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \front-modules\src\components\iPageItemsGroup\iLabel\index.vue
+-->
 <template>
 	<div class="flex-align-center">
 		<span v-if="label">{{label}}</span>
@@ -11,6 +19,9 @@
 
 <script>
 	import icon from "../../icon"
+	/**
+ * @example ./README.me
+*/
 	export default {
 		name:"iLabel",
 		components: {
