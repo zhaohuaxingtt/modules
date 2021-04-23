@@ -155,7 +155,7 @@
 				font-size: 20px!important;
 				position: relative;
 				padding: 0px!important;
-				margin-right: 10px;
+				margin-right: 50px;
 				&::after{
 					opacity: 0;
 					transition: all 0.5s;

@@ -27,6 +27,7 @@ import iTabs from './components/iTabs'
 import iTabsList from './components/iTabsList'
 import iMessage from './components/iMessage'
 import iMessageBox from './components/iMessageBox'
+import iDatePicker from './components/iDatePicker'
 const components = [iMessage,iMessageBox,iInput,iButton,iCard,icon,iDialog,iDrawer,iNavMvp,iPage,iFormGroup,iFormItem,iLabel,iText,iPagination,iRadio,iSearch,iSelect,iTabs,iTabsList];
 const install = function(Vue) {
   components.map(component => {Vue.component(component.name, component);})
@@ -55,5 +56,6 @@ export {
   iTabs,
   iTabsList,
   iMessage,
-  iMessageBox
+  iMessageBox,
+  iDatePicker
 };

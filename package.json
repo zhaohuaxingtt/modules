@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "npm": "^6.14.8",
     "rise": "^0.0.2"
   },
   "devDependencies": {
