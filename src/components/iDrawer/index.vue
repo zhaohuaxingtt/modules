@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-08 14:44:44
- * @LastEditTime: 2021-04-11 16:15:26
- * @LastEditors: your name
+ * @LastEditTime: 2021-04-21 21:40:09
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\src\components\iDrawer\index.vue
 -->
@@ -13,6 +13,9 @@
 </template>
 
 <script>
+		/**
+		 * @example ./README.me
+		*/
 	export default {
 		name:'iDrawer',
 		props: {

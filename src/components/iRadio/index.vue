@@ -9,6 +9,9 @@
 	import {
 		radio
 	} from 'element-ui'
+	/**
+ * @example ./README.me
+*/
 	export default {
 		name:'iRadio',
 		extends: radio

@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-03-02 14:23:15
- * @LastEditTime: 2021-04-11 16:17:11
+ * @LastEditTime: 2021-04-21 21:41:17
  * @LastEditors: Please set LastEditors
  * @Description: 作为当前组件的配套组合，适应不需要编辑的元素。
  * @FilePath: \rise\src\components\iPageItemsGroup\iText\index.vue
@@ -15,6 +15,9 @@
   </div>
 </template>
 <script>
+/**
+ * @example ./README.me
+*/
 export default{
   name:'iText',
   data(){

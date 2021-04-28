@@ -5,17 +5,17 @@
  * @Last Modified time: 2021-03-10 15:45:25
  */
 <template>
-  <div class="card" :class="{ tabCard }">
-    <div class="cardHeader" :class="{ default: !$slots.default }" :style="{ ...headerStyle }" v-if="$slots.header || header">
+  <div class="card">
+    <div class="cardHeader" :class="{ default: !$slots.default }" v-if="$slots.header || header">
       <slot name="header">{{ header }}</slot>
     </div>
     <div 
       class="cardHeader"
       :class="{ defaultPadding: !$slots.default }"
-      :style="{ justifyContent: title ? 'space-between' : 'flex-end', ...headerStyle }" 
+      :style="{ justifyContent: title ? 'space-between' : 'flex-end' }" 
       v-else-if="title || $slots['header-control'] || headerControl"
       >
-        <span v-if="title" class="title" :style="titleStyle">{{ title }}</span>
+        <span v-if="title" class="title">{{ title }}</span>
         <div>
           <div v-if="$slots['header-control'] || headerControl" class="control">
             <slot name="header-control">{{ headerControl }}</slot>
@@ -25,7 +25,7 @@
     </div>
     <el-collapse-transition>
       <div v-show="collapseValue" v-if="$slots.default">
-        <div class="cardBody" :class="bodyStyle" :style="{ paddingTop: !($slots.header || header || title || $slots['header-control'] || headerControl) || 0 }">
+        <div class="cardBody" :style="{ paddingTop: !($slots.header || header || title || $slots['header-control'] || headerControl) || 0 }">
           <slot></slot>
         </div>
       </div>
@@ -34,21 +34,19 @@
 </template>
 
 <script>
+/**
+ * @example ./README.me
+ */
 export default {
   name:'iCard',
   props: {
-    title: {
-      type: String
-    },
+    /** 标题 */
+    title: { type: String },
+    /** slot:header */
     header: {},
+    /** slot:header-control header右侧按钮区 */
     headerControl: {},
-    headerStyle: {},
-    titleStyle: {},
-    bodyStyle: {},
-    tabCard: {
-      type: Boolean,
-      default: false
-    },
+    /** 是否启用折叠 */
     collapse: {
       type: Boolean,
       default: false
@@ -82,6 +80,12 @@ export default {
     align-items: center;
     justify-content: space-between;
     padding: 30px 40px;
+
+    .title {
+			font-size: 18px;
+			color: #131523;
+			font-weight: bold;
+		}
 
     div,
     span {

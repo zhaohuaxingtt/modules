@@ -1,12 +1,16 @@
 /*
  * @Author: yuszhou
  * @Date: 2021-04-08 15:22:29
- * @LastEditTime: 2021-04-12 13:20:21
+ * @LastEditTime: 2021-04-21 20:09:03
  * @LastEditors: Please set LastEditors
  * @Description: 开发人员本地开发时候，跑demo的时候，需要启动的webpack配置
  * @FilePath: \front-modules\src\vue.config.js
  */
 const path = require('path')
+const px2rem = require('postcss-px2rem')
+const postcss = px2rem({
+    remUnit: 16
+})
 const resolve = dir => path.join(__dirname, dir)
 module.exports = {
     chainWebpack: config => {
@@ -25,6 +29,11 @@ module.exports = {
                 sass: {
                     implementation: require('sass'),
                     data: [`@import "@/assets/global/index.scss";`]
+                },
+                postcss: {
+                    plugins: {
+                        postcss
+                    }
                 }
             }
         },
