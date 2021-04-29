@@ -1,15 +1,17 @@
 /*
  * @Author: yuszhou
  * @Date: 2021-04-07 13:52:03
- * @LastEditTime: 2021-04-21 19:06:14
+ * @LastEditTime: 2021-04-25 16:31:24
  * @LastEditors: Please set LastEditors
  * @Description:自动生成文档的配置文件，对那个目录需要生成文档，做了控制
  * @FilePath: \front-common\vuese.config.js
  */
 const path = require('path')
+const fs = require('fs')
+const version = fs.readFileSync(path.join(__dirname,'./package.txt'))
 module.exports = {
   require: [path.join(__dirname, './doc/global.requires.js')],
-  title: "Rise Components v1", // 文档的标题
+  title: `Rise Components v  ${JSON.parse(version).version}`, // 文档的标题
   components: "./src/components/**/*.vue", // 组件的目录
   defaultExample: false, // 是否使用默认样例
   usageMode: "expand", // 是否展开用法

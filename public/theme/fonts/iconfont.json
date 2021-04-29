@@ -6,25 +6,60 @@
   "description": "",
   "glyphs": [
     {
-      "icon_id": "21014178",
-      "name": "database（选中状态）",
-      "font_class": "databasexuanzhongzhuangtai",
-      "unicode": "e641",
-      "unicode_decimal": 58945
+      "icon_id": "21218005",
+      "name": "关联零件-选中",
+      "font_class": "guanlianlingjian-xuanzhong",
+      "unicode": "e636",
+      "unicode_decimal": 58934
     },
     {
-      "icon_id": "20975139",
-      "name": "列表展开历史数据",
-      "font_class": "liebiaozhankailishishuju",
-      "unicode": "e642",
-      "unicode_decimal": 58946
+      "icon_id": "21218006",
+      "name": "关联零件-默认",
+      "font_class": "guanlianlingjian-moren",
+      "unicode": "e637",
+      "unicode_decimal": 58935
     },
     {
-      "icon_id": "20975140",
-      "name": "列表收起历史数据",
-      "font_class": "liebiaoshouqilishishuju",
-      "unicode": "e643",
-      "unicode_decimal": 58947
+      "icon_id": "21206969",
+      "name": "步骤未开始",
+      "font_class": "buzhouweikaishi",
+      "unicode": "e63c",
+      "unicode_decimal": 58940
+    },
+    {
+      "icon_id": "21206970",
+      "name": "步骤下一步（短）",
+      "font_class": "buzhouxiayibuduan",
+      "unicode": "e63e",
+      "unicode_decimal": 58942
+    },
+    {
+      "icon_id": "21196393",
+      "name": "报价状态列表_未报价",
+      "font_class": "baojiazhuangtailiebiao_weibaojia",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "21196394",
+      "name": "报价状态列表_已报价",
+      "font_class": "baojiazhuangtailiebiao_yibaojia",
+      "unicode": "e634",
+      "unicode_decimal": 58932
+    },
+    {
+      "icon_id": "21196395",
+      "name": "报价状态列表_已拒绝",
+      "font_class": "baojiazhuangtailiebiao_yijujue",
+      "unicode": "e635",
+      "unicode_decimal": 58933
+    },
+    {
+      "icon_id": "21111287",
+      "name": "设为主用户",
+      "font_class": "sheweizhuyonghu1",
+      "unicode": "e644",
+      "unicode_decimal": 58948
     },
     {
       "icon_id": "20960594",
@@ -34,46 +69,25 @@
       "unicode_decimal": 58944
     },
     {
-      "icon_id": "20957755",
-      "name": "设为主用户",
-      "font_class": "sheweizhuyonghu",
-      "unicode": "e63f",
-      "unicode_decimal": 58943
+      "icon_id": "20975140",
+      "name": "列表收起历史数据",
+      "font_class": "liebiaoshouqilishishuju",
+      "unicode": "e643",
+      "unicode_decimal": 58947
     },
     {
-      "icon_id": "20953802",
-      "name": "步骤箭头（未开始）",
-      "font_class": "buzhoujiantouweikaishi",
-      "unicode": "e63e",
-      "unicode_decimal": 58942
+      "icon_id": "20975139",
+      "name": "列表展开历史数据",
+      "font_class": "liebiaozhankailishishuju",
+      "unicode": "e642",
+      "unicode_decimal": 58946
     },
     {
-      "icon_id": "20953751",
-      "name": "步骤箭头（已完成-短）",
-      "font_class": "buzhoujiantouyiwancheng-duan",
-      "unicode": "e637",
-      "unicode_decimal": 58935
-    },
-    {
-      "icon_id": "20953727",
-      "name": "步骤箭头（已完成-长）",
-      "font_class": "buzhoujiantouyiwancheng-chang",
-      "unicode": "e635",
-      "unicode_decimal": 58933
-    },
-    {
-      "icon_id": "20953677",
-      "name": "步骤箭头（下一步-长）",
-      "font_class": "buzhoujiantouxiayibu-chang",
-      "unicode": "e634",
-      "unicode_decimal": 58932
-    },
-    {
-      "icon_id": "20953516",
-      "name": "步骤箭头（下一步-短）",
-      "font_class": "buzhoujiantouxiayibu-duan2",
-      "unicode": "e636",
-      "unicode_decimal": 58934
+      "icon_id": "21014178",
+      "name": "database（选中状态）",
+      "font_class": "databasexuanzhongzhuangtai",
+      "unicode": "e641",
+      "unicode_decimal": 58945
     },
     {
       "icon_id": "20948592",
@@ -102,13 +116,6 @@
       "font_class": "liuchengjiedianyiwancheng",
       "unicode": "e63b",
       "unicode_decimal": 58939
-    },
-    {
-      "icon_id": "20948596",
-      "name": "问号标识",
-      "font_class": "wenhaobiaoshi",
-      "unicode": "e63c",
-      "unicode_decimal": 58940
     },
     {
       "icon_id": "20948597",
