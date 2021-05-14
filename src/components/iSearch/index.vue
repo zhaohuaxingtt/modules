@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-02-25 16:34:49
- * @LastEditTime: 2021-04-21 21:41:50
+ * @LastEditTime: 2021-05-14 21:27:27
  * @LastEditors: Please set LastEditors
  * @Description: 界面中存在的搜索区域，公共组件。
  * @FilePath: \rise\src\components\iSearch\index.vue
@@ -9,7 +9,7 @@
 <template>
   <iCard :title="title" :tabCard="tabCard">
     <div class="iSearch-content" :class="{hiden:hidens}">
-      <div class="operation">
+      <div class="operation" v-if='!hiddenRight'>
         <slot name='button'>
           <iButton @click="$emit('sure')" :v-permission="searchKey">{{ $t('rfq.RFQINQUIRE') }}</iButton>
           <iButton @click="$emit('reset')" :v-permission="resetKey">{{ $t('rfq.RFQRESET') }}</iButton>
@@ -17,7 +17,7 @@
         <i @click="hidens=!hidens" v-if='!icon' class="el-icon-arrow-up icon margin-left20 cursor"
            :class="{rotate:hidens}"></i>
       </div>
-      <div class="serch">
+      <div class="serch" :style="`margin-right:${stypeWidth}px;`">
         <slot>
         </slot>
       </div>
@@ -43,15 +43,31 @@ export default {
     tabCard: {
       type: Boolean,
       default: false
+    },
+    hiddenRight:{
+      type:Boolean,
+      default:false
     }
   },
   data() {
     return {
-      hidens: false
+      hidens: false,
+      stypeWidth:0
     }
   },
-  created(){
-    console.log(this)
+  mounted(){
+    this.getWidth()
+  },
+  methods:{
+    /**
+     * @description: 获取宽度设置
+     * @param {*}
+     * @return {*}
+     */    
+    getWidth(){
+        let rightWidth = this.hiddenRight?0:this.$el.getElementsByClassName('operation')[0]
+        this.stypeWidth = rightWidth.clientWidth 
+    }
   }
 }
 </script>
@@ -91,7 +107,7 @@ export default {
 
   .operation {
     float: right;
-    width: 250px;
+    width: auto;
     display: flex;
     margin-top: 22px;
     text-align: right;
