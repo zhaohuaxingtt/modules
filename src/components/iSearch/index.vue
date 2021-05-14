@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-02-25 16:34:49
- * @LastEditTime: 2021-05-14 21:27:27
+ * @LastEditTime: 2021-05-14 21:37:39
  * @LastEditors: Please set LastEditors
  * @Description: 界面中存在的搜索区域，公共组件。
  * @FilePath: \rise\src\components\iSearch\index.vue
@@ -34,16 +34,22 @@ export default {
   name:'iSearch',
   components: {iCard, iButton},
   props: {
+    /**权限key-search*/
     searchKey: String,
+    //权限key-search
     resetKey: String,
+    //是否显示图标
     icon: Boolean,
+    //标题名字
     title: {
       type: String
     },
+
     tabCard: {
       type: Boolean,
       default: false
     },
+    //是否显示右边站位模块
     hiddenRight:{
       type:Boolean,
       default:false
