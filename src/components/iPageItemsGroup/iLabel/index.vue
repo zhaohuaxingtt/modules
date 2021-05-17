@@ -10,10 +10,12 @@
 	<div class="flex-align-center">
 		<span v-if="label">{{label}}</span>
 		<span v-if="required" class="start">*</span>
-		<div v-if="icons" class="tips">
+		<el-tooltip :disabled="!icons" effect="light" placement="top-start">
 			<icon symbol :name="icons"></icon>
-			<span class="text" v-if="tip">{{tip}}</span>
-		</div>
+			<template #content>
+				<div v-html="tip"></div>
+			</template>
+		</el-tooltip>
 	</div>
 </template>
 
@@ -54,29 +56,28 @@
 		margin-left: 4px;
 	}
 
-	.tips {
-		position: relative;
-		cursor: pointer;
-		margin-left: 4px;
-	}
+	// .tips {
+	// 	position: relative;
+	// 	cursor: pointer;
+	// 	margin-left: 4px;
+	// }
 
-	.tips:hover .text {
-		display: inline-block;
-	}
+	// .tips:hover .text {
+	// 	display: inline-block;
+	// }
 	
-	.text{
-		display: none;
-		z-index: 100;
-		position: absolute;
-		bottom: 100%;
-		right: -270px;
-		padding: 5px 10px;
-		width: 280px;
-		background: #FFFFFF;
-		box-shadow: 0px 3px 10px rgba(27, 29, 33, 0.16);
-		border-radius: 5px;
-		font-size: 14px;
-		line-height: 16px;
-		color: $color-black;
-	}
+	// .text{
+	// 	display: inline-block;
+	// 	z-index: 100;
+	// 	position: absolute;
+	// 	bottom: 100%;
+	// 	left: 102px;
+	// 	padding: 5px 10px;
+	// 	background: #FFFFFF;
+	// 	box-shadow: 0px 3px 10px rgba(27, 29, 33, 0.16);
+	// 	border-radius: 5px;
+	// 	font-size: 14px;
+	// 	line-height: 1.2;
+	// 	color: $color-black;
+	// }
 </style>
