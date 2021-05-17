@@ -1,6 +1,18 @@
 页面中需要带有路由切换的组件。
 
 ```vue
-<iNavMvp style='margin-bottom:20px;'></iNavMvp>
-<iNavMvp :lev='1'></iNavMvp>
+<iFormGroup row="3" inline>
+	<iFormItem>
+		<iLabel label="姓名" required slot="label"></iLabel>
+		<iInput ></iInput>
+	</iFormItem>
+	<iFormItem>
+		<iLabel label="姓名" required slot="label" icons="iconxinxitishi" tip="<p>英文简称规则：地区的首字母缩写+名称+业务</p><p>例：（Shanghai Friendly Plastic Co., Ltd.—Sh Friendly Plastic）</p>"></iLabel>
+		<iInput ></iInput>
+	</iFormItem>
+	<iFormItem>
+		<iLabel label="姓名" required slot="label"></iLabel>
+		<iInput ></iInput>
+	</iFormItem>
+</iFormGroup>
 ``` 
