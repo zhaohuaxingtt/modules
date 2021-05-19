@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vue-styleguidist server --open --hot",
     "lint": "vue-cli-service lint",
-    "build:doc": "cross-env NODE_ENV=views vue-styleguidist build && ./build/autoPublish.sh",
+    "build:doc": "cross-env NODE_ENV=views vue-styleguidist build",
     "build:publish": "cross-env NODE_ENV=production webpack --config webpack.config.js && webpack --config webpack.components.js && node ./build/babelcss.js --progress"
   },
   "dependencies": {
