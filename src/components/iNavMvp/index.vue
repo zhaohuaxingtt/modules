@@ -73,7 +73,13 @@
 					key:"LK_RFQGUANLI"
 				}]
 			},
-
+			/**
+			 * 界面跳转参数
+			*/
+			query:{
+				type:Object,
+				default:()=>{}
+			}
 		},
 		data() {
 			return {
@@ -97,7 +103,8 @@
 				this.activeIndex = item.value - 1
 				if(this.routerPage){
 					this.$router.push({
-						path:item.url
+						path:item.url,
+						query:this.query
 					})
 				}
 			}
@@ -152,7 +159,7 @@
 	}
 	.lev1{
 			.name{
-				font-size: 20px!important;
+				font-size: 18px!important;
 				position: relative;
 				padding: 0px!important;
 				margin-right: 50px;
@@ -169,9 +176,10 @@
 				}
 			}
 			.active{
-				font-size: 20px!important;
+				font-size: 18px!important;
 				box-shadow: initial!important;
 				color:#000000!important;
+				background-color: none!important;;
 					&::after{
 						opacity: 1;
 						width: 100%;
