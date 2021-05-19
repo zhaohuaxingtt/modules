@@ -14,7 +14,7 @@
           <iButton @click="$emit('sure')" :v-permission="searchKey">{{ $t('rfq.RFQINQUIRE') }}</iButton>
           <iButton @click="$emit('reset')" :v-permission="resetKey">{{ $t('rfq.RFQRESET') }}</iButton>
         </slot>
-        <i @click="hidens=!hidens" v-if='!icon' class="el-icon-arrow-up icon margin-left20 cursor"
+        <i @click="toggle" v-if='!icon' class="el-icon-arrow-up icon margin-left20 cursor"
            :class="{rotate:hidens}"></i>
       </div>
       <div class="serch" :style="`margin-right:${stypeWidth}px;`">
@@ -73,6 +73,10 @@ export default {
     getWidth(){
         let rightWidth = this.hiddenRight?0:this.$el.getElementsByClassName('operation')[0]
         this.stypeWidth = rightWidth.clientWidth 
+    },
+    toogle(){
+      this.hidens = !this.hidens
+      this.$emit('toogle', this.hidens)
     }
   }
 }
