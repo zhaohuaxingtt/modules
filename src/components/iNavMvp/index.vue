@@ -5,11 +5,11 @@
 * @Description: mvp顶部导航栏
  -->
 <template>
-	<div class="nav flex-align-center" :class="[center && 'justify-center',right && 'justify-right',{lev1:lev == 1}]">
+	<div class="nav flex-align-center" :class="[center && 'justify-center',right && 'justify-right',{lev1:lev == 1, lev2:lev == 2}]">
 		<div v-for="(item,index) in list" :key="index" @click="change(item,index)">
 			<span class="name" :class="index==activeIndex && 'active'">{{$t(item.key)}}</span>
 			<!-- <span class="circle" v-show="item.message>0">{{item.message}}</span> -->
-			<el-badge class="badge" :max="99" :hidden="!item.message" :value="item.message"></el-badge>
+			<el-badge class="badge" :max="99" v-if="item.message" :value="item.message"></el-badge>
 		</div>
 	</div>
 </template>
@@ -25,7 +25,7 @@
 			*/
 			lev:{
 				type:Number,
-				default:2
+				default: 0
 			},
 			/**
 			 * 是点击是否切换路由，目标路由为list中的 url
@@ -148,6 +148,10 @@
 			}
 		}
 
+		.placeholder {
+			visibility: hidden;
+		}
+
 	}
 
 	.justify-center {
@@ -186,4 +190,75 @@
 				}
 			}
 		}
+
+	.lev2 {
+		& > div {
+			margin-left: 0!important;
+			text-align: center!important;
+			padding: 4px 25px;
+			line-height: 25px!important;
+		
+			&:first-of-type {
+				padding-left: 0!important;
+			}
+
+			&:last-of-type {
+				padding-right: 0!important;
+			}
+
+			&:not(&:first-of-type, &:last-of-type) {
+				min-width: 122px!important;
+			}
+
+			& + div {
+				margin-left: 1px!important;
+				position: relative;
+
+				&::after {
+					content: "";
+					position: absolute;
+					top: 50%;
+					left: -1px;
+					transform: translate(0, -50%);
+					width: 1px;
+					height: 16px;
+					background: #909091;
+					opacity: 0.58;
+				}
+			}
+		}
+
+		.name {
+			font-size: 18px!important;
+			color: #909091!important;
+			line-height: 25px!important;
+			padding: 0!important;
+			vertical-align: middle;
+		}
+
+		.active {
+			box-shadow: initial!important;
+			font-size: 18px!important;
+			color: #1660F1!important;
+		}
+
+		.badge {
+			position: relative!important;
+			margin-left: 0!important;
+			margin-right: -4px!important;
+			left: 2px!important;
+			right: initial!important;
+			top: -4px!important;
+			font-size: 12px!important;
+			vertical-align: middle;
+
+			::v-deep .el-badge__content {
+				font-size: 12px!important;
+				box-sizing: border-box;
+				height: 18px!important;
+				line-height: 18px!important;
+				min-width: 18px!important;
+			}
+		}
+	}
 </style>
