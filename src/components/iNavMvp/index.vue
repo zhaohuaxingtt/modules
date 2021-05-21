@@ -57,19 +57,22 @@
 					value: 1,
 					name: "零件签收",
 					message: 0,
-					url:'/partsign',
+					url:'/sourcing/partsign',
+					activePath: "/partsign",
 					key:"LK_LINGJIANQIANSHOU"
 				}, {
 					value: 2,
 					name: "采购项目建立",
 					message: 0,
-					url:'/partsprocure',
+					url:'/sourcing/partsprocure',
+					activePath: "/partsprocure",
 					key:"LK_CAIGOUXIANGMUJIANLI"
 				}, {
 					value: 3,
 					name: "RFQ管理",
 					message: 0,
-					url:'/partsrfq',
+					url:'/sourcing/partsrfq',
+					activePath: "/partsrfq",
 					key:"LK_RFQGUANLI"
 				}]
 			},
@@ -90,7 +93,7 @@
 			//由于当前组件存在于业务组件中，他的选中只需要在加载的时候去路由上取值和当前的list对比即可
 			if(this.routerPage){
 				this.list.forEach((items,index)=>{
-					if(items.url == this.$route.path) this.activeIndex = index
+					if(this.$route.path.indexOf(items.activePath) > -1) this.activeIndex = index
 				})
 			}
 		},
