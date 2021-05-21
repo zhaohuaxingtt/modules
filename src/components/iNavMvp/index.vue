@@ -240,6 +240,7 @@
 			box-shadow: initial!important;
 			font-size: 18px!important;
 			color: #1660F1!important;
+			background: transparent;
 		}
 
 		.badge {
