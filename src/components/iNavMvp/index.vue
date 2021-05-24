@@ -89,12 +89,25 @@
 				activeIndex: 0,
 			}
 		},
-		created(){
+		created() {
 			//由于当前组件存在于业务组件中，他的选中只需要在加载的时候去路由上取值和当前的list对比即可
 			if(this.routerPage){
 				this.list.forEach((items,index)=>{
 					if(this.$route.path.indexOf(items.activePath) > -1) this.activeIndex = index
 				})
+			}
+		},
+		beforeRouteUpdate(to, from, next){
+			if (to.path === from.path) {
+				next(false)
+			} else {
+				if(this.routerPage){
+					this.list.forEach((items,index)=>{
+						if(from.path.indexOf(items.activePath) > -1) this.activeIndex = index
+					})
+
+					next()
+				}
 			}
 		},
 		methods: {
