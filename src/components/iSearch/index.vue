@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-02-25 16:34:49
- * @LastEditTime: 2021-05-14 21:37:39
+ * @LastEditTime: 2021-05-24 15:45:01
  * @LastEditors: Please set LastEditors
  * @Description: 界面中存在的搜索区域，公共组件。
  * @FilePath: \rise\src\components\iSearch\index.vue
@@ -115,12 +115,19 @@ export default {
     }
   }
 
-  .operation {
+  ::v-deep .operation {
     float: right;
-    width: auto;
-    display: flex;
     margin-top: 22px;
+    position: relative;
     text-align: right;
+    .icon{
+      position: absolute;
+      top: -20px;
+      right: 0px;
+      }
+      button{
+        margin-top: 5px;
+      }
   }
 }
 
