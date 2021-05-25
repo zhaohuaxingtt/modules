@@ -104,6 +104,7 @@
 					background: #FFFFFF;
 					box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.08);
 					z-index: 1;
+					color: rgba(22, 96, 241, 1);
 			}
 			.el-tabs__nav-wrap{
 				height: 35px;	
