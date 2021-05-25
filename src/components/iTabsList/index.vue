@@ -8,16 +8,18 @@
 	import {
 		Tabs
 	} from "element-ui";
-	/**
+/**
  * @example ./README.me
 */
 	export default {
-		name:'iTabsList',
 		extends: Tabs,
 	};
 </script>
 
 <style lang="scss" scoped>
+	::v-deep.rsg--preview-37{
+		background-color: #F8F9FA;
+	}
 	.el-tabs--border-card {
 		border-radius: none;
 		border: none;
@@ -66,11 +68,55 @@
 			margin-top: 15px;
 			background-color: transparent;
 			overflow: visible;
-			// box-shadow: $btn-box-shadow;
-			// border-radius: 10px;
-			// padding: 32px 60px;
-			// margin-top: 15px;
-			// background-color: #FFFFFF;
 		}
+	}
+	.el-tabs--card{
+			border-radius: none;
+			border: none;
+			box-shadow: none;
+			overflow: visible;
+			background-color: $color-background;
+			.el-tabs__header{
+				border-bottom: none;
+				margin-bottom: 15px;
+				::v-deep.el-tabs__nav {
+					border:none;
+				}
+			}
+			::v-deep.el-tabs__item{
+				min-width: 150px;
+				text-align: center;
+				border: none;
+				background-color: #F5F6F7;
+				color:rgba(114, 114, 114, 1);
+				box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.08);
+				font-size: 16px;
+				&:nth-child(1){
+					border-top-left-radius: 10px;	
+					border-bottom-left-radius: 10px;
+				}
+				&:last-child{
+					border-top-right-radius: 10px;	
+					border-bottom-right-radius: 10px;
+				}
+			}
+			::v-deep.is-active {
+					background: #FFFFFF;
+					box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.08);
+					z-index: 1;
+			}
+			.el-tabs__nav-wrap{
+				height: 35px;	
+				overflow: visible;
+			}
+			::v-deep.el-tabs__nav-scroll{
+				overflow: visible;
+			}
+			.el-tabs__nav-scroll{
+				overflow: visible;
+			}
+			.el-tabs__content{
+				overflow: visible;
+			}
 	}
 </style>

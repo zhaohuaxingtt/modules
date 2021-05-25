@@ -10,7 +10,6 @@ import { Tabs } from "element-ui";
  * @example ./README.me
 */
 export default {
-  name:'iTabs',
   extends: Tabs,
   render() {
     let {
