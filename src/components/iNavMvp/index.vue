@@ -97,16 +97,12 @@
 				})
 			}
 		},
-		beforeRouteUpdate(to, from, next){
-			if (to.path === from.path) {
-				next(false)
-			} else {
+		watch: {
+			"$route.path"(nv) {
 				if(this.routerPage){
 					this.list.forEach((items,index)=>{
-						if(from.path.indexOf(items.activePath) > -1) this.activeIndex = index
+						if(nv.indexOf(items.activePath) > -1) this.activeIndex = index
 					})
-
-					next()
 				}
 			}
 		},
@@ -200,6 +196,7 @@
 				box-shadow: initial!important;
 				color:#000000!important;
 				background-color: none!important;;
+				background: transparent!important;
 					&::after{
 						opacity: 1;
 						width: 100%;
