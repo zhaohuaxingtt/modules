@@ -1,6 +1,26 @@
-页面中需要带有路由切换的组件。
+用于界面中切换展示（常用于界面中的5级菜单）
 
 ```vue
-<iNavMvp style='margin-bottom:20px;'></iNavMvp>
-<iNavMvp :lev='1'></iNavMvp>
+<iTabsList type='border-card' slot="components">
+  <el-tab-pane label="Category">
+    <iCard>内容1</iCard>
+  </el-tab-pane>
+  <el-tab-pane label="Category">
+    <iCard>内容2</iCard>
+  </el-tab-pane>
+  <el-tab-pane label="Category">
+    <iCard>内容3</iCard>
+  </el-tab-pane>
+</iTabsList>
+<iTabsList type="card" slot="components" class='margin-top20'>
+  <el-tab-pane label="Category">
+    <iCard>内容1</iCard>
+  </el-tab-pane>
+  <el-tab-pane label="Category">
+    <iCard>内容2</iCard>
+  </el-tab-pane>
+  <el-tab-pane label="Category">
+    <iCard>内容3</iCard>
+  </el-tab-pane>
+</iTabsList>
 ``` 
