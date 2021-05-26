@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-02-24 09:42:07
- * @LastEditTime: 2021-05-25 17:29:56
+ * @LastEditTime: 2021-05-26 14:12:30
  * @LastEditors: Please set LastEditors
  * @Description: 零件签收-table组件。
  * @FilePath: \rise\src\views\partsign\components\tableList.vue
@@ -99,7 +99,7 @@
 <script>
 import {icon,iSelect,iInput} from 'rise'
 import {_getMathNumber} from '@/utils'
-import {getAallPrice,Aprice,Bprice} from 'rise/supplier/quotationdetail/components/costsummary/components/data'
+import {getAallPrice,Aprice,Bprice} from '../../../quotationdetail/components/costsummary/components/data'
 export default{
   components:{icon,iSelect,iInput},
   props:{
