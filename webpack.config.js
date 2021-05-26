@@ -1,7 +1,7 @@
 /*
  * @Author: yuszhou
  * @Date: 2021-04-07 13:37:58
- * @LastEditTime: 2021-04-21 17:27:17
+ * @LastEditTime: 2021-05-26 12:21:23
  * @LastEditors: Please set LastEditors
  * @Description: 为组件库打包一个可以全量引入的webpack配置
  * @FilePath: \front-common\webpack.config.js
@@ -9,6 +9,7 @@
 var path = require('path')
 var webpack = require('webpack')
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const px2rem = require('postcss-px2rem')
 const postcss = new px2rem({
     remUnit: 16
@@ -71,13 +72,15 @@ module.exports = {
       {
         test: /\.vue$/,
         loader: 'vue-loader',
+        exclude: /(node_modules|web)/,
         options: {
+
         }
       },
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        exclude: /node_modules/
+        exclude: /(node_modules|web)/
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
@@ -90,7 +93,7 @@ module.exports = {
   },
   externals: {
     'vue': 'Vue',
-    'element-ui': 'element-ui',
+    'element-ui': 'element-ui'
   },
   resolve: {
     extensions: ['*', '.js', '.vue', '.json']
@@ -114,5 +117,8 @@ module.exports.plugins = (module.exports.plugins || []).concat([
   new webpack.LoaderOptionsPlugin({
     minimize: true
   }),
-  new VueLoaderPlugin()
+  new VueLoaderPlugin(),
+  new CopyWebpackPlugin([
+    { from: `${ __dirname }/web`, to: `${ __dirname }/dist/web` },
+  ])
 ])
