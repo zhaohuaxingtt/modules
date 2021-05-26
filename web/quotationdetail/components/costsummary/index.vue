@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-05-20 15:54:52
+ * @LastEditTime: 2021-05-26 11:57:31
  * @LastEditors: Please set LastEditors
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
@@ -21,36 +21,36 @@
     <!--------------------------------------------------------->
     <!----------------------2.1 原材料/散件--------------------->
     <!--------------------------------------------------------->
-    <tableTemlate v-show='allTableData.level > 1' :index='true' pageNationReq='queryRawMaterialDTO' pageNationRes='rawMaterial' :notEdit='disabled' :tableData='allTableData.rawMaterial.records' class="margin-top20" :title="`${allTableData.level}.1 原材料/散件`" :tableTile='titleYcl' :iPagination='disabled' tableIndexString='C'></tableTemlate>
+    <tableTemlate v-show='allTableData.level > 1' :index='true' pageNationReq='queryRawMaterialDTO' pageNationRes='rawMaterial' :notEdit='disabled' :tableData='allTableData.rawMaterial.records' class="margin-top20" :title="`${allTableData.level}.1 ${$t('LK_YUANCLSJ')}`" :tableTile='titleYcl' :iPagination='disabled' tableIndexString='C'></tableTemlate>
     <!--------------------------------------------------------->
     <!----------------------2.2 制造成本--------------------->
     <!--------------------------------------------------------->
-    <tableTemlate v-show='allTableData.level > 1' :index='true' pageNationReq='queryMakeCostDTO' pageNationRes='makeCost' :notEdit='disabled' :tableData='allTableData.makeCost.records'  class="margin-top20" :title="`${allTableData.level}.2 制造成本`" :tableTile='titleCbzz' :iPagination='disabled' tableIndexString='P'></tableTemlate>
+    <tableTemlate v-show='allTableData.level > 1' :index='true' pageNationReq='queryMakeCostDTO' pageNationRes='makeCost' :notEdit='disabled' :tableData='allTableData.makeCost.records'  class="margin-top20" :title="`${allTableData.level}.2 ${$t('LK_ZHIZHAOCB')}`" :tableTile='titleCbzz' :iPagination='disabled' tableIndexString='P'></tableTemlate>
     <!--------------------------------------------------------->
     <!-------2.2 报废成本 管理费 其他费用 利润--------------------->
     <!--------------------------------------------------------->
     <el-row class="row" v-show='allTableData.level > 1'>
       <el-col class="col" :span='12'>
-        <tableTemlate :notEdit='disabled' :tableData='allTableData.discardCost' class="margin-top20" :index='true' :title="`${allTableData.level}.3 报废成本`" :tableTile='titlebfcb' tableIndexString='S'></tableTemlate>
+        <tableTemlate :notEdit='disabled' :tableData='allTableData.discardCost' class="margin-top20" :index='true' :title="`${allTableData.level}.3 ${$t('LK_BAOFEICHENGBEN')}`" :tableTile='titlebfcb' tableIndexString='S'></tableTemlate>
       </el-col>
       <el-col class="col" :span='12'>
-        <tableTemlate :notEdit='disabled' :tableData='allTableData.manageFee' class="margin-top20" :index='true' :title="`${allTableData.level}.4 管理费`" :tableTile='titleglf' tableIndexString='O'></tableTemlate>
+        <tableTemlate :notEdit='disabled' :tableData='allTableData.manageFee' class="margin-top20" :index='true' :title="`${allTableData.level}.4 ${$t('LK_GUANLIFEI')}`" :tableTile='titleglf' tableIndexString='O'></tableTemlate>
       </el-col>
     </el-row>
     <el-row class="row" v-show='allTableData.level > 1'>
       <el-col class="col" :span='12'>
-        <tableTemlate :notEdit='disabled' :tableData='allTableData.otherFee' class="margin-top20" :index='true' :title="`${allTableData.level}.5 其他费用`" :tableTile='titleqtfy' tableIndexString='A'></tableTemlate>
+        <tableTemlate :notEdit='disabled' :tableData='allTableData.otherFee' class="margin-top20" :index='true' :title="`${allTableData.level}.5 ${$t('LK_QITAFEIYONG')}`" :tableTile='titleqtfy' tableIndexString='A'></tableTemlate>
       </el-col>
       <el-col class="col" :span='12'>
-        <tableTemlate :notEdit='disabled' :tableData='allTableData.profit' class="margin-top20" :index='true' :title="`${allTableData.level}.6 利润`" :tableTile='titlelr' tableIndexString='P'></tableTemlate>
+        <tableTemlate :notEdit='disabled' :tableData='allTableData.profit' class="margin-top20" :index='true' :title="`${allTableData.level}.6 ${$t('LK_LIRUN')}`" :tableTile='titlelr' tableIndexString='P'></tableTemlate>
       </el-col>
     </el-row>
     <!--------------------------------------------------------->
     <!----------------------2.2 制造成本------------------------>
     <!--------------------------------------------------------->
     <tableTemlate class="margin-top20" :cbdSelect='cbdSelect' pageNationReq='cbd' pageNationRes='cbd' title="CBD" selection :tableData='tableDataCbd' :tableTile='titleCBD' iPagination>
-      <iButton @click="downLoadFile">下载</iButton>
-      <iButton v-if='!disabled' @click="disabel">删除</iButton>
+      <iButton @click="downLoadFile">{{$t('LK_XIAZAI')}}</iButton>
+      <iButton v-if='!disabled' @click="disabel">{{$t('delete')}}</iButton>
     </tableTemlate>
   </div>
 </template>
@@ -305,7 +305,7 @@ export default{
             const data = await this.getBzfreeAndYunshuFree();
             this.allTableData = this.translateDataForRender(res.data)
             this.topTableData = this.translateDataTopData(this.allTableData.levelTwoSumVO, data)
-            this.$refs.components.partsQuotationss(this.partInfo.rfqId,this.allpagefrom.quotationId,this.partInfo.round)
+            this.$refs.components.partsQuotationss(this.partInfo.rfqId,this.allpagefrom.quotationId,this.partInfo.round,this.allTableData.level)
             this.findFiles()
           }
         }).catch(err=>{

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-23 15:38:31
- * @LastEditTime: 2021-05-19 20:39:20
+ * @LastEditTime: 2021-05-26 11:38:11
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\costsummary\components\timeAndlevTabel.vue
@@ -12,7 +12,7 @@
     <!----------------------搜索区域  -------------------------->
     <!--------------------------------------------------------->        
     <iFormGroup row='4' class="tscss">
-      <i-form-item :label="'复制报价至'" v-if='!disabled'>
+      <i-form-item :label="$('LK_COPE_BAOJIA')" v-if='!disabled'>
         <iSelect v-model="selectedList" multiple collapse-tags @visible-change='changeDataCope'>
           <el-option v-for="items in selectList" :key='items.fsNum' :value='items.fsNum' :label="`${ items.partNum }_${ items.fsNum }`"></el-option>
         </iSelect>
@@ -28,8 +28,8 @@
         </iSelect>
       </i-form-item>
       <i-form-item v-if='!disabled' class="rightFloat">
-        <el-checkbox v-model="allTableData.editFlag" v-show="allTableData.level > 1">手动输入</el-checkbox>
-        <iButton @click="downloadFile" :loading='downLoadLoding' :disabled='allTableData.level == 3'>下载CBD</iButton>
+        <el-checkbox v-model="allTableData.editFlag" v-show="allTableData.level > 1">{{$t('LK_SHOUDONGSHURU')}}</el-checkbox>
+        <iButton @click="downloadFile" :loading='downLoadLoding' :disabled='allTableData.level == 3'>{{$t('LK_XIAZAICBD')}}</iButton>
         <el-upload
           class="floatright margin-left10"
           :action="uploadUrl + '/cbd-files/uploadPartCbd'"
@@ -43,11 +43,11 @@
           :on-error='()=>{uploadLoading=false;iMessage.error("上传失败！")}'
           :on-success='fileSuccess'
         >
-          <iButton :loading='uploadLoading'  :disabled='allTableData.level == 3'>上传报价</iButton>
+          <iButton :loading='uploadLoading'  :disabled='allTableData.level == 3'>{{$t('LK_UPLOADBJ')}}</iButton>
         </el-upload>
       </i-form-item>
     </iFormGroup>
-    <div class="textAlingRight">单位：RMB/Pc.</div>
+    <div class="textAlingRight">{{$t('LK_DANWEI')}}：RMB/Pc.</div>
     <!--------------------------------------------------------->
     <!----------------------表格百分比-------------------------->
     <!--------------------------------------------------------->    
@@ -168,8 +168,8 @@ export default{
      * @param {*}
      * @return {*}
      */    
-    partsQuotationss(rfqId,supplierId,lv){
-      this.translateTableTileData(lv)
+    partsQuotationss(rfqId,supplierId,lv,lever){
+      this.translateTableTileData(lever)
       partsQuotations(rfqId,supplierId,lv).then(res=>{
         if(res.data){
           this.selectList = res.data || []
