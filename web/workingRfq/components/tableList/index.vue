@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-02-24 09:42:07
- * @LastEditTime: 2021-05-25 17:29:56
+ * @LastEditTime: 2021-05-26 13:53:16
  * @LastEditors: Please set LastEditors
  * @Description: 零件签收-table组件。
  * @FilePath: \rise\src\views\partsign\components\tableList.vue
@@ -47,7 +47,7 @@
           </span>
         </tempalte>
       </el-table-column>
-      <el-table-column :key="index" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip'  v-else :label="items.key ? $t(items.key) : items.name" :prop="items.props">
+      <el-table-column :key="index" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip'  v-else :label="items.key ? groupTileTranslate(items) : items.name" :prop="items.props">
         <!----------------------------存在二级表头的情况------------------------------->
         <template v-if='items.list && items.list.length > 0'>
            <template v-for="(itemss,indexs) in items.list">
@@ -99,7 +99,7 @@
 <script>
 import {icon,iSelect,iInput} from 'rise'
 import {_getMathNumber} from '@/utils'
-import {getAallPrice,Aprice,Bprice} from 'rise/supplier/quotationdetail/components/costsummary/components/data'
+import {getAallPrice,Aprice,Bprice} from '../../../quotationdetail/components/costsummary/components/data'
 export default{
   components:{icon,iSelect,iInput},
   props:{
@@ -125,6 +125,18 @@ export default{
     }
   },
   methods:{
+    /**
+     * @description:组合表头翻译 
+     * @param {*}
+     * @return {*}
+     */
+    groupTileTranslate(items){
+      if(items.props == 'materialSummary' || items.props == 'productionSummary' ||items.props == 'scrapSummary' ||items.props == 'manageSummary' || items.props == 'otherSummary' || items.props == 'profitSummary'){
+        return items.name + this.$t(items.key)
+      }else{
+        return this.$t(items.key)
+      }
+    },
     getAallPrice(a,b){
       return getAallPrice(a,b)
     },
