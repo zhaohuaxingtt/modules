@@ -16,7 +16,7 @@ export default{
 	props:{
 		valueFormat:{
 			type:String,
-			default:'yy-MM-dd'
+			default:'yyyy-MM-dd HH:mm:ss'
 		}
 	}
 }
