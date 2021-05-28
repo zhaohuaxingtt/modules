@@ -57,6 +57,9 @@ import iRadio from '../iRadio'
 import iTableColumn from './iTableColumn'
 
 export default {
+  /**
+   * @example ./README.me
+   */
   name: 'iTableCustom',
   // eslint-disable-next-line vue/no-unused-components
   components: { iTableColumn, iButton, iSelect, iInput, iRadio },
