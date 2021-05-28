@@ -28,13 +28,38 @@ import iTabsList from './components/iTabsList'
 import iMessage from './components/iMessage'
 import iMessageBox from './components/iMessageBox'
 import iDatePicker from './components/iDatePicker'
-const components = [iMessage,iMessageBox,iInput,iButton,iCard,icon,iDialog,iDrawer,iNavMvp,iPage,iFormGroup,iFormItem,iLabel,iText,iPagination,iRadio,iSearch,iSelect,iTabs,iTabsList];
+import iTableCustom from './components/iTableCustom'
+const components = [
+  iMessage,
+  iMessageBox,
+  iInput,
+  iButton,
+  iCard,
+  icon,
+  iDialog,
+  iDrawer,
+  iNavMvp,
+  iPage,
+  iFormGroup,
+  iFormItem,
+  iLabel,
+  iText,
+  iPagination,
+  iRadio,
+  iSearch,
+  iSelect,
+  iTabs,
+  iTabsList,
+  iTableCustom,
+]
 const install = function(Vue) {
-  components.map(component => {Vue.component(component.name, component);})
+  components.map((component) => {
+    Vue.component(component.name, component)
+  })
 }
 
 if (typeof window !== 'undefined' && window.Vue) {
-  install(window.Vue);
+  install(window.Vue)
 }
 export {
   install,
@@ -57,5 +82,6 @@ export {
   iTabsList,
   iMessage,
   iMessageBox,
-  iDatePicker
-};
+  iDatePicker,
+  iTableCustom,
+}
