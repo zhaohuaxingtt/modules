@@ -50,11 +50,16 @@ export default {
     collapse: {
       type: Boolean,
       default: false
+    },
+    /** 是否默认打开或关闭 */
+    defalutCollVal:{
+      type:Boolean,
+      default:true
     }
   },
   data() {
     return {
-      collapseValue: true
+      collapseValue: this.defalutCollVal
     }
   },
   methods: {
