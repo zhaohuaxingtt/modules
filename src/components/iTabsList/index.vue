@@ -78,7 +78,7 @@
 			background-color: $color-background;
 			.el-tabs__header{
 				border-bottom: none;
-				margin-bottom: 15px;
+				margin-bottom: 30px;
 				::v-deep.el-tabs__nav {
 					border:none;
 				}
@@ -91,6 +91,7 @@
 				color:rgba(114, 114, 114, 1);
 				box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.08);
 				font-size: 16px;
+				font-weight: bold;
 				&:nth-child(1){
 					border-top-left-radius: 10px;	
 					border-bottom-left-radius: 10px;

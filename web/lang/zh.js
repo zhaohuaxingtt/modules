@@ -728,4 +728,5 @@ export default {
   'LK_JINGRUBJ': '进入报价', // 进入报价
   'LK_ECHARTSTITLE': '所有轮次报价总览 (Price)', //所有轮次报价总览 (Price)
   'LK_LUNCI': '轮次',// l轮次
+  'LK_BJFXHZMJ':'报价分析汇总-模具'//报价分析汇总-模具
 }
