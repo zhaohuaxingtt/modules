@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-05-25 16:52:05
+ * @LastEditTime: 2021-05-28 16:43:21
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\index.vue
 -->
@@ -25,6 +25,17 @@
       <div class="floatright">
         <iButton @click="handleSave" v-if="currentTab != 'infoAndReq' && !disabled" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
         <iButton @click="handleSubmit" v-if="!disabled" :loading="submitLoading">{{ $t('LK_TIJIAO') }}</iButton>
+
+        <!-- 降价计划tab页面按钮 -->
+        <template  v-if="currentTab=='reducePlan'">
+          <iButton v-if="!reducePlanedit" @click="changeReduceStatus">代供应商报价</iButton>
+          <span v-else>
+            <iButton @click="changeReduceStatus">{{$t('LK_QUXIAO')}}</iButton>
+            <iButton  @click="handleSave" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
+          </span>
+          <iButton>{{$t('LK_TIJIAO')}}</iButton>
+        </template>
+
         <logButton class="margin-left20" @click="log" />
         <span class="margin-left20">
 					<icon symbol name="icondatabaseweixuanzhong" class="font18"></icon>
@@ -65,6 +76,7 @@ import costsummary from './components/costsummary'
 import sample from "./components/sample"
 import filters from "@/utils/filters"
 import packAndShip from "./components/packAndShip"
+import reducePlan from "./components/reducePlan"
 
 import { getPartsQuotations, getStates, submitPartsQuotation } from "@/api/rfqManageMent/quotationdetail"
 import { cloneDeep } from "lodash"
@@ -86,7 +98,8 @@ export default {
     mouldAndDevelopmentCost,
     sample,
     packAndShip,
-    costsummary
+    costsummary,
+    reducePlan,
   },
   mixins: [ filters ],
   data() {
@@ -102,7 +115,7 @@ export default {
         { label: "供应商生产地及生产能力", name: "originAndCapacity", key: "LK_GONGYINGSHANGSHENGCHANDIJISHENGCHANNENGLI", components: [ "originAndCapacity" ] },
         { label: "模具和开发费用", name: "mouldAndDevelopmentCost", key: "LK_MUJUHEKAIFAFEIYONG", components: [ "mouldAndDevelopmentCost" ] },
         { label: "包装运输", name: "packAndShip", key: "LK_BAOZHUANGYUNSHU", components: [ "packAndShip" ] },
-        // { label: "降价计划", key: "LK_JIANGJIAJIHUA", components: [] },
+        { label: "降价计划", key: "LK_JIANGJIAJIHUA", components: ["reducePlan"] },
         // { label: "送样进度", key: "LK_SONGYANGJINDU", components: [] },
         { label: "工装样件", name: "sample", key: "LK_GONGZHUANGYANGJIAN", components: [ "sample" ] },
         // { label: "报价备注与附件", key: "LK_BAOJIABEIZHUYUFUJIAN", components: [] }
@@ -115,7 +128,8 @@ export default {
       submitLoading: false,
       tabLoading: false,
       disabled: true,
-      saveStatus: false
+      saveStatus: false,
+      reducePlanedit:false, // 降价计划是否可编辑
     }
   },
   provide: function () {
@@ -292,7 +306,15 @@ export default {
     },
     updateCbdLevel(val) {
       this.$set(this.partInfo, "currentCbdLevel", val)
-    }
+    },
+
+     // 降价计划改变状态
+    changeReduceStatus(){
+      const {reducePlanedit} = this;
+      this.reducePlanedit = !reducePlanedit;
+      // const component = this.$refs[this.currentTab][0];
+      // console.log(component);
+    },
   }
 };
 </script>
