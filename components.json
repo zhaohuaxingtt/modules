@@ -20,5 +20,6 @@
   "i-message-box": "./src/components/iMessageBox/index.js",
   "i-label": "./src/components/iPageItemsGroup/iLabel/index.js",
   "i-date-picker": "./src/components/iDatePicker/index.js",
-  "i-table-custom": "./src/components/iTableCustom/index.js"
+  "i-table-custom": "./src/components/iTableCustom/index.js",
+  "i-editor": "./src/components/iEditor/index.js"
 }
