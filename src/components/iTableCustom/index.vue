@@ -4,6 +4,7 @@
     :height="height"
     :data="realTableData"
     v-loading="loading"
+    :row-key="rowKey || 'uniqueId'"
     @selection-change="handleSelectionChange"
     @cell-click="handleCellClick"
     :empty-text="$t('LK_ZANWUSHUJU')"
@@ -50,19 +51,16 @@
 </template>
 
 <script>
-import iButton from '../iButton'
-import iSelect from '../iSelect'
-import iInput from '../iInput'
-import iRadio from '../iRadio'
+import iButton from '../iButton/index.vue'
+import iSelect from '../iSelect/index.vue'
+import iInput from '../iInput/index.vue'
+import iRadio from '../iRadio/index.vue'
+import Icon from '../icon/index.vue'
 import iTableColumn from './iTableColumn'
 
 export default {
-  /**
-   * @example ./README.me
-   */
-  name: 'iTableCustom',
   // eslint-disable-next-line vue/no-unused-components
-  components: { iTableColumn, iButton, iSelect, iInput, iRadio },
+  components: { iTableColumn, iButton, iSelect, iInput, iRadio, Icon },
 
   props: {
     data: {
@@ -88,19 +86,28 @@ export default {
     treeExpand: {
       type: Object,
     },
+    rowKey: {
+      type: String,
+    },
+    defaultExpand: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     realTableData() {
       if (this.treeExpand) {
         return this.tableData.filter((e) => e.visible)
-      } else {
-        return this.tableData
       }
+      return this.tableData.map((e, index) => {
+        return { ...e, uniqueId: index + '' }
+      })
     },
   },
   data() {
     return {
       tableData: [],
+      selectedRow: [],
     }
   },
   watch: {
@@ -114,6 +121,7 @@ export default {
 
   methods: {
     handleSelectionChange(val) {
+      this.selectedRow = val
       this.$emit('handle-selection-change', val)
     },
     handleEmit(item, row) {
@@ -135,11 +143,16 @@ export default {
       for (let i = 0; i < data.length; i++) {
         const row = data[i]
         const uniqueId = parentKey ? `${parentKey}-${i}` : `${i}`
+        let hasChild = Object.hasOwnProperty.call(row, childrenKey)
+        if (hasChild && (!row[childrenKey] || row[childrenKey].length === 0)) {
+          hasChild = false
+        }
+        const visible = uniqueId.includes('-') ? this.defaultExpand : true
         const resItem = {
           uniqueId,
-          isLeaf: !Object.hasOwnProperty.call(row, childrenKey),
-          expanded: true,
-          visible: true,
+          isLeaf: !hasChild,
+          expanded: this.defaultExpand,
+          visible: visible,
           parentUniqueId: parentKey,
         }
 
@@ -152,7 +165,11 @@ export default {
           }
         }
         res.push(resItem)
-        if (Object.hasOwnProperty.call(row, childrenKey)) {
+        if (
+          Object.hasOwnProperty.call(row, childrenKey) &&
+          row[childrenKey] &&
+          row[childrenKey].length > 0
+        ) {
           this.getTreeTableData(row[childrenKey], uniqueId, res)
         }
       }
@@ -178,6 +195,28 @@ export default {
             }
           })
         }
+      }
+    },
+    expandAll() {
+      // 全部展开
+      if (this.treeExpand) {
+        this.tableData.forEach((element) => {
+          element.expanded = true
+          element.visible = true
+        })
+      }
+    },
+    collapseAll() {
+      // 全部收起
+      if (this.treeExpand) {
+        this.tableData.forEach((element) => {
+          if (element.uniqueId.indexOf('-') > -1) {
+            element.expanded = false
+            element.visible = false
+          } else {
+            element.expanded = false
+          }
+        })
       }
     },
   },
