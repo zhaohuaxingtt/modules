@@ -30,6 +30,7 @@ import iMessageBox from './components/iMessageBox'
 import iDatePicker from './components/iDatePicker'
 import iTableCustom from './components/iTableCustom'
 import iEditor from './components/iEditor'
+
 const components = [
   iMessage,
   iMessageBox,

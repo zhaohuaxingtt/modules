@@ -15,110 +15,109 @@ const postcss = new px2rem({
     remUnit: 16
 })
 module.exports = {
-  mode:"production",
-  entry: './src/index.js',
-  output: {
-    path: path.resolve(__dirname, './dist/lib'),
-    publicPath: '/dist/',
-    filename: 'rise.min.js',
-    library: 'rise',
-    libraryTarget: 'umd',
-    libraryExport: 'default'
-  },
-  module: {
-    rules: [
-      {
-        test: /\.css$/,
-        use: [
-          'vue-style-loader',
-          'css-loader',
-          "postcss"
-        ]
-      },  
-      {
-        test: /\.scss$/,
-        use: [
-          'vue-style-loader',
-          'css-loader',
+    mode: "production",
+    entry: './src/index.js',
+    output: {
+        path: path.resolve(__dirname, './dist/lib'),
+        publicPath: '/dist/',
+        filename: 'rise.min.js',
+        library: 'rise',
+        libraryTarget: 'umd',
+        libraryExport: 'default'
+    },
+    module: {
+        rules: [
             {
-            loader: 'postcss-loader',
-            options: {
-              plugins:[postcss]
-              }
-          },
-          'sass-loader',
-          {
-            loader: 'sass-resources-loader',
-            options: {
-                resources: './src/assets/global/variables.scss'
+                test: /\.css$/,
+                use: [
+                    'vue-style-loader',
+                    'css-loader',
+                    "postcss"
+                ]
+            },
+            {
+                test: /\.scss$/,
+                use: [
+                    'vue-style-loader',
+                    'css-loader',
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            plugins: [postcss]
+                        }
+                    },
+                    'sass-loader',
+                    {
+                        loader: 'sass-resources-loader',
+                        options: {
+                            resources: './src/assets/global/variables.scss'
+                        }
+                    }
+                ]
+            },
+            {
+                test: /\.sass$/,
+                use: [
+                    'vue-style-loader',
+                    'css-loader',
+                    'sass-loader?indentedSyntax',
+                    {
+                        loader: 'sass-resources-loader',
+                        options: {
+                            resources: './src/assets/global/variables.scss'
+                        }
+                    }
+                ]
+            },
+            {
+                test: /\.vue$/,
+                loader: 'vue-loader',
+                exclude: /(node_modules|web)/,
+                options: {}
+            },
+            {
+                test: /\.js$/,
+                loader: 'babel-loader',
+                exclude: /(node_modules|web|utils)/
+            },
+            {
+                test: /\.(png|jpg|gif|svg)$/,
+                loader: 'file-loader',
+                options: {
+                    name: '[name].[ext]?[hash]'
+                }
             }
-          }
         ]
-      },
-      {
-        test: /\.sass$/,
-        use: [
-          'vue-style-loader',
-          'css-loader',
-          'sass-loader?indentedSyntax',
-          {
-            loader: 'sass-resources-loader',
-            options: {
-                resources: './src/assets/global/variables.scss'
-            }
-          }
-        ]
-      },    
-      {
-        test: /\.vue$/,
-        loader: 'vue-loader',
-        exclude: /(node_modules|web)/,
-        options: {
-
-        }
-      },
-      {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        exclude: /(node_modules|web)/
-      },
-      {
-        test: /\.(png|jpg|gif|svg)$/,
-        loader: 'file-loader',
-        options: {
-          name: '[name].[ext]?[hash]'
-        }
-      }
-    ]
-  },
-  externals: {
-    'vue': 'Vue',
-    'element-ui': 'element-ui'
-  },
-  resolve: {
-    extensions: ['*', '.js', '.vue', '.json']
-  },
-  devServer: {
-    historyApiFallback: true,
-    noInfo: true,
-    overlay: true
-  },
-  performance: {
-    hints: false
-  }
+    },
+    externals: {
+        'vue': 'Vue',
+        'element-ui': 'element-ui'
+    },
+    resolve: {
+        extensions: ['*', '.js', '.vue', '.json']
+    },
+    devServer: {
+        historyApiFallback: true,
+        noInfo: true,
+        overlay: true
+    },
+    performance: {
+        hints: false
+    }
 }
 // http://vue-loader.vuejs.org/en/workflow/production.html
 module.exports.plugins = (module.exports.plugins || []).concat([
-  new webpack.DefinePlugin({
-    'process.env': {
-      NODE_ENV: '"production"'
-    }
-  }),
-  new webpack.LoaderOptionsPlugin({
-    minimize: true
-  }),
-  new VueLoaderPlugin(),
-  new CopyWebpackPlugin([
-    { from: `${ __dirname }/web`, to: `${ __dirname }/dist/web` },
-  ])
+    new webpack.DefinePlugin({
+        'process.env': {
+            NODE_ENV: '"production"'
+        }
+    }),
+    new webpack.LoaderOptionsPlugin({
+        minimize: true
+    }),
+    new VueLoaderPlugin(),
+    new CopyWebpackPlugin([
+        {from: `${__dirname}/web`, to: `${__dirname}/dist/web`},
+        {from: `${__dirname}/utils`, to: `${__dirname}/dist/utils`},
+    ])
 ])

@@ -7,13 +7,14 @@
  * @FilePath: \rise\src\components\iDialog\index.vue
 -->
 <script>
-import { Dialog } from 'element-ui' 
+import {Dialog} from 'element-ui'
+
 /**
  * @example ./README.me
-*/
-export default{
-  name:'iDialog',
-  extends:Dialog
+ */
+export default {
+  name: 'iDialog',
+  extends: Dialog
 }
 </script>
 <style lang='scss' scoped>
