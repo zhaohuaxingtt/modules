@@ -1,4 +1,12 @@
-let setWatermark = (str, width, height) => {
+/**
+ * str 水印内容
+ * @param str 水印内容
+ * @param appendId 附着的区域id
+ * @param width 宽度
+ * @param height 高度
+ * @returns {string}
+ */
+let setWatermark = (str, appendId, width, height) => {
     let id = '1.23452384164.123412415'
     if (document.getElementById(id) !== null) {
         document.body.removeChild(document.getElementById(id))
@@ -28,7 +36,11 @@ let setWatermark = (str, width, height) => {
     div.style.width = document.documentElement.clientWidth + 'px'
     div.style.height = document.documentElement.clientHeight + 'px'
     div.style.background = 'url(' + can.toDataURL('image/png') + ') left top repeat'
-    document.body.appendChild(div)
+    if (appendId && document.getElementById(appendId)) {
+        document.getElementById(appendId).appendChild(div)
+    } else {
+        document.body.appendChild(div);
+    }
     return id
 }
 
