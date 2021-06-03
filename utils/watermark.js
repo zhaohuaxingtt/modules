@@ -45,11 +45,11 @@ let setWatermark = (str, appendId, width, height) => {
 }
 
 // 添加水印方法
-export const setWaterMark = (str, width, height) => {
-    let id = setWatermark(str, width, height)
+export const setWaterMark = (str, appendId, width, height) => {
+    let id = setWatermark(str, appendId, width, height)
     setInterval(() => {
         if (document.getElementById(id) === null) {
-            id = setWatermark(str, width, height);
+            id = setWatermark(str, appendId, width, height);
         }
     }, 500);
 }
