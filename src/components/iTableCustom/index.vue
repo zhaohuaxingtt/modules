@@ -4,11 +4,11 @@
     :height="height"
     :data="realTableData"
     v-loading="loading"
-    :row-key="rowKey || 'uniqueId'"
+    row-key="uniqueId"
     @selection-change="handleSelectionChange"
     @cell-click="handleCellClick"
     :empty-text="$t('LK_ZANWUSHUJU')"
-    ref="customTable"
+    ref="theCustomTable"
   >
     <template v-for="(item, index) in columns">
       <el-table-column
@@ -28,7 +28,7 @@
         :show-overflow-tooltip="item.tooltip"
         :prop="item.prop"
         :label="item.i18n ? $t(item.i18n) : item.label"
-        :width="item.width || 'auto'"
+        :width="item.width ? item.width.toString() : 'auto'"
       >
         <template slot-scope="scope">
           <div @click="handleEmit(item, scope.row)">
@@ -86,13 +86,6 @@ export default {
     treeExpand: {
       type: Object,
     },
-    rowKey: {
-      type: String,
-    },
-    defaultExpand: {
-      type: Boolean,
-      default: false,
-    },
   },
   computed: {
     realTableData() {
@@ -100,7 +93,7 @@ export default {
         return this.tableData.filter((e) => e.visible)
       }
       return this.tableData.map((e, index) => {
-        return { ...e, uniqueId: index + '' }
+        return { ...e, uniqueId: index }
       })
     },
   },
@@ -147,12 +140,11 @@ export default {
         if (hasChild && (!row[childrenKey] || row[childrenKey].length === 0)) {
           hasChild = false
         }
-        const visible = uniqueId.includes('-') ? this.defaultExpand : true
         const resItem = {
           uniqueId,
           isLeaf: !hasChild,
-          expanded: this.defaultExpand,
-          visible: visible,
+          expanded: true,
+          visible: true,
           parentUniqueId: parentKey,
         }
 
@@ -200,7 +192,7 @@ export default {
     expandAll() {
       // 全部展开
       if (this.treeExpand) {
-        this.tableData.forEach((element) => {
+        this.tableData.forEach((element, i) => {
           element.expanded = true
           element.visible = true
         })
@@ -213,11 +205,18 @@ export default {
           if (element.uniqueId.indexOf('-') > -1) {
             element.expanded = false
             element.visible = false
-          } else {
-            element.expanded = false
           }
         })
       }
+    },
+    toggleRowSelection(row, selected) {
+      this.$refs.theCustomTable.toggleRowSelection(row, selected)
+    },
+    toggleAllSelection() {
+      this.$refs.theCustomTable.toggleAllSelection()
+    },
+    clearSelection() {
+      this.$refs.theCustomTable.clearSelection()
     },
   },
 }

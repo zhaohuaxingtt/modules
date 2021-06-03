@@ -29,8 +29,8 @@ export default {
     if (column.type && column.type === 'expanded') {
       const paddingLeft = scope.row.uniqueId.split('-').length * 10
       const iconClass = scope.row.expanded
-        ? 'arrow-icon el-icon-caret-top'
-        : 'arrow-icon el-icon-caret-bottom'
+        ? 'el-icon-arrow-down'
+        : 'el-icon-arrow-right'
       return (
         <span style={{ paddingLeft: paddingLeft + 'px' }}>
           {customRender
@@ -52,14 +52,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.link-text,
 .open-link-text {
   color: $color-blue;
+  cursor: pointer;
   &:hover {
     text-decoration: underline;
   }
-}
-.arrow-icon {
-  color: $color-blue;
-  margin-left: 5px;
 }
 </style>
