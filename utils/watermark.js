@@ -35,7 +35,7 @@ let setWatermark = (str, option) => {
         textBaseline: 'Middle',
         bottom: '50px',
         right: '50px',
-        opacity: '0.15',
+        opacity: '0.30',
         position: 'fixed',
         zIndex: '999999',
         repeat: true
