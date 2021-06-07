@@ -192,7 +192,7 @@ export default {
     expandAll() {
       // 全部展开
       if (this.treeExpand) {
-        this.tableData.forEach((element, i) => {
+        this.tableData.forEach((element) => {
           element.expanded = true
           element.visible = true
         })
