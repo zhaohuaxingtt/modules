@@ -11,8 +11,8 @@
     <div class="iSearch-content" :class="{hiden:hidens}">
       <div class="operation" v-if='!hiddenRight'>
         <slot name='button'>
-          <iButton @click="$emit('sure')" :v-permission="searchKey">{{ $t('rfq.RFQINQUIRE') }}</iButton>
-          <iButton @click="$emit('reset')" :v-permission="resetKey">{{ $t('rfq.RFQRESET') }}</iButton>
+          <iButton @click="$emit('sure')" >{{ $t('rfq.RFQINQUIRE') }}</iButton>
+          <iButton @click="$emit('reset')" >{{ $t('rfq.RFQRESET') }}</iButton>
         </slot>
         <i @click="toggle" v-if='!icon' class="el-icon-arrow-up icon margin-left20 cursor"
            :class="{rotate:hidens}"></i>
@@ -34,10 +34,6 @@ export default {
   name:'iSearch',
   components: {iCard, iButton},
   props: {
-    /**权限key-search*/
-    searchKey: String,
-    //权限key-search
-    resetKey: String,
     //是否显示图标
     icon: Boolean,
     //标题名字
