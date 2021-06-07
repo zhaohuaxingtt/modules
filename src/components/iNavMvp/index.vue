@@ -9,7 +9,7 @@
 		<div v-for="(item,index) in list" :key="index" @click="change(item,index)">
 			<span class="name" :class="index==activeIndex && 'active'">{{$t(item.key)}}</span>
 			<!-- <span class="circle" v-show="item.message>0">{{item.message}}</span> -->
-			<el-badge class="badge" :max="99" v-if="item.message" :value="item.message"></el-badge>
+			<el-badge class="badge" :max="99" v-if="item.message" :value="item.message" @click.native="clickMessage(item, $event)"></el-badge>
 		</div>
 	</div>
 </template>
@@ -99,10 +99,11 @@
 		},
 		watch: {
 			"$route.path"(nv) {
-				if(this.routerPage){
-					this.list.forEach((items,index)=>{
-						if(nv.indexOf(items.activePath) > -1) this.activeIndex = index
-					})
+				if(this.routerPage) {
+					for (let i = 0, item; (item = this.list[i++]); ) {
+						if (nv.indexOf(item.activePath) > -1) this.activeIndex = i
+						break
+					}
 				}
 			}
 		},
@@ -119,6 +120,10 @@
 						query:this.query
 					})
 				}
+			},
+			clickMessage(item, e) {
+				this.$emit('message', item)
+				e.stopPropagation()
 			}
 		}
 	}
@@ -148,7 +153,8 @@
 			}
 
 			.badge {
-				position: absolute;
+				// position: absolute;
+				position: relative;
 				right: -10px;
 				top: -12px;
 
@@ -206,10 +212,11 @@
 
 	.lev2 {
 		& > div {
+			font-size: 0;
 			margin-left: 0!important;
 			text-align: center!important;
 			padding: 4px 25px;
-			line-height: 25px!important;
+			// line-height: 25px!important;
 		
 			&:first-of-type {
 				padding-left: 0!important;
@@ -217,6 +224,10 @@
 
 			&:last-of-type {
 				padding-right: 0!important;
+
+				.badge {
+					margin-right: 2px!important;
+				}
 			}
 
 			&:not(&:first-of-type, &:last-of-type) {
@@ -262,9 +273,10 @@
 			margin-right: -4px!important;
 			left: 2px!important;
 			right: initial!important;
-			top: -4px!important;
+			top: -22px!important;
 			font-size: 12px!important;
 			vertical-align: middle;
+			height: 0;
 
 			::v-deep .el-badge__content {
 				font-size: 12px!important;
@@ -272,6 +284,7 @@
 				height: 18px!important;
 				line-height: 18px!important;
 				min-width: 18px!important;
+				font-family: "Arial", "Microsoft YaHei";
 			}
 		}
 	}
