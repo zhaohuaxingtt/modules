@@ -1,0 +1,177 @@
+<!--
+ * @Author: Luoshuang
+ * @Date: 2021-05-27 15:54:05
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-06-10 18:21:02
+ * @Description: 送样进度
+ * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\sampleDeliveryProgress\index.vue
+-->
+
+<template>
+  <iCard class="sampleDelivery">
+    <div class="header margin-bottom20">
+      <span class="title">{{ $t('LK_SONGYANGJINDU') }}</span>
+      <span class="margin-left10">
+        <span class="tip">{{$t('LK_YISHANGSONGYANGZHOUQIYIDINGDINASHIJIANWEIQISHIRI')}}</span>
+        <el-radio-group class="margin-left20" v-model="priceType" @change="tableData = tableDataCache[$event]">
+          <el-radio label="LC">LC</el-radio>
+          <el-radio label="SKD">SKD</el-radio>
+        </el-radio-group>
+      </span>
+    </div>
+    <tableList :selection="false" :tableTitle="tableTitle" :tableData="tableData" :tableLoading="loading">
+      <template #supplierTime="scope">
+        <iInput v-if="!disabled" v-model="scope.row.supplierTime" @click="handleInputBySupplierTime($event, row)"/>
+        <span v-else>{{ scope.row.supplierTime }}</span>
+      </template>
+      <template #remark="scope">
+        <iInput v-if="!disabled" v-model="scope.row.remark" />
+        <span v-else>{{ scope.row.remark }}</span>
+      </template>
+    </tableList>
+    <!-- <iPagination
+      v-update
+      @size-change="handleSizeChange($event, getTableList)"
+      @current-change="handleCurrentChange($event, getTableList)"
+      background
+      :page-sizes="page.pageSizes"
+      :page-size="page.pageSize"
+      :layout="page.layout"
+      :current-page="page.currPage"
+      :total="page.totalCount"
+      :isEdit="!disabled"
+    /> -->
+  </iCard>
+</template>
+
+<script>
+import { iCard, iInput, iMessage } from 'rise'
+import { tableTitle, dateTemplate } from './data'
+import tableList from "../tableList"
+import { pageMixins } from "@/utils/pageMixins"
+import { getSampleProgress, saveSampleProgress } from "@/api/rfqManageMent/quotationdetail"
+import { cloneDeep } from "lodash"
+import { numberProcessor } from "@/utils"
+
+export default {
+  components: { iCard, iInput, tableList },
+  mixins: [pageMixins],
+  props: {
+    partInfo: {
+      type: Object,
+      default: () => ({})
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
+    return {
+      loading: false,
+      priceType: 'LC',
+      tableTitle: tableTitle,
+      tableData: cloneDeep(dateTemplate),
+      tableDataCache: {
+        LC: cloneDeep(dateTemplate),
+        SKD: cloneDeep(dateTemplate)
+      }
+    }
+  },
+  methods: {
+    init() {
+      this.loading = true
+
+      getSampleProgress({
+        quotationId: this.partInfo.quotationId
+      })
+      .then(res => {
+        if (res.code == 200) {
+          if (Array.isArray(res.data.sampleProgressDTOList) && res.data.sampleProgressDTOList.length > 0) {
+            res.data.sampleProgressDTOList.forEach(item => {
+              switch(item.priceType) {
+                case "LC":
+                  for (let i = 0, template; (template = this.tableDataCache.LC[i++]); ) {
+                    if (template.sampleDeliverType == item.sampleDeliverType) {
+                      Object.keys(item).forEach(key => this.$set(template, key, item[key]))
+                      break
+                    }
+                  }
+                  break
+                case "SKD":
+                  for (let i = 0, template; (template = this.tableDataCache.SKD[i++]); ) {
+                    if (template.sampleDeliverType == item.sampleDeliverType) {
+                      Object.keys(item).forEach(key => this.$set(template, key, item[key]))
+                      break
+                    }
+                  }
+                  break
+                default:
+                  break
+              }
+            })
+          }
+
+          this.tableData = this.tableDataCache[this.priceType]
+        } else {
+          iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+        }
+
+        this.$nextTick(() => {
+          this.loading = false
+        })
+      })
+      .catch(() => this.loading = false)
+    },
+    save() {
+      return saveSampleProgress({
+        quotationId: this.partInfo.quotationId,
+        sampleProgressDTOS: [
+          ...(this.tableDataCache.LC.map(item => ({
+            ...item,
+            priceType: "LC",
+          }))),
+          ...(this.tableDataCache.SKD.map(item => ({
+            ...item,
+            priceType: "SKD",
+          }))),
+        ]
+      })
+      .then(res => {
+        const message = this.$i18n.locale === "zh" ? res.desZh : res.desEn
+
+        if (res.code == 200) {
+          iMessage.success(message)
+          this.init()
+        } else {
+          iMessage.error(message)
+        }
+      })
+    },
+    handleInputBySupplierTime(value, row) {
+      row.supplierTime = numberProcessor(value, 2)
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.sampleDelivery{
+    .header {
+        .title {
+            height: 25px;
+            line-height: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #131523;
+        }
+
+        .tip {
+            height: 20px;
+            line-height: 20px;
+            font-size: 14px;
+            color: #86878e;
+        }
+    }
+}
+</style>

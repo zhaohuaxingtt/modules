@@ -2,19 +2,16 @@
  * @Author: ldh
  * @Date: 2021-04-23 15:20:44
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-09 23:25:17
+ * @LastEditTime: 2021-06-10 18:12:29
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\mouldOffer\components\moduleCost.vue
 -->
 <template>
-  <!---------------------------------------------------------------------------------------------->
-  <!-------------------------------------新增动态class，title，collapse允许其他组件来重写------------->
-  <!---------------------------------------------------------------------------------------------->
-  <iCard :class="{moduleCost:useCardSlot,moduleCost_web:!useCardSlot}" :title="useCardSlot?'':$t(titleKey)" :collapse='!useCardSlot' @handleCollapse='$emit("handleCollapse")'>
-    <template #header v-if='useCardSlot'>
+  <iCard class="moduleCost">
+    <template #header>
       <div class="header">
         <div>
-          <span class="title">{{ $t(titleKey) }}</span>
+          <span class="title">{{ $t('LK_MUJUFEIYONG') }}</span>
           <span class="tip margin-left10">({{ $t('LK_DANWEI') }}：{{ $t('LK_YUAN') }})</span>
         </div>
         <div v-if="!disabled" class="control">
@@ -39,35 +36,6 @@
       </div>
     </template>
     <div class="table">
-      <template v-if='!useCardSlot'>
-        <div class="header">
-          <div v-if='hasSupplierComponets' class="supplier">
-            <span>供应商：</span>
-            <iSelect>
-              <el-option value="" label="全部"></el-option>
-            </iSelect>
-          </div>
-          <div v-if="!disabled" class="control">
-            <iButton @click="changeRelatingPartsVisible(true)">{{ $t('LK_GUANLIANLINGJIAN') }}</iButton>
-            <iButton @click="handleDownload">{{ $t('LK_XIAZAIMUJUCBD') }}</iButton>
-            <el-upload 
-              class="uploadBtn" 
-              multiple
-              ref="upload"
-              name="multipartFile"
-              :http-request="upload"
-              :show-file-list="false" 
-              :before-upload="beforeUpload"
-              accept=".xlsx">
-                <iButton :loading="uploadLoading">{{ $t('LK_SHANGCHUANBAOJIA') }}</iButton>
-            </el-upload>
-            <iButton @click="handleAdd">{{ $t('LK_TIANJIAHANG') }}</iButton>
-            <iButton @click="handleDel">{{ $t('LK_SHANCHUHANG') }}</iButton>
-            <iButton @click="handleSave" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
-            <!-- <iButton>提交</iButton> -->
-          </div>
-        </div>
-      </template>
       <tableList height="100%" class="table" :tableData="tableListData" :tableTitle="tableTitle" @handleSelectionChange="handleSelectionChange">
         <template #stuffType="scope">
           <iInput v-if="!disabled" v-model="scope.row.stuffType" />
@@ -146,14 +114,17 @@
 </template>
 
 <script>
+/* eslint-disable no-undef */
+
 import { iCard, iButton, iInput, iSelect, iMessage, iPagination } from "rise"
 import tableList from "../../quotationdetail/components/tableList"
 import { moduleCostTableTitle as tableTitle } from "./data"
 import relatingParts from '../../quotationdetail/components/relatingParts'
 import { cbdDownloadFile, uploadModuleCbd, getAllMouldFee, saveModuleFee, getAllPartForMould } from "@/api/rfqManageMent/quotationdetail"
-import { decimalProcessor, intgerProcessor, assetTypeCodeOptions } from "../../quotationdetail/components/mouldAndDevelopmentCost/components/data"
+import { assetTypeCodeOptions } from "../../quotationdetail/components/mouldAndDevelopmentCost/components/data"
 import filters from "@/utils/filters"
 import { pageMixins } from "@/utils/pageMixins"
+import { numberProcessor } from "@/utils"
 
 export default {
   components: {
@@ -170,11 +141,6 @@ export default {
     partInfo: {
       type: Object,
       default: () => ({})
-    },
-    //为了在供应商公用此组件。新增国际化title入口
-    titleKey:{
-      type:String,
-      default:'LK_MUJUFEIYONG'
     }
   },
   data() {
@@ -189,10 +155,7 @@ export default {
       saveLoading: false,
       partNums: [],
       fsNums: [],
-      partNumMap: {},
-      //是否使用slot模板。
-      useCardSlot:true,
-      hasSupplierComponets:false
+      partNumMap: {}
     }
   },
   computed: {
@@ -392,7 +355,7 @@ export default {
       this.$set(row, "mouldId", `${ this.partInfo.rfqId }_${ this.userInfo.supplierId }_${ partNum }_T${ index }`)
     },
     handleInputByModeTotalLife(val, row) {
-      row.modeTotalLife = intgerProcessor(val)
+      row.modeTotalLife = numberProcessor(val, 0)
     },
     // fs号选择
     handleChangeByAssembledPartPrjCode(fsNum, row) {
@@ -436,7 +399,7 @@ export default {
       }
     },
     handleInputByQuantity(val, row) {
-      row.quantity = intgerProcessor(val)
+      row.quantity = numberProcessor(val, 0)
       
       row.totalPrice = math.multiply(
         math.bignumber(row.quantity || 0),
@@ -444,7 +407,7 @@ export default {
       ).toFixed(4)
     },
     handleInputByAssetUnitPrice(val, row) {
-      row.assetUnitPrice = decimalProcessor(val, 2)
+      row.assetUnitPrice = numberProcessor(val, 2)
 
       row.totalPrice = math.multiply(
         math.bignumber(row.quantity || 0),
@@ -489,68 +452,6 @@ export default {
 
     .control {
       display: inline-block;
-    }
-  }
-
-  .uploadBtn {
-    display: inline;
-    margin-left: 10px;
-
-    & + .el-button {
-      margin-left: 10px;
-    }
-  }
-
-  .table {
-    min-height: calc(100vh - 300px);
-  }
-
-  .totalCount {
-    height: 35px;
-    line-height: 35px;
-    font-size: 14px;
-    font-family: Arial;
-    font-weight: 400;
-    color: #8C98AC;
-    opacity: 1;
-
-    .count {
-      padding: 0 2.5px;
-    }
-  }
-}
-
-.moduleCost_web{
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    .title {
-      height: 25px;
-      line-height: 25px;
-      font-size: 18px;
-      font-weight: bold;
-      color: #131523;
-    }
-
-    .tip {
-      height: 20px;
-      line-height: 20px;
-      font-size: 14px;
-      color: #86878E;
-    }
-
-    .control {
-      display: inline-block;
-    }
-
-    .supplier{
-      display: flex;
-      span{
-        width: 100px;
-        line-height: 28px;
-      }
     }
   }
 

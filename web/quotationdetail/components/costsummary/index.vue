@@ -1,8 +1,8 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-05-26 11:57:31
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-06-09 15:37:46
+ * @LastEditors: Luoshuang
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
                   2）用户点击“保存”按钮，则保存当前页面已经编辑和输入的所有信息
@@ -17,11 +17,16 @@
     <!--------------------------------------------------------->
     <!----------------------百分比模块-------------------------->
     <!--------------------------------------------------------->
-    <persentComponents ref='components' :cbdlist='cbdlist' :quotationId='partInfo.quotationId' :tableData='topTableData' :disabled='disabled' :allTableData='allTableData'></persentComponents>
+    <persentComponents ref='components' :cbdlist='cbdlist' :quotationId='partInfo.quotationId' :tableData='topTableData' :disabled='disabled' :allTableData='allTableData' :partType="partInfo.partType" :partProjectType="partInfo.partProjectType"></persentComponents>
     <!--------------------------------------------------------->
     <!----------------------2.1 原材料/散件--------------------->
     <!--------------------------------------------------------->
     <tableTemlate v-show='allTableData.level > 1' :index='true' pageNationReq='queryRawMaterialDTO' pageNationRes='rawMaterial' :notEdit='disabled' :tableData='allTableData.rawMaterial.records' class="margin-top20" :title="`${allTableData.level}.1 ${$t('LK_YUANCLSJ')}`" :tableTile='titleYcl' :iPagination='disabled' tableIndexString='C'></tableTemlate>
+    <!-- <tableTemlate 
+      index
+      v-if='allTableData.level == 3' 
+      :title="`${ allTableData.level }.1 ${$t('LK_YUANCLSJCB')}`" 
+      :tableTile='titleYclByL3' /> -->
     <!--------------------------------------------------------->
     <!----------------------2.2 制造成本--------------------->
     <!--------------------------------------------------------->
@@ -58,9 +63,10 @@
 import persentComponents from './components/timeAndlevTabel'
 import tableTemlate from './components/tableTemlate'
 import {persentDatalist,titleYcl,titleCbzz,titlebfcb,titleglf,titleqtfy,titlelr,titleCBD,allpagefrom,needContactData,Aprice,getAallPrice,getPersent,cbdlist} from './components/data'
+// titleYclByL3
 import {iButton,iMessage} from 'rise'
 import {getCostSummary,packageTransport} from '@/api/rfqManageMent/rfqDetail'
-import {findFiles,postCostSummary,deleteFile} from '@/api/rfqManageMent/quotationdetail'
+import {findFiles,postCostSummary,deleteFile,savePackageTransport} from '@/api/rfqManageMent/quotationdetail'
 import {downloadFile} from '@/api/file'
 import {selectDictByKeyss} from '@/api/dictionary'
 export default{
@@ -74,7 +80,8 @@ export default{
           rfqId:'',
           fsNum:'',
           cbdLevel:2,
-          quotationId:''
+          quotationId:'',
+          partType: '' // 用于标识零件类型，暂定，根据后端具体返回而定
         }
       }
     },
@@ -124,7 +131,8 @@ export default{
       tableDataCbdModel:{},
       cbdSelect:{
         list:[]
-      }
+      },
+      // titleYclByL3
     }
   },
   watch:{
@@ -261,10 +269,10 @@ export default{
       const sendData = JSON.parse(JSON.stringify(this.allTableData))
       sendData.makeCost = sendData.makeCost.records
       sendData.rawMaterial = sendData.rawMaterial.records
-      sendData['levelTwoSumDTO'] = this.topTableData.tableData[0]
+      sendData['sumDTO'] = this.topTableData.tableData[0]
       sendData['quotationId'] = this.partInfo.quotationId
       sendData['cbdLevel'] = this.allTableData.level
-      sendData['levelTwoSumVO'] = undefined
+      sendData['sumVO'] = undefined
       sendData['level'] = undefined
       return postCostSummary(this.translateDataForServerce(sendData)).then(res=>{
         if(res.code == 200){
@@ -303,8 +311,9 @@ export default{
           if(res.data){
             r(res.data)
             const data = await this.getBzfreeAndYunshuFree();
+            this.packAndShipFee = data
             this.allTableData = this.translateDataForRender(res.data)
-            this.topTableData = this.translateDataTopData(this.allTableData.levelTwoSumVO, data)
+            this.topTableData = this.translateDataTopData(this.allTableData.sumVO, data)
             this.$refs.components.partsQuotationss(this.partInfo.rfqId,this.allpagefrom.quotationId,this.partInfo.round,this.allTableData.level)
             this.findFiles()
           }
@@ -345,6 +354,27 @@ export default{
      })
     },
     /**
+     * @Description: 保存表格中的包装费，运输费，操作费
+     * @Author: Luoshuang
+     * @param {*}
+     * @return {*}
+     */    
+    saveBzfreeAndYunshuFree() {
+      const params = {
+        ...this.packAndShipFee,
+        packageCost: this.topTableData.packageCost,
+        transportCost: this.topTableData.transportCost,
+        operateCost: this.topTableData.operateCost,
+      }
+      return savePackageTransport(params).then(res => {
+        if (res && res.result) {
+          iMessage.success(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
+        } else {
+          iMessage.error(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
+        }
+      })
+    },
+    /**
      * @description: 转换后台数据新增字段 其中根据itemType来判断其他费用类型 如果是1 为分摊模具费，如果是0 则为 分摊的开发费
      * @param {*}
      * @return {*}
@@ -356,17 +386,18 @@ export default{
         }
         if(data['discardCost']){
           data['discardCost'].forEach(element => {
-            element['ztbfcb'] = "整体报废成本"
+            //element['ztbfcb'] = "整体报废成本"
+            element['ztbfcb'] = 'Scrap Cost'
           });
         }
         if(data['otherFee']){
           data['otherFee'].forEach(element => {
-            element['itemName'] = element['itemType']?"分摊的开发费":"分摊模具费"
+            element['itemName'] = element['itemType']?"Development Cost":"Tooling Cost"
           });
         }
         if(data['profit']){
           data['profit'].forEach(element => {
-            element['lr'] = "利润(不含SVW指定散件)"
+            element['lr'] = "Profit(SVW Specific excl.)"
           });
         }
         data['level'] = this.allTableData.level?this.allTableData.level:this.partInfo.currentCbdLevel
@@ -431,7 +462,11 @@ export default{
      * @return {*}
      */    
     save(){
-      return this.postCostSummary()
+      if (this.partInfo.partProjectType === 'PT17' || this.partInfo.partProjectType === 'PT18') {
+        return Promise.all(this.postCostSummary(), this.saveBzfreeAndYunshuFree())
+      } else {
+        return this.postCostSummary()
+      }
     }
     
   }

@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-22 15:49:47
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-05-25 17:15:24
+ * @LastEditTime: 2021-06-10 18:19:45
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\originAndCapacity\components\capacity.vue
 -->
@@ -91,7 +91,7 @@
 
 <script>
 import { iCard, iButton, iMessage, iDatePicker } from "rise"
-import tableList from "../../../components/tableList"
+import tableList from "../../tableList"
 import { capacityTableTitle as tableTitle } from "../components/data"
 import { getSupplierPlantCaps, saveSupplierPlantCap } from "@/api/rfqManageMent/quotationdetail"
 import filters from "@/utils/filters"
@@ -189,7 +189,7 @@ export default {
           partPrjCode: this.partInfo.fsNum,
           rfqId: this.partInfo.rfqId,
           round: this.partInfo.round,
-          supplierId: this.userInfo.supplierId,
+          // supplierId: this.userInfo.supplierId,
           userId: this.userInfo.id,
           quotationId: this.partInfo.quotationId,
           list: this.tableListData.map(item => ({
@@ -198,7 +198,7 @@ export default {
             partPrjCode: this.partInfo.fsNum,
             rfqId: this.partInfo.rfqId,
             round: this.partInfo.round,
-            supplierId: this.userInfo.supplierId,
+            // supplierId: this.userInfo.supplierId,
             userId: this.userInfo.id
           }))
         })

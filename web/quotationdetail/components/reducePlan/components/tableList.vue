@@ -11,17 +11,47 @@
                 <span>{{item.name}}</span>
             </p>
         </div>
-        <div :class="tableData.length>7 ? 'table-data flex scroll' : 'table-data flex'">
+        <div :class="tableData.length>5 ? 'table-data flex scroll' : 'table-data flex'">
             <div class="table-data-item"  v-for="(item,index) in tableData" :key="'newTableData_'+index">
                 <p v-for="(titleItem,titleIndex) in tableTitle" :key="'newTableitem_'+titleIndex">
                     <template v-if="reducePlanedit" >
-                        <iInput v-if="titleItem.type == 'iInput'" v-model="item[titleItem.key]"/>
+                        <iInput v-if="titleItem.type == 'iInput'" type="number" v-model="item[titleItem.key]" @input="val=>$emit('rateChange',val,titleIndex)"/>
                         <iDatePicker 
                         v-else-if="titleItem.type == 'iDatePicker'" 
                         v-model="item[titleItem.key]"
                         type="month"
-                        format="yyyy-MM" 
-                        value-format="yyyy-MM" 
+                        :clearable="false"
+                        :picker-options="{
+                            disabledDate(time) {
+                                // 不允许时间上有重复且后一时间必须晚于前一时间
+                                const pickerMonth = moment(time).get('month')+1;
+                                const pickerYear = moment(time).get('year');
+                                // 后一时间
+                                const afterTime = tableData[index+1] ? moment(tableData[index+1][titleItem.key]).unix()*1000 : null;
+                                // 前一时间
+                                const beforeTime = (index-1)>-1 ? moment(tableData[index-1][titleItem.key]).unix()*1000 : null;
+                                if(afterTime && beforeTime){
+                                    const beforeTimeList = tableData[index-1][titleItem.key].split('-');
+                                    if(pickerYear == beforeTimeList[0] && pickerMonth==beforeTimeList[1]){
+                                        return true;
+                                    }else{
+                                        return time.getTime() >= afterTime || time.getTime() <= beforeTime;
+                                    }
+                                }else if(afterTime){
+                                     return time.getTime() >= afterTime;
+                                }else if(beforeTime){
+                                    const beforeTimeList = tableData[index-1][titleItem.key].split('-');
+                                    if(pickerYear == beforeTimeList[0] && pickerMonth==beforeTimeList[1]){
+                                        return true;
+                                    }else{
+                                        return time.getTime() <= beforeTime;
+                                    }
+                                }else{
+                                    return false
+                                }
+                                
+                            },
+                        }"
                         />
                         <span v-else>{{item[titleItem.key]}}</span>
                     </template>
@@ -37,6 +67,7 @@ import {
     iInput,
     iDatePicker,
 } from 'rise';
+import moment from 'moment'
 export default {
     name:'newTableList',
     components:{
@@ -46,17 +77,22 @@ export default {
     props:{
         tableTitle:{
             type:Array,
-            default:[]
+            default:()=>[]
         },
         tableData:{
             type:Array,
-            default:[]
+            default:()=>[]
         },
         reducePlanedit:{
             type:Boolean,
             default:false
         }
 
+    },
+    data(){
+        return{
+            moment:moment,
+        }
     }
 }
 </script>
@@ -87,7 +123,7 @@ export default {
             }
             .table-data-item{
                 p{
-                    min-width: 160px;
+                    min-width: 170px;
                     text-align:center;
                     font-size: 14px;
                     height: 50px;

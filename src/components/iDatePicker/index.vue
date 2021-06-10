@@ -30,9 +30,6 @@ export default{
 			@include input_inner;
 		}
 	}
-  .el-date-editor .el-range__icon{
-    line-height: 2px;
-  }
  .el-range-editor.el-input__inner {
     width: auto;
     @include input_inner;
