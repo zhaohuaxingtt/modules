@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 15:20:44
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-05-28 11:09:52
+ * @LastEditTime: 2021-06-09 23:25:17
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\mouldOffer\components\moduleCost.vue
 -->
@@ -10,7 +10,7 @@
   <!---------------------------------------------------------------------------------------------->
   <!-------------------------------------新增动态class，title，collapse允许其他组件来重写------------->
   <!---------------------------------------------------------------------------------------------->
-  <iCard :class="{moduleCost:useCardSlot,moduleCost_web:!useCardSlot}" :title="useCardSlot?'':$t(titleKey)" :collapse='!useCardSlot'>
+  <iCard :class="{moduleCost:useCardSlot,moduleCost_web:!useCardSlot}" :title="useCardSlot?'':$t(titleKey)" :collapse='!useCardSlot' @handleCollapse='$emit("handleCollapse")'>
     <template #header v-if='useCardSlot'>
       <div class="header">
         <div>
@@ -146,8 +146,6 @@
 </template>
 
 <script>
-/* eslint-disable no-undef */
-
 import { iCard, iButton, iInput, iSelect, iMessage, iPagination } from "rise"
 import tableList from "../../quotationdetail/components/tableList"
 import { moduleCostTableTitle as tableTitle } from "./data"
