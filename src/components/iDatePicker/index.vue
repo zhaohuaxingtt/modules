@@ -17,8 +17,7 @@ export default{
 		valueFormat:{
 			type:String,
 			default:'yyyy-MM-dd HH:mm:ss'
-		},
-    type: String,
+		}
 	}
 }
 </script>
