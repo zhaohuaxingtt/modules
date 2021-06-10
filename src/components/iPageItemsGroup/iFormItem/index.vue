@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-03-01 17:17:17
- * @LastEditTime: 2021-04-21 21:41:02
+ * @LastEditTime: 2021-06-10 13:21:58
  * @LastEditors: Please set LastEditors
  * @Description: 为不同的宽度item做出UI还原
  * @FilePath: \rise\src\components\iFromItem\index.vue
@@ -55,6 +55,7 @@
  * @example ./README.me
 */
 	export default {
+		name:'FormItem',
 		extends: FormItem,
 	}
 </script>
