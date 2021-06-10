@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-22 14:24:22
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-05-25 17:13:44
+ * @LastEditTime: 2021-06-10 18:21:42
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\infoAndReq\components\bnkAttachmentByProject.vue
 -->
@@ -39,7 +39,7 @@
 
 <script>
 import { iCard, iButton, iPagination } from "rise"
-import tableList from "../../../components/tableList"
+import tableList from "../../tableList"
 import { attachmentTableTitle as tableTitle } from "./data"
 import { pageMixins } from "@/utils/pageMixins"
 import filters from "@/utils/filters"

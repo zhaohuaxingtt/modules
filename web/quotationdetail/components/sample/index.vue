@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 14:26:53
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-05-25 17:14:59
+ * @LastEditTime: 2021-06-10 18:20:47
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\sample\index.vue
 -->
@@ -36,7 +36,7 @@
 
 <script>
 import { iCard, iInput,iMessage } from "rise"
-import tableList from "../../components/tableList"
+import tableList from "../tableList"
 import { sampleTableTitle as tableTitle } from "./data"
 import { getToolingSample, saveToolingSample } from "@/api/rfqManageMent/quotationdetail"
 

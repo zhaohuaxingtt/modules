@@ -7,28 +7,34 @@
     <iCard class="reducePlan" v-loading="loading">
         <div class="header margin-bottom20">
             <span class="title">{{ $t('LK_JIANGJIAJIHUA') }}</span>
-            <!-----------配件报价的降价计划可以选择基于A价或B价，参数暂定，之后以实际接口返回为准---------------------------------------------->
-            <span v-if="partInfo.partType === '1'"  class="tip margin-left15">
+            <!-----------配件报价的降价计划可以选择基于A价或B价，---------------------------------------------->
+            <span v-if="partInfo.partProjectType === 'PT17'"  class="tip margin-left15">
                 <span class="margin-right15">计算基准：</span>
-                <el-radio-group v-model="computedBasic">
-                    <el-radio label="A">A价</el-radio>
-                    <el-radio label="B">B价</el-radio>
+                <el-radio-group v-model="computedBasic" @change="handleABChange">
+                    <el-radio label="01">A价</el-radio>
+                    <el-radio label="02">B价</el-radio>
                 </el-radio-group>
             </span>
-            <!-----------附件的降价计划只能基于B价，参数暂定，之后以实际接口返回为准---------------------------------------------->
-            <span v-else-if="partInfo.partType === '2'" class="tip margin-left10">降价计算以B价为准</span>
-            <!-------------正常流程FS零件------------------------------------------>
+            <!-----------附件的降价计划只能基于B价，---------------------------------------------->
+            <span v-else-if="partInfo.partProjectType === 'PT18'" class="tip margin-left10">降价计算以B价为准</span>
+            <!-------------正常流程FS零件只基于A价------------------------------------------>
             <span v-else class="tip margin-left10">降价计算以A价为准</span>
         </div>
-        <tableList :tableTitle="tableTitle" :tableData="tableData" :reducePlanedit="reducePlanedit"/>
+        <tableList :tableTitle="tableTitle" :tableData="tableData" :reducePlanedit="!disable" @rateChange="handleRateChange" />
     </iCard>
 </template>
 
 <script>
 import {
  iCard,
+ iMessage,
 }from 'rise';
 import tableList from './components/tableList';
+import { 
+    getLtcPlan,
+    saveLtcPlan,
+ } from '@/api/rfqManageMent/quotationdetail'
+import moment from 'moment'
 export default {
     name:'reducePlan',
     components:{
@@ -36,49 +42,137 @@ export default {
         iCard,
     },
     props:{
-        reducePlanedit:{
-            type:Boolean,
-            default:false,
-        },
         partInfo:{
             type:Object,
             default:()=>{
                 return {
-                    partType:'1',
+                    partProjectType:'',
                 }
             }
         },
-        disabled: {type: Boolean}
+        disabled: {type: Boolean},
+        aprice: 0,
+        bprice: 0
     },
     data(){
         return{
             loading:false,
             tableTitle:[
-                {key:'date',name:'年/月',type:'iDatePicker'},
-                {key:'extent',name:'降价幅度(%)',type:'iInput'},
-                {key:'reducePrice',name:'降价后价格'},
+                {key:'yearMonths',name:'年/月',type:'iDatePicker'},
+                {key:'priceReduceRate',name:'降价幅度(%)',type:'iInput'},
+                {key:'reducedPrice',name:'降价后价格'},
             ],
-            tableData:[
-                {date:'2023-01',extent:'0',reducePrice:'0.55'},
-                {date:'2022-01',extent:'0',reducePrice:'0.55'},
-                {date:'2021-01',extent:'0',reducePrice:'0.55'},
-                {date:'2021-01',extent:'0',reducePrice:'0.55'},
-                {date:'2021-01',extent:'0',reducePrice:'0.55'},
-                {date:'2021-01',extent:'0',reducePrice:'0.55'},
-            ],
-            computedBasic: 'A'
+            tableData:[],
+            computedBasic: '01',
         }                
     },
+    created(){
+        // this.init();
+    },
     methods: {
+        /**
+         * @Description: AB价切换时更新tableData
+         * @Author: Luoshuang
+         * @param {*}
+         * @return {*}
+         */        
+        handleABChange() {
+            if (this.computedBasic === '01' && this.aprice) {
+                iMessage.warn('A价不存在，无法根据A价计算降价后的价格')
+            }
+            if (this.computedBasic === '02' && this.bprice) {
+                iMessage.warn('B价不存在，无法根据B价计算降价后的价格')
+            }
+            this.tableData = this.computeReducePrice(this.computedBasic === '01' ? this.aprice : this.bprice, this.tableData)
+        },
+        /**
+         * @Description: 计算降价后的价格
+         * @Author: Luoshuang
+         * @param {*} basicPrice 降价基础价格,A价或B价
+         * @param {*} priceList 降价list
+         * @return {*}
+         */        
+        computeReducePrice(basicPrice, priceList) {
+            return priceList.reduce((accum, item, index) => {
+                console.log(accum)
+                    if (!basicPrice) {
+                        return [...accum, item]
+                    }
+                    return [...accum, {
+                        ...item,
+                        reducedPrice: index === 0 ? (basicPrice * (1 - item.priceReduceRate / 100)).toFixed(4) : (accum[index - 1].reducedPrice * (1 - item.priceReduceRate / 100)).toFixed(4)
+                    }]
+                },[])
+        },
+        /**
+         * @Description: 降价幅度变化时
+         * @Author: Luoshuang
+         * @param {*} val 降价幅度
+         * @param {*} index 降价幅度对应的index
+         * @return {*}
+         */        
+        handleRateChange() {
+            this.tableData = this.computeReducePrice(this.computedBasic === '01' ? this.aprice : this.bprice, this.tableData)
+        },
         /**
          * @Description: 页面初始化函数，每次tab页切换到当前页面时会调用
          * @Author: Luoshuang
          * @param {*}
          * @return {*}
          */        
-        init() {
+        async init() {
+            // 258869949
+            //this.partInfo.quotationId
+            this.loading = true
+            const res = await getLtcPlan(this.partInfo.quotationId)
+            if (res?.result) {
+                if (!res.data.priceType) {
+                    // 如果返回结果没有priceType，则配件默认为A价
+                    this.computedBasic = this.partInfo.partProjectType === 'PT17' ? '01' : this.partInfo.partProjectType === 'PT18' ? '02' : '01'
+                } else {
+                    this.computedBasic = res.data.priceType
+                }
+                this.aprice = res.data.aprice || 0
+                this.bprice = res.data.bprice || 0
+                if (this.computedBasic === '01' && !res.data.aprice) {
+                    iMessage.warn('A价不存在，无法根据A价计算降价后的价格')
+                }
+                if (this.computedBasic === '02' && !res.data.bprice) {
+                    iMessage.warn('B价不存在，无法根据B价计算降价后的价格')
+                }
+                this.tableData = this.computeReducePrice(this.computedBasic === '01' ? this.aprice : this.bprice, res.data.pricePlanInfoVOS)
+            } else {
+                iMessage.error(this.$i18n.locale === "zh" ? res?.desZh : res?.desEn)
+            }
+            this.loading = false   
+        },
+        // 保存
+        save(){
+            const { computedBasic,tableData,partInfo } = this;
+            const {quotationId} = partInfo; // 258869949
+            const data = {
+                priceType:computedBasic,
+                quotationId,
+                priceReducePlanInfoList:tableData.map(item => {
+                    return {
+                        ...item,
+                        yearMonths: moment(item.yearMonths)
+                    }
+                })
+            }
+            this.loading = true
+            saveLtcPlan(data).then((res)=>{
+                if(res?.result){
+                    iMessage.success(this.$i18n.locale === "zh" ? res?.desZh : res?.desEn)
+                    this.init()
+                }else{
+                    iMessage.error(this.$i18n.locale === "zh" ? res?.desZh : res?.desEn)
+                }
 
-        }
+            }).finally(() => {
+                this.loading = false
+            })
+        },
     }
 }
 </script>

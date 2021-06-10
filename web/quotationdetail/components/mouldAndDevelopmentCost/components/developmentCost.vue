@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 00:21:17
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-05-25 17:11:51
+ * @LastEditTime: 2021-06-10 18:19:20
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\developmentCost.vue
 -->
@@ -66,10 +66,11 @@
 <script>
 /* eslint-disable no-undef */
 import { iCard, iButton, iFormGroup, iFormItem, iInput, iSelect, iText, iMessage } from "rise"
-import tableList from "../../../components/tableList"
-import { developmentCostInfos, developmentCostTableTitle as tableTitle, decimalProcessor, statesFilter, intgerProcessor } from "./data"
+import tableList from "../../tableList"
+import { developmentCostInfos, developmentCostTableTitle as tableTitle, statesFilter } from "./data"
 import { cloneDeep } from "lodash"
 import { getDevFee } from "@/api/rfqManageMent/quotationdetail"
+import { numberProcessor } from "@/utils"
 
 export default {
   components: {
@@ -147,7 +148,7 @@ export default {
       this.updateTotal()
     },
     handleInputByUnitPrice(val, row) {
-      row.unitPrice = decimalProcessor(val, 4)
+      row.unitPrice = numberProcessor(val, 4)
 
       row.total = math.multiply(
         math.bignumber(row.unitPrice || 0),
@@ -157,7 +158,7 @@ export default {
       this.updateTotal()
     },
     handleInputByQuantity(val, row) {
-      row.quantity = decimalProcessor(val, 2)
+      row.quantity = numberProcessor(val, 2)
 
       row.total = math.multiply(
         math.bignumber(row.unitPrice || 0),
@@ -167,7 +168,7 @@ export default {
       this.updateTotal()
     },
     handleInputByShareQuantity(val) {
-      this.dataGroup.shareQuantity = intgerProcessor(val)
+      this.dataGroup.shareQuantity = numberProcessor(val, 0)
 
       this.updateTotal()
     },

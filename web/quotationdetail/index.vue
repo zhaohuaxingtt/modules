@@ -1,8 +1,8 @@
 <!--
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-05-28 16:43:21
+ * @LastEditors: ldh
+ * @LastEditTime: 2021-06-10 14:29:36
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\index.vue
 -->
@@ -21,21 +21,17 @@
             <icon v-if="part.isSubmited" class="icon" symbol name="iconxialakuang_qiehuanlingjian_yiwancheng" />
           </div>
         </el-option>
-      </iSelect>
+      </iSelect> 
       <div class="floatright">
+        
+        <iButton v-if="!forceDisabled && disabled" @click="handleAgentQutation">{{ $t("LK_DAIGONGYINGSHANGBAOJIA") }}</iButton>
+        <iButton v-if="!forceDisabled && !disabled" @click="handleCancelQutation">{{ $t("LK_QUXIAO") }}</iButton>
+        <iButton v-if="!isQuoteBatchPrice" :loading="quoteBatchPriceLoading" @click="handleQuoteBatchPrice">{{ $t("LK_YINYONGPILIANGJIAGE") }}</iButton>
+        <iButton v-if="isQuoteBatchPrice" :loading="cancelQuoteBatchPriceLoading" @click="handleCancelBatchPrice">{{ $t("LK_QUXIAOPILIANGJIAGE") }}</iButton>
         <iButton @click="handleSave" v-if="currentTab != 'infoAndReq' && !disabled" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
-        <iButton @click="handleSubmit" v-if="!disabled" :loading="submitLoading">{{ $t('LK_TIJIAO') }}</iButton>
+        <iButton @click="handleSubmit" v-if="!disabled && !partInfo.isOriginprice" :loading="submitLoading">{{ $t('LK_TIJIAO') }}</iButton>
 
-        <!-- 降价计划tab页面按钮 -->
-        <template  v-if="currentTab=='reducePlan'">
-          <iButton v-if="!reducePlanedit" @click="changeReduceStatus">代供应商报价</iButton>
-          <span v-else>
-            <iButton @click="changeReduceStatus">{{$t('LK_QUXIAO')}}</iButton>
-            <iButton  @click="handleSave" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
-          </span>
-          <iButton>{{$t('LK_TIJIAO')}}</iButton>
-        </template>
-
+        
         <logButton class="margin-left20" @click="log" />
         <span class="margin-left20">
 					<icon symbol name="icondatabaseweixuanzhong" class="font18"></icon>
@@ -57,8 +53,8 @@
     </iCard>
     <div v-loading="tabLoading">
       <iTabsList class="margin-top20" type="border-card" v-model="currentTab" :before-leave="tabLeaveBefore" @tab-click="tabChange">
-        <el-tab-pane v-for="(tab, $tabIndex) in tabs" :key="$tabIndex" :label="$t(tab.key)" :name="tab.name">
-          <component :ref="tab.name" :is="component" :partInfo="partInfo" v-for="(component, $componentIndex) in tab.components" :class="$componentIndex !== 0 ? 'margin-top20' : ''" :key="$componentIndex" :disabled="disabled" />
+        <el-tab-pane v-for="(tab, $tabIndex) in trueTabs" :key="$tabIndex" :label="$t(tab.key)" :name="tab.name">
+          <component :ref="tab.name" :is="component" :partInfo="partInfo" v-for="(component, $componentIndex) in tab.components" :class="$componentIndex !== 0 ? 'margin-top20' : ''" :key="$componentIndex" :disabled="disabled || partInfo.isOriginprice" @changeReduceStatus="changeReduceStatus"/>
         </el-tab-pane>
       </iTabsList>
     </div>
@@ -77,8 +73,10 @@ import sample from "./components/sample"
 import filters from "@/utils/filters"
 import packAndShip from "./components/packAndShip"
 import reducePlan from "./components/reducePlan"
+import sampleDeliveryProgress from './components/sampleDeliveryProgress'
+import remarksAndAttachment from './components/remarksAndAttachment'
 
-import { getPartsQuotations, getStates, submitPartsQuotation } from "@/api/rfqManageMent/quotationdetail"
+import { getPartsQuotations, getStates, submitPartsQuotation, quoteBatchPrice, cancelQuoteBatchPrice } from "@/api/rfqManageMent/quotationdetail"
 import { cloneDeep } from "lodash"
 
 export default {
@@ -100,6 +98,8 @@ export default {
     packAndShip,
     costsummary,
     reducePlan,
+    sampleDeliveryProgress,
+    remarksAndAttachment
   },
   mixins: [ filters ],
   data() {
@@ -115,10 +115,10 @@ export default {
         { label: "供应商生产地及生产能力", name: "originAndCapacity", key: "LK_GONGYINGSHANGSHENGCHANDIJISHENGCHANNENGLI", components: [ "originAndCapacity" ] },
         { label: "模具和开发费用", name: "mouldAndDevelopmentCost", key: "LK_MUJUHEKAIFAFEIYONG", components: [ "mouldAndDevelopmentCost" ] },
         { label: "包装运输", name: "packAndShip", key: "LK_BAOZHUANGYUNSHU", components: [ "packAndShip" ] },
-        { label: "降价计划", key: "LK_JIANGJIAJIHUA", components: ["reducePlan"] },
-        // { label: "送样进度", key: "LK_SONGYANGJINDU", components: [] },
+        { label: "降价计划",name:'reducePlan', key: "LK_JIANGJIAJIHUA", components: ["reducePlan"] },
+        { label: "送样进度", name: 'sampleDeliveryProgress', key: "LK_SONGYANGJINDU", components: ['sampleDeliveryProgress'] },
         { label: "工装样件", name: "sample", key: "LK_GONGZHUANGYANGJIAN", components: [ "sample" ] },
-        // { label: "报价备注与附件", key: "LK_BAOJIABEIZHUYUFUJIAN", components: [] }
+        { label: "报价备注与附件", name: 'remarksAndAttachment', key: "LK_BAOJIABEIZHUYUFUJIAN", components: ["remarksAndAttachment"] }
       ],
 
       partInfoLoading: false,
@@ -128,8 +128,11 @@ export default {
       submitLoading: false,
       tabLoading: false,
       disabled: true,
+      forceDisabled: true,
       saveStatus: false,
-      reducePlanedit:false, // 降价计划是否可编辑
+      isQuoteBatchPrice: false,
+      quoteBatchPriceLoading: false,
+      cancelQuoteBatchPriceLoading: false,
     }
   },
   provide: function () {
@@ -142,11 +145,20 @@ export default {
     ...Vuex.mapState({
       userInfo: state => state.permission.userInfo,
     }),
+    trueTabs() {
+      // Sprint10新增：供应商配件与附件的包装运输页面移除，报价成本汇总页面能够直接填写[原材料/散件成本][制造成本][报废成本][管理费][利润][包装费][运输费][操作费]，起步生产日期不做默认值，L2层级的[包装费][运输费][操作费]也是直接填写
+      // 零件类型字段还未知，根据接口实际返回为准
+      return this.tabs.filter(item => this.partInfo.partProjectType === 'PT17' || this.partInfo.partProjectType === 'PT18' ? item.name !== 'packAndShip' : item)
+    }
   },
   created() {
+    if (this.$route.query.agentQutation) {
+      this.disabled = true
+    }
+
     this.partNum = this.$route.query.partNum
     this.fsNum = this.$route.query.fsNum
-    this.getPartsQuotations()
+    this.getPartsQuotations();
   },
   methods: {
     log() {},
@@ -179,7 +191,6 @@ export default {
 
           this.getStates()
 
-
           if (type != "save") {
             this.$nextTick(() => {
               // this.tabs.forEach(tab => {
@@ -196,6 +207,7 @@ export default {
           this.parts = []
           this.partInfo = {}
           this.disabled = true
+          this.forceDisabled = true
         }
 
         this.partInfoLoading = false
@@ -205,6 +217,7 @@ export default {
         this.partInfo = {}
         this.partInfoLoading = false
         this.disabled = true
+        this.forceDisabled = true
       })
     },
     getStates() {
@@ -222,7 +235,10 @@ export default {
           let rfqRoundStateDisabled = res.data.rfqRoundStateCode != "01"
           let roundDisabled = +this.partInfo.round != +res.data.currentRounds
           this.disabled = fsStateDisabled || rfqStateDisabled || quotationStateDisabled || rfqRoundStateDisabled || roundDisabled
-
+          if (this.$route.query.agentQutation) {
+            this.forceDisabled = false
+            this.disabled = true
+          }
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
         }
@@ -248,6 +264,7 @@ export default {
     handlePartChange(partNum) {
       const part = this.parts.filter(item => item.value === partNum)[0]
       this.partInfo = cloneDeep(part)
+      this.partNum = partNum
       
       this.$nextTick(() => {
         // this.tabs.forEach(tab => {
@@ -307,14 +324,61 @@ export default {
     updateCbdLevel(val) {
       this.$set(this.partInfo, "currentCbdLevel", val)
     },
-
-     // 降价计划改变状态
-    changeReduceStatus(){
-      const {reducePlanedit} = this;
-      this.reducePlanedit = !reducePlanedit;
-      // const component = this.$refs[this.currentTab][0];
-      // console.log(component);
+    // 代供应商报价
+    handleAgentQutation() {
+      if (this.forceDisabled) return
+      this.disabled = false
     },
+    // 取消代供应商报价
+    handleCancelQutation() {
+      if (this.forceDisabled) return
+      this.disabled = true
+    },
+    // 引用批量价格
+    handleQuoteBatchPrice() {
+      this.quoteBatchPriceLoading = true
+
+      quoteBatchPrice({
+        partNum: this.partNum,
+        quotationId: this.partInfo.quotationId
+      })
+      .then(res => {
+        const message = this.$i18n.locale === "zh" ? res.desZh : res.desEn
+
+        if (res.code == 200) {
+          iMessage.success(message)
+          this.isQuoteBatchPrice = true
+          this.getPartsQuotations()
+        } else {
+          iMessage.error(message)
+        }
+
+        this.quoteBatchPriceLoading = false
+      })
+      .catch(() => this.quoteBatchPriceLoading = false)
+    },
+    // 取消引用批量价格
+    handleCancelBatchPrice() {
+      this.cancelQuoteBatchPriceLoading = true
+
+      cancelQuoteBatchPrice({
+        quotationId: this.partInfo.quotationId
+      })
+      .then(res => {
+        const message = this.$i18n.locale === "zh" ? res.desZh : res.desEn
+
+        if (res.code == 200) {
+          iMessage.success(message)
+          this.isQuoteBatchPrice = false
+          this.getPartsQuotations()
+        } else {
+          iMessage.error(message)
+        }
+
+        this.cancelQuoteBatchPriceLoading = false
+      })
+      .catch(() => this.cancelQuoteBatchPriceLoading = false)
+    }
   }
 };
 </script>

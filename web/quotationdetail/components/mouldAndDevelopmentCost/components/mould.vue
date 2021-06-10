@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 00:21:08
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-05-25 17:15:56
+ * @LastEditTime: 2021-06-10 18:19:05
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\mould.vue
 -->
@@ -99,11 +99,12 @@
 <script>
 /* eslint-disable no-undef */
 import { iCard, iButton, iFormGroup, iFormItem, iInput, iSelect, iText, iMessage } from "rise"
-import tableList from "../../../components/tableList"
-import { mouldCostInfos, mouldTableTitle as tableTitle, decimalProcessor, assetTypeCodeOptions, intgerProcessor, statesFilter } from "./data"
+import tableList from "../../tableList"
+import { mouldCostInfos, mouldTableTitle as tableTitle, assetTypeCodeOptions, statesFilter } from "./data"
 import { cloneDeep } from "lodash"
 import relatingParts from '../../relatingParts'
 import { cbdDownloadFile, uploadModuleCbd, getMouldFee } from "@/api/rfqManageMent/quotationdetail"
+import { numberProcessor } from "@/utils"
 
 export default {
   components: {
@@ -268,10 +269,10 @@ export default {
       this.relatingPartsVisible = visible
     },
     handleInputByModeTotalLife(val, row) {
-      row.modeTotalLife = intgerProcessor(val)
+      row.modeTotalLife = numberProcessor(val, 0)
     },
     handleInputByQuantity(val, row) {
-      row.quantity = intgerProcessor(val)
+      row.quantity = numberProcessor(val, 0)
       
       row.totalPrice = math.multiply(
         math.bignumber(row.quantity || 0),
@@ -281,7 +282,7 @@ export default {
       this.updateTotal()
     },
     handleInputByAssetUnitPrice(val, row) {
-      row.assetUnitPrice = decimalProcessor(val, 4)
+      row.assetUnitPrice = numberProcessor(val, 4)
 
       row.totalPrice = math.multiply(
         math.bignumber(row.quantity || 0),
@@ -291,7 +292,7 @@ export default {
       this.updateTotal()
     },
     handleInputByShareQuantity(val) {
-      this.dataGroup.shareQuantity = intgerProcessor(val)
+      this.dataGroup.shareQuantity = numberProcessor(val, 0)
 
       this.updateTotal()
     },

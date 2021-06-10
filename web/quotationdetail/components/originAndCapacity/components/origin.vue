@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-22 15:11:58
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-05-25 17:15:14
+ * @LastEditTime: 2021-06-10 18:19:52
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\originAndCapacity\components\origin.vue
 -->
@@ -30,7 +30,7 @@
 <script>
 import { iCard, iButton, iMessage } from "rise"
 import originDialog from "./originDialog"
-import tableList from "../../../components/tableList"
+import tableList from "../../tableList"
 import { originTableTitle as tableTitle } from "./data"
 import { getSupplierPartLocation, saveSupplierPartAddLocation } from "@/api/rfqManageMent/quotationdetail"
 import filters from "@/utils/filters";

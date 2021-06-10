@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-22 12:18:17
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-05-25 17:16:46
+ * @LastEditTime: 2021-06-10 18:18:00
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\infoAndReq\components\aggregate\components\outputPlan.vue
 -->
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import tableList from "../../../../../components/tableList"
+import tableList from "../../../../tableList"
 import { outputPlanTableTitle as tableTitle } from "../../data"
 import filters from "@/utils/filters"
 
