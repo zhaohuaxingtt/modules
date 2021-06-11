@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 09:16:55
  * @LastEditors: ldh
- * @LastEditTime: 2021-05-12 19:35:37
+ * @LastEditTime: 2021-06-08 19:45:41
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\data.js
  */
@@ -54,25 +54,6 @@ export const developmentCostTableTitle = [
   { props: "total", name: "总金额", tooltip: true, key: "LK_ZONGJINE" },
   { props: 'isShared', name: '是否分摊', width: 110, tooltip: true, key: "LK_SHIFOUFENTAN" }
 ]
-
-export const decimalProcessor = function(val, precision) {
-  const result = (val + "").replace(/[^\d.]/g, "")
-    .replace(/^\.*/g, "")
-    .replace(".", "$#$")
-    .replace(/\./g, "")
-    .replace("$#$", ".")
-    .replace(/^0+([0-9].*)/, "$1")
-    .replace(new RegExp(`^(.+\\.\\d{0,${ precision || 2 }})\\d*$`), "$1")
-  
-  return result
-}
-
-export const intgerProcessor = function(val) {
-  const result = (val + "").replace(/\D/g, "")
-  .replace(/^0+([0-9])/, "$1")
-  
-  return result
-}
 
 export const statesFilter = function(val) {
   const map = {

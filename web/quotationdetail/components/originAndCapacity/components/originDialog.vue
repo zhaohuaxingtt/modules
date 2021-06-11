@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-28 19:12:06
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-05-25 17:15:31
+ * @LastEditTime: 2021-06-10 18:20:02
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\originAndCapacity\components\originDialog.vue
 -->
@@ -37,7 +37,7 @@
 
 <script>
 import { iDialog, iButton, iMessage } from "rise"
-import tableList from "../../../components/tableList"
+import tableList from "../../tableList"
 import { originDialogTableTitle as tableTitle } from "./data"
 import { getSupplierInfo } from "@/api/rfqManageMent/quotationdetail"
 

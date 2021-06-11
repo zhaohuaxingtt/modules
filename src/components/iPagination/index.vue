@@ -1,7 +1,15 @@
 <template>
   <div class="i-pagination clearFloat">
     <p class="page-info" v-if="showPageInfo">{{ $t('LK_XIANSHI') }}<span class="item">{{ total > 0 ? (currentPage - 1) * pageSize + 1 : 0 }}</span>{{ $t('LK_TIAODI') }}<span class="item">{{ total > 0 ? (currentPage * pageSize > total ? (currentPage * pageSize - (currentPage * pageSize - total)) : currentPage * pageSize) : 0 }}</span>{{ $t('LK_TIAOJILU') }}，{{ $t('LK_GONG') }}<span class="item">{{ $props.total }}</span>{{ $t('LK_TIAOJILU') }}</p>
-    <el-pagination class="pagination" v-bind="$props" v-on="$listeners">
+    <el-pagination 
+      class="pagination" 
+      v-bind="$props" 
+      v-on="$listeners" 
+      :current-page="currentPageNum" 
+      :page-size="pageSizeNum"
+      :total="totalNum"
+      :page-count="pageCountNum"
+      :pager-count="pagerCountNum">
       <slot></slot>
     </el-pagination>
   </div>
@@ -17,6 +25,23 @@ export default {
   props: {
     ...Pagination.props,
     showPageInfo: { type: Boolean, default: true }
+  },
+  computed: {
+    currentPageNum() {
+      return +this.currentPage
+    },
+    pageSizeNum() {
+      return +this.pageSize
+    },
+    totalNum() {
+      return +this.total
+    },
+    pageCountNum() {
+      return +this.pageCount
+    },
+    pagerCountNum() {
+      return +this.pagerCount
+    }
   }
 }
 </script>

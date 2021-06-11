@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-23 15:38:31
- * @LastEditTime: 2021-05-26 11:38:11
+ * @LastEditTime: 2021-06-08 20:47:55
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\costsummary\components\timeAndlevTabel.vue
@@ -12,8 +12,8 @@
     <!----------------------搜索区域  -------------------------->
     <!--------------------------------------------------------->        
     <iFormGroup row='4' class="tscss">
-      <i-form-item :label="$('LK_COPE_BAOJIA')" v-if='!disabled'>
-        <iSelect v-model="selectedList" multiple collapse-tags @visible-change='changeDataCope'>
+      <i-form-item :label="$t('LK_COPE_BAOJIA')" v-if='!disabled'>
+        <iSelect :placeholder='$t("partsprocure.CHOOSE")' v-model="selectedList" multiple collapse-tags @visible-change='changeDataCope'>
           <el-option v-for="items in selectList" :key='items.fsNum' :value='items.fsNum' :label="`${ items.partNum }_${ items.fsNum }`"></el-option>
         </iSelect>
       </i-form-item>
@@ -82,6 +82,14 @@ export default{
     cbdlist:{
       type:Array,
       default:()=> []
+    },
+    partType: {
+      type: String,
+      default: '3'
+    },
+    partProjectType:{
+      type:String,
+      default:'',
     }
   },
   inject:['vm'],
@@ -113,7 +121,7 @@ export default{
      * @return {*}
      */    
     translateTableTileData(lev){
-      this.tableTilel1 = tableTilel1Fn(lev)
+      this.tableTilel1 = tableTilel1Fn(lev, this.partType,this.partProjectType)
     },
     /**
      * @description: 1.变换cbd层级。变换界面展示，影响界面：L1 除了汇总，只留cbd。 L2 替换表头展示的2.x L3:暂时没提供模板。

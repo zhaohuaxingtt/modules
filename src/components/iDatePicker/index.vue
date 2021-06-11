@@ -29,4 +29,18 @@ export default{
 			@include input_inner;
 		}
 	}
+ .el-range-editor.el-input__inner {
+    width: auto;
+    @include input_inner;
+  } 
+  .el-range-editor .el-range-input {
+    width: 40%;
+  }
+  .el-date-editor .el-range-separator {
+    line-height: 22px;
+    width: 10%;
+  }
+  .el-date-editor .el-range__close-icon {
+    display: none;
+  }
 </style>

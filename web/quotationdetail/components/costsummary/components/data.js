@@ -1,15 +1,15 @@
 /*
  * @Author: your name
  * @Date: 2021-04-23 15:34:54
- * @LastEditTime: 2021-05-26 16:22:43
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-06-09 15:04:00
+ * @LastEditors: Luoshuang
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\costsummary\components\data.js
  */
 
 import {_getMathNumber} from '@/utils'
 
-export function tableTilel1Fn(level){
+export function tableTilel1Fn(level, partType,partProjectType){
   return [
     {props:'materialSummary',name:`${level}.1`,key: 'LK_YUANCRMBPC',tooltip:true,width:'150',type:'input'},
     {props:'productionSummary',name:`${level}.2`,key: 'LK_ZHIZHAOCB',tooltip:false,width:'',type:'input'},
@@ -18,9 +18,15 @@ export function tableTilel1Fn(level){
     {props:'otherSummary',name:`${level}.5`,key: 'LK_QITAFEIYONG',tooltip:false,width:'' },
     {props:'profitSummary',name:`${level}.6`,key: 'LK_LIRUN',tooltip:false,width:'',type:'input'},
     {props:'totalPrice',name:'A价',key: 'LK_AJIA',tooltip:false,width:'' },
-    {props:'packageCost',name:'包装费',key: 'LK_BAOZHUANGFEI',tooltip:false,width:'' },
-    {props:'transportCost',name:'运输费',key: 'LK_YUNSHUFEI',tooltip:false,width:'' },
-    {props:'operateCost',name:'操作费',key: 'LK_CAOZUOFEI',tooltip:false,width:'' },
+    // 若某一零件的零件类型为[加工装配费]，我可以看到汇总表头上多显示两列：[LC件管理费率][CKD件管理费率]
+    ...(partType === 'S' ? [
+      {props:'lcManageRate',name:'LC件管理费率',key: 'LK_LCJIANGUANLIFEILV',tooltip:false,width:'',type:'input' },
+      {props:'ckdManageRate',name:'CKD件管理费率',key: 'LK_CKDJIANGUANLIFEILV',tooltip:false,width:'',type:'input' },
+    ] : []),
+    // 供应商配件与附件的包装运输页面移除，报价成本汇总页面能够直接填写[原材料/散件成本][制造成本][报废成本][管理费][利润][包装费][运输费][操作费]，
+    {props:'packageCost',name:'包装费',key: 'LK_BAOZHUANGFEI',tooltip:false,width:'',type: partProjectType === 'PT17' || partProjectType === 'PT18' ? 'input': '' },
+    {props:'transportCost',name:'运输费',key: 'LK_YUNSHUFEI',tooltip:false,width:'',type: partProjectType === 'PT17' || partProjectType === 'PT18' ? 'input': '' },
+    {props:'operateCost',name:'操作费',key: 'LK_CAOZUOFEI',tooltip:false,width:'',type: partProjectType === 'PT17' || partProjectType === 'PT18' ? 'input': '' },
     {props:'totalPriceBprice',name:'B价',key: 'LK_BJIA',tooltip:false,width:'' },
   ]
 }
@@ -122,10 +128,7 @@ export const isorno = [
  * @return {*}
  */
 export const titleYcl = (productionCountryList = []) => [
-  {props:'',name:'原材料/散件',key: 'LK_YUANCLSJ',tooltip:true,width:'',list:[
-    {props:'index',name:'#',key: '',tooltip:false,width:'50'},
-    {props:'partName',name:'类型',key: 'LK_LEIXING',tooltip:true,width:'',type:'input'}
-  ] },
+  {props:'partName',name:'类型',key: 'LK_LEIXING',tooltip:true,width:'',type:'input'},
   {props:'partNumber',name:'原材料/散件描述',key: 'LK_YUANCLSJMS',tooltip:true,width:'150',type:'input' },
   {props:'supplierName',name:'供应商名称',key: 'LK_GONGYINGSHANGMINGCHENG',tooltip:true,width:'',type:'input' },
   {props:'productionCountry',name:'原产国',key: 'LK_YUANCHANDI',tooltip:true,width:'',type:'select',options:productionCountryList },
@@ -139,7 +142,7 @@ export const titleYcl = (productionCountryList = []) => [
     {props:'materialManageCost',name:'(RMB/Pc.)',key: '',tooltip:true,width:''}
 
   ]},
-  {props:'materialCost',name:'原材料/散件成本（RMB/Pc.）',key: '',tooltip:true,width:'200' },
+  {props:'materialCost',name:'原材料/散件成本（RMB/Pc.）',key: 'LK_YUANCRMBPC',tooltip:true,width:'200' },
 ]
 
 /**
@@ -148,11 +151,7 @@ export const titleYcl = (productionCountryList = []) => [
  * @return {*}
  */
 export const titleCbzz = [
-  {props:'',name:'制造成本',key: 'LK_ZHIZHAOCB',tooltip:false,width:'' ,list:[
-    {props:'index',name:'#',key: '',tooltip:false,width:'50'},
-    {props:'manufacturingMethod',name:'制造工序',key: 'LK_ZHIZAOGONGXU',tooltip:true,width:'',type:'input'}
-
-  ]},
+  {props:'manufacturingMethod',name:'制造工序',key: 'LK_ZHIZAOGONGXU',tooltip:true,width:'',type:'input'},
   {props:'material',name:'对应原材料/散件（Ref.-ID）',key: 'LK_DUIYINGYUANCAILIAOSANJIAN',tooltip:true,width:'200',type:'input' },
   {props:'machineName',name:'设备名称/型号（Ref.-Name）',key: 'LK_SHEBEIMINGCHENGXINGHAO',tooltip:true,width:'200',type:'input' },
   {props:'specialDeviceCost',name:'上汽大众专用设备费（RMB）',key: 'LK_SHANGQIDAZHONGZHUANYONGSHEBEIFEI',tooltip:true,width:'200',type:'input' },
@@ -279,3 +278,31 @@ export function getPersent(total,listData,data) {
     console.warn(error)
   }
 }
+
+/**
+ * @description: L3原材料/散件成本
+ * @param {*}
+ * @return {*}
+ */
+//  export const titleYclByL3= 
+// //  (productionCountryList = []) => 
+//  [
+//   {props:'partName',name:'类型',key: 'LK_LEIXING',tooltip:true,width:'',type:'input'},
+//   {props:'partNumber',name:'原材料/散件描述',key: 'LK_YUANCLSJMS',tooltip:true,width:'150',type:'input' },
+//   {props:'tradeName',name:'Trade name',key: 'LK_TRADENAME',tooltip:true,width:'130',type:'input' },
+//   {props:'supplierName',name:'供应商名称',key: 'LK_GONGYINGSHANGMINGCHENG',tooltip:true,width:'120',type:'input' },
+//   {props:'productionCountry',name:'原产国',key: 'LK_YUANCHANDI',tooltip:true,width:'90',type:'select'},
+//   {props:'isSvwAssignPriceParts',name:'是否SVW指定价格散件',key: 'LK_SHIFOUSVWZHIDINGJIAGE',tooltip:true,width:'200',type:'select',options:isorno, labelClassName: '' },
+  
+  
+//   {props:'quantityUnit',name:'数量单位（UoM）',key: 'LK_SHULIANGDANWEI',tooltip:true,width:'150',type:'input' },
+//   {props:'unitPrice',name:'单价（RMB/UoM）',key: 'LK_DANJIARMB',tooltip:true,width:'150',type:'input' },
+//   {props:'quantity',name:'数量',key: 'LK_SHULIANG',tooltip:true,width:'',type:'input' },
+//   {props:'indirectMaterialCost',name:'直接原材料/散件成本（RMB/Pc.）',key: 'LK_ZHIJIEYUANCAILIAOSANJIANCHENGBEN',tooltip:true,width:'250' },
+//   {props:'tpPartID',name:'物料管理费',key: 'LK_WULAOGLF',tooltip:true,width:'' ,list:[
+//     {props:'materialManageCostRate',name:'(%)',key: '',tooltip:true,width:'100',type:'input'},
+//     {props:'materialManageCost',name:'(RMB/Pc.)',key: '',tooltip:true,width:''}
+
+//   ]},
+//   {props:'materialCost',name:'原材料/散件成本（RMB/Pc.）',key: 'LK_YUANCRMBPC',tooltip:true,width:'200' },
+// ]
