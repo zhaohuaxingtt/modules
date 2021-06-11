@@ -1,53 +1,59 @@
 <template>
-  <el-table
-    tooltip-effect="light"
-    :height="height"
-    :data="realTableData"
-    v-loading="loading"
-    row-key="uniqueId"
-    @selection-change="handleSelectionChange"
-    @cell-click="handleCellClick"
-    :empty-text="$t('LK_ZANWUSHUJU')"
-    ref="theCustomTable"
-  >
-    <template v-for="(item, index) in columns">
-      <el-table-column
-        :key="index"
-        v-if="['selection', 'index'].includes(item.type)"
-        :type="item.type"
-        :label="item.i18n ? $t(item.i18n) : item.label"
-        :width="item.width || 50"
-        align="center"
-      />
-      <el-table-column
-        v-else
-        :key="index"
-        :type="item.type"
-        :align="item.align || 'center'"
-        :header-align="item.headerAlign"
-        :show-overflow-tooltip="item.tooltip"
-        :prop="item.prop"
-        :label="item.i18n ? $t(item.i18n) : item.label"
-        :width="item.width ? item.width.toString() : 'auto'"
-      >
-        <template slot-scope="scope">
-          <div @click="handleEmit(item, scope.row)">
-            <i-table-column
-              v-if="item.customRender || item.type === 'expanded'"
-              :scope="scope"
-              :column="item"
-              :custom-render="item.customRender"
-              :extra-data="extraData"
-              :prop="item.prop"
-            />
-            <span v-else>
-              {{ scope.row[item.prop] }}
-            </span>
-          </div>
-        </template>
-      </el-table-column>
-    </template>
-  </el-table>
+  <div class="i-table-custom">
+    <el-table
+      tooltip-effect="light"
+      :height="height"
+      :data="realTableData"
+      v-loading="loading"
+      row-key="uniqueId"
+      @selection-change="handleSelectionChange"
+      highlight-current-row
+      @current-change="handleCurrentChange"
+      @cell-click="handleCellClick"
+      :empty-text="$t('LK_ZANWUSHUJU')"
+      ref="theCustomTable"
+      :row-class-name="getRowClassName"
+    >
+      <template v-for="(item, index) in columns">
+        <el-table-column
+          :key="index"
+          v-if="['selection', 'index'].includes(item.type)"
+          :type="item.type"
+          :label="item.i18n ? $t(item.i18n) : item.label"
+          :width="item.width || 50"
+          align="center"
+          :selectable="handleSelectable"
+        />
+        <el-table-column
+          v-else
+          :key="index"
+          :type="item.type"
+          :align="item.align || 'center'"
+          :header-align="item.headerAlign"
+          :show-overflow-tooltip="item.tooltip"
+          :prop="item.prop"
+          :label="item.i18n ? $t(item.i18n) : item.label"
+          :width="item.width ? item.width.toString() : 'auto'"
+        >
+          <template slot-scope="scope">
+            <div @click="handleEmit(item, scope.row)">
+              <i-table-column
+                v-if="item.customRender || item.type === 'expanded'"
+                :scope="scope"
+                :column="item"
+                :custom-render="item.customRender"
+                :extra-data="extraData"
+                :prop="item.prop"
+              />
+              <span v-else>
+                {{ scope.row[item.prop] }}
+              </span>
+            </div>
+          </template>
+        </el-table-column>
+      </template>
+    </el-table>
+  </div>
 </template>
 
 <script>
@@ -86,6 +92,21 @@ export default {
     treeExpand: {
       type: Object,
     },
+    rowKey: {
+      type: String,
+    },
+    defaultExpand: {
+      type: Boolean,
+      default: false,
+    },
+    disableChildrenSelection: {
+      type: Boolean,
+      default: false,
+    },
+    singleChoice: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     realTableData() {
@@ -93,7 +114,8 @@ export default {
         return this.tableData.filter((e) => e.visible)
       }
       return this.tableData.map((e, index) => {
-        return { ...e, uniqueId: index }
+        e.uniqueId = index + ''
+        return e
       })
     },
   },
@@ -113,6 +135,9 @@ export default {
   },
 
   methods: {
+    handleCurrentChange(val) {
+      this.$emit('handle-current-change', val)
+    },
     handleSelectionChange(val) {
       this.selectedRow = val
       this.$emit('handle-selection-change', val)
@@ -192,7 +217,7 @@ export default {
     expandAll() {
       // 全部展开
       if (this.treeExpand) {
-        this.tableData.forEach((element, i) => {
+        this.tableData.forEach((element) => {
           element.expanded = true
           element.visible = true
         })
@@ -218,8 +243,40 @@ export default {
     clearSelection() {
       this.$refs.theCustomTable.clearSelection()
     },
+    getRowClassName({ row }) {
+      if (
+        row.uniqueId === null ||
+        row.uniqueId === undefined ||
+        row.uniqueId.indexOf('-') === -1
+      ) {
+        return 'root-row'
+      }
+
+      return 'row-child'
+    },
+    handleSelectable(row) {
+      if (!this.disableChildrenSelection) {
+        return true
+      }
+      if (
+        row.uniqueId === null ||
+        row.uniqueId === undefined ||
+        row.uniqueId.indexOf('-') === -1
+      ) {
+        return true
+      }
+      return false
+    },
   },
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+::v-deep.i-table-custom {
+  .el-table-column--selection {
+    .el-checkbox__input.is-disabled {
+      display: none;
+    }
+  }
+}
+</style>
