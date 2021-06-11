@@ -17,7 +17,7 @@
       >
         <span v-if="title" class="title">
           {{ title }}
-          <span v-if="isRquired" class="rquired">*</span>  
+          <span v-if="isRequired" class="required">*</span>  
         </span>
         
         <div>
@@ -60,7 +60,7 @@ export default {
       type:Boolean,
       default:true
     },
-    isRquired: {
+    isRequired: {
       type: Boolean,
       default: false
     }
@@ -146,8 +146,9 @@ export default {
     }
   }
 }
-.rquired {
+.required {
   color:#E30B0D;
   font-size:18px;
+  font-weight: normal;
 }
 </style>
