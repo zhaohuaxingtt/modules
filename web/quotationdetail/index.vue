@@ -1,8 +1,8 @@
 <!--
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
- * @LastEditors: ldh
- * @LastEditTime: 2021-06-10 14:29:36
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-06-11 16:22:48
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\index.vue
 -->
@@ -167,8 +167,7 @@ export default {
 
       getPartsQuotations({
         rfqId: this.$route.query.rfqId,
-        round: this.$route.query.round,
-        supplierId: this.userInfo.supplierId
+        round: this.$route.query.round
       })
       .then(res => {
         if (res.code == 200) {
