@@ -2,7 +2,7 @@
  * @Descripttion: US: SP2-T01-E13-023 供应商报价界面-报价页面-模具和开发费用-供应商视角-关联零件
  * @Author: Luoshuang
  * @Date: 2021-04-25 11:20:02
- * @LastEditTime: 2021-05-14 00:09:20
+ * @LastEditTime: 2021-06-12 15:55:11
 -->
 
 <template>
@@ -60,7 +60,8 @@ export default {
   props: {
     dialogVisible: {type: Boolean, default: false},
     partInfo: {type: Object},
-    disabled: {type: Boolean}
+    disabled: {type: Boolean},
+    supplierId:{type: String, default:''}
   },
   data() {
     return {
@@ -101,7 +102,8 @@ export default {
         round: this.partInfo.currentRounds || this.partInfo.round,
         rfqId: this.partInfo.rfqId,
         current: currPage,
-        size: pageSize
+        size: pageSize,
+        supplierId:this.supplierId
       }
       this.tableLoading = true
       getMouldPartList(params).then(res => {

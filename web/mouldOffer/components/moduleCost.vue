@@ -2,13 +2,13 @@
  * @Author: ldh
  * @Date: 2021-04-23 15:20:44
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-10 18:12:29
+ * @LastEditTime: 2021-06-12 16:42:55
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\mouldOffer\components\moduleCost.vue
 -->
 <template>
-  <iCard class="moduleCost">
-    <template #header>
+  <iCard :class="{moduleCost:useCardSlot,moduleCost_web:!useCardSlot}" :title="useCardSlot?'':$t(titleKey)" :collapse='!useCardSlot' @handleCollapse='$emit("handleCollapse")'>
+    <template #header  v-if='useCardSlot'>
       <div class="header">
         <div>
           <span class="title">{{ $t('LK_MUJUFEIYONG') }}</span>
@@ -36,6 +36,35 @@
       </div>
     </template>
     <div class="table">
+       <template v-if='!useCardSlot'>
+        <div class="header">
+          <div v-if='hasSupplierComponets' class="supplier">
+            <span>供应商：</span>
+            <iSelect v-model="supplierId" @change='getFee'>
+              <el-option :value="item.supplierId" :label="item.supplierName" v-for='(item,index) in supplierList' :key='index'></el-option>
+            </iSelect>
+          </div>
+          <div v-if="!disabled" class="control">
+            <iButton @click="changeRelatingPartsVisible(true)">{{ $t('LK_GUANLIANLINGJIAN') }}</iButton>
+            <iButton @click="handleDownload">{{ $t('LK_XIAZAIMUJUCBD') }}</iButton>
+            <el-upload 
+              class="uploadBtn" 
+              multiple
+              ref="upload"
+              name="multipartFile"
+              :http-request="upload"
+              :show-file-list="false" 
+              :before-upload="beforeUpload"
+              accept=".xlsx">
+                <iButton :loading="uploadLoading">{{ $t('LK_SHANGCHUANBAOJIA') }}</iButton>
+            </el-upload>
+            <iButton @click="handleAdd">{{ $t('LK_TIANJIAHANG') }}</iButton>
+            <iButton @click="handleDel">{{ $t('LK_SHANCHUHANG') }}</iButton>
+            <iButton @click="handleSave" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
+            <!-- <iButton>提交</iButton> -->
+          </div>
+        </div>
+      </template>
       <tableList height="100%" class="table" :tableData="tableListData" :tableTitle="tableTitle" @handleSelectionChange="handleSelectionChange">
         <template #stuffType="scope">
           <iInput v-if="!disabled" v-model="scope.row.stuffType" />
@@ -109,7 +138,7 @@
         :layout="page.layout"
         :total="page.totalCount" />
     </div>
-    <relatingParts :dialogVisible="relatingPartsVisible" @changeVisible="changeRelatingPartsVisible" :partInfo="partInfo" :disabled="disabled" />
+    <relatingParts :supplierId='supplierId' :dialogVisible="relatingPartsVisible" @changeVisible="changeRelatingPartsVisible" :partInfo="partInfo" :disabled="disabled" />
   </iCard>
 </template>
 
@@ -155,7 +184,10 @@ export default {
       saveLoading: false,
       partNums: [],
       fsNums: [],
-      partNumMap: {}
+      partNumMap: {},
+      fromPage:'',
+      supplierId:'',
+      supplierList:[]
     }
   },
   computed: {
@@ -184,7 +216,8 @@ export default {
         rfqId: this.partInfo.rfqId,
         round: this.partInfo.currentRounds,
         currPage: this.page.currPage,
-        pageSize: this.disabled ? this.page.pageSize : 999999
+        pageSize: this.disabled ? this.page.pageSize : 999999,
+        supplierId:this.supplierId
       })
       .then(res => {
         if (res.code == 200) {
@@ -238,6 +271,7 @@ export default {
       const formData = new FormData()
       formData.append("file", content.file)
       formData.append("round", this.partInfo.currentRounds)
+      formData.append('supplierId',this.supplierId)
       uploadModuleCbd(formData)
         .then(res => {
           this.uploadSuccess(res, content.file)
@@ -281,7 +315,8 @@ export default {
       cbdDownloadFile({
         // partNum: "",
         rfqId: this.partInfo.rfqId,
-        round: this.partInfo.currentRounds
+        round: this.partInfo.currentRounds,
+        supplierId:this.supplierId
       })
     },
     handleSelectionChange(list) {
@@ -317,6 +352,7 @@ export default {
       saveModuleFee({
         rfqId: this.partInfo.rfqId,
         round: this.partInfo.currentRounds,
+        supplierId:this.supplierId,
         mouldCbdBaseDTO: this.tableListData.map(item => ({
           quotationId: item.quotationId,
           mouldCbdBaseDTO: {
@@ -414,6 +450,7 @@ export default {
         math.bignumber(row.assetUnitPrice || 0),
       ).toFixed(4)
     },
+    getFee(){},
   }
 }
 </script>
@@ -482,4 +519,66 @@ export default {
     }
   }
 }
+.moduleCost_web{
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    .title {
+      height: 25px;
+      line-height: 25px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #131523;
+    }
+
+    .tip {
+      height: 20px;
+      line-height: 20px;
+      font-size: 14px;
+      color: #86878E;
+    }
+
+    .control {
+      display: inline-block;
+    }
+
+    .supplier{
+      display: flex;
+      span{
+        width: 100px;
+        line-height: 28px;
+      }
+    }
+  }
+
+  .uploadBtn {
+    display: inline;
+    margin-left: 10px;
+
+    & + .el-button {
+      margin-left: 10px;
+    }
+  }
+
+  .table {
+    min-height: calc(100vh - 300px);
+  }
+
+  .totalCount {
+    height: 35px;
+    line-height: 35px;
+    font-size: 14px;
+    font-family: Arial;
+    font-weight: 400;
+    color: #8C98AC;
+    opacity: 1;
+
+    .count {
+      padding: 0 2.5px;
+    }
+  }
+}
+
 </style>
