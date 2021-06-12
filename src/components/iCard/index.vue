@@ -15,7 +15,11 @@
       :style="{ justifyContent: title ? 'space-between' : 'flex-end' }" 
       v-else-if="title || $slots['header-control'] || headerControl"
       >
-        <span v-if="title" class="title">{{ title }}</span>
+        <span v-if="title" class="title">
+          {{ title }}
+          <span v-if="isRequired" class="required">*</span>  
+        </span>
+        
         <div>
           <div v-if="$slots['header-control'] || headerControl" class="control">
             <slot name="header-control">{{ headerControl }}</slot>
@@ -55,6 +59,10 @@ export default {
     defalutCollVal:{
       type:Boolean,
       default:true
+    },
+    isRequired: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -137,5 +145,10 @@ export default {
       line-height: 25px;
     }
   }
+}
+.required {
+  color:#E30B0D;
+  font-size:18px;
+  font-weight: normal;
 }
 </style>
