@@ -1,15 +1,15 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-06-09 15:37:46
- * @LastEditors: Luoshuang
+ * @LastEditTime: 2021-06-14 14:20:46
+ * @LastEditors: ldh
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
                   2）用户点击“保存”按钮，则保存当前页面已经编辑和输入的所有信息
                   3）若用户在未点击“保存”的情况下点击“下载”按钮，则将报价模板下载到本地；若用户在点击了“保存”之后再点击“下载”按钮，则最后一次保存后的信息内容会随着模板一起下载到本地
                   4）若用户点击“上传报价”按钮，则是将使用模板在本地填写的报价信息上传到系统，系统界面中的信息刷新成本地填写的相关报价信息
                   5）若采购员想帮助供应商进行代报价，则需要先点击“代供应商报价”按钮，才可以对页面进行编辑操作
- * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\costsummary\index.vue
+ * @FilePath: \front-modules\web\quotationdetail\components\costsummary\index.vue
 -->
 
 <template>
@@ -252,10 +252,10 @@ export default{
             items = this.translateDataForServerce(items)
           })
         }else{
-          if(/\d$/.test(data[i])){
-            // eslint-disable-next-line no-debugger
-            data[i] = Number(data[i]);
-          }
+          // if(/\d$/.test(data[i])){
+          //   // eslint-disable-next-line no-debugger
+          //   data[i] = Number(data[i]);
+          // }
         }
       }
       return data
@@ -274,6 +274,8 @@ export default{
       sendData['cbdLevel'] = this.allTableData.level
       sendData['sumVO'] = undefined
       sendData['level'] = undefined
+      sendData.partType = this.partInfo.partType
+      sendData.partProjectType = this.partInfo.partProjectType
       return postCostSummary(this.translateDataForServerce(sendData)).then(res=>{
         if(res.code == 200){
           iMessage.success('操作成功')
