@@ -1,8 +1,8 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-06-11 16:51:53
- * @LastEditors: Luoshuang
+ * @LastEditTime: 2021-06-14 14:20:46
+ * @LastEditors: ldh
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
                   2）用户点击“保存”按钮，则保存当前页面已经编辑和输入的所有信息
@@ -252,10 +252,10 @@ export default{
             items = this.translateDataForServerce(items)
           })
         }else{
-          if(/\d$/.test(data[i])){
-            // eslint-disable-next-line no-debugger
-            data[i] = Number(data[i]);
-          }
+          // if(/\d$/.test(data[i])){
+          //   // eslint-disable-next-line no-debugger
+          //   data[i] = Number(data[i]);
+          // }
         }
       }
       return data
