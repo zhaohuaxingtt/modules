@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-23 15:38:31
- * @LastEditTime: 2021-06-11 18:02:21
+ * @LastEditTime: 2021-06-15 20:09:10
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\costsummary\components\timeAndlevTabel.vue
@@ -176,9 +176,9 @@ export default{
      * @param {*}
      * @return {*}
      */    
-    partsQuotationss(rfqId,lv,lever){
+    partsQuotationss(rfqId,supplierId,lv,lever){
       this.translateTableTileData(lever)
-      partsQuotations(rfqId,lv).then(res=>{
+      partsQuotations(rfqId,lv,supplierId).then(res=>{
         if(res.data){
           this.selectList = res.data || []
         }
