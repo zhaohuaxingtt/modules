@@ -2,15 +2,15 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-11 16:22:48
+ * @LastEditTime: 2021-06-15 17:12:34
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\index.vue
 -->
 <template> 
   <iPage class="quotation">
     <div class="margin-bottom20 clearFloat">
-      <span class="font18 font-weight">{{ $t('LK_QIEHUANLINGJIAN') }}：</span>
-      <iSelect class="part" popper-class="partSelect" v-model="fsNum" placeholder="" @change="handlePartChange">
+      <span v-if="!fix" class="font18 font-weight">{{ $t('LK_QIEHUANLINGJIAN') }}：</span>
+      <iSelect v-if="!fix" class="part" popper-class="partSelect" v-model="fsNum" placeholder="" @change="handlePartChange">
         <el-option
           v-for="part in parts"
           :key="part.key"
@@ -22,6 +22,7 @@
           </div>
         </el-option>
       </iSelect> 
+      <span class="font18 font-weight">{{ partInfo && partInfo.label }}</span>
       <div class="floatright">
         
         <iButton v-if="!forceDisabled && disabled" @click="handleAgentQutation">{{ $t("LK_DAIGONGYINGSHANGBAOJIA") }}</iButton>
@@ -133,6 +134,8 @@ export default {
       isQuoteBatchPrice: false,
       quoteBatchPriceLoading: false,
       cancelQuoteBatchPriceLoading: false,
+      fix: false,
+      supplierId: ""
     }
   },
   provide: function () {
@@ -152,6 +155,12 @@ export default {
     }
   },
   created() {
+    this.supplierId = this.userInfo.supplierId || this.$route.query.supplierId
+
+    if (this.$route.query.fix) {
+      this.fix = true
+    }
+    
     if (this.$route.query.agentQutation) {
       this.disabled = true
     }
@@ -167,7 +176,8 @@ export default {
 
       getPartsQuotations({
         rfqId: this.$route.query.rfqId,
-        round: this.$route.query.round
+        round: this.$route.query.round,
+        supplierId: this.supplierId
       })
       .then(res => {
         if (res.code == 200) {
@@ -175,14 +185,16 @@ export default {
           this.parts = 
             Array.isArray(res.data) ? 
             res.data.map(item => {
-              if (item.fsNum == this.fsNum) currentPart = item
-
-              return {
+              const result = {
                 ...item,
                 label: `${ item.partNum }_${ item.fsNum }_${ item.procureFactoryName }`,
                 value: item.fsNum,
                 key: item.fsNum
               }
+
+              if (result.fsNum == this.fsNum) currentPart = cloneDeep(result)
+
+              return result
             }) : 
             []
 
@@ -234,6 +246,12 @@ export default {
           let rfqRoundStateDisabled = res.data.rfqRoundStateCode != "01"
           let roundDisabled = +this.partInfo.round != +res.data.currentRounds
           this.disabled = fsStateDisabled || rfqStateDisabled || quotationStateDisabled || rfqRoundStateDisabled || roundDisabled
+          if (this.fix) {
+            this.disabled = true
+            this.forceDisabled = true
+            return
+          }
+
           if (this.$route.query.agentQutation) {
             this.forceDisabled = false
             this.disabled = true
