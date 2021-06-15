@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-15 17:12:34
+ * @LastEditTime: 2021-06-15 19:31:26
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\index.vue
 -->
@@ -22,7 +22,7 @@
           </div>
         </el-option>
       </iSelect> 
-      <span class="font18 font-weight">{{ partInfo && partInfo.label }}</span>
+      <span v-else class="font18 font-weight">{{ partInfo && partInfo.label }}</span>
       <div class="floatright">
         
         <iButton v-if="!forceDisabled && disabled" @click="handleAgentQutation">{{ $t("LK_DAIGONGYINGSHANGBAOJIA") }}</iButton>
