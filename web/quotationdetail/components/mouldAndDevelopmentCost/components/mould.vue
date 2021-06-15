@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 00:21:08
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-10 18:19:05
+ * @LastEditTime: 2021-06-15 17:56:13
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\mould.vue
 -->
@@ -223,7 +223,8 @@ export default {
       cbdDownloadFile({
         rfqId: this.partInfo.rfqId,
         partNum: this.partInfo.partNum,
-        round: this.partInfo.round
+        round: this.partInfo.round,
+        supplierId: this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId
       })
     },
     handleAdd() {
