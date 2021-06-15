@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 15:20:44
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-12 16:42:55
+ * @LastEditTime: 2021-06-14 14:19:06
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\mouldOffer\components\moduleCost.vue
 -->
@@ -14,10 +14,10 @@
           <span class="title">{{ $t('LK_MUJUFEIYONG') }}</span>
           <span class="tip margin-left10">({{ $t('LK_DANWEI') }}：{{ $t('LK_YUAN') }})</span>
         </div>
-        <div v-if="!disabled" class="control">
+        <div class="control">
           <iButton @click="changeRelatingPartsVisible(true)">{{ $t('LK_GUANLIANLINGJIAN') }}</iButton>
           <iButton @click="handleDownload">{{ $t('LK_XIAZAIMUJUCBD') }}</iButton>
-          <el-upload 
+            <el-upload 
             class="uploadBtn" 
             multiple
             ref="upload"
@@ -44,9 +44,10 @@
               <el-option :value="item.supplierId" :label="item.supplierName" v-for='(item,index) in supplierList' :key='index'></el-option>
             </iSelect>
           </div>
-          <div v-if="!disabled" class="control">
+          <div class="control">
             <iButton @click="changeRelatingPartsVisible(true)">{{ $t('LK_GUANLIANLINGJIAN') }}</iButton>
             <iButton @click="handleDownload">{{ $t('LK_XIAZAIMUJUCBD') }}</iButton>
+            <template v-if='dgysBj'>
             <el-upload 
               class="uploadBtn" 
               multiple
@@ -61,7 +62,11 @@
             <iButton @click="handleAdd">{{ $t('LK_TIANJIAHANG') }}</iButton>
             <iButton @click="handleDel">{{ $t('LK_SHANCHUHANG') }}</iButton>
             <iButton @click="handleSave" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
+            </template>
             <!-- <iButton>提交</iButton> -->
+            <template v-else>
+              <iButton @click="dgysBj=true">代供应商报价</iButton>
+            </template>
           </div>
         </div>
       </template>
@@ -174,6 +179,7 @@ export default {
   },
   data() {
     return {
+      dgysBj:false,
       loading: false,
       assetTypeCodeOptions,
       tableTitle,
@@ -187,7 +193,8 @@ export default {
       partNumMap: {},
       fromPage:'',
       supplierId:'',
-      supplierList:[]
+      supplierList:[],
+      titleKey:''
     }
   },
   computed: {
