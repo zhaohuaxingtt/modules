@@ -728,5 +728,8 @@ export default {
   'LK_JINGRUBJ': '进入报价', // 进入报价
   'LK_ECHARTSTITLE': '所有轮次报价总览 (Price)', //所有轮次报价总览 (Price)
   'LK_LUNCI': '轮次',// l轮次
-  'LK_BJFXHZMJ':'报价分析汇总-模具'//报价分析汇总-模具
+  'LK_BJFXHZMJ':'报价分析汇总-模具',//报价分析汇总-模具
+  'LK_YINYONGPILIANGJIAGE': '引用批量价格', // 引用批量价格
+  'LK_QUXIAOPILIANGJIAGE': '取消批量价格', // 取消批量价格
+  'LK_DAIGONGYINGSHANGBAOJIA': '代供应商报价', // 代供应商报价
 }
