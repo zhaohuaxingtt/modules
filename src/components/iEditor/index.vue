@@ -1,8 +1,8 @@
 <!--
  * @Author: ldh
  * @Date: 2021-05-28 22:43:53
- * @LastEditTime: 2021-05-29 15:35:03
- * @LastEditors: ldh
+ * @LastEditTime: 2021-06-16 11:21:14
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\src\components\iEditor\index.vue
 -->
@@ -169,7 +169,7 @@ export default {
   },
   watch: {
     disabled(status) {
-      status && this.disable();
+      status ? this.disable() : this.enable();
     },
     showMenus(status) {
       this.showMenu(status);
@@ -244,6 +244,10 @@ export default {
     // 禁用
     disable() {
       this.editor && this.editor.disable();
+    },
+    // 解除禁用
+    enable() {
+      this.editor && this.editor.enable();
     },
     // 销毁
     destroy() {
