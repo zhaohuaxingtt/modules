@@ -1,10 +1,10 @@
 <!--
- * @Author: yuszhou
- * @Date: 2020-07-22 14:56:34
- * @LastEditTime: 2021-03-25 23:15:21
- * @LastEditors: Please set LastEditors
- * @Description: 项目默认layout
- * @FilePath: \test\src\layout\default.vue
+ * 页面layout布局
+ * 使用方法
+ * import iLayout from 'rise/web/layout/index.vue'
+ * <iLayout :menus="menus" />
+ * menus 参考 menu.js
+ * 后期menus可能会集成进来
 -->
 <template>
   <div class="content">
