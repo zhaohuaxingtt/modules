@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 00:21:08
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-17 11:08:49
+ * @LastEditTime: 2021-06-17 16:33:29
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\mould.vue
 -->
@@ -21,7 +21,7 @@
             </iFormGroup>
           </div>
           <div v-if="!disabled" class="control">
-            <iButton @click="jump">{{ $t('LK_TIAOZHUANZHIRFQMUJUBAOJIA') }}</iButton>
+            <iButton @click="jump" v-if='whenCourcerLogin'>{{ $t('LK_TIAOZHUANZHIRFQMUJUBAOJIA') }}</iButton>
             <iButton @click="changeRelatingPartsVisible(true)">{{ $t('LK_GUANLIANLINGJIAN') }}</iButton>
             <iButton @click="handleDownload">{{ $t('LK_XIAZAIMUJUCBD') }}</iButton>
             <el-upload 
@@ -131,7 +131,23 @@ export default {
   computed: {
     ...Vuex.mapState({
       userInfo: state => state.permission.userInfo,
-    })
+    }),
+    /**
+     * @description: 当采购员端跳转过来的时候，需要隐藏此按钮。在soucring报价助手上，已经存在模具报价，此时再通过此按钮跳转无意义。 
+     * @param {*}
+     * @return {*}
+     */
+    whenCourcerLogin:function(){
+      let b = false
+      try {
+        if(this.$route.query.agentQutation){
+          b =  false
+        }
+      } catch (error) {
+          b =  true        
+      }
+      return b
+    }
   },
   filters: {
     statesFilter
