@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 00:21:08
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-16 10:51:14
+ * @LastEditTime: 2021-06-17 11:08:49
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\mould.vue
 -->
@@ -166,7 +166,7 @@ export default {
     beforeUpload() {
       this.uploadLoading = true
     },
-    uploadSuccess(res, file) {
+    uploadSuccess(res) {
       this.uploadLoading = false
       if (res.code == 200) {
         iMessage.success(this.$t("LK_SHANGCHUANCHENGGONG"))
@@ -187,7 +187,7 @@ export default {
       //   }, 700)
       // }
     },
-    uploadError(err, file) {
+    uploadError(err) {
       this.uploadLoading = false
       iMessage.error(this.$i18n.locale === "zh" ? err.desZh : err.desEn)
     },

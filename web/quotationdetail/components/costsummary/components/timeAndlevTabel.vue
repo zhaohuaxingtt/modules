@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-23 15:38:31
- * @LastEditTime: 2021-06-15 20:09:10
+ * @LastEditTime: 2021-06-17 11:10:51
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\costsummary\components\timeAndlevTabel.vue
@@ -164,9 +164,9 @@ export default{
      */    
     changeDataCope(res){
       if(!res && this.selectedList.length > 0){
-        iMessageBox(`您确定要将报价单复制到选中的零件中吗？`).then(res=>{
+        iMessageBox(`您确定要将报价单复制到选中的零件中吗？`).then(() => {
           this.copyPartsQuotation()
-        }).catch(err=>{
+        }).catch(() => {
           this.selectedList = []
         })
       }

@@ -318,7 +318,7 @@ export default {
       })
       .catch(() => this.submitLoading = false)
     },
-    tabLeaveBefore(active, old) {
+    tabLeaveBefore(active) {
       if (this.saveStatus) {
         iMessageBox("当前内容暂未保存，您是否要离开？")
         .then(() => {
