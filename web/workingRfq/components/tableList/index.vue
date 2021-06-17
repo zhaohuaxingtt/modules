@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-02-24 09:42:07
- * @LastEditTime: 2021-06-10 18:11:08
+ * @LastEditTime: 2021-06-17 16:07:54
  * @LastEditors: Please set LastEditors
  * @Description: 零件签收-table组件。
  * @FilePath: \front-supplier\src\views\rfqManageMent\workingRfq\components\tableList\index.vue
@@ -55,6 +55,7 @@
               <el-table-column v-else-if='indexKey && itemss.props == "index"' :key="indexs" type='index' width='50' align='center' label='#'>
                 <template slot-scope="scope">{{tableIndexString+(scope.$index+1)}}</template>
               </el-table-column>
+              
               <!----------------------------物料费用展示------------------------>
               <el-table-column v-else-if="itemss.props == 'materialPersent'" :key="indexs" align='center' :width="itemss.width" :show-overflow-tooltip='itemss.tooltip'  :label="itemss.key ? $t(itemss.key) : itemss.name" :prop="itemss.props">
                 <template slot-scope="scope">
@@ -90,7 +91,15 @@
           <template v-else-if='items.type == "input" && !notEdit'>
             <iInput v-model="scope.row[items.props]"></iInput>
           </template>
-          <template v-else>{{scope.row[items.props]}}</template>
+          <template v-else-if='items.type == "inputRate" && !notEdit'>
+            <div class="flexVerticalCenter">
+              <iInput v-model="scope.row[items.props]" @input="handleInputByRate($event, scope.row, items.props)"></iInput><span class="margin-left5">%</span>
+            </div>
+          </template>
+          <template v-else>
+            <span v-if="items.type === 'inputRate'">{{scope.row[items.props]}}{{ (scope.row[items.props] == null || scope.row[items.props] == "") && scope.row[items.props] !== 0  ? '' : '%' }}</span>
+            <span v-else>{{scope.row[items.props]}}</span>
+          </template>
           </template>
       </el-table-column>
     </template>
@@ -98,7 +107,7 @@
 </template>
 <script>
 import {icon,iSelect,iInput} from 'rise'
-import {_getMathNumber} from '@/utils'
+import {_getMathNumber, numberProcessor} from '@/utils'
 import {getAallPrice,Aprice,Bprice} from '../../../quotationdetail/components/costsummary/components/data'
 export default{
   components:{icon,iSelect,iInput},
@@ -177,18 +186,25 @@ export default{
      */    
     getPersion(a=0,b=0){
       return _getMathNumber(`${b}/${a}`)
-    }	
+    },
+    handleInputByRate(value, row, key) {
+      this.$set(row, key, numberProcessor(value, 2))
+    }
   }
 }
 </script>
 <style lang='scss' scoped>
-  .openLinkText{
-    color:$color-blue;
-    text-decoration: underline;
-  }
-  .radio{
-    ::v-deep thead .el-table-column--selection .cell {
+.openLinkText{
+  color:$color-blue;
+  text-decoration: underline;
+}
+.radio{
+  ::v-deep thead .el-table-column--selection .cell {
     display: none;
-	}
   }
+}
+.flexVerticalCenter {
+  display: flex;
+  align-items: center;
+}
 </style>
