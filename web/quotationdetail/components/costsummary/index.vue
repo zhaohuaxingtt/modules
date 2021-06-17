@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-06-15 20:14:10
+ * @LastEditTime: 2021-06-17 11:09:53
  * @LastEditors: Please set LastEditors
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
@@ -166,7 +166,7 @@ export default{
   methods:{    
     translateDicKeyCodeToName(list){
       if(!list) return
-      list.forEach((items,index)=>{
+      list.forEach(items => {
         items.code = items.name
       })
       return list
@@ -254,7 +254,7 @@ export default{
     translateDataForServerce(data){
       for(let i in data){
         if(Object.prototype.toString.call(data[i]) == '[object Array]'){
-          data[i].forEach(items=>{
+          data[i].forEach(items => {
             items = this.translateDataForServerce(items)
           })
         }else{
@@ -298,12 +298,18 @@ export default{
      * @param {*}
      * @return {*}
      */    
-    init(){
+    init(type){
       this.cbdlist = []
-      this.allTableData.level = this.allTableData.level?this.allTableData.level:this.partInfo.currentCbdLevel
+      if (type === "redraw") {
+        this.allTableData.level = this.partInfo.currentCbdLevel
+        this.allpagefrom['cbdLevel'] = this.partInfo.currentCbdLevel
+      } else {
+        this.allTableData.level = this.allTableData.level?this.allTableData.level:this.partInfo.currentCbdLevel
+        this.allpagefrom['cbdLevel'] = this.allTableData.level?this.allTableData.level:this.partInfo.currentCbdLevel
+      }
+      
       this.allpagefrom.rfqId = this.partInfo.rfqId
       this.allpagefrom.quotationId = this.partInfo.quotationId
-      this.allpagefrom['cbdLevel'] = this.allTableData.level?this.allTableData.level:this.partInfo.currentCbdLevel
       this.translateCbdList(this.partInfo.cbdLevel)
       this.getCostSummary()
     },
@@ -357,7 +363,7 @@ export default{
      return new Promise((r)=>{
         packageTransport(this.allpagefrom.quotationId).then(res=>{
           r(res.data)
-        }).catch(err=>{
+        }).catch(()=>{
           r({})
         })
      })
