@@ -63,7 +63,9 @@ import iInput from '../iInput/index.vue'
 import iRadio from '../iRadio/index.vue'
 import Icon from '../icon/index.vue'
 import iTableColumn from './iTableColumn'
-
+/**
+ * @example ./README.me
+ */
 export default {
   // eslint-disable-next-line vue/no-unused-components
   components: { iTableColumn, iButton, iSelect, iInput, iRadio, Icon },
