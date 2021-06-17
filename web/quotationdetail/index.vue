@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-15 17:12:34
+ * @LastEditTime: 2021-06-16 20:35:15
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\index.vue
 -->
@@ -155,8 +155,7 @@ export default {
     }
   },
   created() {
-    this.supplierId = this.userInfo.supplierId || this.$route.query.supplierId
-
+    this.supplierId = this.$route.query.supplierId || this.userInfo.supplierId
     if (this.$route.query.fix) {
       this.fix = true
     }
@@ -165,8 +164,11 @@ export default {
       this.disabled = true
     }
 
-    this.partNum = this.$route.query.partNum
-    this.fsNum = this.$route.query.fsNum
+    this.partNum = this.$route.query.partNum || ''
+    this.fsNum = this.$route.query.fsNum || ''
+    this.partInfo.partNum = this.$route.query.partNum || ''
+    this.partInfo.fsNum = this.$route.query.fsNum || ''
+    this.partInfo.quotationId = this.$route.query.quotationId || ''
     this.getPartsQuotations();
   },
   methods: {
