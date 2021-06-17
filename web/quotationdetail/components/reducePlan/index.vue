@@ -51,8 +51,8 @@ export default {
             }
         },
         disabled: {type: Boolean},
-        aprice: 0,
-        bprice: 0
+        aprice: { type: Number || String, default: 0 },
+        bprice: { type: Number || String, default: 0 }
     },
     data(){
         return{

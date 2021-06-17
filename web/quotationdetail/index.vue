@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-16 20:35:15
+ * @LastEditTime: 2021-06-17 11:52:44
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\index.vue
 -->
@@ -22,7 +22,7 @@
           </div>
         </el-option>
       </iSelect> 
-      <span class="font18 font-weight">{{ partInfo && partInfo.label }}</span>
+      <span v-else class="font18 font-weight">{{ partInfo && partInfo.label }}</span>
       <div class="floatright">
         
         <iButton v-if="!forceDisabled && disabled" @click="handleAgentQutation">{{ $t("LK_DAIGONGYINGSHANGBAOJIA") }}</iButton>
@@ -212,7 +212,7 @@ export default {
               // })
 
               const component = this.$refs[this.currentTab][0]
-              if (typeof component.init === "function") component.init()
+              if (typeof component.init === "function") component.init("redraw")
             })
           }
         } else {
@@ -292,7 +292,7 @@ export default {
         // })
 
         const component = this.$refs[this.currentTab][0]
-        if (typeof component.init === "function") component.init()
+        if (typeof component.init === "function") component.init("redraw")
       })
       
       this.getStates()
@@ -320,7 +320,7 @@ export default {
       })
       .catch(() => this.submitLoading = false)
     },
-    tabLeaveBefore(active, old) {
+    tabLeaveBefore(active) {
       if (this.saveStatus) {
         iMessageBox("当前内容暂未保存，您是否要离开？")
         .then(() => {

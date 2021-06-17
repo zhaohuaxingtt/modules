@@ -1,8 +1,8 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-06-14 14:20:46
- * @LastEditors: ldh
+ * @LastEditTime: 2021-06-17 11:09:53
+ * @LastEditors: Please set LastEditors
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
                   2）用户点击“保存”按钮，则保存当前页面已经编辑和输入的所有信息
@@ -157,10 +157,16 @@ export default{
   created(){
     this.selectDictByKeys()
   },
+  computed: {
+    // eslint-disable-next-line no-undef
+    ...Vuex.mapState({
+      userInfo: state => state.permission.userInfo,
+    }),
+  },
   methods:{    
     translateDicKeyCodeToName(list){
       if(!list) return
-      list.forEach((items,index)=>{
+      list.forEach(items => {
         items.code = items.name
       })
       return list
@@ -248,7 +254,7 @@ export default{
     translateDataForServerce(data){
       for(let i in data){
         if(Object.prototype.toString.call(data[i]) == '[object Array]'){
-          data[i].forEach(items=>{
+          data[i].forEach(items => {
             items = this.translateDataForServerce(items)
           })
         }else{
@@ -292,12 +298,18 @@ export default{
      * @param {*}
      * @return {*}
      */    
-    init(){
+    init(type){
       this.cbdlist = []
-      this.allTableData.level = this.allTableData.level?this.allTableData.level:this.partInfo.currentCbdLevel
+      if (type === "redraw") {
+        this.allTableData.level = this.partInfo.currentCbdLevel
+        this.allpagefrom['cbdLevel'] = this.partInfo.currentCbdLevel
+      } else {
+        this.allTableData.level = this.allTableData.level?this.allTableData.level:this.partInfo.currentCbdLevel
+        this.allpagefrom['cbdLevel'] = this.allTableData.level?this.allTableData.level:this.partInfo.currentCbdLevel
+      }
+      
       this.allpagefrom.rfqId = this.partInfo.rfqId
       this.allpagefrom.quotationId = this.partInfo.quotationId
-      this.allpagefrom['cbdLevel'] = this.allTableData.level?this.allTableData.level:this.partInfo.currentCbdLevel
       this.translateCbdList(this.partInfo.cbdLevel)
       this.getCostSummary()
     },
@@ -316,7 +328,8 @@ export default{
             this.packAndShipFee = data
             this.allTableData = this.translateDataForRender(res.data)
             this.topTableData = this.translateDataTopData(this.allTableData.sumVO, data)
-            this.$refs.components.partsQuotationss(this.partInfo.rfqId,this.allpagefrom.quotationId,this.partInfo.round,this.allTableData.level)
+            this.$refs.components.partsQuotationss(this.partInfo.rfqId,this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId,this.partInfo.round,this.allTableData.level)
+            // this.allpagefrom.quotationId,
             this.findFiles()
           }
         }).catch(err=>{
@@ -350,7 +363,7 @@ export default{
      return new Promise((r)=>{
         packageTransport(this.allpagefrom.quotationId).then(res=>{
           r(res.data)
-        }).catch(err=>{
+        }).catch(()=>{
           r({})
         })
      })

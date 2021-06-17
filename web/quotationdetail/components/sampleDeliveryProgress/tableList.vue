@@ -1,8 +1,8 @@
 <!--
  * @Author: Luoshuang
  * @Date: 2021-05-27 16:26:07
- * @LastEditors: Luoshuang
- * @LastEditTime: 2021-05-27 17:23:03
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-06-17 11:14:35
  * @Description: 
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\sampleDeliveryProgress\tableList.vue
 -->
@@ -45,9 +45,9 @@
   </div>
 </template>
 <script>
-import {icon, iInput, iSelect} from 'rise';
+import {iInput, iSelect} from 'rise';
 export default{
-  components:{icon, iInput, iSelect},
+  components:{iInput, iSelect},
   props:{
     tableData:{type:Array},
     tableTitle:{type:Array},

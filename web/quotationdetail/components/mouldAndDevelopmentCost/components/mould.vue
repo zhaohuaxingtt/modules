@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 00:21:08
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-15 17:56:13
+ * @LastEditTime: 2021-06-17 11:08:49
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\mould.vue
 -->
@@ -166,7 +166,7 @@ export default {
     beforeUpload() {
       this.uploadLoading = true
     },
-    uploadSuccess(res, file) {
+    uploadSuccess(res) {
       this.uploadLoading = false
       if (res.code == 200) {
         iMessage.success(this.$t("LK_SHANGCHUANCHENGGONG"))
@@ -187,7 +187,7 @@ export default {
       //   }, 700)
       // }
     },
-    uploadError(err, file) {
+    uploadError(err) {
       this.uploadLoading = false
       iMessage.error(this.$i18n.locale === "zh" ? err.desZh : err.desEn)
     },
@@ -237,7 +237,7 @@ export default {
       const index = mouldIdIndexes[0] ? (mouldIdIndexes[0] >= 10 ? (mouldIdIndexes[0] + 1) + "" : "0" + (mouldIdIndexes[0] + 1)) : "01"
 
       this.tableListData.push({
-        mouldId: `${ this.partInfo.rfqId }_${ this.userInfo.supplierId }_${ this.partInfo.partNum }_T${ index }`,
+        mouldId: `${ this.partInfo.rfqId }_${ this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId }_${ this.partInfo.partNum }_T${ index }`,
         fixedAssetsName: "",
         assembledPartPrjCode: this.partInfo.fsNum,
         carModeCode: this.partInfo.modelNameZh

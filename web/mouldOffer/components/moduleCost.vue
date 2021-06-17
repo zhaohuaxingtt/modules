@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 15:20:44
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-14 14:19:06
+ * @LastEditTime: 2021-06-17 11:08:32
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\mouldOffer\components\moduleCost.vue
 -->
@@ -211,7 +211,7 @@ export default {
     }
   },
   watch: {
-    disabled(nv) {
+    disabled() {
       this.getAllMouldFee()
     }
   },
@@ -260,8 +260,8 @@ export default {
 
             if (Array.isArray(res.data[partNum])) {
               res.data[partNum].forEach(fsNumObj => {
-                fsNumObj.label = fsNumObj.fsNum
-                fsNumObj.value = fsNumObj.fsNum
+                fsNumObj.label = fsNumObj.fsnrGsnrNum
+                fsNumObj.value = fsNumObj.fsnrGsnrNum
 
                 this.fsNums.push({ ...fsNumObj })
               })
@@ -290,7 +290,7 @@ export default {
     beforeUpload() {
       this.uploadLoading = true
     },
-    uploadSuccess(res, file) {
+    uploadSuccess(res) {
       this.uploadLoading = false
       if (res.code == 200) {
         iMessage.success(this.$t("LK_SHANGCHUANCHENGGONG"))
@@ -311,7 +311,7 @@ export default {
       //   }, 700)
       // }
     },
-    uploadError(err, file) {
+    uploadError(err) {
       this.uploadLoading = false
       iMessage.error(this.$i18n.locale === "zh" ? err.desZh : err.desEn)
     },
@@ -402,7 +402,7 @@ export default {
     },
     // fs号选择
     handleChangeByAssembledPartPrjCode(fsNum, row) {
-      const fsObj = this.fsNums.filter(item => item.fsNum === fsNum)[0]
+      const fsObj = this.fsNums.filter(item => item.fsnrGsnrNum === fsNum)[0]
       this.$set(row, "quotationId", fsObj.quotationId)
       if (!row.assembledPartCode) {
         this.$set(row, "assembledPartCode", fsObj.partNum)

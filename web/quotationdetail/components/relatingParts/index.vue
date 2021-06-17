@@ -2,7 +2,7 @@
  * @Descripttion: US: SP2-T01-E13-023 供应商报价界面-报价页面-模具和开发费用-供应商视角-关联零件
  * @Author: Luoshuang
  * @Date: 2021-04-25 11:20:02
- * @LastEditTime: 2021-06-12 15:55:11
+ * @LastEditTime: 2021-06-17 11:13:42
 -->
 
 <template>
@@ -44,11 +44,11 @@
 
 <script>
 import { iDialog, iPagination, iButton, iMessage } from 'rise'
-import { relatingPartsTableTitle, relatingPartsTableData } from './data'
+import { relatingPartsTableTitle } from './data'
 import tableList from './tableList'
 import { pageMixins } from "@/utils/pageMixins"
 import { getMouldPartList, saveMouldPartList } from '@/api/rfqManageMent/quotationdetail'
-import { cloneDeep } from 'lodash'
+
 export default {
   components: {
     iDialog,
