@@ -298,12 +298,18 @@ export default{
      * @param {*}
      * @return {*}
      */    
-    init(){
+    init(type){
       this.cbdlist = []
-      this.allTableData.level = this.allTableData.level?this.allTableData.level:this.partInfo.currentCbdLevel
+      if (type === "redraw") {
+        this.allTableData.level = this.partInfo.currentCbdLevel
+        this.allpagefrom['cbdLevel'] = this.partInfo.currentCbdLevel
+      } else {
+        this.allTableData.level = this.allTableData.level?this.allTableData.level:this.partInfo.currentCbdLevel
+        this.allpagefrom['cbdLevel'] = this.allTableData.level?this.allTableData.level:this.partInfo.currentCbdLevel
+      }
+      
       this.allpagefrom.rfqId = this.partInfo.rfqId
       this.allpagefrom.quotationId = this.partInfo.quotationId
-      this.allpagefrom['cbdLevel'] = this.allTableData.level?this.allTableData.level:this.partInfo.currentCbdLevel
       this.translateCbdList(this.partInfo.cbdLevel)
       this.getCostSummary()
     },

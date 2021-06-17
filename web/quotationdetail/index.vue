@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-15 19:31:26
+ * @LastEditTime: 2021-06-17 11:08:59
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\index.vue
 -->
@@ -210,7 +210,7 @@ export default {
               // })
 
               const component = this.$refs[this.currentTab][0]
-              if (typeof component.init === "function") component.init()
+              if (typeof component.init === "function") component.init("redraw")
             })
           }
         } else {
@@ -290,7 +290,7 @@ export default {
         // })
 
         const component = this.$refs[this.currentTab][0]
-        if (typeof component.init === "function") component.init()
+        if (typeof component.init === "function") component.init("redraw")
       })
       
       this.getStates()
