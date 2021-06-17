@@ -2,7 +2,7 @@
  * @Author: Luoshuang
  * @Date: 2021-05-27 15:56:15
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-10 18:20:32
+ * @LastEditTime: 2021-06-17 11:04:29
  * @Description: 报价备注与附件
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\remarksAndAttachment\index.vue
 -->
@@ -153,14 +153,14 @@ export default {
         this.fileList = []
         clearTimeout(this.timer)
         iMessage.success(`${ file.name } ${ this.$t('LK_SHANGCHUANCHENGGONG') }`)
-        this.fileList.push({ fileName: res.data[0].fileName, filePath: res.data[0].filePath, fileSize: (file.size / 1024 / 1024).toFixed(3) })
+        this.fileList.push({ fileName: res.data[0].fileName, filePath: res.data[0].filePath, fileSize: file.size })
         this.timer = setTimeout(() => {
           this.uploadFileList()
           clearTimeout(this.timer)
         }, 700)
       }
     },
-    uploadError(err, file) {
+    uploadError(err) {
       this.uploadLoading = false
       iMessage.error(this.$i18n.locale === "zh" ? err.desZh : err.desEn)
     },

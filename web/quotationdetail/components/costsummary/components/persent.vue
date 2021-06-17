@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 17:41:42
- * @LastEditTime: 2021-05-26 13:43:47
+ * @LastEditTime: 2021-06-17 11:10:20
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\costsummary\components\persent.vue
@@ -19,7 +19,7 @@
 </ul>
 </template>
 <script>
-import {persentDatalist,persentTitel} from './data'
+import {persentTitel} from './data'
 export default{
   props:{
     persentList:{

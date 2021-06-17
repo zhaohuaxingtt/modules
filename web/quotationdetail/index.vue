@@ -1,16 +1,16 @@
 <!--
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
- * @LastEditors: ldh
- * @LastEditTime: 2021-06-10 14:29:36
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-06-17 11:52:44
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\index.vue
 -->
 <template> 
   <iPage class="quotation">
     <div class="margin-bottom20 clearFloat">
-      <span class="font18 font-weight">{{ $t('LK_QIEHUANLINGJIAN') }}：</span>
-      <iSelect class="part" popper-class="partSelect" v-model="fsNum" placeholder="" @change="handlePartChange">
+      <span v-if="!fix" class="font18 font-weight">{{ $t('LK_QIEHUANLINGJIAN') }}：</span>
+      <iSelect v-if="!fix" class="part" popper-class="partSelect" v-model="fsNum" placeholder="" @change="handlePartChange">
         <el-option
           v-for="part in parts"
           :key="part.key"
@@ -22,6 +22,7 @@
           </div>
         </el-option>
       </iSelect> 
+      <span v-else class="font18 font-weight">{{ partInfo && partInfo.label }}</span>
       <div class="floatright">
         
         <iButton v-if="!forceDisabled && disabled" @click="handleAgentQutation">{{ $t("LK_DAIGONGYINGSHANGBAOJIA") }}</iButton>
@@ -133,6 +134,8 @@ export default {
       isQuoteBatchPrice: false,
       quoteBatchPriceLoading: false,
       cancelQuoteBatchPriceLoading: false,
+      fix: false,
+      supplierId: ""
     }
   },
   provide: function () {
@@ -152,12 +155,20 @@ export default {
     }
   },
   created() {
+    this.supplierId = this.$route.query.supplierId || this.userInfo.supplierId
+    if (this.$route.query.fix) {
+      this.fix = true
+    }
+    
     if (this.$route.query.agentQutation) {
       this.disabled = true
     }
 
-    this.partNum = this.$route.query.partNum
-    this.fsNum = this.$route.query.fsNum
+    this.partNum = this.$route.query.partNum || ''
+    this.fsNum = this.$route.query.fsNum || ''
+    this.partInfo.partNum = this.$route.query.partNum || ''
+    this.partInfo.fsNum = this.$route.query.fsNum || ''
+    this.partInfo.quotationId = this.$route.query.quotationId || ''
     this.getPartsQuotations();
   },
   methods: {
@@ -168,7 +179,7 @@ export default {
       getPartsQuotations({
         rfqId: this.$route.query.rfqId,
         round: this.$route.query.round,
-        supplierId: this.userInfo.supplierId
+        supplierId: this.supplierId
       })
       .then(res => {
         if (res.code == 200) {
@@ -176,14 +187,16 @@ export default {
           this.parts = 
             Array.isArray(res.data) ? 
             res.data.map(item => {
-              if (item.fsNum == this.fsNum) currentPart = item
-
-              return {
+              const result = {
                 ...item,
                 label: `${ item.partNum }_${ item.fsNum }_${ item.procureFactoryName }`,
                 value: item.fsNum,
                 key: item.fsNum
               }
+
+              if (result.fsNum == this.fsNum) currentPart = cloneDeep(result)
+
+              return result
             }) : 
             []
 
@@ -199,7 +212,7 @@ export default {
               // })
 
               const component = this.$refs[this.currentTab][0]
-              if (typeof component.init === "function") component.init()
+              if (typeof component.init === "function") component.init("redraw")
             })
           }
         } else {
@@ -235,6 +248,12 @@ export default {
           let rfqRoundStateDisabled = res.data.rfqRoundStateCode != "01"
           let roundDisabled = +this.partInfo.round != +res.data.currentRounds
           this.disabled = fsStateDisabled || rfqStateDisabled || quotationStateDisabled || rfqRoundStateDisabled || roundDisabled
+          if (this.fix) {
+            this.disabled = true
+            this.forceDisabled = true
+            return
+          }
+
           if (this.$route.query.agentQutation) {
             this.forceDisabled = false
             this.disabled = true
@@ -273,7 +292,7 @@ export default {
         // })
 
         const component = this.$refs[this.currentTab][0]
-        if (typeof component.init === "function") component.init()
+        if (typeof component.init === "function") component.init("redraw")
       })
       
       this.getStates()
@@ -301,7 +320,7 @@ export default {
       })
       .catch(() => this.submitLoading = false)
     },
-    tabLeaveBefore(active, old) {
+    tabLeaveBefore(active) {
       if (this.saveStatus) {
         iMessageBox("当前内容暂未保存，您是否要离开？")
         .then(() => {

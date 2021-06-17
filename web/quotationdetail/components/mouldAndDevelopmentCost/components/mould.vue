@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 00:21:08
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-10 18:19:05
+ * @LastEditTime: 2021-06-17 16:33:29
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\mould.vue
 -->
@@ -21,7 +21,7 @@
             </iFormGroup>
           </div>
           <div v-if="!disabled" class="control">
-            <iButton @click="jump">{{ $t('LK_TIAOZHUANZHIRFQMUJUBAOJIA') }}</iButton>
+            <iButton @click="jump" v-if='whenCourcerLogin'>{{ $t('LK_TIAOZHUANZHIRFQMUJUBAOJIA') }}</iButton>
             <iButton @click="changeRelatingPartsVisible(true)">{{ $t('LK_GUANLIANLINGJIAN') }}</iButton>
             <iButton @click="handleDownload">{{ $t('LK_XIAZAIMUJUCBD') }}</iButton>
             <el-upload 
@@ -131,7 +131,23 @@ export default {
   computed: {
     ...Vuex.mapState({
       userInfo: state => state.permission.userInfo,
-    })
+    }),
+    /**
+     * @description: 当采购员端跳转过来的时候，需要隐藏此按钮。在soucring报价助手上，已经存在模具报价，此时再通过此按钮跳转无意义。 
+     * @param {*}
+     * @return {*}
+     */
+    whenCourcerLogin:function(){
+      let b = false
+      try {
+        if(this.$route.query.agentQutation){
+          b =  false
+        }
+      } catch (error) {
+          b =  true        
+      }
+      return b
+    }
   },
   filters: {
     statesFilter
@@ -166,7 +182,7 @@ export default {
     beforeUpload() {
       this.uploadLoading = true
     },
-    uploadSuccess(res, file) {
+    uploadSuccess(res) {
       this.uploadLoading = false
       if (res.code == 200) {
         iMessage.success(this.$t("LK_SHANGCHUANCHENGGONG"))
@@ -187,7 +203,7 @@ export default {
       //   }, 700)
       // }
     },
-    uploadError(err, file) {
+    uploadError(err) {
       this.uploadLoading = false
       iMessage.error(this.$i18n.locale === "zh" ? err.desZh : err.desEn)
     },
@@ -223,7 +239,8 @@ export default {
       cbdDownloadFile({
         rfqId: this.partInfo.rfqId,
         partNum: this.partInfo.partNum,
-        round: this.partInfo.round
+        round: this.partInfo.round,
+        supplierId: this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId
       })
     },
     handleAdd() {
@@ -236,7 +253,7 @@ export default {
       const index = mouldIdIndexes[0] ? (mouldIdIndexes[0] >= 10 ? (mouldIdIndexes[0] + 1) + "" : "0" + (mouldIdIndexes[0] + 1)) : "01"
 
       this.tableListData.push({
-        mouldId: `${ this.partInfo.rfqId }_${ this.userInfo.supplierId }_${ this.partInfo.partNum }_T${ index }`,
+        mouldId: `${ this.partInfo.rfqId }_${ this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId }_${ this.partInfo.partNum }_T${ index }`,
         fixedAssetsName: "",
         assembledPartPrjCode: this.partInfo.fsNum,
         carModeCode: this.partInfo.modelNameZh

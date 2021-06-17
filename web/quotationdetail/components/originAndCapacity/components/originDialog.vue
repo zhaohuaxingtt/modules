@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-28 19:12:06
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-10 18:20:02
+ * @LastEditTime: 2021-06-17 13:32:12
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\originAndCapacity\components\originDialog.vue
 -->
@@ -81,7 +81,7 @@ export default {
 
       getSupplierInfo({
         quotationId: this.quotationId,
-        supplierId: this.userInfo.supplierId
+        supplierId: this.userInfo.supplierId || this.$route.query.supplierId
       })
       .then(res => {
         if (res.code == 200) {
