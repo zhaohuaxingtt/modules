@@ -1,10 +1,10 @@
 <!--
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-17 11:52:44
+ * @LastEditors: Luoshuang
+ * @LastEditTime: 2021-06-18 15:12:52
  * @Description: In User Settings Edit
- * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\index.vue
+ * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
 <template> 
   <iPage class="quotation">
@@ -352,6 +352,10 @@ export default {
     handleCancelQutation() {
       if (this.forceDisabled) return
       this.disabled = true
+      this.$nextTick(() => {
+        const component = this.$refs[this.currentTab][0]
+        if (typeof component.init === "function") component.init()
+      })
     },
     // 引用批量价格
     handleQuoteBatchPrice() {
