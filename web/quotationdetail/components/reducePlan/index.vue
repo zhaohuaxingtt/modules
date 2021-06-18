@@ -77,10 +77,10 @@ export default {
          * @return {*}
          */        
         handleABChange() {
-            if (this.computedBasic === '01' && this.aprice) {
+            if (this.computedBasic === '01' && !this.aprice) {
                 iMessage.warn('A价不存在，无法根据A价计算降价后的价格')
             }
-            if (this.computedBasic === '02' && this.bprice) {
+            if (this.computedBasic === '02' && !this.bprice) {
                 iMessage.warn('B价不存在，无法根据B价计算降价后的价格')
             }
             this.tableData = this.computeReducePrice(this.computedBasic === '01' ? this.aprice : this.bprice, this.tableData)
