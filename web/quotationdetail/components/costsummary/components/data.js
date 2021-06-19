@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2021-04-23 15:34:54
- * @LastEditTime: 2021-06-09 15:04:00
- * @LastEditors: Luoshuang
+ * @LastEditTime: 2021-06-19 13:58:39
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\costsummary\components\data.js
  */

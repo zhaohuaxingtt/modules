@@ -1,8 +1,8 @@
 <!--
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
- * @LastEditors: Luoshuang
- * @LastEditTime: 2021-06-18 15:12:52
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-06-19 13:04:20
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -162,6 +162,7 @@ export default {
     
     if (this.$route.query.agentQutation) {
       this.disabled = true
+      this.forceDisabled = false
     }
 
     this.partNum = this.$route.query.partNum || ''
@@ -219,8 +220,6 @@ export default {
           iMessage.error(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
           this.parts = []
           this.partInfo = {}
-          this.disabled = true
-          this.forceDisabled = true
         }
 
         this.partInfoLoading = false
@@ -229,8 +228,6 @@ export default {
         this.parts = []
         this.partInfo = {}
         this.partInfoLoading = false
-        this.disabled = true
-        this.forceDisabled = true
       })
     },
     getStates() {
@@ -254,10 +251,10 @@ export default {
             return
           }
 
-          if (this.$route.query.agentQutation) {
-            this.forceDisabled = false
-            this.disabled = true
-          }
+          // if (this.$route.query.agentQutation) {
+          //   this.forceDisabled = false
+          //   this.disabled = true
+          // }
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
         }
@@ -272,7 +269,8 @@ export default {
       if (typeof component.save === "function") {
         this.saveLoading = true
         try {
-          await component.save()
+          const componentsSave =  await component.save()
+          console.log(componentsSave)
           this.getPartsQuotations("save");
           this.saveStatus = false
         } finally {

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-23 15:38:31
- * @LastEditTime: 2021-06-17 11:10:51
+ * @LastEditTime: 2021-06-19 13:59:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\costsummary\components\timeAndlevTabel.vue
@@ -68,7 +68,7 @@ export default{
       type:Object,
       default:()=>{
         return {
-           persent:['0','0','0','0','0','0'],
+           persent:[0,0,0,0,0,0],
            tableData:[]
         }
       }

@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 17:41:42
- * @LastEditTime: 2021-06-17 11:10:20
+ * @LastEditTime: 2021-06-19 14:05:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\costsummary\components\persent.vue
@@ -9,7 +9,7 @@
 <template>
 <ul class="urlli">
   <template v-for='(items,index) in persentTitel(persentList,realDataList)'>
-      <li :key='index' :style='{width:items.width}' v-if='items.width != 0'>
+      <li :key='index' :style='{width:parseInt(items.width)<5?"100px":items.width}'>
         <p class="a" :style="{backgroundColor:items.color}"></p>
         <p class="b" :title='items.name'>{{$t(items.key)}}</p>
         <p class="c" :title='items.persent'>{{items.persent}}</p>
@@ -24,7 +24,7 @@ export default{
   props:{
     persentList:{
       type:Array,
-      default:()=>['0','0','0','0','0','0']
+      default:()=>[0,0,0,0,0,0]
     },
     realDataList:{
       type:Array,
@@ -44,8 +44,8 @@ export default{
     overflow: hidden;
     margin-top: 20px;
     max-height: 68px;
+    display: flex;
     li{
-      float: left;
       padding-right: 5px;
       transition: all 1s;
       p{
