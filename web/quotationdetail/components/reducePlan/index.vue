@@ -148,6 +148,7 @@ export default {
         },
         // 保存
         save(){
+            return new Promise((r,j)=>{
             const { computedBasic,tableData,partInfo } = this;
             const {quotationId} = partInfo; // 258869949
             const data = {
@@ -163,14 +164,18 @@ export default {
             this.loading = true
             saveLtcPlan(data).then((res)=>{
                 if(res?.result){
+                    r()
                     iMessage.success(this.$i18n.locale === "zh" ? res?.desZh : res?.desEn)
                     this.init()
                 }else{
+                    j()
                     iMessage.error(this.$i18n.locale === "zh" ? res?.desZh : res?.desEn)
                 }
 
             }).finally(() => {
+                j()
                 this.loading = false
+            })
             })
         },
     }

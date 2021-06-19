@@ -2,7 +2,7 @@
  * @Author: Luoshuang
  * @Date: 2021-05-27 15:54:05
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-10 18:21:02
+ * @LastEditTime: 2021-06-19 22:00:33
  * @Description: 送样进度
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\sampleDeliveryProgress\index.vue
 -->
@@ -124,7 +124,8 @@ export default {
       .catch(() => this.loading = false)
     },
     save() {
-      return saveSampleProgress({
+      return new Promise((r,j)=>{
+        saveSampleProgress({
         quotationId: this.partInfo.quotationId,
         sampleProgressDTOS: [
           ...(this.tableDataCache.LC.map(item => ({
@@ -141,11 +142,16 @@ export default {
         const message = this.$i18n.locale === "zh" ? res.desZh : res.desEn
 
         if (res.code == 200) {
+          r()
           iMessage.success(message)
           this.init()
         } else {
+          j()
           iMessage.error(message)
         }
+      }).catch(()=>{
+        j()
+      })
       })
     },
     handleInputBySupplierTime(value, row) {

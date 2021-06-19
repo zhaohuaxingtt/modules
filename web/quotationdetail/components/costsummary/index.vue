@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-06-17 11:09:53
+ * @LastEditTime: 2021-06-19 21:46:04
  * @LastEditors: Please set LastEditors
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
@@ -272,25 +272,30 @@ export default{
      * @return {*}
      */    
     postCostSummary(){
-      const sendData = JSON.parse(JSON.stringify(this.allTableData))
-      sendData.makeCost = sendData.makeCost.records
-      sendData.rawMaterial = sendData.rawMaterial.records
-      sendData['sumDTO'] = this.topTableData.tableData[0]
-      sendData['quotationId'] = this.partInfo.quotationId
-      sendData['cbdLevel'] = this.allTableData.level
-      sendData['sumVO'] = undefined
-      sendData['level'] = undefined
-      sendData.partType = this.partInfo.partType
-      sendData.partProjectType = this.partInfo.partProjectType
-      return postCostSummary(this.translateDataForServerce(sendData)).then(res=>{
-        if(res.code == 200){
-          iMessage.success('操作成功')
-          this.updateCbdLevel(this.allTableData.level)
-        }else{
-          iMessage.error(res.desZh)
-        }
-      }).catch(err=>{
-        iMessage.error(err.desZh)
+      return new Promise((r,j)=>{
+         const sendData = JSON.parse(JSON.stringify(this.allTableData))
+        sendData.makeCost = sendData.makeCost.records
+        sendData.rawMaterial = sendData.rawMaterial.records
+        sendData['sumDTO'] = this.topTableData.tableData[0]
+        sendData['quotationId'] = this.partInfo.quotationId
+        sendData['cbdLevel'] = this.allTableData.level
+        sendData['sumVO'] = undefined
+        sendData['level'] = undefined
+        sendData.partType = this.partInfo.partType
+        sendData.partProjectType = this.partInfo.partProjectType
+        postCostSummary(this.translateDataForServerce(sendData)).then(res=>{
+          if(res.code == 200){
+            r()
+            iMessage.success('操作成功')
+            this.updateCbdLevel(this.allTableData.level)
+          }else{
+            j(res.desZh)
+            iMessage.error(res.desZh)
+          }
+        }).catch(err=>{
+          j(err.desZh)
+          iMessage.error(err.desZh)
+        })
       })
     },
     /**
