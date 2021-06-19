@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-02-24 09:42:07
- * @LastEditTime: 2021-06-17 16:07:54
+ * @LastEditTime: 2021-06-19 11:39:47
  * @LastEditors: Please set LastEditors
  * @Description: 零件签收-table组件。
  * @FilePath: \front-supplier\src\views\rfqManageMent\workingRfq\components\tableList\index.vue
@@ -85,7 +85,7 @@
         <template v-if='!items.list' slot-scope="scope">
           <template v-if='items.type == "select" && !notEdit'>
             <iSelect v-model="scope.row[items.props]">
-                <el-option :value="options.value" v-for='(options,optionIndex) in items.options' :key='optionIndex'>{{options.label}}</el-option>
+                <el-option :value="options.value" v-for='(options,optionIndex) in items.options' :key='optionIndex' :label="options.name"></el-option>
             </iSelect>
           </template>
           <template v-else-if='items.type == "input" && !notEdit'>

@@ -441,7 +441,7 @@ export default{
         return data
       } catch (error) {
         return {
-            persent:['0','0','0','0','0','0'],
+            persent:[{},{},{},{},{},{}],
             tableData:[]
           }
       }
