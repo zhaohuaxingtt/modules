@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-19 13:04:20
+ * @LastEditTime: 2021-06-19 18:02:50
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -23,7 +23,12 @@
         </el-option>
       </iSelect> 
       <span v-else class="font18 font-weight">{{ partInfo && partInfo.label }}</span>
-      <div class="floatright">
+      <!-------------采购员界面跳转过来的时候，如果出现当前供应商还未接受报价情况----------------->
+      <div class="floatright" v-if='watingSupplier'>
+        <iButton @click="agreePrice">接受报价</iButton>
+        <iButton @click="rejectPrice">拒绝报价</iButton>
+      </div>
+      <div class="floatright" v-else>
         
         <iButton v-if="!forceDisabled && disabled" @click="handleAgentQutation">{{ $t("LK_DAIGONGYINGSHANGBAOJIA") }}</iButton>
         <iButton v-if="!forceDisabled && !disabled" @click="handleCancelQutation">{{ $t("LK_QUXIAO") }}</iButton>
@@ -59,11 +64,22 @@
         </el-tab-pane>
       </iTabsList>
     </div>
+    <iDialog
+       title="请填写拒绝理由"
+       width="400px"
+      :visible.sync="dialogVisible"
+    >
+      <iInput v-model='rejectRason' style="margin-bottom:20px;"></iInput>  
+      <span slot="footer" class="dialog-footer">
+        <iButton @click="dialogVisible = false">取 消</iButton>
+        <iButton @click="sueReject">确 定</iButton>
+      </span>
+    </iDialog>
   </iPage>
 </template>
 
 <script>
-import { iPage, iButton, iCard, iFormGroup, iFormItem, iText, iTabsList, iSelect, icon, iMessage, iMessageBox } from "rise"
+import { iPage, iButton,iDialog, iCard,iInput, iFormGroup, iFormItem, iText, iTabsList, iSelect, icon, iMessage, iMessageBox } from "rise"
 import logButton from "./components/logButton"
 import { partInfoItems } from "./components/data"
 import infoAndReq from "./components/infoAndReq"
@@ -100,7 +116,9 @@ export default {
     costsummary,
     reducePlan,
     sampleDeliveryProgress,
-    remarksAndAttachment
+    remarksAndAttachment,
+    iInput,
+    iDialog
   },
   mixins: [ filters ],
   data() {
@@ -135,7 +153,10 @@ export default {
       quoteBatchPriceLoading: false,
       cancelQuoteBatchPriceLoading: false,
       fix: false,
-      supplierId: ""
+      supplierId: "",
+      watingSupplier:false,
+      dialogVisible:false,
+      rejectRason:''
     }
   },
   provide: function () {
@@ -159,23 +180,38 @@ export default {
     if (this.$route.query.fix) {
       this.fix = true
     }
-    
     if (this.$route.query.agentQutation) {
       this.disabled = true
       this.forceDisabled = false
     }
-
     this.partNum = this.$route.query.partNum || ''
     this.fsNum = this.$route.query.fsNum || ''
     this.partInfo.partNum = this.$route.query.partNum || ''
     this.partInfo.fsNum = this.$route.query.fsNum || ''
     this.partInfo.quotationId = this.$route.query.quotationId || ''
-    this.getPartsQuotations();
+    //保证初始化状态不被重写 当前方法中 会重写disabel状态
+    this.getPartsQuotations().then(()=>{this.disabled = true});
   },
   methods: {
+    rejectPrice(){
+      this.dialogVisible = true
+    },
+    /**
+     * @description: 确认拒接按钮 
+     * @param {*}
+     * @return {*}
+     */
+    sueReject(){},
+    /**
+     * @description: 接受报价按钮 
+     * @param {*}
+     * @return {*}
+     */
+    agreePrice(){},
     log() {},
     getPartsQuotations(type) {
-      this.partInfoLoading = true
+      return new Promise(r=>{
+         this.partInfoLoading = true
 
       getPartsQuotations({
         rfqId: this.$route.query.rfqId,
@@ -203,7 +239,7 @@ export default {
 
           this.partInfo = cloneDeep(currentPart)
 
-          this.getStates()
+          this.getStates().then(()=>{r()})
 
           if (type != "save") {
             this.$nextTick(() => {
@@ -217,6 +253,7 @@ export default {
             })
           }
         } else {
+          r()
           iMessage.error(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
           this.parts = []
           this.partInfo = {}
@@ -225,13 +262,16 @@ export default {
         this.partInfoLoading = false
       })
       .catch(() => {
+        r()
         this.parts = []
         this.partInfo = {}
         this.partInfoLoading = false
       })
+      })
     },
     getStates() {
-      this.tabLoading = true
+      return new Promise(r=>{
+              this.tabLoading = true
       getStates({
         fsNum: this.partInfo.fsNum,
         quotationId: this.partInfo.quotationId,
@@ -239,12 +279,14 @@ export default {
       })
       .then(res => {
         if (res.code == 200) {
+          this.tabLoading = false
           let fsStateDisabled = res.data.fsStateCode != "12"
           let rfqStateDisabled = res.data.rfqStateCode != "01" && res.data.rfqStateCode != "03"
           let quotationStateDisabled = res.data.quotationStateCode == "0" || res.data.quotationStateCode == "2" || res.data.quotationStateCode == "6"
           let rfqRoundStateDisabled = res.data.rfqRoundStateCode != "01"
           let roundDisabled = +this.partInfo.round != +res.data.currentRounds
           this.disabled = fsStateDisabled || rfqStateDisabled || quotationStateDisabled || rfqRoundStateDisabled || roundDisabled
+          r()
           if (this.fix) {
             this.disabled = true
             this.forceDisabled = true
@@ -256,12 +298,12 @@ export default {
           //   this.disabled = true
           // }
         } else {
+          r()
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
         }
-
-        this.tabLoading = false
       })
-      .catch(() => this.tabLoading = false)
+      .catch(() => {this.tabLoading = false;r()})
+      })
     },
     // 保存
     async handleSave() {
