@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 14:26:53
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-10 18:20:47
+ * @LastEditTime: 2021-06-19 22:00:08
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\sample\index.vue
 -->
@@ -82,17 +82,23 @@ export default {
     },
     // 保存工装样件，父组件通过ref调用
     save() {
-      return saveToolingSample({
+      return new Promise((r,j)=>{
+        saveToolingSample({
         quotationId: this.partInfo.quotationId,
         toolingSampleDTOList: this.tableListData
       })
       .then(res => {
         if (res.code == 200) {
+          r()
           iMessage.success(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
           this.init()
         } else {
+          j()
           iMessage.error(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
         }
+      }).catch(()=>{
+        j()
+      })
       })
     }
   }

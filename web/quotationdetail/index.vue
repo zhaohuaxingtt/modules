@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-19 18:02:50
+ * @LastEditTime: 2021-06-19 22:04:11
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -180,17 +180,16 @@ export default {
     if (this.$route.query.fix) {
       this.fix = true
     }
-    if (this.$route.query.agentQutation) {
-      this.disabled = true
-      this.forceDisabled = false
-    }
     this.partNum = this.$route.query.partNum || ''
     this.fsNum = this.$route.query.fsNum || ''
     this.partInfo.partNum = this.$route.query.partNum || ''
     this.partInfo.fsNum = this.$route.query.fsNum || ''
     this.partInfo.quotationId = this.$route.query.quotationId || ''
     //保证初始化状态不被重写 当前方法中 会重写disabel状态
-    this.getPartsQuotations().then(()=>{this.disabled = true});
+    this.getPartsQuotations().then(()=>{ if (this.$route.query.agentQutation) {
+      this.disabled = true
+      this.forceDisabled = false
+    }});
   },
   methods: {
     rejectPrice(){
@@ -286,13 +285,22 @@ export default {
           let rfqRoundStateDisabled = res.data.rfqRoundStateCode != "01"
           let roundDisabled = +this.partInfo.round != +res.data.currentRounds
           this.disabled = fsStateDisabled || rfqStateDisabled || quotationStateDisabled || rfqRoundStateDisabled || roundDisabled
-          r()
-          if (this.fix) {
+          if (this.fix) { //当存在这个状态的时候 整个界面是一个静态界面 不会存在其他状态
             this.disabled = true
             this.forceDisabled = true
-            return
           }
-
+          if(res.data.quotationStateCode == 0){ //如果采购员是点击横岗过来的 则要看当前报价单的状态
+            if(this.$route.query.watingSupplier){
+              this.watingSupplier = true
+            }
+          }else{
+            if(this.$route.query.watingSupplier){
+              this.watingSupplier = false
+              this.forceDisabled = false
+              this.disabled = true
+            }
+          }
+          r()
           // if (this.$route.query.agentQutation) {
           //   this.forceDisabled = false
           //   this.disabled = true
@@ -311,9 +319,11 @@ export default {
       if (typeof component.save === "function") {
         this.saveLoading = true
         try {
-          const componentsSave =  await component.save()
-          console.log(componentsSave)
-          this.getPartsQuotations("save");
+          component.save().then(()=>{
+            this.getPartsQuotations("save");
+          }).catch(()=>{
+            this.saveLoading = false
+          })          
           this.saveStatus = false
         } finally {
           this.saveLoading = false

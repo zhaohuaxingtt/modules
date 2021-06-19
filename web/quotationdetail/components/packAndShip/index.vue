@@ -2,7 +2,7 @@
  * @Descripttion: 供应商报价界面-报价页面-零件报价-包装运输
  * @Author: Luoshuang
  * @Date: 2021-04-22 16:53:47
- * @LastEditTime: 2021-05-18 14:23:51
+ * @LastEditTime: 2021-06-19 21:59:16
 -->
 <template>
   <!----------------供应商报价界面-报价页面-零件报价-包装运输---------------------------------------------------->
@@ -101,16 +101,21 @@ export default {
      * 保存修改的包装运输数据
      */
     save() {
-      this.loading = true
-      savePackageTransport(this.params).then(res => {
-        if (res && res.result) {
-          iMessage.success(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
-          this.init()
-        } else {
-          iMessage.error(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
-        }
-      }).finally(() => {
-        this.loading = false
+      return new Promise((r,j)=>{
+        this.loading = true
+        savePackageTransport(this.params).then(res => {
+          if (res && res.result) {
+            r()
+            iMessage.success(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
+            this.init()
+          } else {
+           j()
+            iMessage.error(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
+          }
+        }).finally(() => {
+          j()
+          this.loading = false
+        })
       })
     }
   }

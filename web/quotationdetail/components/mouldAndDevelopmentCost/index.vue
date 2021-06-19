@@ -1,8 +1,8 @@
 <!--
  * @Author: ldh
  * @Date: 2021-04-27 17:24:16
- * @LastEditors: ldh
- * @LastEditTime: 2021-05-14 16:50:45
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-06-19 21:58:38
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\index.vue
 -->
@@ -40,7 +40,8 @@ export default {
       this.$refs.developmentCost.getDevFee()
     },
     save() {
-      return saveModuleDevFee({
+      return new Promise((r,j)=>{
+      saveModuleDevFee({
         quotationId: this.partInfo.quotationId,
         moduleFeeDTOList: this.$refs.mould.tableListData.map(item => ({
           ...item,
@@ -65,13 +66,18 @@ export default {
       })
       .then(res => {
         if (res.code == 200) {
+          r()
           iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
           this.init()
         } else {
+          j()
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
         }
       })
-      .catch(() => {})
+      .catch(() => {
+        j()
+      })
+      })
     }
   }
 }
