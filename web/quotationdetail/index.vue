@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-19 22:04:11
+ * @LastEditTime: 2021-06-21 15:22:26
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -397,6 +397,7 @@ export default {
     handleAgentQutation() {
       if (this.forceDisabled) return
       this.disabled = false
+      this.fix = false
     },
     // 取消代供应商报价
     handleCancelQutation() {
