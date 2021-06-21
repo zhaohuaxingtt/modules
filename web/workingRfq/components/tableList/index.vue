@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-02-24 09:42:07
- * @LastEditTime: 2021-06-19 11:39:47
+ * @LastEditTime: 2021-06-21 21:03:30
  * @LastEditors: Please set LastEditors
  * @Description: 零件签收-table组件。
  * @FilePath: \front-supplier\src\views\rfqManageMent\workingRfq\components\tableList\index.vue
@@ -68,13 +68,15 @@
               <el-table-column v-else :key="indexs" align='center' :width="itemss.width" :show-overflow-tooltip='itemss.tooltip'  :label="itemss.key ? $t(itemss.key) : itemss.name" :prop="itemss.props">
                   <!----------------------------如果是展示select 或者input------------------------>
                   <tempalte slot-scope="scope">
-                    <template v-if='itemss.type == "select" && !notEdit'>
-                      <iSelect v-model="scope.row[itemss.props]">
+                    <template v-if='itemss.type == "select"'>
+                      <iSelect v-model="scope.row[itemss.props]" v-if='!notEdit'>
                           <el-option :value="options.code" v-for='(options,optionIndex) in items.options' :key='optionIndex' :label='options.name'></el-option>
                       </iSelect>
+                      <span v-else>{{scope.row[itemss.props]}}</span>
                     </template>
-                    <template v-else-if='itemss.type == "input" && !notEdit'>
-                      <iInput v-model="scope.row[itemss.props]"></iInput>
+                    <template v-else-if='itemss.type == "input"'>
+                      <iInput v-model="scope.row[itemss.props]" v-if='!notEdit'></iInput>
+                      <span v-else>{{scope.row[itemss.props]}}</span>
                     </template>
                     <template v-else>{{scope.row[itemss.props]}}</template>
                   </tempalte>
@@ -83,18 +85,21 @@
         </template>
         <!----------------------------如果是展示select 或者input------------------------>
         <template v-if='!items.list' slot-scope="scope">
-          <template v-if='items.type == "select" && !notEdit'>
-            <iSelect v-model="scope.row[items.props]">
+          <template v-if='items.type == "select"'>
+            <iSelect v-model="scope.row[items.props]" v-if='!notEdit'>
                 <el-option :value="options.value" v-for='(options,optionIndex) in items.options' :key='optionIndex' :label="options.name"></el-option>
             </iSelect>
+            <span v-else>{{scope.row[items.props]}}</span>  
           </template>
-          <template v-else-if='items.type == "input" && !notEdit'>
-            <iInput v-model="scope.row[items.props]"></iInput>
+          <template v-else-if='items.type == "input"'>
+            <iInput v-model="scope.row[items.props]" v-if='!notEdit'></iInput>
+            <span v-else>{{scope.row[items.props]}}</span>
           </template>
-          <template v-else-if='items.type == "inputRate" && !notEdit'>
-            <div class="flexVerticalCenter">
+          <template v-else-if='items.type == "inputRate"'>
+            <div class="flexVerticalCenter" v-if='!notEdit'>
               <iInput v-model="scope.row[items.props]" @input="handleInputByRate($event, scope.row, items.props)"></iInput><span class="margin-left5">%</span>
             </div>
+            <span v-else>{{scope.row[items.props]}}</span>
           </template>
           <template v-else>
             <span v-if="items.type === 'inputRate'">{{scope.row[items.props]}}{{ (scope.row[items.props] == null || scope.row[items.props] == "") && scope.row[items.props] !== 0  ? '' : '%' }}</span>
