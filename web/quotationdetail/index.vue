@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-19 22:04:11
+ * @LastEditTime: 2021-06-21 16:10:55
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -300,11 +300,14 @@ export default {
               this.disabled = true
             }
           }
+          if (res.data.quotationStateCode == "2" || res.data.quotationStateCode == "6") {
+            if(this.$route.query.watingSupplier){
+              this.fix = true
+              this.disabled = true
+              this.forceDisabled = true
+            } 
+          } 
           r()
-          // if (this.$route.query.agentQutation) {
-          //   this.forceDisabled = false
-          //   this.disabled = true
-          // }
         } else {
           r()
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
@@ -397,6 +400,7 @@ export default {
     handleAgentQutation() {
       if (this.forceDisabled) return
       this.disabled = false
+      this.fix = false
     },
     // 取消代供应商报价
     handleCancelQutation() {
