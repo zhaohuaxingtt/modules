@@ -1,0 +1,36 @@
+#下载组件iDownload
+使用在表单组件中  
+fileIds: 文件id的arrayList，回显fileList，默认值为[];   
+引入该组件的工程本地开发的时候需要在vue.config.js中配置如下proxy
+'/fileud': {
+	target: 'http://10.122.18.166:8034/fileud',
+	changeOrigin: true,
+	pathRewrite: {
+		'^/fileud': ''
+	}
+}
+```vue
+<template>
+	<iPage>
+		<iFormGroup :model="demoForm" ref="demoForm">
+			<iFormItem>
+				<iLabel :label="'文件下载'" slot="label"></iLabel>
+				<iDownload :fileIds="fileIds" />
+			</iFormItem>
+		</iFormGroup>
+	</iPage>
+</template>
+
+<script>
+import { iFormGroup, iFormItem, iLabel, iPage, iDownload } from 'rise'
+export default {
+	components: { iPage, iFormGroup, iFormItem, iLabel, iDownload },
+	data() {
+		return {
+			fileIds: ['1406890012558303234', '1406890292712644609']
+		}
+	}
+}
+</script>
+
+``` 

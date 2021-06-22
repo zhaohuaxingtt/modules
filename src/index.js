@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 11:21:51
- * @LastEditTime: 2021-05-28 22:47:39
- * @LastEditors: ldh
+ * @LastEditTime: 2021-06-22 17:34:06
+ * @LastEditors: Please set LastEditors
  * @Description: 作为打包的入口，批量打包为一个vue可以use的minjs，但是在rise项目中，基本上不会用到全量使用的情况，
  * 为了组件库的完整性而设计的。
  * @FilePath: \front-modules\src\index.js
@@ -30,7 +30,8 @@ import iMessageBox from './components/iMessageBox'
 import iDatePicker from './components/iDatePicker'
 import iTableCustom from './components/iTableCustom'
 import iEditor from './components/iEditor'
-
+import iUpload from './components/iUpload'
+import iDownload from './components/iDownload'
 const components = [
   iMessage,
   iMessageBox,
@@ -53,10 +54,12 @@ const components = [
   iTabs,
   iTabsList,
   iTableCustom,
-  iEditor
+  iEditor,
+  iUpload,
+  iDownload
 ]
 const install = function(Vue) {
-  components.map((component) => {
+  components.map(component => {
     Vue.component(component.name, component)
   })
 }
@@ -87,5 +90,7 @@ export {
   iMessageBox,
   iDatePicker,
   iTableCustom,
-  iEditor
+  iEditor,
+  iUpload,
+  iDownload
 }
