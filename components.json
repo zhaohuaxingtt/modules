@@ -21,5 +21,7 @@
   "i-label": "./src/components/iPageItemsGroup/iLabel/index.js",
   "i-date-picker": "./src/components/iDatePicker/index.js",
   "i-table-custom": "./src/components/iTableCustom/index.js",
-  "i-editor": "./src/components/iEditor/index.js"
+  "i-editor": "./src/components/iEditor/index.js",
+  "i-download": "./src/components/iDownload/index.js",
+  "i-upload": "./src/components/iUpload/index.js"
 }
