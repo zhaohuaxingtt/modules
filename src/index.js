@@ -30,6 +30,8 @@ import iMessageBox from './components/iMessageBox'
 import iDatePicker from './components/iDatePicker'
 import iTableCustom from './components/iTableCustom'
 import iEditor from './components/iEditor'
+import iUpload from './components/iUpload'
+import iDownload from './components/iDownload'
 const components = [
   iMessage,
   iMessageBox,
@@ -52,10 +54,12 @@ const components = [
   iTabs,
   iTabsList,
   iTableCustom,
-  iEditor
+  iEditor,
+  iUpload,
+  iDownload
 ]
 const install = function(Vue) {
-  components.map((component) => {
+  components.map(component => {
     Vue.component(component.name, component)
   })
 }
@@ -86,5 +90,7 @@ export {
   iMessageBox,
   iDatePicker,
   iTableCustom,
-  iEditor
+  iEditor,
+  iUpload,
+  iDownload
 }

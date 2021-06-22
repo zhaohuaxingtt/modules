@@ -1,0 +1,54 @@
+#上传组件iUpload
+使用在表单组件中  
+fileIds: 文件id的arrayList，用于编辑中回显fileList，默认值为[];  
+acceptTypes: 可以上传的文件类型;  
+extraData: 调用上传接口的其他参数，默认值为{ applicationName: 'rise-dev', type: '1', businessId: '01', isTemp: 0 }
+handelCallback: callback中可以获取fileList用于其他业务表单中的提交；  
+引入该组件的工程本地开发的时候需要在vue.config.js中配置如下proxy
+'/fileud': {
+	target: 'http://10.122.18.166:8034/fileud',
+	changeOrigin: true,
+	pathRewrite: {
+		'^/fileud': ''
+	}
+}
+```vue
+<template>
+	<iPage>
+		<iFormGroup :model="demoForm" ref="demoForm">
+			<iFormItem>
+				<iLabel :label="'文件上传'" :required="true" slot="label"></iLabel>
+				<iUpload
+					:fileIds="fileIds"
+					:fileTypes="acceptTypes"
+					:extraData="extraData"
+					@callback="handelCallback"
+				/>
+			</iFormItem>
+		</iFormGroup>
+	</iPage>
+</template>
+
+<script>
+import { iFormGroup, iFormItem, iLabel, iPage, iUpload } from 'rise'
+export default {
+	components: { iPage, iFormGroup, iFormItem, iLabel, iUpload },
+	data() {
+		return {
+			acceptTypes: ['jpg', 'jpeg', 'gif', 'png', 'bmp'],
+			extraData: { applicationName: 'rise-dev',
+					type: '1',
+					businessId: '01',
+					isTemp: 0 },
+			fileIds: ['1406890012558303234', '1406890292712644609']
+		}
+	},
+	methods: {
+		handelCallback(fileList) {
+			console.log('callback', fileList)
+		}
+	}
+}
+</script>
+
+``` 
