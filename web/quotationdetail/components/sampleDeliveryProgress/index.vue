@@ -21,6 +21,7 @@
     </div>
     <tableList :selection="false" :tableTitle="tableTitle" :tableData="tableData" :tableLoading="loading">
       <template #supplierTime="scope">
+        <span v-if="!disabled && (['1st Tryout送样周期', 'EM送样周期'].includes(scope.row.sampleDeliverType) || isBmgpart)" class="required"></span>
         <iInput v-if="!disabled" v-model="scope.row.supplierTime" @click="handleInputBySupplierTime($event, row)"/>
         <span v-else>{{ scope.row.supplierTime }}</span>
       </template>
@@ -66,6 +67,12 @@ export default {
       default: false
     }
   },
+  computed: {
+    // 判断是否是bmg零件
+    isBmgpart() {
+      return this.partInfo && Number(this.partInfo.partType) === 50
+    }
+  },
   data() {
     return {
       loading: false,
@@ -81,7 +88,6 @@ export default {
   methods: {
     init() {
       this.loading = true
-
       getSampleProgress({
         quotationId: this.partInfo.quotationId
       })
@@ -124,19 +130,24 @@ export default {
       .catch(() => this.loading = false)
     },
     save() {
+      const sampleProgressDTOS = [
+        ...(this.tableDataCache.LC.map(item => ({
+          ...item,
+          priceType: "LC",
+        }))),
+        ...(this.tableDataCache.SKD.map(item => ({
+          ...item,
+          priceType: "SKD",
+        }))),
+      ]
+      let checkSupplierTimeNull = Boolean(sampleProgressDTOS.filter(o => o.priceType === this.priceType && ['1st Tryout送样周期', 'EM送样周期'].includes(o.sampleDeliverType) && !o.supplierTime).length)
+      this.isBmgpart && !checkSupplierTimeNull && (checkSupplierTimeNull = Boolean(sampleProgressDTOS.filter(o => o.priceType === this.priceType && ['OTS送样周期'].includes(o.sampleDeliverType) && !o.supplierTime).length))
+      if (checkSupplierTimeNull) return iMessage.error(this.$t('LK_BITIANXIANGBUNENGWEIKONG'))
+      
       return new Promise((r,j)=>{
         saveSampleProgress({
         quotationId: this.partInfo.quotationId,
-        sampleProgressDTOS: [
-          ...(this.tableDataCache.LC.map(item => ({
-            ...item,
-            priceType: "LC",
-          }))),
-          ...(this.tableDataCache.SKD.map(item => ({
-            ...item,
-            priceType: "SKD",
-          }))),
-        ]
+        sampleProgressDTOS
       })
       .then(res => {
         const message = this.$i18n.locale === "zh" ? res.desZh : res.desEn
@@ -179,5 +190,14 @@ export default {
             color: #86878e;
         }
     }
+}
+.required {
+  display: inline-block;
+  &:before {
+    display: inline-block;
+    content: '*';
+    color: #f56c6c;
+    margin-right: 4px;
+  }
 }
 </style>
