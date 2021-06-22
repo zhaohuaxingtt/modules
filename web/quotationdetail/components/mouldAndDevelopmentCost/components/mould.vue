@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 00:21:08
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-17 16:33:29
+ * @LastEditTime: 2021-06-22 14:02:29
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\mould.vue
 -->
@@ -20,11 +20,13 @@
               </iFormItem>
             </iFormGroup>
           </div>
-          <div v-if="!disabled" class="control">
-            <iButton @click="jump" v-if='whenCourcerLogin'>{{ $t('LK_TIAOZHUANZHIRFQMUJUBAOJIA') }}</iButton>
-            <iButton @click="changeRelatingPartsVisible(true)">{{ $t('LK_GUANLIANLINGJIAN') }}</iButton>
+          <div class="control">
+            <iButton @click="jump" v-if='whenCourcerLogin && !disabled'>{{ $t('LK_TIAOZHUANZHIRFQMUJUBAOJIA') }}</iButton>
+            <iButton @click="changeRelatingPartsVisible(true)" v-if="!disabled">{{ $t('LK_GUANLIANLINGJIAN') }}</iButton>
+            <!--------------在任何状态下，下载按钮可以被看见，供用户下载---------------->
             <iButton @click="handleDownload">{{ $t('LK_XIAZAIMUJUCBD') }}</iButton>
             <el-upload 
+              v-if="!disabled"
               class="uploadBtn" 
               multiple
               ref="upload"
@@ -35,8 +37,8 @@
               accept=".xlsx">
                 <iButton :loading="uploadLoading">{{ $t('LK_SHANGCHUANBAOJIA') }}</iButton>
             </el-upload>
-            <iButton @click="handleAdd">{{ $t('LK_TIANJIAHANG') }}</iButton>
-            <iButton @click="handleDel">{{ $t('LK_SHANCHUHANG') }}</iButton>
+            <iButton @click="handleAdd" v-if="!disabled">{{ $t('LK_TIANJIAHANG') }}</iButton>
+            <iButton @click="handleDel" v-if="!disabled">{{ $t('LK_SHANCHUHANG') }}</iButton>
           </div>
         </div>
       </template>

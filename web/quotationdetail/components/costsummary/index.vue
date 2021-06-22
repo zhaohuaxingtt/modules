@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-06-19 21:46:04
+ * @LastEditTime: 2021-06-22 13:54:17
  * @LastEditors: Please set LastEditors
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
@@ -167,7 +167,7 @@ export default{
     translateDicKeyCodeToName(list){
       if(!list) return
       list.forEach(items => {
-        items.code = items.name
+        items['value'] = items.name
       })
       return list
     },
