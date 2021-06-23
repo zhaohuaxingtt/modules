@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 15:20:44
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-17 11:08:32
+ * @LastEditTime: 2021-06-23 20:57:56
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\mouldOffer\components\moduleCost.vue
 -->
@@ -65,7 +65,7 @@
             </template>
             <!-- <iButton>提交</iButton> -->
             <template v-else>
-              <iButton @click="dgysBj=true">代供应商报价</iButton>
+              <iButton @click="dgysBj=true" v-if='hastateSupplierBj'>代供应商报价</iButton>
             </template>
           </div>
         </div>
@@ -208,7 +208,8 @@ export default {
       } else {
         return this.partInfo.rfqQuotation != '1' || this.partInfo.currentStatus == '09' || this.partInfo.currentStatus == '10'
       }
-    }
+    },
+    hastateSupplierBj:()=>true
   },
   watch: {
     disabled() {
