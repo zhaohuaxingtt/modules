@@ -9,7 +9,7 @@
 <template>
 <ul class="urlli">
   <template v-for='(items,index) in persentTitel(persentList,realDataList)'>
-      <li :key='index' :style='{width:parseInt(items.width)<5?"100px":items.width}'>
+      <li :key='index' :style='{width:parseInt(items.width)<5?"100px":items.width}' v-if="items.width">
         <p class="a" :style="{backgroundColor:items.color}"></p>
         <p class="b" :title='items.name'>{{$t(items.key)}}</p>
         <p class="c" :title='items.persent'>{{items.persent}}</p>
@@ -68,4 +68,7 @@ export default{
       }
     }
   }
+.hide {
+  display: none;
+}
 </style>
