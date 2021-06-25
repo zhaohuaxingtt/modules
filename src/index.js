@@ -32,6 +32,8 @@ import iTableCustom from './components/iTableCustom'
 import iEditor from './components/iEditor'
 import iUpload from './components/iUpload'
 import iDownload from './components/iDownload'
+import iDropdown from './components/iDropdown'
+import iLog from './components/iLog'
 const components = [
   iMessage,
   iMessageBox,
@@ -56,7 +58,9 @@ const components = [
   iTableCustom,
   iEditor,
   iUpload,
-  iDownload
+  iDownload,
+  iDropdown,
+  iLog
 ]
 const install = function(Vue) {
   components.map(component => {
@@ -92,5 +96,7 @@ export {
   iTableCustom,
   iEditor,
   iUpload,
-  iDownload
+  iDownload,
+  iDropdown,
+  iLog
 }
