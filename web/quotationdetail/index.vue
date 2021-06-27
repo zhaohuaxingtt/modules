@@ -1,8 +1,8 @@
 <!--
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
- * @LastEditors: Luoshuang
- * @LastEditTime: 2021-06-24 12:55:21
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-06-28 00:46:57
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -10,7 +10,8 @@
   <iPage class="quotation">
     <div class="margin-bottom20 clearFloat">
       <span v-if="!fix" class="font18 font-weight">{{ $t('LK_QIEHUANLINGJIAN') }}：</span>
-      <iSelect v-if="!fix" class="part" popper-class="partSelect" v-model="fsNum" placeholder="" @change="handlePartChange">
+      <!---------------------------------------无论任何情况下，就算是查看详情，也可以切换其他零件-------------------->
+      <iSelect class="part" popper-class="partSelect" v-model="fsNum" placeholder="" @change="handlePartChange">
         <el-option
           v-for="part in parts"
           :key="part.key"
@@ -22,7 +23,7 @@
           </div>
         </el-option>
       </iSelect> 
-      <span v-else class="font18 font-weight">{{ partInfo && partInfo.label }}</span>
+      <!-- <span v-else class="font18 font-weight">{{ partInfo && partInfo.label }}</span> -->
       <!-------------采购员界面跳转过来的时候，如果出现当前供应商还未接受报价情况----------------->
       <div class="floatright" v-if='watingSupplier'>
         <iButton @click="agreePrice">接受报价</iButton>
