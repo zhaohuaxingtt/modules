@@ -1,6 +1,6 @@
 <template>
   <div class="material-dialog">
-    <iDialog title="日志" :visible.sync="isShow" width="70%">
+    <iDialog title="日志" :visible.sync="isShow" width="70%" @open="handleOpen">
       <el-table :data="tableData" style="width: 100%">
         <el-table-column type="expand">
           <template slot-scope="props">
@@ -48,18 +48,20 @@ export default {
       }
     }
   },
-  mounted() {
-    console.log('bizId', this.bizId)
-    const http = new XMLHttpRequest()
-    const url = `/bizlog/operationLog/findOperationLogsByBizId/${this.bizId}`
-    http.open('GET', url, true)
-    http.setRequestHeader('content-type', 'application/json')
-    http.onreadystatechange = () => {
-      if (http.readyState === 4) {
-        this.tableData = JSON.parse(http.responseText)
+  methods: {
+    handleOpen() {
+      console.log('bizId', this.bizId)
+      const http = new XMLHttpRequest()
+      const url = `/bizlog/operationLog/findOperationLogsByBizId/${this.bizId}`
+      http.open('GET', url, true)
+      http.setRequestHeader('content-type', 'application/json')
+      http.onreadystatechange = () => {
+        if (http.readyState === 4) {
+          this.tableData = JSON.parse(http.responseText)
+        }
       }
+      http.send()
     }
-    http.send()
   }
 }
 </script>
