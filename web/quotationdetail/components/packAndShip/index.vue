@@ -2,13 +2,47 @@
  * @Descripttion: 供应商报价界面-报价页面-零件报价-包装运输
  * @Author: Luoshuang
  * @Date: 2021-04-22 16:53:47
- * @LastEditTime: 2021-06-19 21:59:16
+ * @LastEditTime: 2021-06-29 15:44:59
 -->
 <template>
+  <div v-if="partInfo.partProjectType === 'PT04' || partInfo.partProjectType === 'PT19'" v-loading="loading">
+    <iCard :title="language('CANKAOBAOZHUANG','参考包装')">
+      <iFormGroup
+        :row="4"
+        inline
+        class="packAndShip-form margin-top20"
+      >
+        <iFormItem
+          v-for="item in referenceInputs"
+          :key="item.props"
+          :label="language(item.i18n, item.name) + '：'"
+        >
+          <iText>{{ params[item.props] }}</iText>
+        </iFormItem>
+      </iFormGroup>
+    </iCard>
+    <iCard :title="language('BAOZHUANGYAOQIU','包装要求')" class="margin-top20">
+      <iFormGroup
+        :row="4"
+        inline
+        class="packAndShip-form margin-top20"
+      >
+        <iFormItem
+          v-for="item in referenceInputs"
+          :key="item.props"
+          :label="language(item.i18n, item.name) + '：'"
+        >
+          <iText v-if="disabled">{{ params[item.props] }}</iText>
+          <iSelect v-else-if="item.type === 'select'" v-model="params[item.props]"></iSelect>
+          <iInput v-else v-model="params[item.props]" title="" type="number" oninput="if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+5)}"></iInput>
+        </iFormItem>
+      </iFormGroup>
+    </iCard>
+  </div>
   <!----------------供应商报价界面-报价页面-零件报价-包装运输---------------------------------------------------->
   <!--- 先做出[包装费][运输费][操作费]三个文本输入框（只能输入数字，可以输入小数点后四位），提供给报价成本汇总使用----->
   <!----在未来BNK页面开发好后，再将该包装运输页面迁移到本系统内---------------------------------------------------->
-  <iCard class="packAndShip" v-loading="loading">
+  <iCard v-else class="packAndShip" v-loading="loading">
     <div class="header">
       <span class="title">{{ $t('LK_BAOZHUANGYUNSHU') }}</span>
       <span class="tip margin-left10">{{ $t('LK_DANWEIYUAN') }}</span>
@@ -67,7 +101,23 @@ export default {
         transportCost: "",
         operateCost: "",
       },
-      loading: false
+      loading: false,
+      referenceInputs: [
+        { props: "packageCost", name: "参考类型", i18n: 'CAOKAOLEIXING' },
+        { props: "transportCost", name: "参考包装长(mm)", i18n: 'CANKAOBAOZHUANGCHANG_MM' },
+        { props: "transportCost", name: "参考包装宽(mm)", i18n: 'CANKAOBAOZHUANGKUAN_MM' },
+        { props: "transportCost", name: "参考包装高(mm)", i18n: 'CANKAOBAOZHUANGGAO_MM' },
+        { props: "packageCost", name: "LS(PC)", i18n: 'LS_PC' },
+        { props: "packageCost", name: "Stack", i18n: 'STACK' },
+      ],
+      requireInputs: [
+        { props: "packageCost", name: "参考类型", i18n: 'CAOKAOLEIXING', type: 'select' },
+        { props: "transportCost", name: "参考包装长(mm)", i18n: 'CANKAOBAOZHUANGCHANG_MM' },
+        { props: "transportCost", name: "参考包装宽(mm)", i18n: 'CANKAOBAOZHUANGKUAN_MM' },
+        { props: "transportCost", name: "参考包装高(mm)", i18n: 'CANKAOBAOZHUANGGAO_MM' },
+        { props: "packageCost", name: "LS(PC)", i18n: 'LS_PC' },
+        { props: "packageCost", name: "Stack", i18n: 'STACK' },
+      ]
     };
   },
   methods: {

@@ -1,10 +1,10 @@
 /*
  * @Author: your name
  * @Date: 2021-04-23 15:34:54
- * @LastEditTime: 2021-06-19 13:58:39
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-06-29 15:26:48
+ * @LastEditors: Luoshuang
  * @Description: In User Settings Edit
- * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\costsummary\components\data.js
+ * @FilePath: \front-modules\web\quotationdetail\components\costsummary\components\data.js
  */
 
 import {_getMathNumber} from '@/utils'
@@ -306,3 +306,29 @@ export function getPersent(total,listData,data) {
 //   ]},
 //   {props:'materialCost',name:'原材料/散件成本（RMB/Pc.）',key: 'LK_YUANCRMBPC',tooltip:true,width:'200' },
 // ]
+
+export const tableTitleDB = [
+  {props: 'projectType', name: '项目类型', key: 'XIANGMULEIXING', tooltip: true, width: ''},
+  {props: 'fee', name: '金额', key: 'JINE', tooltip: true, width: '', children: [
+    {props: 'sea', name: '海运', key: 'HAIYUN', type: 'input', editable: true},
+    {props: 'sky', name: '空运', key: 'KONGYUN', type: 'input', editable: true}
+  ]},
+  {props: 'memo', name: '备注', key: 'BEIZHU', type: 'input', editable: true}
+]
+
+export const tableDataDB = [
+  {projectType: '出厂价 Exwork', sea: '10', sky: '10', memo: ''},
+  {projectType: '离岸价 FOB', sea: '10', sky: '10', memo: '原供应商 Original Supplier'},
+  {projectType: '到岸价 CIF(=1+6+7+8+9+10)', sea: '10', sky: '10', memo: ''},
+  {projectType: '未完税交货 DDU', sea: '10', sky: '10', memo: ''},
+  {projectType: '未完税交货 DDP', sea: '10', sky: '10', memo: ''},
+  {projectType: '管理费用 Management expenses', sea: '10', sky: '10', memo: ''},
+  {projectType: '包装费 Packing Cost', sea: '10', sky: '10', memo: ''},
+  {projectType: '运保费 Transport Cost and Ensurance', sea: '10', sky: '10', memo: ''},
+  {projectType: '产品利润 Profit', sea: '10', sky: '10', memo: ''},
+  {projectType: '其他费用 Others', sea: '10', sky: '10', memo: 'Audi/Skoda 许可费',memoDisabled: true},
+  {projectType: '原材料补差 MTZ', noSky: true, sea: '10', type: 'select', selectOption: '', memo: ''},
+  {projectType: '模具投资 Tooling investment', sea: '10', sky: '10', memo: ''},
+  {projectType: '起步生产SOP (YYYY-MM-DD)', noSky: true, sea: '10', type: 'date', memo: ''},
+  {projectType: '产能信息 Capacity', sea: '10', sky: '10', memo: '', allRow: true},
+]
