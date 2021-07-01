@@ -2,7 +2,7 @@
  * @Descripttion: 供应商报价界面-报价页面-零件报价-包装运输
  * @Author: Luoshuang
  * @Date: 2021-04-22 16:53:47
- * @LastEditTime: 2021-06-29 15:44:59
+ * @LastEditTime: 2021-07-01 19:30:55
 -->
 <template>
   <div v-if="partInfo.partProjectType === 'PT04' || partInfo.partProjectType === 'PT19'" v-loading="loading">
@@ -111,12 +111,12 @@ export default {
         { props: "packageCost", name: "Stack", i18n: 'STACK' },
       ],
       requireInputs: [
-        { props: "packageCost", name: "参考类型", i18n: 'CAOKAOLEIXING', type: 'select' },
-        { props: "transportCost", name: "参考包装长(mm)", i18n: 'CANKAOBAOZHUANGCHANG_MM' },
-        { props: "transportCost", name: "参考包装宽(mm)", i18n: 'CANKAOBAOZHUANGKUAN_MM' },
-        { props: "transportCost", name: "参考包装高(mm)", i18n: 'CANKAOBAOZHUANGGAO_MM' },
-        { props: "packageCost", name: "LS(PC)", i18n: 'LS_PC' },
-        { props: "packageCost", name: "Stack", i18n: 'STACK' },
+        { props: "packageType", name: "参考类型", i18n: 'CAOKAOLEIXING', type: 'select' },
+        { props: "packageLength", name: "参考包装长(mm)", i18n: 'CANKAOBAOZHUANGCHANG_MM' },
+        { props: "packageWidth", name: "参考包装宽(mm)", i18n: 'CANKAOBAOZHUANGKUAN_MM' },
+        { props: "packageHeight", name: "参考包装高(mm)", i18n: 'CANKAOBAOZHUANGGAO_MM' },
+        { props: "packageLs", name: "LS(PC)", i18n: 'LS_PC' },
+        { props: "packageStack", name: "Stack", i18n: 'STACK' },
       ]
     };
   },
