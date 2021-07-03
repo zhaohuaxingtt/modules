@@ -2,7 +2,7 @@
  * @Descripttion: US: SP2-T01-E13-023 供应商报价界面-报价页面-模具和开发费用-供应商视角-关联零件
  * @Author: Luoshuang
  * @Date: 2021-04-25 11:20:02
- * @LastEditTime: 2021-06-17 11:13:42
+ * @LastEditTime: 2021-06-28 20:30:05
 -->
 
 <template>
@@ -89,6 +89,7 @@ export default {
         }
         return item
       })
+      console.log(this.tableData)
     },
     // 关闭弹窗
     clearDialog() {

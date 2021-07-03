@@ -1,8 +1,8 @@
 <!--
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-28 00:46:57
+ * @LastEditors: Luoshuang
+ * @LastEditTime: 2021-06-29 10:52:09
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -35,8 +35,9 @@
         <iButton v-if="!forceDisabled && !disabled" @click="handleCancelQutation">{{ $t("LK_QUXIAO") }}</iButton>
         <iButton v-if="!isQuoteBatchPrice && partInfo.partProjectType === 'PT17' && !disabled" :loading="quoteBatchPriceLoading" @click="handleQuoteBatchPrice">{{ $t("LK_YINYONGPILIANGJIAGE") }}</iButton>
         <iButton v-if="isQuoteBatchPrice && partInfo.partProjectType === 'PT17' && !disabled" :loading="cancelQuoteBatchPriceLoading" @click="handleCancelBatchPrice">{{ $t("LK_QUXIAOPILIANGJIAGE") }}</iButton>
-        <iButton @click="handleSave" v-if="currentTab != 'infoAndReq' && !disabled" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
+        <iButton @click="handleSave" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
         <iButton @click="handleSubmit" v-if="!disabled && !partInfo.isOriginprice" :loading="submitLoading">{{ $t('LK_TIJIAO') }}</iButton>
+        <!-- v-if="currentTab != 'infoAndReq' && !disabled"  -->
 
         
         <logButton class="margin-left20" @click="log" />
@@ -171,9 +172,38 @@ export default {
       userInfo: state => state.permission.userInfo,
     }),
     trueTabs() {
+      /**
+       *  FS("PT05", "FS零件"),
+          ONE_TIME_PURCHASE("PT06", "一次性采购"),
+          COP("PT07", "COP零件"),
+          DB("PT04", "DB零件"),
+          DB_CHANGE("PT03", "DB仅零件号更改"),
+          CHANGE("PT08", "仅零件号更改"),
+          FS_COMMON("PT09", "FS COMMON SOURCING"),
+          GS_COMMON("PT10", "GS COMMON SOURCING"),
+          GS_PART("PT11", "GS零件"),
+          STELL_PATCH("PT12", "钢材批量"),
+          STELL_ONE_TIME_PURCHASING("PT13", "钢材一次性采购"),
+          SPECIAL("PT01", "SPECIAL零件"),
+          OUTSOURCING("PT14", "工序委外"),
+          CAPACITY_EXPANSION("PT15", "扩产能"),
+          APPRECIATE("PT16", "涨价"),
+          FITTING("PT17", "配件"),
+          ANNEX("PT18", "附件"),
+          AEKO("PT02", "AEKO零件"),
+          DB_ONE_TIME_PURCHASE("PT19", "DB一次性采购"),
+      */
       // Sprint10新增：供应商配件与附件的包装运输页面移除，报价成本汇总页面能够直接填写[原材料/散件成本][制造成本][报废成本][管理费][利润][包装费][运输费][操作费]，起步生产日期不做默认值，L2层级的[包装费][运输费][操作费]也是直接填写
-      // 零件类型字段还未知，根据接口实际返回为准
-      return this.tabs.filter(item => this.partInfo.partProjectType === 'PT17' || this.partInfo.partProjectType === 'PT18' ? item.name !== 'packAndShip' : item)
+      if (this.partInfo.partProjectType === 'PT17' || this.partInfo.partProjectType === 'PT18') {
+        return this.tabs.filter(item => item.name !== 'packAndShip')
+      }
+      // Sprint11新增(US:CRW1-1591)：若某一零件的零件项目类型为[DB零件]，或是[一次性采购]且是DB零件，则在我的报价成本汇总页面，我可以看到DB零件的特殊页面
+      // DB的报价单共有7个页签，分别是信息与要求，报价分析，降价计划，包装运输，送样进度，工装样件，报价附件与说明。
+      if (this.partInfo.partProjectType === 'PT04' || this.partInfo.partProjectType === 'PT19') {
+        const tabNames = ['infoAndReq','costsummary','packAndShip','reducePlan','sampleDeliveryProgress','sample','remarksAndAttachment']
+        return this.tabs.filter(item => tabNames.includes(item.name))
+      }
+      return this.tabs
     }
   },
   created() {

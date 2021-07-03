@@ -737,5 +737,22 @@ export default {
   'LK_QUXIAOPILIANGJIAGE': '取消批量价格', // 取消批量价格
   'LK_DAIGONGYINGSHANGBAOJIA': '代供应商报价', // 代供应商报价
   'LK_LCJIANGUANLIFEILV': 'LC件管理费率', // LC件管理费率
-  'LK_CKDJIANGUANLIFEILV': 'CKD件管理费率' // CKD件管理费率
+  'LK_CKDJIANGUANLIFEILV': 'CKD件管理费率', // CKD件管理费率
+  'LK_YUANCAILIAOPAIHAO': '原材料牌号', // 原材料牌号
+  'LK_MAOZHONG': '毛重', // 毛重
+  'LK_JINGZHONG': '净重', // 净重
+  'LK_HUISHOUDANJIARMBUOM': '回收单价（RMB/UoM）', // 回收单价（RMB/UoM）
+  'LK_ZHIJIEYUANCAILIAOSANJIANCHENGBENRMBPC': '直接原材料/散件成本（RMB/PC.）', // 直接原材料/散件成本（RMB/PC.）
+  'LK_FEISUN': '废损', // 废损
+  'LK_QIANQIWULIUFEIYONGRMBPC': '前期物流费用（RMB/PC.）', // 前期物流费用（RMB/PC.）
+  'LK_JIANJIEYUANCAILIAOSANJIANCHENGBEN': '间接原材料/散件成本', // 间接原材料/散件成本
+  'LK_YUANCRMBPCUP': 'Mat. Cost/ Component（RMB/PC.）', //原材料/散件成本（RMB/PC.）
+  'LK_SHEBEIMINGCHENGXINGHAOOTHER': '设备名称/型号', // 设备名称/型号
+  'LK_SHEBEITOUZIANZHUANGRMB': '设备投资+安装（RMB）', // 设备投资+安装（RMB）
+  'LK_MEIJIANSHNEGCHANSHIJIAN': '每件生产时间', // 每件生产时间
+  'LK_MEIMUSHENGCHANLINGJIANSHU': '每模生产零件数', // 每模生产零件数
+  'LK_ZHIJIEZHIZAOCHENGBENRMBPC': '直接制造成本（RMB/PC.）', // 直接制造成本（RMB/PC.）
+  'LK_SHENGCHANQIEHUANCHENGBEN': '生产切换成本（RMB/PC.）', // 生产切换成本（RMB/PC.）
+  'LK_JIANJIEZHIZAOCHENGBEN': '间接制造成本', // 间接制造成本
+  'LK_ZONGZHIZAOCHENGBENRMBPC': '总制造成本（RMB/PC.）', // 总制造成本（RMB/PC.）
 }

@@ -8,9 +8,7 @@
 -->
 <script>
 import {Dropdown} from 'element-ui' 
-/**
- * @example ./README.me
-*/
+
 export default{
   name:'iDropdown',
   extends:Dropdown,
