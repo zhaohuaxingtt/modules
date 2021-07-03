@@ -29,7 +29,7 @@
       </i-form-item>
       <i-form-item v-if='!disabled' class="rightFloat">
         <el-checkbox v-model="allTableData.editFlag" v-show="allTableData.level > 1">{{$t('LK_SHOUDONGSHURU')}}</el-checkbox>
-        <iButton @click="downloadFile" :loading='downLoadLoding' :disabled='allTableData.level == 3'>{{$t('LK_XIAZAICBD')}}</iButton>
+        <iButton @click="downloadFile" :loading='downLoadLoding'>{{$t('LK_XIAZAICBD')}}</iButton>
         <el-upload
           class="floatright margin-left10"
           :action="uploadUrl + '/cbd-files/uploadPartCbd'"
@@ -43,7 +43,7 @@
           :on-error='()=>{uploadLoading=false;iMessage.error("上传失败！")}'
           :on-success='fileSuccess'
         >
-          <iButton :loading='uploadLoading'  :disabled='allTableData.level == 3'>{{$t('LK_UPLOADBJ')}}</iButton>
+          <iButton :loading='uploadLoading'>{{$t('LK_UPLOADBJ')}}</iButton>
         </el-upload>
       </i-form-item>
     </iFormGroup>

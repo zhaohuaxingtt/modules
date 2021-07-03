@@ -35,8 +35,9 @@
         <iButton v-if="!forceDisabled && !disabled" @click="handleCancelQutation">{{ $t("LK_QUXIAO") }}</iButton>
         <iButton v-if="!isQuoteBatchPrice && partInfo.partProjectType === 'PT17' && !disabled" :loading="quoteBatchPriceLoading" @click="handleQuoteBatchPrice">{{ $t("LK_YINYONGPILIANGJIAGE") }}</iButton>
         <iButton v-if="isQuoteBatchPrice && partInfo.partProjectType === 'PT17' && !disabled" :loading="cancelQuoteBatchPriceLoading" @click="handleCancelBatchPrice">{{ $t("LK_QUXIAOPILIANGJIAGE") }}</iButton>
-        <iButton @click="handleSave" v-if="currentTab != 'infoAndReq' && !disabled" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
+        <iButton @click="handleSave" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
         <iButton @click="handleSubmit" v-if="!disabled && !partInfo.isOriginprice" :loading="submitLoading">{{ $t('LK_TIJIAO') }}</iButton>
+        <!-- v-if="currentTab != 'infoAndReq' && !disabled"  -->
 
         
         <logButton class="margin-left20" @click="log" />
