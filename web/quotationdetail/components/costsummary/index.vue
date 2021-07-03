@@ -1,8 +1,8 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-07-01 19:44:35
- * @LastEditors: Luoshuang
+ * @LastEditTime: 2021-07-02 17:29:48
+ * @LastEditors: Please set LastEditors
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
                   2）用户点击“保存”按钮，则保存当前页面已经编辑和输入的所有信息
@@ -25,7 +25,27 @@
     <!--------------------------------------------------------->
     <!----------------------2.1 原材料/散件--------------------->
     <!--------------------------------------------------------->
-    <tableTemlate v-show='allTableData.level > 1' :index='true' pageNationReq='queryRawMaterialDTO' pageNationRes='rawMaterial' :notEdit='disabled' :tableData='allTableData.rawMaterial.records' class="margin-top20" :title="`${allTableData.level}.1 ${$t('LK_YUANCLSJ')}`" :tableTile='titleYcl' :iPagination='disabled' tableIndexString='C'></tableTemlate>
+    <tableTemlate 
+      v-show='allTableData.level > 1' 
+      :selection="!disabled" 
+      :index='true' 
+      pageNationReq='queryRawMaterialDTO' 
+      pageNationRes='rawMaterial' 
+      :notEdit='disabled' 
+      :tableData='allTableData.rawMaterial.records' 
+      class="margin-top20" 
+      :title="`${allTableData.level}.1 ${$t('LK_YUANCLSJ')}`" 
+      :tableTile='titleYcl' 
+      :iPagination='disabled' 
+      tableIndexString='C'
+      @handleSelectionChange="handleSelectionChangeByRawMaterial">
+      <template #header-control>
+        <div v-if="!disabled">
+          <iButton @click="handleAddByRawMaterial">{{ $t("LK_TIANJIAHANG") }}</iButton>
+          <iButton @click="handleDelByRawMaterial">{{ $t("LK_SHANCHUHANG") }}</iButton>
+        </div>
+      </template>
+    </tableTemlate>
     <!-- <tableTemlate 
       index
       v-if='allTableData.level == 3' 
@@ -34,7 +54,27 @@
     <!--------------------------------------------------------->
     <!----------------------2.2 制造成本--------------------->
     <!--------------------------------------------------------->
-    <tableTemlate v-show='allTableData.level > 1' :index='true' pageNationReq='queryMakeCostDTO' pageNationRes='makeCost' :notEdit='disabled' :tableData='allTableData.makeCost.records'  class="margin-top20" :title="`${allTableData.level}.2 ${$t('LK_ZHIZHAOCB')}`" :tableTile='titleCbzz' :iPagination='disabled' tableIndexString='P'></tableTemlate>
+    <tableTemlate
+      v-show='allTableData.level > 1'
+      :selection="!disabled"
+      :index='true' 
+      pageNationReq='queryMakeCostDTO' 
+      pageNationRes='makeCost' 
+      :notEdit='disabled' 
+      :tableData='allTableData.makeCost.records' 
+      class="margin-top20" 
+      :title="`${allTableData.level}.2 ${$t('LK_ZHIZHAOCB')}`" 
+      :tableTile='titleCbzz' 
+      :iPagination='disabled' 
+      tableIndexString='P'
+      @handleSelectionChange="handleSelectionChangeByMakeCost">
+      <template #header-control>
+        <div v-if="!disabled">
+          <iButton @click="handleAddByMakeCost">{{ $t("LK_TIANJIAHANG") }}</iButton>
+          <iButton @click="handleDelByMakeCost">{{ $t("LK_SHANCHUHANG") }}</iButton>
+        </div>
+      </template>
+    </tableTemlate>
     <!--------------------------------------------------------->
     <!-------2.2 报废成本 管理费 其他费用 利润--------------------->
     <!--------------------------------------------------------->
@@ -137,8 +177,11 @@ export default{
       cbdSelect:{
         list:[]
       },
-      dbDetailList: []
+      dbDetailList: [],
       // titleYclByL3
+
+      multipleSelectionByRawMaterial: [],
+      multipleSelectionByMakeCost: []
     }
   },
   watch:{
@@ -342,7 +385,7 @@ export default{
             const data = await this.getBzfreeAndYunshuFree();
             this.packAndShipFee = data
             this.allTableData = this.translateDataForRender(res.data)
-            this.topTableData = this.translateDataTopData(this.allTableData.sumVO, data)
+            this.translateDataTopData(this.allTableData, data)
             this.$refs.components.partsQuotationss(this.partInfo.rfqId,this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId,this.partInfo.round,this.allTableData.level)
             // this.allpagefrom.quotationId,
             this.findFiles()
@@ -409,30 +452,49 @@ export default{
      * @param {*}
      * @return {*}
      */    
-    translateDataForRender(data){
+    translateDataForRender(baseData){
       try {
-        if(data.currentCbdLevel){
-          this.tableData.level = data.currentCbdLevel
+        // if(baseData.currentCbdLevel){
+        //   this.tableData.level = baseData.currentCbdLevel
+        // }
+        if(baseData.cbdLevel) {
+          this.tableData.level = baseData.cbdLevel
         }
-        if(data['discardCost']){
-          data['discardCost'].forEach(element => {
-            //element['ztbfcb'] = "整体报废成本"
-            element['ztbfcb'] = 'Scrap Cost'
-          });
+        let data = {}
+
+        switch(data.cbdLevel) {
+          case 1:
+            data = data.levelOneSumVO
+            break
+          case 2:
+            data = data.levelTwoSumVO
+
+            if(data['discardCost']){
+              data['discardCost'].forEach(element => {
+                //element['ztbfcb'] = "整体报废成本"
+                element['ztbfcb'] = 'Scrap Cost'
+              });
+            }
+            if(data['otherFee']){
+              data['otherFee'].forEach(element => {
+                element['itemName'] = element['itemType']?"Development Cost":"Tooling Cost"
+              });
+            }
+            if(data['profit']){
+              data['profit'].forEach(element => {
+                element['lr'] = "Profit(SVW Specific excl.)"
+              });
+            }
+            break
+          case 3:
+            break
+          default:
         }
-        if(data['otherFee']){
-          data['otherFee'].forEach(element => {
-            element['itemName'] = element['itemType']?"Development Cost":"Tooling Cost"
-          });
-        }
-        if(data['profit']){
-          data['profit'].forEach(element => {
-            element['lr'] = "Profit(SVW Specific excl.)"
-          });
-        }
+
         data['level'] = this.allTableData.level?this.allTableData.level:this.partInfo.currentCbdLevel
         // eslint-disable-next-line no-undef
-        data['startProductDate'] = data.startProductDate?moment(new Date(data.startProductDate)).format('YYYY-MM-DD HH:mm:ss'):''
+        data['startProductDate'] = baseData.startProductDate?moment(new Date(baseData.startProductDate)).format('YYYY-MM-DD HH:mm:ss'):''
+        
         return data
       } catch (error) {
         console.warn(error)
@@ -536,6 +598,30 @@ export default{
           iMessage.error(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
         }
       })
+    },
+
+    handleSelectionChangeByRawMaterial(list) {
+      this.multipleSelectionByRawMaterial = list
+    }, 
+    // 添加行ByRawMaterial
+    handleAddByRawMaterial() {
+      this.allTableData.rawMaterial.records.push({})
+    },
+    // 删除行ByRawMaterial
+    handleDelByRawMaterial() {
+      this.allTableData.rawMaterial.records = this.allTableData.rawMaterial.records.filter(item => !this.multipleSelectionByRawMaterial.includes(item))
+    },
+
+    handleSelectionChangeByMakeCost(list) {
+      this.multipleSelectionByMakeCost = list
+    },
+    // 添加行ByMakeCost
+    handleAddByMakeCost() {
+      this.allTableData.makeCost.records.push({})
+    },
+    // 删除行ByMakeCost
+    handleDelByMakeCost() {
+      this.allTableData.makeCost.records = this.allTableData.makeCost.records.filter(item => !this.multipleSelectionByMakeCost.includes(item))
     },
   }
 }

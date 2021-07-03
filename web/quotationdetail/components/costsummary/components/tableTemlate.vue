@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 18:56:31
- * @LastEditTime: 2021-05-11 19:57:34
+ * @LastEditTime: 2021-07-02 15:19:18
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\costsummary\components\tableTemlate.vue
@@ -9,7 +9,9 @@
 
 <template>
   <iCard :title='title'>
-    <slot slot='header-control'></slot>
+    <template #header-control>
+      <slot name='header-control'></slot>
+    </template>
     <tableList 
       :tableIndexString='tableIndexString'
       :tableData='tableData'
@@ -85,7 +87,8 @@ export default{
       }
     },
     handleSelectionChange(row){
-      this.cbdSelect.list = row
+      if (this.cbdSelect) this.cbdSelect.list = row
+      this.$emit("handleSelectionChange", row)
     }
   }
 }
