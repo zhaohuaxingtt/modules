@@ -21,6 +21,8 @@
       :selection='selection'
       :notEdit='notEdit'
       @handleSelectionChange='handleSelectionChange'
+      @handleInput='handleInput'
+      @handleInputByRate='handleInputByRate'
     ></tableList>
     <!------------------------------------------------------------------------>
     <!--                  表格分页                                          --->
@@ -89,7 +91,13 @@ export default{
     handleSelectionChange(row){
       if (this.cbdSelect) this.cbdSelect.list = row
       this.$emit("handleSelectionChange", row)
-    }
+    },
+    handleInput(value, row, key) {
+      this.$emit("handleInput", value, row, key)
+    },
+    handleInputByRate(value, row, key) {
+      this.$emit("handleInputByRate", value, row, key)
+    },
   }
 }
 </script>

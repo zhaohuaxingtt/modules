@@ -284,21 +284,20 @@ export function getPersent(total,listData,data) {
  * @param {*}
  * @return {*}
  */
- export const titleYclByL3= 
-//  (productionCountryList = []) => 
- [
+export const titleYclByL3 = (productionCountryList = []) => 
+[
   {props:'partName',name:'类型',key: 'LK_LEIXING',tooltip:true,width:'',type:'input'},
   {props:'partNumber',name:'原材料/散件描述',key: 'LK_YUANCLSJMS',tooltip:true,width:'150',type:'input' },
   {props:'materialBrand',name:'原材料牌号',key: 'LK_YUANCAILIAOPAIHAO',tooltip:true,width:'130',type:'input' },
   {props:'supplierName',name:'供应商名称',key: 'LK_GONGYINGSHANGMINGCHENG',tooltip:true,width:'120',type:'input' },
-  {props:'productionCountry',name:'原产国',key: 'LK_YUANCHANDI',tooltip:true,width:'90',type:'select'},
+  {props:'productionCountry',name:'原产国',key: 'LK_YUANCHANDI',tooltip:true,width:'120',type:'select',options:productionCountryList},
   {props:'isSvwAssignPriceParts',name:'是否SVW指定价格散件',key: 'LK_SHIFOUSVWZHIDINGJIAGE',tooltip:true,width:'200',type:'select',options:isorno, labelClassName: '' },
   {props:'quantityUnit',name:'数量单位（UoM）',key: 'LK_SHULIANGDANWEI',tooltip:true,width:'150',type:'input' },
   {props:'unitPrice',name:'单价（RMB/UoM）',key: 'LK_DANJIARMB',tooltip:true,width:'150',type:'input' },
   {props:'roughWeight',name:'毛重',key: 'LK_MAOZHONG',tooltip:true,type:'input' },
   {props:'suttleWeight',name:'净重',key: 'LK_JINGZHONG',tooltip:true,type:'input' },
-  {props:'recycleUnitPrice',name:'回收单价（RMB/UoM）',key: 'LK_HUISHOUDANJIARMBUOM',tooltip:true,type:'input' },
-  {props:'directMaterialCost',name:'直接原材料/散件成本（RMB/PC.）',key: 'LK_ZHIJIEYUANCAILIAOSANJIANCHENGBENRMBPC',tooltip:true,type:'input' },
+  {props:'recycleUnitPrice',name:'回收单价（RMB/UoM）',key: 'LK_HUISHOUDANJIARMBUOM',width:'150',tooltip:true,type:'input' },
+  {props:'directMaterialCost',name:'直接原材料/散件成本（RMB/PC.）',key: 'LK_ZHIJIEYUANCAILIAOSANJIANCHENGBENRMBPC',width:'180',tooltip:true },
   {props:'lossCostGroup',name:'废损',key: 'LK_FEISUN',tooltip:true,width:'' ,list:[
     {props:'lossCostRate',name:'(%)',key: '',tooltip:true,width:'100',type:'input'},
     {props:'lossCost',name:'(RMB/PC.)',key: '',tooltip:true,width:''}
@@ -327,7 +326,7 @@ export const titleCbzzByL3 = [
   {props:'workerCount',name:'直接人工数量（0..n）',key: 'LK_ZHIJIERENGONGSHULIANG',tooltip:true,width:'150',type:'input'},
   {props:'perProduceTime',name:'每件生产时间',key: 'LK_MEIJIANSHNEGCHANSHIJIAN',tooltip:true,width:'150',type:'input'},
   {props:'perCycleCount',name:'每模生产零件数',key: 'LK_MEIMUSHENGCHANLINGJIANSHU',tooltip:true,width:'150',type:'input'},
-  {props:'directProduceCost',name:'直接制造成本（RMB/PC.）',key: 'LK_ZHIJIEZHIZAOCHENGBENRMBPC',tooltip:true,width:'150',type:'input'},
+  {props:'directProduceCost',name:'直接制造成本（RMB/PC.）',key: 'LK_ZHIJIEZHIZAOCHENGBENRMBPC',tooltip:true,width:'150'},
   {props:'lossCostGroup',name:'废损',key: 'LK_FEISUN',tooltip:true,width:'' ,list:[
     {props:'lossCostRate',name:'(%)',key: '',tooltip:true,width:'100',type:'input'},
     {props:'lossCost',name:'(RMB/PC.)',key: '',tooltip:true,width:''}
@@ -347,7 +346,7 @@ export const titleCbzzByL3 = [
  */
 export const titlebfcbByL3 = [
   {props:'ztbfcb',name:'报废成本',key: 'LK_BAOFEICHENGBEN',tooltip:false,width:''},
-  {props:'ratio',name:'报废率（%）',key: 'LK_BAOFEILV',tooltip:false,width:'',type:'input'},
+  {props:'ratio',name:'报废率（%）',key: 'LK_BAOFEILV',tooltip:false,width:''},
   {props:'amount',name:'金额（RMB/Pc.）',key: 'LK_JINERMB',tooltip:false,width:''},
 ]
 
