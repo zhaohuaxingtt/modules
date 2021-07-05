@@ -1,8 +1,8 @@
 <!--
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
- * @LastEditors: Luoshuang
- * @LastEditTime: 2021-06-29 10:52:09
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-07-05 15:31:44
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -35,11 +35,8 @@
         <iButton v-if="!forceDisabled && !disabled" @click="handleCancelQutation">{{ $t("LK_QUXIAO") }}</iButton>
         <iButton v-if="!isQuoteBatchPrice && partInfo.partProjectType === 'PT17' && !disabled" :loading="quoteBatchPriceLoading" @click="handleQuoteBatchPrice">{{ $t("LK_YINYONGPILIANGJIAGE") }}</iButton>
         <iButton v-if="isQuoteBatchPrice && partInfo.partProjectType === 'PT17' && !disabled" :loading="cancelQuoteBatchPriceLoading" @click="handleCancelBatchPrice">{{ $t("LK_QUXIAOPILIANGJIAGE") }}</iButton>
-        <iButton @click="handleSave" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
+        <iButton @click="handleSave" v-if="currentTab != 'infoAndReq' && !disabled" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
         <iButton @click="handleSubmit" v-if="!disabled && !partInfo.isOriginprice" :loading="submitLoading">{{ $t('LK_TIJIAO') }}</iButton>
-        <!-- v-if="currentTab != 'infoAndReq' && !disabled"  -->
-
-        
         <logButton class="margin-left20" @click="log" />
         <span class="margin-left20">
 					<icon symbol name="icondatabaseweixuanzhong" class="font18"></icon>

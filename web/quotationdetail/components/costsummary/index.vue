@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-07-02 17:29:48
+ * @LastEditTime: 2021-07-05 14:32:01
  * @LastEditors: Please set LastEditors
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
@@ -145,7 +145,7 @@
         <tableTemlate :notEdit='disabled' :tableData='allTableData.discardCost' class="margin-top20" :index='true' :title="`${allTableData.level}.3 ${$t('LK_BAOFEICHENGBEN')}`" :tableTile='titlebfcbByL3' tableIndexString='S'></tableTemlate>
       </el-col>
       <el-col class="col" :span='12'>
-        <tableTemlate :notEdit='disabled' :tableData='allTableData.manageFee' class="margin-top20" :index='true' :title="`${allTableData.level}.4 ${$t('LK_GUANLIFEI')}`" :tableTile='titleglfByL3' tableIndexString='O'></tableTemlate>
+        <tableTemlate :notEdit='disabled' :tableData='allTableData.manageFee' class="margin-top20" :index='true' :title="`${allTableData.level}.4 ${$t('LK_GUANLIFEI')}`" :tableTile='titleglfByL3' tableIndexString='O' @handleInput="handleInputByManageFee"></tableTemlate>
       </el-col>
     </el-row>
     <el-row class="row" v-show='allTableData.level == 3'>
@@ -153,7 +153,7 @@
         <tableTemlate :notEdit='disabled' :tableData='allTableData.otherFee' class="margin-top20" :index='true' :title="`${allTableData.level}.5 ${$t('LK_QITAFEIYONG')}`" :tableTile='titleqtfyByL3' tableIndexString='A'></tableTemlate>
       </el-col>
       <el-col class="col" :span='12'>
-        <tableTemlate :notEdit='disabled' :tableData='allTableData.profit' class="margin-top20" :index='true' :title="`${allTableData.level}.6 ${$t('LK_LIRUN')}`" :tableTile='titlelrByL3' tableIndexString='P'></tableTemlate>
+        <tableTemlate :notEdit='disabled' :tableData='allTableData.profit' class="margin-top20" :index='true' :title="`${allTableData.level}.6 ${$t('LK_LIRUN')}`" :tableTile='titlelrByL3' tableIndexString='P' @handleInput="handleInputByProfit"></tableTemlate>
       </el-col>
     </el-row>
     <!--------------------------------------------------------->
@@ -166,6 +166,8 @@
   </div>
 </template>
 <script>
+/* eslint-disable no-undef */
+
 import persentComponents from './components/timeAndlevTabel'
 import tableTemlate from './components/tableTemlate'
 import {persentDatalist,titleYcl,titleCbzz,titlebfcb,titleglf,titleqtfy,titlelr,titleCBD,allpagefrom,needContactData,Aprice,getAallPrice,getPersent,cbdlist, titleYclByL3, titleCbzzByL3, titlebfcbByL3, titleglfByL3, titleqtfyByL3, titlelrByL3} from './components/data'
@@ -175,6 +177,7 @@ import {findFiles,postCostSummary,deleteFile,savePackageTransport,getCostSummary
 import {downloadFile} from '@/api/file'
 import {selectDictByKeyss} from '@/api/dictionary'
 import quotationAnalysis from './components/quotationAnalysis'
+
 export default{
   components:{persentComponents,tableTemlate,iButton,quotationAnalysis},
   props:{
@@ -767,8 +770,7 @@ export default{
     handleDelByMakeCost() {
       this.allTableData.makeCost.records = this.allTableData.makeCost.records.filter(item => !this.multipleSelectionByMakeCost.includes(item))
     },
-
-    handleInputByRawMaterial(value, row, key) {
+    handleInputByRawMaterial(value, row) {
       this.$set(row, "directMaterialCost", math.evaluate(`(${ row.unitPrice || 0 } * ${ row.roughWeight || 0 }) - (${ row.roughWeight || 0 } - ${ row.suttleWeight || 0 }) * ${ row.recycleUnitPrice || 0 }`).toFixed(4))
       this.$set(row, "lossCost", math.evaluate(`${ row.directMaterialCost || 0 } / (1 - ${ row.lossCostRate || 0 } / 100) - ${ row.directMaterialCost || 0 }`).toFixed(4))
       this.$set(row, "indirectMaterialCost", math.evaluate(`${ row.materialCostRatio || 0 } / 100 * (${ row.unitPrice || 0 } * ${ row.roughWeight || 0 } + ${ row.lossCost || 0 })`).toFixed(4))
@@ -796,14 +798,24 @@ export default{
         this.$set(this.allTableData.discardCost[0], "ratio", math.evaluate(`${ this.allTableData.discardCost[0].amount } / (${ this.topTableData.tableData[0].materialSummary || 0 } + ${ this.topTableData.tableData[0].productionSummary || 0 })`).toFixed(4))
       }
 
-      this.$set(this.allTableData.manageFee[0], "amount", math.evaluat(`${ this.topTableData.tableData[0].materialSummary } * (${ this.allTableData.manageFee[0].ratio } / 100)`).toFixed(4))
-      this.$set(this.allTableData.manageFee[0], "blockAmount", math.evaluat(`${ this.allTableData.manageFee[0].amount } * 1`).toFixed(4))
+      this.$set(this.allTableData.manageFee[0], "amount", math.evaluate(`${ this.topTableData.tableData[0].materialSummary } * (${ this.allTableData.manageFee[0].ratio } / 100)`).toFixed(4))
+      this.$set(this.allTableData.manageFee[0], "blockAmount", math.evaluate(`${ this.allTableData.manageFee[0].amount } * 1`).toFixed(4))
 
-      this.$set(this.allTableData.profit[0], "amount", math.evaluat(`${ this.topTableData.tableData[0].materialSummary } * (${ this.allTableData.profit[0].ratio } / 100)`).toFixed(4))
-      this.$set(this.allTableData.profit[0], "blockAmount", math.evaluat(`${ this.allTableData.profit[0].amount } * 1`).toFixed(4))
+      this.$set(this.allTableData.profit[0], "amount", math.evaluate(`${ this.topTableData.tableData[0].materialSummary } * (${ this.allTableData.profit[0].ratio } / 100)`).toFixed(4))
+      this.$set(this.allTableData.profit[0], "blockAmount", math.evaluate(`${ this.allTableData.profit[0].amount } * 1`).toFixed(4))
+    
+      const manageSummary = this.allTableData.manageFee.reduce((acc, cur) => {
+        return math.add(acc, math.bignumber(cur.amount || 0))
+      }, 0)
+      this.$set(this.topTableData.tableData[0], "manageSummary", manageSummary.toFixed(4))
+
+      const profitSummary = this.allTableData.profit.reduce((acc, cur) => {
+        return math.add(acc, math.bignumber(cur.amount || 0))
+      }, 0)
+      this.$set(this.topTableData.tableData[0], "profitSummary", profitSummary.toFixed(4))
     },
 
-    handleInputByMakeCost(value, row, key) {
+    handleInputByMakeCost(value, row) {
       this.$set(row, "directProduceCost", math.evaluate(`(${ row.perHourMachineCost || 0 } + ${ row.perHourLaborCost || 0 } * ${ row.workerCount || 0 }) * ${ row.perProduceTime } / 3600 / ${ row.perCycleCount ? row.perCycleCount : 1 }`).toFixed(4))
       this.$set(row, "lossCost", math.evaluate(`${ row.directProduceCost || 0 } / (1 - ${ row.lossCostRate || 0 } / 100) - ${ row.directProduceCost || 0 }`).toFixed(4))
       this.$set(row, "indirectProduceCost", math.evaluate(`(${ row.directProduceCost || 0 } + ${ row.lossCost || 0 } + ${ row.produceSwitchCost || 0 }) * (${ row.indirectProduceCostRate || 0 } / 100)`).toFixed(4))
@@ -831,11 +843,41 @@ export default{
         this.$set(this.allTableData.discardCost[0], "ratio", math.evaluate(`${ this.allTableData.discardCost[0].amount } / (${ this.topTableData.tableData[0].materialSummary || 0 } + ${ this.topTableData.tableData[0].productionSummary || 0 })`).toFixed(4))
       }
 
-      this.$set(this.allTableData.manageFee[1], "amount", math.evaluat(`${ this.topTableData.tableData[1].productionSummary } * (${ this.allTableData.manageFee[1].ratio } / 100)`).toFixed(4))
-      this.$set(this.allTableData.manageFee[1], "blockAmount", math.evaluat(`${ this.allTableData.manageFee[1].amount } * 1`).toFixed(4))
+      this.$set(this.allTableData.manageFee[1], "amount", math.evaluate(`${ this.topTableData.tableData[0].productionSummary } * (${ this.allTableData.manageFee[1].ratio } / 100)`).toFixed(4))
+      this.$set(this.allTableData.manageFee[1], "blockAmount", math.evaluate(`${ this.allTableData.manageFee[1].amount } * 1`).toFixed(4))
 
-      this.$set(this.allTableData.profit[1], "amount", math.evaluat(`${ this.topTableData.tableData[0].materialSummary } * (${ this.allTableData.profit[1].ratio } / 100)`).toFixed(4))
-      this.$set(this.allTableData.profit[1], "blockAmount", math.evaluat(`${ this.allTableData.profit[1].amount } * 1`).toFixed(4))
+      this.$set(this.allTableData.profit[1], "amount", math.evaluate(`${ this.topTableData.tableData[0].materialSummary } * (${ this.allTableData.profit[1].ratio } / 100)`).toFixed(4))
+      this.$set(this.allTableData.profit[1], "blockAmount", math.evaluate(`${ this.allTableData.profit[1].amount } * 1`).toFixed(4))
+    
+      const manageSummary = this.allTableData.manageFee.reduce((acc, cur) => {
+        return math.add(acc, math.bignumber(cur.amount || 0))
+      }, 0)
+      this.$set(this.topTableData.tableData[0], "manageSummary", manageSummary.toFixed(4))
+
+      const profitSummary = this.allTableData.profit.reduce((acc, cur) => {
+        return math.add(acc, math.bignumber(cur.amount || 0))
+      }, 0)
+      this.$set(this.topTableData.tableData[0], "profitSummary", profitSummary.toFixed(4))
+    },
+
+    handleInputByManageFee(value, row) {
+      this.$set(row, "amount", math.evaluate(`${ this.topTableData.tableData[0].productionSummary } * (${ row.ratio || 0 } / 100)`).toFixed(4))
+      this.$set(row, "blockAmount", math.evaluate(`${ row.amount || 0 } * 1`).toFixed(4))
+
+      const manageSummary = this.allTableData.manageFee.reduce((acc, cur) => {
+        return math.add(acc, math.bignumber(cur.amount || 0))
+      }, 0)
+      this.$set(this.topTableData.tableData[0], "manageSummary", manageSummary.toFixed(4))
+    },
+
+    handleInputByProfit(value, row) {
+      this.$set(row, "amount", math.evaluate(`${ this.topTableData.tableData[0].productionSummary } * (${ row.ratio || 0 } / 100)`).toFixed(4))
+      this.$set(row, "blockAmount", math.evaluate(`${ row.amount || 0 } * 1`).toFixed(4))
+
+      const profitSummary = this.allTableData.profit.reduce((acc, cur) => {
+        return math.add(acc, math.bignumber(cur.amount || 0))
+      }, 0)
+      this.$set(this.topTableData.tableData[0], "profitSummary", profitSummary.toFixed(4))
     }
   }
 }

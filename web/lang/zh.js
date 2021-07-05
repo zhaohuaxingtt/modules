@@ -749,6 +749,6 @@ export default {
   'LK_MEIMUSHENGCHANLINGJIANSHU': '每模生产零件数', // 每模生产零件数
   'LK_ZHIJIEZHIZAOCHENGBENRMBPC': '直接制造成本（RMB/PC.）', // 直接制造成本（RMB/PC.）
   'LK_SHENGCHANQIEHUANCHENGBEN': '生产切换成本（RMB/PC.）', // 生产切换成本（RMB/PC.）
-  'LK_JIANJIEZHIZAOCHENGBEN': '间接制造成本', // 间接制造成本
   'LK_ZONGZHIZAOCHENGBENRMBPC': '总制造成本（RMB/PC.）', // 总制造成本（RMB/PC.）
+  'LK_MUKUAIJINERMBBLOCK': '模块金额（RMB/block）', // 模块金额（RMB/block）
 }
