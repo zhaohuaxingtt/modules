@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-07-05 14:32:01
+ * @LastEditTime: 2021-07-05 16:09:45
  * @LastEditors: Please set LastEditors
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
@@ -773,7 +773,7 @@ export default{
     handleInputByRawMaterial(value, row) {
       this.$set(row, "directMaterialCost", math.evaluate(`(${ row.unitPrice || 0 } * ${ row.roughWeight || 0 }) - (${ row.roughWeight || 0 } - ${ row.suttleWeight || 0 }) * ${ row.recycleUnitPrice || 0 }`).toFixed(4))
       this.$set(row, "lossCost", math.evaluate(`${ row.directMaterialCost || 0 } / (1 - ${ row.lossCostRate || 0 } / 100) - ${ row.directMaterialCost || 0 }`).toFixed(4))
-      this.$set(row, "indirectMaterialCost", math.evaluate(`${ row.materialCostRatio || 0 } / 100 * (${ row.unitPrice || 0 } * ${ row.roughWeight || 0 } + ${ row.lossCost || 0 })`).toFixed(4))
+      this.$set(row, "indirectMaterialCost", math.evaluate(`${ row.indirectMaterialCostRatio || 0 } / 100 * (${ row.unitPrice || 0 } * ${ row.roughWeight || 0 } + ${ row.lossCost || 0 })`).toFixed(4))
       this.$set(row, "materialCost", math.evaluate(`${ row.directMaterialCost || 0 } + ${ row.lossCost || 0 } + ${ row.earlierLogisticsCost || 0 } + ${ row.indirectMaterialCost || 0 }`).toFixed(4))
     
       let materialSummary = 0 // 头表原材料/散件

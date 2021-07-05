@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-23 15:34:54
- * @LastEditTime: 2021-07-05 14:25:20
+ * @LastEditTime: 2021-07-05 16:09:53
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\components\costsummary\components\data.js
@@ -304,7 +304,7 @@ export const titleYclByL3 = (productionCountryList = []) =>
   ]},
   {props:'earlierLogisticsCost',name:'前期物流费用（RMB/PC.）',width: '200' ,key: 'LK_QIANQIWULIUFEIYONGRMBPC',tooltip:true,type:'input' },
   {props:'indirectMaterialCostGroup',name:'间接原材料/散件成本',key: 'LK_JIANJIEYUANCAILIAOSANJIANCHENGBEN',tooltip:true,width:'' ,list:[
-    {props:'materialCostRatio',name:'(%)',key: '',tooltip:true,width:'100',type:'input'},
+    {props:'indirectMaterialCostRatio',name:'(%)',key: '',tooltip:true,width:'100',type:'input'},
     {props:'indirectMaterialCost',name:'(RMB/PC.)',key: '',tooltip:true,width:''}
   ]},
   {props:'materialCost',name:'原材料/散件成本（RMB/PC.）',key: 'LK_YUANCRMBPCUP',tooltip:true,width:'200' },
