@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-07-02 17:29:48
+ * @LastEditTime: 2021-07-05 16:09:45
  * @LastEditors: Please set LastEditors
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
@@ -60,7 +60,9 @@
       class="margin-top20"
       :tableTile='titleYclByL3'
       :tableData='allTableData.rawMaterial.records'
-      tableIndexString='C'>
+      tableIndexString='C'
+      @handleSelectionChange="handleSelectionChangeByRawMaterial"
+      @handleInput="handleInputByRawMaterial">
       <template #header-control>
         <div v-if="!disabled">
           <iButton @click="handleAddByRawMaterial">{{ $t("LK_TIANJIAHANG") }}</iButton>
@@ -99,12 +101,16 @@
       v-if='allTableData.level == 3'
       :selection="!disabled" 
       :index='true'
+      pageNationReq='queryMakeCostDTO' 
+      pageNationRes='makeCost'
       :notEdit='disabled'
       :title="`${ allTableData.level }.2 ${$t('LK_ZHIZHAOCB')}`" 
       class="margin-top20"
       :tableTile='titleCbzzByL3'
       :tableData='allTableData.makeCost.records'
-      tableIndexString='P'>
+      tableIndexString='P'
+      @handleSelectionChange="handleSelectionChangeByMakeCost"
+      @handleInput="handleInputByMakeCost">
       <template #header-control>
         <div v-if="!disabled">
           <iButton @click="handleAddByMakeCost">{{ $t("LK_TIANJIAHANG") }}</iButton>
@@ -123,7 +129,7 @@
         <tableTemlate :notEdit='disabled' :tableData='allTableData.manageFee' class="margin-top20" :index='true' :title="`${allTableData.level}.4 ${$t('LK_GUANLIFEI')}`" :tableTile='titleglf' tableIndexString='O'></tableTemlate>
       </el-col>
     </el-row>
-    <el-row class="row" v-show='allTableData.level > 1'>
+    <el-row class="row" v-show='allTableData.level == 2'>
       <el-col class="col" :span='12'>
         <tableTemlate :notEdit='disabled' :tableData='allTableData.otherFee' class="margin-top20" :index='true' :title="`${allTableData.level}.5 ${$t('LK_QITAFEIYONG')}`" :tableTile='titleqtfy' tableIndexString='A'></tableTemlate>
       </el-col>
@@ -139,15 +145,15 @@
         <tableTemlate :notEdit='disabled' :tableData='allTableData.discardCost' class="margin-top20" :index='true' :title="`${allTableData.level}.3 ${$t('LK_BAOFEICHENGBEN')}`" :tableTile='titlebfcbByL3' tableIndexString='S'></tableTemlate>
       </el-col>
       <el-col class="col" :span='12'>
-        <tableTemlate :notEdit='disabled' :tableData='allTableData.manageFee' class="margin-top20" :index='true' :title="`${allTableData.level}.4 ${$t('LK_GUANLIFEI')}`" :tableTile='titleglfByL3' tableIndexString='O'></tableTemlate>
+        <tableTemlate :notEdit='disabled' :tableData='allTableData.manageFee' class="margin-top20" :index='true' :title="`${allTableData.level}.4 ${$t('LK_GUANLIFEI')}`" :tableTile='titleglfByL3' tableIndexString='O' @handleInput="handleInputByManageFee"></tableTemlate>
       </el-col>
     </el-row>
-    <el-row class="row" v-show='allTableData.level > 1'>
+    <el-row class="row" v-show='allTableData.level == 3'>
       <el-col class="col" :span='12'>
         <tableTemlate :notEdit='disabled' :tableData='allTableData.otherFee' class="margin-top20" :index='true' :title="`${allTableData.level}.5 ${$t('LK_QITAFEIYONG')}`" :tableTile='titleqtfyByL3' tableIndexString='A'></tableTemlate>
       </el-col>
       <el-col class="col" :span='12'>
-        <tableTemlate :notEdit='disabled' :tableData='allTableData.profit' class="margin-top20" :index='true' :title="`${allTableData.level}.6 ${$t('LK_LIRUN')}`" :tableTile='titlelrByL3' tableIndexString='P'></tableTemlate>
+        <tableTemlate :notEdit='disabled' :tableData='allTableData.profit' class="margin-top20" :index='true' :title="`${allTableData.level}.6 ${$t('LK_LIRUN')}`" :tableTile='titlelrByL3' tableIndexString='P' @handleInput="handleInputByProfit"></tableTemlate>
       </el-col>
     </el-row>
     <!--------------------------------------------------------->
@@ -160,6 +166,8 @@
   </div>
 </template>
 <script>
+/* eslint-disable no-undef */
+
 import persentComponents from './components/timeAndlevTabel'
 import tableTemlate from './components/tableTemlate'
 import {persentDatalist,titleYcl,titleCbzz,titlebfcb,titleglf,titleqtfy,titlelr,titleCBD,allpagefrom,needContactData,Aprice,getAallPrice,getPersent,cbdlist, titleYclByL3, titleCbzzByL3, titlebfcbByL3, titleglfByL3, titleqtfyByL3, titlelrByL3} from './components/data'
@@ -169,6 +177,7 @@ import {findFiles,postCostSummary,deleteFile,savePackageTransport,getCostSummary
 import {downloadFile} from '@/api/file'
 import {selectDictByKeyss} from '@/api/dictionary'
 import quotationAnalysis from './components/quotationAnalysis'
+
 export default{
   components:{persentComponents,tableTemlate,iButton,quotationAnalysis},
   props:{
@@ -234,6 +243,7 @@ export default{
       },
       dbDetailList: [],
       titleYclByL3,
+      titleYclByL3Status: false,
       titleCbzzByL3,
       titlebfcbByL3,
       titleglfByL3,
@@ -255,7 +265,19 @@ export default{
         }
       },
       deep:true
-    }
+    },
+    // allTableData: {
+    //   handler(table) {
+    //     if (table.level === 3) {
+    //       if (table.rawMaterial && Array.isArray(table.rawMaterial.records)) {
+    //         table.rawMaterial.records.forEach(item => {
+    //           this.$set(item, "directMaterialCost", 9999)
+    //         })
+    //       }
+    //     }
+    //   },
+    //   deep: true
+    // }
   },
   provide(){
     return {
@@ -289,8 +311,10 @@ export default{
       selectDictByKeyss('ORIGIN_COUNTRY').then(res=>{
         if(res.code == 200 && res.data && res.data.ORIGIN_COUNTRY){
           this.titleYcl = titleYcl(this.translateDicKeyCodeToName(res.data.ORIGIN_COUNTRY))
+          this.titleYclByL3 = titleYclByL3(this.translateDicKeyCodeToName(res.data.ORIGIN_COUNTRY))
         }else{
           this.titleYcl = titleYcl()
+          this.titleYclByL3 = titleYclByL3()
         }
       }).catch(err=>{
         iMessage.error(err.desZh)
@@ -495,7 +519,7 @@ export default{
             const data = await this.getBzfreeAndYunshuFree();
             this.packAndShipFee = data
             this.allTableData = this.translateDataForRender(res.data)
-            this.translateDataTopData(this.allTableData, data)
+            this.topTableData = this.translateDataTopData(this.allTableData, data)
             this.$refs.components.partsQuotationss(this.partInfo.rfqId,this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId,this.partInfo.round,this.allTableData.level)
             // this.allpagefrom.quotationId,
             this.findFiles()
@@ -598,6 +622,14 @@ export default{
             }
             break
           case 3:
+            data = baseData.levelThreeSumVO
+
+            if(data['discardCost']){
+              data['discardCost'].forEach(element => {
+                //element['ztbfcb'] = "整体报废成本"
+                element['ztbfcb'] = 'Scrap Cost'
+              });
+            }
             break
           default:
         }
@@ -605,6 +637,8 @@ export default{
         data['level'] = this.allTableData && this.allTableData.level?this.allTableData.level:this.partInfo.currentCbdLevel
         // eslint-disable-next-line no-undef
         data['startProductDate'] = baseData.startProductDate?moment(new Date(baseData.startProductDate)).format('YYYY-MM-DD HH:mm:ss'):''
+
+        console.log("data", data)
 
         return data
       } catch (error) {
@@ -622,10 +656,12 @@ export default{
         this.needContactData.forEach(items=>{
           a[items] = b[items]
         })
+
         data['tableData'].push(a)
         const total = getAallPrice(this.Aprice,a)
         data['tableData'][0]['totalPrice'] = total
         data['persent'] = getPersent(total,this.Aprice,a)
+        console.log("data", data)
         return data
       } catch (error) {
         return {
@@ -734,6 +770,115 @@ export default{
     handleDelByMakeCost() {
       this.allTableData.makeCost.records = this.allTableData.makeCost.records.filter(item => !this.multipleSelectionByMakeCost.includes(item))
     },
+    handleInputByRawMaterial(value, row) {
+      this.$set(row, "directMaterialCost", math.evaluate(`(${ row.unitPrice || 0 } * ${ row.roughWeight || 0 }) - (${ row.roughWeight || 0 } - ${ row.suttleWeight || 0 }) * ${ row.recycleUnitPrice || 0 }`).toFixed(4))
+      this.$set(row, "lossCost", math.evaluate(`${ row.directMaterialCost || 0 } / (1 - ${ row.lossCostRate || 0 } / 100) - ${ row.directMaterialCost || 0 }`).toFixed(4))
+      this.$set(row, "indirectMaterialCost", math.evaluate(`${ row.indirectMaterialCostRatio || 0 } / 100 * (${ row.unitPrice || 0 } * ${ row.roughWeight || 0 } + ${ row.lossCost || 0 })`).toFixed(4))
+      this.$set(row, "materialCost", math.evaluate(`${ row.directMaterialCost || 0 } + ${ row.lossCost || 0 } + ${ row.earlierLogisticsCost || 0 } + ${ row.indirectMaterialCost || 0 }`).toFixed(4))
+    
+      let materialSummary = 0 // 头表原材料/散件
+      let scrapSummary = 0 // 报废成本
+
+      this.allTableData.rawMaterial.records.forEach(item => {
+        materialSummary = math.add(materialSummary, math.bignumber(item.materialCost || 0)) // 计算头表原材料/散件
+        scrapSummary = math.add(scrapSummary, math.bignumber(item.lossCost || 0)) // 计算报废成本
+      })
+      this.allTableData.makeCost.records.forEach(item => {
+        scrapSummary = math.add(scrapSummary, math.bignumber(item.lossCost || 0)) // 计算报废成本
+      })
+
+      this.$set(this.topTableData.tableData[0], "materialSummary", materialSummary.toFixed(4))
+      this.$set(this.allTableData.discardCost[0], "amount", scrapSummary.toFixed(4))
+      this.$set(this.topTableData.tableData[0], "scrapSummary", scrapSummary.toFixed(4))
+
+      // 计算报废率
+      if (math.evaluate(`${ this.topTableData.tableData[0].materialSummary || 0 } + ${ this.topTableData.tableData[0].productionSummary || 0 }`) === "0") {
+        this.$set(this.allTableData.discardCost[0], "ratio", 0)
+      } else {
+        this.$set(this.allTableData.discardCost[0], "ratio", math.evaluate(`${ this.allTableData.discardCost[0].amount } / (${ this.topTableData.tableData[0].materialSummary || 0 } + ${ this.topTableData.tableData[0].productionSummary || 0 })`).toFixed(4))
+      }
+
+      this.$set(this.allTableData.manageFee[0], "amount", math.evaluate(`${ this.topTableData.tableData[0].materialSummary } * (${ this.allTableData.manageFee[0].ratio } / 100)`).toFixed(4))
+      this.$set(this.allTableData.manageFee[0], "blockAmount", math.evaluate(`${ this.allTableData.manageFee[0].amount } * 1`).toFixed(4))
+
+      this.$set(this.allTableData.profit[0], "amount", math.evaluate(`${ this.topTableData.tableData[0].materialSummary } * (${ this.allTableData.profit[0].ratio } / 100)`).toFixed(4))
+      this.$set(this.allTableData.profit[0], "blockAmount", math.evaluate(`${ this.allTableData.profit[0].amount } * 1`).toFixed(4))
+    
+      const manageSummary = this.allTableData.manageFee.reduce((acc, cur) => {
+        return math.add(acc, math.bignumber(cur.amount || 0))
+      }, 0)
+      this.$set(this.topTableData.tableData[0], "manageSummary", manageSummary.toFixed(4))
+
+      const profitSummary = this.allTableData.profit.reduce((acc, cur) => {
+        return math.add(acc, math.bignumber(cur.amount || 0))
+      }, 0)
+      this.$set(this.topTableData.tableData[0], "profitSummary", profitSummary.toFixed(4))
+    },
+
+    handleInputByMakeCost(value, row) {
+      this.$set(row, "directProduceCost", math.evaluate(`(${ row.perHourMachineCost || 0 } + ${ row.perHourLaborCost || 0 } * ${ row.workerCount || 0 }) * ${ row.perProduceTime } / 3600 / ${ row.perCycleCount ? row.perCycleCount : 1 }`).toFixed(4))
+      this.$set(row, "lossCost", math.evaluate(`${ row.directProduceCost || 0 } / (1 - ${ row.lossCostRate || 0 } / 100) - ${ row.directProduceCost || 0 }`).toFixed(4))
+      this.$set(row, "indirectProduceCost", math.evaluate(`(${ row.directProduceCost || 0 } + ${ row.lossCost || 0 } + ${ row.produceSwitchCost || 0 }) * (${ row.indirectProduceCostRate || 0 } / 100)`).toFixed(4))
+      this.$set(row, "totalCost", math.evaluate(`${ row.directProduceCost || 0 } + ${ row.lossCost || 0 } + ${ row.produceSwitchCost || 0 } + ${ row.indirectProduceCost || 0 }`).toFixed(4))
+    
+      let productionSummary = 0 // 头表制造成本
+      let scrapSummary = 0 // 报废成本
+
+      this.allTableData.makeCost.records.forEach(item => {
+        productionSummary = math.add(productionSummary, math.bignumber(item.totalCost || 0)) // 计算头表制造成本
+        scrapSummary = math.add(scrapSummary, math.bignumber(item.lossCost || 0)) // 计算报废成本
+      })
+      this.allTableData.rawMaterial.records.forEach(item => {
+        scrapSummary = math.add(scrapSummary, math.bignumber(item.lossCost || 0)) // 计算报废成本
+      })
+
+      this.$set(this.topTableData.tableData[0], "productionSummary", productionSummary.toFixed(4))
+      this.$set(this.allTableData.discardCost[0], "amount", scrapSummary.toFixed(4))
+      this.$set(this.topTableData.tableData[0], "scrapSummary", scrapSummary.toFixed(4))
+
+      // 计算报废率
+      if (math.evaluate(`${ this.topTableData.tableData[0].materialSummary || 0 } + ${ this.topTableData.tableData[0].productionSummary || 0 }`) === "0") {
+        this.$set(this.allTableData.discardCost[0], "ratio", 0)
+      } else {
+        this.$set(this.allTableData.discardCost[0], "ratio", math.evaluate(`${ this.allTableData.discardCost[0].amount } / (${ this.topTableData.tableData[0].materialSummary || 0 } + ${ this.topTableData.tableData[0].productionSummary || 0 })`).toFixed(4))
+      }
+
+      this.$set(this.allTableData.manageFee[1], "amount", math.evaluate(`${ this.topTableData.tableData[0].productionSummary } * (${ this.allTableData.manageFee[1].ratio } / 100)`).toFixed(4))
+      this.$set(this.allTableData.manageFee[1], "blockAmount", math.evaluate(`${ this.allTableData.manageFee[1].amount } * 1`).toFixed(4))
+
+      this.$set(this.allTableData.profit[1], "amount", math.evaluate(`${ this.topTableData.tableData[0].materialSummary } * (${ this.allTableData.profit[1].ratio } / 100)`).toFixed(4))
+      this.$set(this.allTableData.profit[1], "blockAmount", math.evaluate(`${ this.allTableData.profit[1].amount } * 1`).toFixed(4))
+    
+      const manageSummary = this.allTableData.manageFee.reduce((acc, cur) => {
+        return math.add(acc, math.bignumber(cur.amount || 0))
+      }, 0)
+      this.$set(this.topTableData.tableData[0], "manageSummary", manageSummary.toFixed(4))
+
+      const profitSummary = this.allTableData.profit.reduce((acc, cur) => {
+        return math.add(acc, math.bignumber(cur.amount || 0))
+      }, 0)
+      this.$set(this.topTableData.tableData[0], "profitSummary", profitSummary.toFixed(4))
+    },
+
+    handleInputByManageFee(value, row) {
+      this.$set(row, "amount", math.evaluate(`${ this.topTableData.tableData[0].productionSummary } * (${ row.ratio || 0 } / 100)`).toFixed(4))
+      this.$set(row, "blockAmount", math.evaluate(`${ row.amount || 0 } * 1`).toFixed(4))
+
+      const manageSummary = this.allTableData.manageFee.reduce((acc, cur) => {
+        return math.add(acc, math.bignumber(cur.amount || 0))
+      }, 0)
+      this.$set(this.topTableData.tableData[0], "manageSummary", manageSummary.toFixed(4))
+    },
+
+    handleInputByProfit(value, row) {
+      this.$set(row, "amount", math.evaluate(`${ this.topTableData.tableData[0].productionSummary } * (${ row.ratio || 0 } / 100)`).toFixed(4))
+      this.$set(row, "blockAmount", math.evaluate(`${ row.amount || 0 } * 1`).toFixed(4))
+
+      const profitSummary = this.allTableData.profit.reduce((acc, cur) => {
+        return math.add(acc, math.bignumber(cur.amount || 0))
+      }, 0)
+      this.$set(this.topTableData.tableData[0], "profitSummary", profitSummary.toFixed(4))
+    }
   }
 }
 </script>

@@ -708,7 +708,7 @@ export default {
   'LK_JIANJIEZHIZAOCHENGBEN': '间接制造成本', // 间接制造成本
   'LK_SHEBEICHENGBENRMB': '设备成本（RMB/Pc.）', // 设备成本（RMB/Pc.）
   'LK_BAOFEICHENGBEN': '报废成本', // 报废成本
-  'LK_BAOFEILV': '报废率', // 报废率（%）
+  'LK_BAOFEILV（%）': '报废率（%）', // 报废率（%）
   'LK_JINERMB': '金额（RMB/Pc.）', // 金额（RMB/Pc.）
   'LK_GUANLIFEI': '管理费', // 管理费
   'LK_BILI': '比例（%）', // 比例（%）
@@ -749,6 +749,6 @@ export default {
   'LK_MEIMUSHENGCHANLINGJIANSHU': '每模生产零件数', // 每模生产零件数
   'LK_ZHIJIEZHIZAOCHENGBENRMBPC': '直接制造成本（RMB/PC.）', // 直接制造成本（RMB/PC.）
   'LK_SHENGCHANQIEHUANCHENGBEN': '生产切换成本（RMB/PC.）', // 生产切换成本（RMB/PC.）
-  'LK_JIANJIEZHIZAOCHENGBEN': '间接制造成本', // 间接制造成本
   'LK_ZONGZHIZAOCHENGBENRMBPC': '总制造成本（RMB/PC.）', // 总制造成本（RMB/PC.）
+  'LK_MUKUAIJINERMBBLOCK': '模块金额（RMB/block）', // 模块金额（RMB/block）
 }

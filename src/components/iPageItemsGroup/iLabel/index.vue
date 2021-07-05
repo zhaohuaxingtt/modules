@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-21 13:51:54
- * @LastEditTime: 2021-04-21 21:41:09
- * @LastEditors: your name
+ * @LastEditTime: 2021-07-05 15:18:13
+ * @LastEditors: 舒杰
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\src\components\iPageItemsGroup\iLabel\index.vue
 -->
@@ -11,7 +11,7 @@
 		<span v-if="label">{{label}}</span>
 		<span v-if="required" class="start">*</span>
 		<el-tooltip :disabled="!icons" effect="light" placement="top-start">
-			<icon symbol :name="icons"></icon>
+			<icon symbol :name="icons" class="margin-left4"></icon>
 			<template #content>
 				<div v-html="tip"></div>
 			</template>

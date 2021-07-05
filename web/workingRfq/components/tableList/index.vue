@@ -14,21 +14,21 @@
         {{tableIndexString+(scope.$index+1)}}
       </template>
     </el-table-column>
-    <template v-for="(items,index) in tableTitle">
+    <template v-for="items in tableTitle">
       <!----------------------A价------------------------>
-      <el-table-column :key="index" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-if='items.props == "totalPrice"' :prop="items.props" :label="items.key ? $t(items.key) : items.name">
+      <el-table-column :key="items.key" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-if='items.props == "totalPrice"' :prop="items.props" :label="items.key ? $t(items.key) : items.name">
         <template slot-scope="row">{{getAallPrice(Aprice,row.row)}}</template>
       </el-table-column>
       <!----------------------B价------------------------>
-      <el-table-column :key="index" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-else-if='items.props == "totalPriceBprice"' :prop="items.props" :label="items.key ? $t(items.key) : items.name">
+      <el-table-column :key="items.key" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-else-if='items.props == "totalPriceBprice"' :prop="items.props" :label="items.key ? $t(items.key) : items.name">
        <template slot-scope="row">{{getAallPrice(Bprice,row.row)}}</template>
       </el-table-column>
       <!----------------------需要高亮的列并且带有打开详情事件------------------------>
-      <el-table-column :key="index" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-else-if='items.props == activeItems' :prop="items.props" :label="items.key ? $t(items.key) : items.name">
+      <el-table-column :key="items.key" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-else-if='items.props == activeItems' :prop="items.props" :label="items.key ? $t(items.key) : items.name">
         <template slot-scope="row"><span class="openLinkText cursor" @click="openPage(row.row)">{{row.row[activeItems]}}</span></template>
       </el-table-column>
       <!----------------------需要高亮的列并且带有打开详情事件------------------------>
-      <el-table-column :key="index" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-else-if='items.props == "isSvwAssignPriceParts"' :prop="items.props" :label="items.key ? $t(items.key) : items.name">
+      <el-table-column :key="items.key" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-else-if='items.props == "isSvwAssignPriceParts"' :prop="items.props" :label="items.key ? $t(items.key) : items.name">
         <template slot-scope="row">
           <span v-if='notEdit'>{{row.row[items.props]?"是":"否"}}</span>
           <iSelect v-else v-model="row.row[items.props]">
@@ -37,7 +37,7 @@
         </template>
       </el-table-column>
       <!----------------------需要进行排序的列------------------------>
-      <el-table-column :key="index" align='center' :width="items.width"  v-else-if='items.props == "paixu"'>
+      <el-table-column :key="items.key" align='center' :width="items.width"  v-else-if='items.props == "paixu"'>
         <tempalte slot-scope="scope">
           <span @click="updateSlot(scope.row,0)" v-if='scope.row.recordId && parseInt(scope.row.recordId)'>
             <icon symbol class="cursor" name='iconliebiaoyizhiding' ></icon>
@@ -47,7 +47,7 @@
           </span>
         </tempalte>
       </el-table-column>
-      <el-table-column :key="index" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip'  v-else :label="items.key ? groupTileTranslate(items) : items.name" :prop="items.props" :label-class-name="items.labelClassName">
+      <el-table-column :key="items.key" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip'  v-else :label="items.key ? groupTileTranslate(items) : items.name" :prop="items.props" :label-class-name="items.labelClassName">
         <!----------------------------存在二级表头的情况------------------------------->
         <template v-if='items.list && items.list.length > 0'>
            <template v-for="(itemss,indexs) in items.list">
@@ -75,7 +75,7 @@
                       <span v-else>{{scope.row[itemss.props]}}</span>
                     </template>
                     <template v-else-if='itemss.type == "input"'>
-                      <iInput v-model="scope.row[itemss.props]" v-if='!notEdit'></iInput>
+                      <iInput v-model="scope.row[itemss.props]" v-if='!notEdit' @input="handleInput($event, scope.row, items.props)"></iInput>
                       <span v-else>{{scope.row[itemss.props]}}</span>
                     </template>
                     <template v-else>{{scope.row[itemss.props]}}</template>
@@ -92,7 +92,7 @@
             <span v-else>{{scope.row[items.props]}}</span>  
           </template>
           <template v-else-if='items.type == "input"'>
-            <iInput v-model="scope.row[items.props]" v-if='!notEdit'></iInput>
+            <iInput v-model="scope.row[items.props]" v-if='!notEdit' @input="handleInput($event, scope.row, items.props)"></iInput>
             <span v-else>{{scope.row[items.props]}}</span>
           </template>
           <template v-else-if='items.type == "inputRate"'>
@@ -194,6 +194,10 @@ export default{
     },
     handleInputByRate(value, row, key) {
       this.$set(row, key, numberProcessor(value, 2))
+      this.$emit("handleInputByRate", value, row, key)
+    },
+    handleInput(value, row, key) {
+      this.$emit("handleInput", value, row, key)
     }
   }
 }
