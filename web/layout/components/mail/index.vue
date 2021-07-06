@@ -12,7 +12,7 @@
           <component
             ref="list"
             :is="item.content"
-            :tab="item.name"
+            :tab="item.nameInt"
             @listCallback="handleListCallback"
             @unReadCallback="handleUnreadCallback"
             @triggerCallback="handleTriggerCallback"
@@ -48,20 +48,22 @@ export default {
   data() {
     const _self = this
     return {
-      activeTab: 0,
+      activeTab: '0',
       tabs: [
         {
           title: '通知',
           content: list,
           unread: 0,
-          name: 0,
+          name: '0',
+          nameInt: 0,
           icon: 'el-icon-bell'
         },
         {
           title: '消息',
           content: list,
           unread: 0,
-          name: 1,
+          name: '1',
+          nameInt: 1,
           icon: 'el-icon-copy-document'
         }
       ]
@@ -80,11 +82,11 @@ export default {
     handleUnreadCallback(val) {
       const { unread, name } = val
       const item = this.tabs.find(t => {
-        return t.name === name
+        return parseInt(t.name) === parseInt(name)
       })
       item.unread = unread
       const index = _.findIndex(this.tabs, t => {
-        return t.name === name
+        return parseInt(t.name) === parseInt(name)
       })
       this.$set(this.tabs, index, item)
     },
