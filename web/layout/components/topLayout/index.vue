@@ -16,8 +16,7 @@
         <el-avatar
           class="icon"
           src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3729239676,1542549068&fm=26&gp=0.jpg"
-        >
-        </el-avatar>
+        ></el-avatar>
         <div class="info">
           <p class="name">{{ userInfo.nameZh || 'admin' }}</p>
           <p class="dept">CSP</p>
@@ -30,52 +29,35 @@
             <span>{{ $t('setting') | capitalizeFilter }}</span>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item icon="el-icon-switch-button">{{
-              $t('LK_TUICHUDENGLU')
-            }}</el-dropdown-item>
+            <el-dropdown-item icon="el-icon-switch-button">{{ $t('LK_TUICHUDENGLU') }}</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
       <div class="language" @click="handleChangeLang">
-        <icon
-          symbol
-          v-if="lang === 'zh'"
-          class="icon"
-          name="iconzhongyingwenzhuanhuanzhong"
-        />
+        <icon symbol v-if="lang === 'zh'" class="icon" name="iconzhongyingwenzhuanhuanzhong" />
         <icon symbol v-else class="icon" name="iconzhongyingwenzhuanhuanying" />
       </div>
-      <div class="message" @click="showMessage">
-        <el-badge :value="messageCount" :hidden="!messageCount">
-          <icon symbol class="icon" name="iconxiaoxi" />
-        </el-badge>
-      </div>
+      <iMailTrigger />
     </div>
-    <!-- 消息列表 -->
-    <drawer
-      ref="drawer"
-      :visible="drawerVisible"
-      @afterClear="afterClear"
-      @updateMessageCount="getCountInMail"
-    />
     <notify ref="notify" v-if="!drawerVisible" />
   </div>
 </template>
 <script>
 import pInput from './input.vue'
 import { icon } from 'rise'
-import drawer from '../message/drawer'
 import notify from '../message/notify'
 import filters from '@/utils/filters'
 import { getCountInMail } from '@/api/layout/topLayout'
 import { messageSocket } from '@/api/socket'
+import iMailTrigger from '../mail/trigger.vue'
+
 export default {
   mixins: [filters],
   components: {
     pInput,
     icon,
-    drawer,
     notify,
+    iMailTrigger
   },
   data() {
     return {
@@ -90,16 +72,16 @@ export default {
       messageLoading: false,
       messageData: {
         notice: [],
-        message: [],
+        message: []
       },
-      isClose: true,
+      isClose: true
     }
   },
   computed: {
     // eslint-disable-next-line no-undef
     ...Vuex.mapState({
-      userInfo: (state) => state.permission.userInfo,
-    }),
+      userInfo: state => state.permission.userInfo
+    })
   },
   created() {
     this.lang = localStorage.getItem('lang')
@@ -158,7 +140,7 @@ export default {
             console.log(e)
           }
         })
-        .catch((e) => {
+        .catch(e => {
           this.reconnectMessageSocket()
         })
     },
@@ -191,16 +173,14 @@ export default {
     },
     // 获取消息数目
     getCountInMail() {
-      getCountInMail({ receiverId: this.userInfo.id, inMailType: 5 }).then(
-        (res) => {
-          this.messageCount = res.data
-        }
-      )
+      getCountInMail({ receiverId: this.userInfo.id, inMailType: 5 }).then(res => {
+        this.messageCount = res.data
+      })
     },
     afterClear() {
       this.getCountInMail()
-    },
-  },
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>

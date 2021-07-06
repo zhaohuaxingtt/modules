@@ -29,7 +29,9 @@ export default {
   props: {
     bizId: {
       type: Number,
-      Default: 0
+      Default: function() {
+        return 0
+      }
     },
     show: [Boolean]
   },
