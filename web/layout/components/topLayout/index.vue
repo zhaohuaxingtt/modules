@@ -63,7 +63,7 @@ import filters from '@/utils/filters'
 import { getCountInMail } from '@/api/layout/topLayout'
 import { messageSocket } from '@/api/socket'
 import { removeToken, updataComponents } from '@/utils/index.js'
-import iMailTrigger from '@/components/iMail/trigger.vue'
+import iMailTrigger from '../mail/trigger.vue'
 import store from '@/store'
 export default {
   mixins: [filters],
