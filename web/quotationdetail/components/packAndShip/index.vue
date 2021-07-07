@@ -2,7 +2,7 @@
  * @Descripttion: 供应商报价界面-报价页面-零件报价-包装运输
  * @Author: Luoshuang
  * @Date: 2021-04-22 16:53:47
- * @LastEditTime: 2021-07-06 10:02:27
+ * @LastEditTime: 2021-07-07 09:43:19
 -->
 <template>
   <div v-if="partInfo.partProjectType === 'PT04' || partInfo.partProjectType === 'PT19'" v-loading="loading">
@@ -133,7 +133,7 @@ export default {
   },
   methods: {
     getPackageOptions() {
-      getDictByCode(type).then(res => {
+      getDictByCode('PACKAGETYPE').then(res => {
         if (res?.result) {
           this.selectOptions = {
             ...this.selectOptions,

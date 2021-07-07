@@ -7,6 +7,9 @@
     <iCard class="reducePlan" v-loading="loading">
         <div class="header margin-bottom20">
             <span class="title">{{ $t('LK_JIANGJIAJIHUA') }}</span>
+            <span v-if="partInfo.partProjectType === 'PT04' || partInfo.partProjectType === 'PT19'">
+                降价计划以{{basic}}为准
+            </span>
             <!-----------配件报价的降价计划可以选择基于A价或B价，---------------------------------------------->
             <span v-if="partInfo.partProjectType === 'PT17'"  class="tip margin-left15">
                 <span class="margin-right15">计算基准：</span>
@@ -35,6 +38,7 @@ import {
     saveLtcPlan,
  } from '@/api/rfqManageMent/quotationdetail'
 import moment from 'moment'
+import {cloneDeep} from 'lodash'
 export default {
     name:'reducePlan',
     components:{
@@ -60,7 +64,7 @@ export default {
             tableTitle:[
                 {key:'yearMonths',name:'年/月',type:'iDatePicker'},
                 {key:'priceReduceRate',name:'降价幅度(%)',type:'iInput'},
-                {key:'reducedPrice',name:'降价后价格'},
+                {key:'reducedPriceShow',name:'降价后价格'},
             ],
             tableData:[],
             computedBasic: '01',
@@ -68,6 +72,25 @@ export default {
     },
     created(){
         // this.init();
+    },
+    computed: {
+        basic() {
+            // 报价类型（A价: 01 ，B价: 02 ，Exwor：3，FOB：4，CIF：5，DDU：6，DDP7 
+            switch(this.computedBasic) {
+                case '3':
+                    return '出厂价Exwork'
+                case '4':
+                    return '离岸价FOB'
+                case '5':
+                    return '到岸价CIF'
+                case '6':
+                    return '未完税交货DDU'
+                case '7':
+                    return '未完税交货DDP'
+                default:
+                    return ''
+            }
+        }
     },
     methods: {
         /**
@@ -98,17 +121,18 @@ export default {
                     if (!basicPrice) {
                         return [...accum, item]
                     }
+                    const reducedPrice = index === 0 ? (basicPrice * (1 - item.priceReduceRate / 100)) : (accum[index - 1].reducedPrice * (1 - item.priceReduceRate / 100))
                     return [...accum, {
                         ...item,
-                        reducedPrice: index === 0 ? (basicPrice * (1 - item.priceReduceRate / 100)).toFixed(4) : (accum[index - 1].reducedPrice * (1 - item.priceReduceRate / 100)).toFixed(4)
+                        reducedPrice: cloneDeep(reducedPrice),
+                        reducedPriceShow: cloneDeep(reducedPrice).toFixed(2)
                     }]
                 },[])
         },
         /**
          * @Description: 降价幅度变化时
          * @Author: Luoshuang
-         * @param {*} val 降价幅度
-         * @param {*} index 降价幅度对应的index
+         * @param {*}
          * @return {*}
          */        
         handleRateChange() {
@@ -128,7 +152,7 @@ export default {
             if (res?.result) {
                 if (!res.data.priceType) {
                     // 如果返回结果没有priceType，则配件默认为A价
-                    this.computedBasic = this.partInfo.partProjectType === 'PT17' ? '01' : this.partInfo.partProjectType === 'PT18' ? '02' : '01'
+                    this.computedBasic = this.partInfo.partProjectType === 'PT17' ? '01' : this.partInfo.partProjectType === 'PT18' ? '02' : (this.partInfo.partProjectType === 'PT04' || this.partInfo.partProjectType === 'PT19') ? '3' : '01'
                 } else {
                     this.computedBasic = res.data.priceType
                 }
@@ -139,6 +163,9 @@ export default {
                 }
                 if (this.computedBasic === '02' && !res.data.bprice) {
                     iMessage.warn('B价不存在，无法根据B价计算降价后的价格')
+                }
+                if (['3','4','5','6','7'].includes(this.computedBasic) && !res.data.bprice) {
+                    iMessage.warn(this.basic+'不存在，无法计算降价后的价格')
                 }
                 this.tableData = this.computeReducePrice(this.computedBasic === '01' ? this.aprice : this.bprice, res.data.pricePlanInfoVOS)
             } else {
