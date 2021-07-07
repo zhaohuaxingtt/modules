@@ -2,14 +2,14 @@
  * @Author: Luoshuang
  * @Date: 2021-06-29 11:09:14
  * @LastEditors: Luoshuang
- * @LastEditTime: 2021-07-01 19:22:32
+ * @LastEditTime: 2021-07-06 19:38:03
  * @Description: DB零件-报价成本汇总-报价分析
  * @FilePath: \front-modules\web\quotationdetail\components\costsummary\components\quotationAnalysis.vue
 -->
 
 <template>
   <iCard :title="language('BAOJIAFENXI','报价分析')">
-    <el-table ref="multipleTable" :span-method="arraySpanMethod" fit tooltip-effect='light' :height="height" :data='dbDetailList' v-loading='tableLoading' :empty-text="language('ZANWUSHUJU', '暂无数据')" >
+    <el-table class="baojiaTable" ref="multipleTable" :span-method="arraySpanMethod" fit tooltip-effect='light' :height="height" :data='dbDetailList' v-loading='tableLoading' :empty-text="language('ZANWUSHUJU', '暂无数据')" >
       <el-table-column type='index' width='50' align='center' label='#'>
         <template slot-scope="scope">
           {{scope.$index+1}}
@@ -25,7 +25,8 @@
               <el-option :value="false" label="否"></el-option>
             </iSelect>
             <iDatePicker v-else-if="scope.row.type === 'date'" value-format="" v-model="scope.row.seaPrice"></iDatePicker>
-            <iInput v-else v-model="scope.row.seaPrice" ></iInput>
+            <iInput v-else v-model="scope.row.seaPrice" :class="scope.row.isRequire && 'withRequire'" ></iInput>
+            <!-- <span v-if="scope.row.isRequire" style="color:red;">*</span> -->
           </template>
         </el-table-column>
         <el-table-column prop="airPrice" align='center' :label="language('KONGYUN', '空运')">
@@ -73,5 +74,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.baojiaTable {
+  ::v-deep .el-table__row .el-input {
+    width: 80%;
+    margin: 0 auto;
+  }
+  ::v-deep .el-table__row:last-child .el-input {
+    width: 94%;
+  }
+}
+.withRequire::after {
+  content: '*';
+  position: absolute;
+  color: red;
+  margin-left: 5px;
+}
 </style>

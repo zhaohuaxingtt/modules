@@ -2,7 +2,7 @@
  * @Descripttion: 供应商报价界面-报价页面-零件报价-包装运输
  * @Author: Luoshuang
  * @Date: 2021-04-22 16:53:47
- * @LastEditTime: 2021-07-01 19:30:55
+ * @LastEditTime: 2021-07-07 09:43:19
 -->
 <template>
   <div v-if="partInfo.partProjectType === 'PT04' || partInfo.partProjectType === 'PT19'" v-loading="loading">
@@ -33,7 +33,14 @@
           :label="language(item.i18n, item.name) + '：'"
         >
           <iText v-if="disabled">{{ params[item.props] }}</iText>
-          <iSelect v-else-if="item.type === 'select'" v-model="params[item.props]"></iSelect>
+          <iSelect v-else-if="item.type === 'select'" v-model="params[item.props]">
+            <el-option
+              v-for="item in selectOptions[item.selectOption]"
+              :key="item.code"
+              :name="item.name"
+              :value="item.code"
+            ></el-option>
+          </iSelect>
           <iInput v-else v-model="params[item.props]" title="" type="number" oninput="if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+5)}"></iInput>
         </iFormItem>
       </iFormGroup>
@@ -70,6 +77,7 @@
 <script>
 import { iCard, iFormGroup, iFormItem, iMessage, iInput, iText } from "rise";
 import { savePackageTransport, getPackageTransport } from '@/api/rfqManageMent/quotationdetail'
+import { getDictByCode } from '@/api/dictionary'
 export default {
   components: {
     iCard,
@@ -111,7 +119,7 @@ export default {
         { props: "packageCost", name: "Stack", i18n: 'STACK' },
       ],
       requireInputs: [
-        { props: "packageType", name: "参考类型", i18n: 'CAOKAOLEIXING', type: 'select' },
+        { props: "packageType", name: "参考类型", i18n: 'CAOKAOLEIXING', type: 'select', selectOption: 'PACKAGETYPE' },
         { props: "packageLength", name: "参考包装长(mm)", i18n: 'CANKAOBAOZHUANGCHANG_MM' },
         { props: "packageWidth", name: "参考包装宽(mm)", i18n: 'CANKAOBAOZHUANGKUAN_MM' },
         { props: "packageHeight", name: "参考包装高(mm)", i18n: 'CANKAOBAOZHUANGGAO_MM' },
@@ -120,7 +128,20 @@ export default {
       ]
     };
   },
+  created() {
+    this.getPackageOptions()
+  },
   methods: {
+    getPackageOptions() {
+      getDictByCode('PACKAGETYPE').then(res => {
+        if (res?.result) {
+          this.selectOptions = {
+            ...this.selectOptions,
+            PACKAGETYPE: res.data[0]?.subDictResultVo || []
+          }
+        }
+      })
+    },
     /**
      * @description: 初始化界面方法,父界面会在存在参数的情况下来调用
      * @param {*}
