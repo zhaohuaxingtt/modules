@@ -3,7 +3,7 @@
  * 使用方法
  * import iLayout from 'rise/web/layout/index.vue'
  * <iLayout :menus="menus" />
- * menus 参考 menu.js
+ * menus 参考 menus.js, 不同工程需要自定义menus.js文件 front-modules中的menus.js仅供参考
  * 后期menus可能会集成进来
 -->
 <template>
@@ -11,11 +11,7 @@
     <topLayout></topLayout>
     <leftLayout ref="leftLayout" :menus="menus" @toggle-active="toggleActive">
       <template slot="menu">
-        <sideMenu
-          :side-menus="sideMenus"
-          :menu-map="menuMap"
-          @hide-side-menu="hideSideMenu"
-        />
+        <sideMenu :side-menus="sideMenus" :menu-map="menuMap" @hide-side-menu="hideSideMenu" />
       </template>
     </leftLayout>
     <div class="app-content" :class="{ keepAlive: $route.meta.keepAlive }">
@@ -37,13 +33,13 @@ export default {
       type: Array,
       default: function() {
         return []
-      },
-    },
+      }
+    }
   },
   data() {
     return {
       activeIndex: 1,
-      menuMap: {},
+      menuMap: {}
     }
   },
   computed: {
@@ -55,7 +51,7 @@ export default {
         }
       }
       return []
-    },
+    }
   },
   created() {
     const menuMap = this.getMenusMap(this.menus)
@@ -85,8 +81,8 @@ export default {
         }
       }
       return res
-    },
-  },
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>

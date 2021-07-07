@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { iInput, icon } from 'rise';
+import { iInput, icon } from 'rise'
 
 export default {
   components: {
@@ -46,7 +46,7 @@ export default {
   width: 667px;
   height: 40px;
   line-height: 40px;
-  background: #F8F8FA;
+  background: #f8f8fa;
   border-radius: 10px;
 
   .icon {

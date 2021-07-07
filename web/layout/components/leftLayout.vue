@@ -7,7 +7,7 @@
  * @FilePath: \rise\src\layout\components\leftLayout.vue
 -->
 <template>
-  <div>
+  <div class="left-layout">
     <div class="leftLayout">
       <div class="content">
         <img class="logo" src="~@/assets/images/rise.png" alt="" />
@@ -18,10 +18,7 @@
             :class="{ transparent: activeIndex === index }"
             @click="toggleActive(index)"
           >
-            <icon
-              symbol
-              :name="activeIndex === index ? item.activeIcon : item.icon"
-            />
+            <icon symbol :name="activeIndex === index ? item.activeIcon : item.icon" />
           </span>
         </div>
         <div class="btn-button">
@@ -40,7 +37,7 @@
         :class="{
           meunContent: true,
           showMenuContent: menuVisible,
-          delay: menuVisible,
+          delay: menuVisible
         }"
       >
         <div class="meunTopContent">
@@ -66,14 +63,14 @@ export default {
       type: Array,
       default: function() {
         return []
-      },
-    },
+      }
+    }
   },
   data() {
     return {
       iconChangeClass: '',
       menuVisible: false,
-      activeIndex: 1,
+      activeIndex: 1
     }
   },
   provide() {
@@ -131,11 +128,13 @@ export default {
           }
         }
       }
-    },
-  },
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>
+.left-layout {
+}
 .delay {
   transition-delay: 0.4s !important;
 }

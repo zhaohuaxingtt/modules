@@ -1,16 +1,7 @@
 <template>
   <ul class="side-menus">
-    <li
-      class="item"
-      v-for="(item, index) in menus"
-      :key="index"
-      :class="{ item: true, active: item.active }"
-    >
-      <item-link
-        :item="item"
-        :menu-map="menuMap"
-        @hide-side-menu="$emit('hide-side-menu')"
-      />
+    <li class="item" v-for="(item, index) in menus" :key="index" :class="{ item: true, active: item.active }">
+      <item-link :item="item" :menu-map="menuMap" @hide-side-menu="$emit('hide-side-menu')" />
     </li>
   </ul>
 </template>
@@ -23,20 +14,20 @@ export default {
   props: {
     sideMenus: {
       type: Array,
-      default: () => [],
+      default: () => []
     },
     menuMap: {
       type: Object,
       default: function() {
         return []
-      },
-    },
+      }
+    }
   },
   computed: {
     menus() {
-      return this.sideMenus.filter((e) => !e.hidden)
-    },
-  },
+      return this.sideMenus.filter(e => !e.hidden)
+    }
+  }
 }
 </script>
 

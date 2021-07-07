@@ -1,28 +1,31 @@
 <template>
-  <router-link
-    class="side-menu-link"
-    :class="{ active: isActive }"
-    :to="{ path: item.url }"
-    :target="item.target"
-    @click.native="handleRouterClick"
-  >
-    <icon
-      symbol
-      class="icon margin-right20 leftIconActive"
-      :name="
-        isActive
-          ? 'iconxunyuandingdianxuanzhong'
-          : 'iconxunyuandingdianweixuanzhong'
-      "
-    />
-    <span>{{ item.title }}</span>
-    <icon
-      symbol
-      class="icon floatright margin-top32"
-      v-if="!isActive"
-      name="iconmuluweixuanzhongshijiantou"
-    />
-  </router-link>
+  <div class="router-link">
+    <router-link
+      v-if="item.url.indexOf('http') === -1"
+      class="side-menu-link"
+      :class="{ active: isActive, disabled: !item.url }"
+      :to="{ path: item.url }"
+      :target="item.target"
+      @click.native="handleRouterClick"
+    >
+      <icon
+        symbol
+        class="icon margin-right20 leftIconActive"
+        :name="isActive ? 'iconxunyuandingdianxuanzhong' : 'iconxunyuandingdianweixuanzhong'"
+      />
+      <span>{{ item.title }}</span>
+      <icon symbol class="icon floatright margin-top32" v-if="!isActive" name="iconmuluweixuanzhongshijiantou" />
+    </router-link>
+    <a v-else :href="item.url" :target="item.target" class="side-menu-link" @click.native="handleRouterClick">
+      <icon
+        symbol
+        class="icon margin-right20 leftIconActive"
+        :name="isActive ? 'iconxunyuandingdianxuanzhong' : 'iconxunyuandingdianweixuanzhong'"
+      />
+      <span>{{ item.title }}</span>
+      <icon symbol class="icon floatright margin-top32" v-if="!isActive" name="iconmuluweixuanzhongshijiantou" />
+    </a>
+  </div>
 </template>
 
 <script>
@@ -35,14 +38,14 @@ export default {
       type: Object,
       default: function() {
         return {}
-      },
+      }
     },
     menuMap: {
       type: Object,
       default: function() {
         return []
-      },
-    },
+      }
+    }
   },
   computed: {
     isActive() {
@@ -54,14 +57,13 @@ export default {
         return this.menuMap[curRoutePath].includes(this.item.url)
       }
       return false
-    },
+    }
   },
   methods: {
     handleRouterClick() {
-      console.log('handleRouterClick')
       this.$emit('hide-side-menu')
-    },
-  },
+    }
+  }
 }
 </script>
 
@@ -97,6 +99,10 @@ export default {
         color: white;
       }
     }
+  }
+  &.disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
   }
 }
 </style>

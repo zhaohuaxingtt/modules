@@ -16,7 +16,7 @@ export const iconData = [
     key: 'first',
     path: '/partsign',
     // path: "/approval/template",
-    menuData: [],
+    menuData: []
   },
   {
     icon: 'iconworkbenchweixuanzhong',
@@ -25,7 +25,7 @@ export const iconData = [
     key: 'tow',
     path: '/priceorder/stocksheet',
     // path: '/partsprocure',
-    menuData: [],
+    menuData: []
   },
   {
     icon: 'iconcommonfunctionweixuanzhong',
@@ -40,36 +40,36 @@ export const iconData = [
         active: false,
         key: 1,
         path: '/taskcenter',
-        languagekey: 'LK_RENWUZHONGXIN',
-      },
-    ],
-  },
+        languagekey: 'LK_RENWUZHONGXIN'
+      }
+    ]
+  }
 ]
 
 export const menuData = [
   {
     label: '菜单测试目录',
     active: true,
-    key: 1,
+    key: 1
   },
   {
     label: '菜单测试目录',
     active: false,
-    key: 2,
+    key: 2
   },
   {
     label: '菜单测试目录',
     active: false,
-    key: 3,
+    key: 3
   },
   {
     label: '菜单测试目录',
     active: false,
-    key: 4,
-  },
+    key: 4
+  }
 ]
 
 export const messageTypeMap = {
   '4': 'message',
-  '5': 'notice',
+  '5': 'notice'
 }

@@ -38,24 +38,39 @@
         <icon symbol v-else class="icon" name="iconzhongyingwenzhuanhuanying" />
       </div>
       <iMailTrigger />
+      <!-- <div class="message" @click="showMessage">
+        <el-badge :value="messageCount" :hidden="!messageCount">
+          <icon symbol class="icon" name="iconxiaoxi" />
+        </el-badge>
+      </div> -->
     </div>
+    <!-- 消息列表 -->
+    <!-- <drawer
+      ref="drawer"
+      :visible="drawerVisible"
+      @afterClear="afterClear"
+      @updateMessageCount="getCountInMail"
+    /> -->
     <notify ref="notify" v-if="!drawerVisible" />
   </div>
 </template>
 <script>
 import pInput from './input.vue'
 import { icon } from 'rise'
+import drawer from '../message/drawer'
 import notify from '../message/notify'
 import filters from '@/utils/filters'
 import { getCountInMail } from '@/api/layout/topLayout'
 import { messageSocket } from '@/api/socket'
-import iMailTrigger from '../mail/trigger.vue'
-
+import { removeToken, updataComponents } from '@/utils/index.js'
+import iMailTrigger from '@/components/iMail/trigger.vue'
+import store from '@/store'
 export default {
   mixins: [filters],
   components: {
     pInput,
     icon,
+    drawer,
     notify,
     iMailTrigger
   },
