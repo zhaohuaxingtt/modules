@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-07-05 16:09:45
+ * @LastEditTime: 2021-07-06 19:27:06
  * @LastEditors: Please set LastEditors
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
@@ -599,10 +599,85 @@ export default{
 
         switch(this.allpagefrom.cbdLevel) {
           case 1:
-            data = baseData.levelOneSumVO
+            data = {
+              ...baseData.levelOneSumVO,
+              rawMaterial: { records: [] },
+              makeCost: { records: [] },
+              discardCost: [],
+              manageFee: [],
+              otherFee: [],
+              profit: []
+            }
             break
           case 2:
-            data = baseData.levelTwoSumVO
+            data = {
+              ...baseData.levelTwoSumVO,
+              rawMaterial: baseData.levelTwoSumVO.rawMaterial ? baseData.levelTwoSumVO.rawMaterial : { records: [] },
+              makeCost: baseData.levelTwoSumVO.makeCost ? baseData.levelTwoSumVO.makeCost : { records: [] },
+              discardCost: 
+                Array.isArray(baseData.levelTwoSumVO.discardCost) && baseData.levelTwoSumVO.discardCost.length > 0 ?
+                baseData.levelTwoSumVO.discardCost : 
+                [
+                  {
+                    cbdId: baseData.levelTwoSumVO.cbdId,
+                    amount: "0",
+                    ratio: "0"
+                  }
+                ],
+              manageFee: 
+                Array.isArray(baseData.levelTwoSumVO.manageFee) && baseData.levelTwoSumVO.manageFee.length > 0 ?
+                baseData.levelTwoSumVO.manageFee : 
+                [
+                  {
+                    cbdId: baseData.levelTwoSumVO.cbdId,
+                    typeName: "原材料与散件（不含SVW指定散件）管理费",
+                    amount: "0",
+                    ratio: "0"
+                  },
+                  {
+                    cbdId: baseData.levelTwoSumVO.cbdId,
+                    typeName: "制造管理费",
+                    amount: "0",
+                    ratio: "0"
+                  }
+                ],
+              otherFee: 
+                Array.isArray(baseData.levelTwoSumVO.otherFee) && baseData.levelTwoSumVO.otherFee.length > 0 ?
+                baseData.levelTwoSumVO.otherFee : 
+                [
+                  // {
+                  //   cbdId: baseData.levelTwoSumVO.cbdId,
+                  //   itemType: 1,
+                  //   shareAmount: "0",
+                  //   shareQuantity: "0",
+                  //   shareTotal: "0",
+                  //   totalPrice: "0"
+                  // },
+                  // {
+                  //   cbdId: baseData.levelTwoSumVO.cbdId,
+                  //   itemType: 0,
+                  //   shareAmount: "0",
+                  //   shareQuantity: "0",
+                  //   shareTotal: "0",
+                  //   totalPrice: "0"
+                  // }
+                ],
+              profit: 
+                Array.isArray(baseData.levelTwoSumVO.profit) && baseData.levelTwoSumVO.profit.length > 0 ?
+                baseData.levelTwoSumVO.profit : 
+                [
+                  {
+                    cbdId: baseData.levelTwoSumVO.cbdId,
+                    amount: "0",
+                    ratio: "0"
+                  },
+                  {
+                    cbdId: baseData.levelTwoSumVO.cbdId,
+                    amount: "0",
+                    ratio: "0"
+                  }
+                ],
+            }
 
             if(data['discardCost']){
               data['discardCost'].forEach(element => {
@@ -622,7 +697,80 @@ export default{
             }
             break
           case 3:
-            data = baseData.levelThreeSumVO
+            data = {
+              ...baseData.levelThreeSumVO,
+              rawMaterial: baseData.levelThreeSumVO.rawMaterial ? baseData.levelThreeSumVO.rawMaterial : { records: [] },
+              makeCost: baseData.levelThreeSumVO.makeCost ? baseData.levelThreeSumVO.makeCost : { records: [] },
+              discardCost: 
+                Array.isArray(baseData.levelThreeSumVO.discardCost) && baseData.levelThreeSumVO.discardCost.length > 0 ?
+                baseData.levelThreeSumVO.discardCost : 
+                [
+                  {
+                    cbdId: baseData.levelThreeSumVO.cbdId,
+                    amount: "0",
+                    ratio: "0"
+                  }
+                ],
+              manageFee: 
+                Array.isArray(baseData.levelThreeSumVO.manageFee) && baseData.levelThreeSumVO.manageFee.length > 0 ?
+                baseData.levelThreeSumVO.manageFee : 
+                [
+                  {
+                    cbdId: baseData.levelThreeSumVO.cbdId,
+                    typeName: "材料管理和销售费用",
+                    amount: "0",
+                    blockAmount: "0",
+                    ratio: "0"
+                  },
+                  {
+                    cbdId: baseData.levelThreeSumVO.cbdId,
+                    typeName: "制造管理和销售费用",
+                    amount: "0",
+                    blockAmount: "0",
+                    ratio: "0"
+                  }
+                ],
+              otherFee: 
+                Array.isArray(baseData.levelThreeSumVO.otherFee) && baseData.levelThreeSumVO.otherFee.length > 0 ?
+                baseData.levelThreeSumVO.otherFee : 
+                [
+                  // {
+                  //   cbdId: baseData.levelThreeSumVO.cbdId,
+                  //   itemType: 0,
+                  //   shareAmount: "0",
+                  //   shareQuantity: "0",
+                  //   shareTotal: "0",
+                  //   totalPrice: "0"
+                  // },
+                  // {
+                  //   cbdId: baseData.levelThreeSumVO.cbdId,
+                  //   itemType: 1,
+                  //   shareAmount: "0",
+                  //   shareQuantity: "0",
+                  //   shareTotal: "0",
+                  //   totalPrice: "0"
+                  // }
+                ],
+              profit: 
+                Array.isArray(baseData.levelThreeSumVO.profit) && baseData.levelThreeSumVO.profit.length > 0 ?
+                baseData.levelThreeSumVO.profit : 
+                [
+                  {
+                    cbdId: baseData.levelThreeSumVO.cbdId,
+                    typeName: "材料利润",
+                    amount: "0",
+                    blockAmount: "0",
+                    ratio: "0"
+                  },
+                  {
+                    cbdId: baseData.levelThreeSumVO.cbdId,
+                    typeName: "制造利润",
+                    amount: "0",
+                    blockAmount: "0",
+                    ratio: "0"
+                  }
+                ],
+            }
 
             if(data['discardCost']){
               data['discardCost'].forEach(element => {
@@ -630,6 +778,12 @@ export default{
                 element['ztbfcb'] = 'Scrap Cost'
               });
             }
+            if(data['otherFee']){
+              data['otherFee'].forEach(element => {
+                element['itemName'] = element['itemType']?"Development Cost":"Tooling Cost"
+              });
+            }
+
             break
           default:
         }
@@ -752,7 +906,9 @@ export default{
     }, 
     // 添加行ByRawMaterial
     handleAddByRawMaterial() {
-      this.allTableData.rawMaterial.records.push({})
+      this.allTableData.rawMaterial.records.push({
+        cbdId: this.allTableData.cbdId
+      })
     },
     // 删除行ByRawMaterial
     handleDelByRawMaterial() {
@@ -764,7 +920,9 @@ export default{
     },
     // 添加行ByMakeCost
     handleAddByMakeCost() {
-      this.allTableData.makeCost.records.push({})
+      this.allTableData.makeCost.records.push({
+        cbdId: this.allTableData.cbdId
+      })
     },
     // 删除行ByMakeCost
     handleDelByMakeCost() {
