@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-07-05 15:31:44
+ * @LastEditTime: 2021-07-08 17:54:33
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -56,13 +56,14 @@
         </iFormItem>
       </iFormGroup>
     </iCard>
-    <div v-loading="tabLoading">
-      <iTabsList class="margin-top20" type="border-card" v-model="currentTab" :before-leave="tabLeaveBefore" @tab-click="tabChange">
+    <div id="tabList" v-loading="tabLoading">
+      <iTabsList class="margin-top20" type="card" v-model="currentTab" :before-leave="tabLeaveBefore" @tab-click="tabChange">
         <el-tab-pane v-for="(tab, $tabIndex) in trueTabs" :key="$tabIndex" :label="$t(tab.key)" :name="tab.name">
           <component :ref="tab.name" :is="component" :partInfo="partInfo" v-for="(component, $componentIndex) in tab.components" :class="$componentIndex !== 0 ? 'margin-top20' : ''" :key="$componentIndex" :disabled="disabled || partInfo.isOriginprice" @changeReduceStatus="changeReduceStatus"/>
         </el-tab-pane>
       </iTabsList>
     </div>
+    <icon id="tabTip" symbol name="iconbaojiadan-youfujian" />
     <iDialog
        title="请填写拒绝理由"
        width="400px"
@@ -155,7 +156,8 @@ export default {
       supplierId: "",
       watingSupplier:false,
       dialogVisible:false,
-      rejectRason:''
+      rejectRason:'',
+      statusObj: {}
     }
   },
   provide: function () {
@@ -201,6 +203,26 @@ export default {
         return this.tabs.filter(item => tabNames.includes(item.name))
       }
       return this.tabs
+    }
+  },
+  watch: {
+    "statusObj.containCommentsAndFiles"(status) {
+      this.$nextTick(() => {
+        const tabListDom = this.$el.querySelector("#tabList")
+        const tabTipDom = this.$el.querySelector("#tabTip")
+
+        if (status && !this.userInfo.supplierId) {
+          if (this.$el && tabListDom) {
+            const dom = tabListDom.querySelector("#tab-remarksAndAttachment")
+            dom.appendChild(tabTipDom)
+            tabTipDom.style.position = "absolute"
+            tabTipDom.style.opacity = "1"
+          }
+        } else {
+          tabTipDom.style.position = "fixed"
+          tabTipDom.style.opacity = "0"
+        }
+      })
     }
   },
   created() {
@@ -335,6 +357,7 @@ export default {
               this.forceDisabled = true
             } 
           } 
+          this.statusObj = res.data
           r()
         } else {
           r()
@@ -522,6 +545,15 @@ export default {
       width: 140px;
       font-size: 16px;
     }
+  }
+
+  #tabTip {
+    position: fixed;
+    opacity: 0;
+    top: -5px;
+    right: -10px;
+    width: 20px;
+    height: 20px;
   }
 }
 
