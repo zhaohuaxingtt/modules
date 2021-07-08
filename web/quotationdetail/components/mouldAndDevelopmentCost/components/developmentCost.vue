@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 00:21:17
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-10 18:19:20
+ * @LastEditTime: 2021-07-07 11:41:45
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\developmentCost.vue
 -->
@@ -148,12 +148,12 @@ export default {
       this.updateTotal()
     },
     handleInputByUnitPrice(val, row) {
-      row.unitPrice = numberProcessor(val, 4)
+      row.unitPrice = numberProcessor(val, 2)
 
       row.total = math.multiply(
         math.bignumber(row.unitPrice || 0),
         math.bignumber(row.quantity || 0),
-      ).toFixed(4)
+      ).toFixed(2)
 
       this.updateTotal()
     },
@@ -163,7 +163,7 @@ export default {
       row.total = math.multiply(
         math.bignumber(row.unitPrice || 0),
         math.bignumber(row.quantity || 0),
-      ).toFixed(4)
+      ).toFixed(2)
 
       this.updateTotal()
     },
@@ -183,9 +183,9 @@ export default {
         }
       })
 
-      this.$set(this.dataGroup, "devFee", devFee.toFixed(4))
-      this.$set(this.dataGroup, "shareDevFee", shareDevFee.toFixed(4))
-      this.$set(this.dataGroup, "unitPrice", +this.dataGroup.shareQuantity ? math.divide(shareDevFee, math.bignumber(this.dataGroup.shareQuantity)).toFixed(4) : "0")
+      this.$set(this.dataGroup, "devFee", devFee.toFixed(2))
+      this.$set(this.dataGroup, "shareDevFee", shareDevFee.toFixed(2))
+      this.$set(this.dataGroup, "unitPrice", +this.dataGroup.shareQuantity ? math.divide(shareDevFee, math.bignumber(this.dataGroup.shareQuantity)).toFixed(2) : "0")
     }
   }
 }
