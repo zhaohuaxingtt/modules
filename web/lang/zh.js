@@ -751,4 +751,5 @@ export default {
   'LK_SHENGCHANQIEHUANCHENGBEN': '生产切换成本（RMB/PC.）', // 生产切换成本（RMB/PC.）
   'LK_ZONGZHIZAOCHENGBENRMBPC': '总制造成本（RMB/PC.）', // 总制造成本（RMB/PC.）
   'LK_MUKUAIJINERMBBLOCK': '模块金额（RMB/block）', // 模块金额（RMB/block）
+  'LK_UPLOADBJ': '上传报价', //上传报价
 }
