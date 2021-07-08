@@ -23,7 +23,7 @@
         <div>
           <icon
             symbol
-            class="icon"
+            class="icon icon-name"
             :name="type2Icon[tab]['name'][parseInt(item.subType)]"
             v-if="type2Icon[tab]['name'][parseInt(item.subType)]"
           ></icon>
@@ -32,7 +32,7 @@
         <div v-if="!tab && item.subType === '3'">{{ item.fixNum }} / {{ item.num }}</div>
       </div>
       <div class="person" v-if="!tab && item.subType === '3'">
-        <icon symbol class="icon" :name="type2Icon[tab]['title'][parseInt(item.subType)]"></icon>
+        <icon symbol class="icon icon-person" :name="type2Icon[tab]['person'][parseInt(item.subType)]"></icon>
         <span class="multi-ellipsis">{{ item.sponsor }}</span>
       </div>
       <div class="content" v-if="tab || (!tab && item.subType === '2')">
@@ -216,11 +216,10 @@ export default {
   .title {
     .icon {
       margin-right: 5px;
-      &.icon-time {
-        width: 17px;
-        height: 14px;
-      }
-      &.icon-addr {
+      &.icon-time,
+      &.icon-addr,
+      &.icon-name,
+      &.icon-person {
         width: 17px;
         height: 14px;
       }
