@@ -27,10 +27,11 @@
           <el-option :value='items.value' :label="items.label" v-for="(items,index) in cbdlist" :key='index'></el-option>
         </iSelect>
       </i-form-item>
-      <i-form-item v-if='!disabled' class="rightFloat">
-        <el-checkbox v-model="allTableData.editFlag" v-show="allTableData.level > 1">{{$t('LK_SHOUDONGSHURU')}}</el-checkbox>
+      <i-form-item class="rightFloat">
+        <el-checkbox v-if='!disabled' v-model="allTableData.editFlag" v-show="allTableData.level > 1">{{$t('LK_SHOUDONGSHURU')}}</el-checkbox>
         <iButton @click="downloadFile" :loading='downLoadLoding'>{{$t('LK_XIAZAICBD')}}</iButton>
         <el-upload
+          v-if='!disabled' 
           class="floatright margin-left10"
           :action="uploadUrl + '/cbd-files/uploadPartCbd'"
           :data='{
