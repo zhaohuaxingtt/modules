@@ -41,7 +41,7 @@
           style="display:inline-block;"
           :show-file-list='false'
           :on-progress='()=>{uploadLoading=true}'
-          :on-error='()=>{uploadLoading=false;iMessage.error("上传失败！")}'
+          :on-error='onError'
           :on-success='fileSuccess'
         >
           <iButton :loading='uploadLoading'>{{$t('LK_UPLOADBJ')}}</iButton>
@@ -201,7 +201,16 @@ export default{
         this.downLoadLoding = false
         iMessage.error(err.desZh)
       })
-    }
+    },
+    onError(err) {
+      this.uploadLoading = false
+      try {
+        const message = JSON.parse(err.message)
+        iMessage.error(this.$i18n.locale === "zh" ? message.desZh : message.desEn)
+      } catch(e) {
+        iMessage.error("上传失败！")
+      }
+    },
   }
 }
 </script>
