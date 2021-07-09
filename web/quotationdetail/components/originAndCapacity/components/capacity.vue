@@ -142,7 +142,7 @@ export default {
       })
       .then(res => {
         if (res.code == 200) {
-          this.tableListData = Array.isArray(res.data.data) ? res.data.data : []
+          this.tableListData = Array.isArray(res.data) ? res.data : []
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
         }

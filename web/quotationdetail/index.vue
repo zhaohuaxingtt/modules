@@ -329,7 +329,7 @@ export default {
       .then(res => {
         if (res.code == 200) {
           this.tabLoading = false
-          let fsStateDisabled = res.data.fsStateCode != "12" && res.data.rfqStateCode != "13"
+          let fsStateDisabled = res.data.fsStateCode != "12" && res.data.fsStateCode != "13"
           let rfqStateDisabled = res.data.rfqStateCode != "01" && res.data.rfqStateCode != "03"
           let quotationStateDisabled = res.data.quotationStateCode == "0" || res.data.quotationStateCode == "2" || res.data.quotationStateCode == "6"
           let rfqRoundStateDisabled = res.data.rfqRoundStateCode != "01"
