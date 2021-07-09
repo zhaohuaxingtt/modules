@@ -329,11 +329,12 @@ export default {
       .then(res => {
         if (res.code == 200) {
           this.tabLoading = false
-          let fsStateDisabled = res.data.fsStateCode != "12"
+          let fsStateDisabled = res.data.fsStateCode != "12" && res.data.rfqStateCode != "13"
           let rfqStateDisabled = res.data.rfqStateCode != "01" && res.data.rfqStateCode != "03"
           let quotationStateDisabled = res.data.quotationStateCode == "0" || res.data.quotationStateCode == "2" || res.data.quotationStateCode == "6"
           let rfqRoundStateDisabled = res.data.rfqRoundStateCode != "01"
           let roundDisabled = +this.partInfo.round != +res.data.currentRounds
+          
           this.disabled = fsStateDisabled || rfqStateDisabled || quotationStateDisabled || rfqRoundStateDisabled || roundDisabled
           if (this.fix) { //当存在这个状态的时候 整个界面是一个静态界面 不会存在其他状态
             this.disabled = true
