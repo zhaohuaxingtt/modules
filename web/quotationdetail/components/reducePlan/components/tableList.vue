@@ -15,7 +15,7 @@
             <div class="table-data-item"  v-for="(item,index) in tableData" :key="'newTableData_'+index">
                 <p v-for="(titleItem,titleIndex) in tableTitle" :key="'newTableitem_'+titleIndex">
                     <template v-if="reducePlanedit" >
-                        <iInput v-if="titleItem.type == 'iInput'" type="number" v-model="item[titleItem.key]" @input="val=>$emit('rateChange',val,titleIndex)"/>
+                        <iInput v-if="titleItem.type == 'iInput'" type="number" oninput="if(value>100){value=100}" v-model="item[titleItem.key]" @input="val=>$emit('rateChange',val,titleIndex)"/>
                         <iDatePicker 
                             v-else-if="titleItem.type == 'iDatePicker'" 
                             v-model="item[titleItem.key]"
