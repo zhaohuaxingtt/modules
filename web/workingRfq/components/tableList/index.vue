@@ -75,7 +75,7 @@
                       <span v-else>{{scope.row[itemss.props]}}</span>
                     </template>
                     <template v-else-if='itemss.type == "input"'>
-                      <iInput v-model="scope.row[itemss.props]" v-if='!notEdit' @input="handleInput($event, scope.row, items.props)"></iInput>
+                      <iInput v-model="scope.row[itemss.props]" v-if='!notEdit' @input="handleInput($event, scope.row, itemss.props, itemss)"></iInput>
                       <span v-else>{{scope.row[itemss.props]}}</span>
                     </template>
                     <template v-else>{{scope.row[itemss.props]}}</template>
@@ -92,7 +92,7 @@
             <span v-else>{{scope.row[items.props]}}</span>  
           </template>
           <template v-else-if='items.type == "input"'>
-            <iInput v-model="scope.row[items.props]" v-if='!notEdit' @input="handleInput($event, scope.row, items.props)"></iInput>
+            <iInput v-model="scope.row[items.props]" v-if='!notEdit' @input="handleInput($event, scope.row, items.props, items)"></iInput>
             <span v-else>{{scope.row[items.props]}}</span>
           </template>
           <template v-else-if='items.type == "inputRate"'>
@@ -196,7 +196,10 @@ export default{
       this.$set(row, key, numberProcessor(value, 2))
       this.$emit("handleInputByRate", value, row, key)
     },
-    handleInput(value, row, key) {
+    handleInput(value, row, key, column) {
+      if (column.type === "input" && column.inputType === "decimal") {
+        this.$set(row, key, numberProcessor(value, 4))
+      }
       this.$emit("handleInput", value, row, key)
     }
   }
