@@ -117,7 +117,6 @@ export default {
          */        
         computeReducePrice(basicPrice, priceList) {
             return priceList.reduce((accum, item, index) => {
-                console.log(accum)
                     if (!basicPrice) {
                         return [...accum, item]
                     }
