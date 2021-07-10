@@ -753,4 +753,7 @@ export default {
   'LK_MUKUAIJINERMBBLOCK': '模块金额（RMB/block）', // 模块金额（RMB/block）
   'LK_UPLOADBJ': '上传报价', //上传报价
   'LK_SHIFOUSHANGQIDAZHONGZHUANYONGSHEBEIFEI': '是否上汽大众专用设备费', // 是否上汽大众专用设备费
+  'LK_BAOJIABEIZHU': '报价备注', // 报价备注
+  'LK_BAOJIAFUJIAN': '报价附件', // 报价附件
+  'LK_SHANGCHUANSHIXUANZHUANZHIZHENGCHANGFANGXIANG': '上传时文件请旋转至正常方向后上传', // 上传时文件请旋转至正常方向后上传
 }
