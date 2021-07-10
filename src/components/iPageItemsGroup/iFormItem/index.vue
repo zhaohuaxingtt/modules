@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-03-01 17:17:17
- * @LastEditTime: 2021-06-10 13:21:58
+ * @LastEditTime: 2021-07-10 20:02:13
  * @LastEditors: Please set LastEditors
  * @Description: 为不同的宽度item做出UI还原
  * @FilePath: \rise\src\components\iFromItem\index.vue
@@ -64,7 +64,7 @@
 		margin-bottom: 25px;
 		margin-right: 60px;
 		width: calc((100% - 3*60px) / 4);
-		display: flex;
+		display: flex!important;
 		float: left;
 
 		&:nth-child(4n) {
@@ -90,7 +90,7 @@
 		margin-right: 100px;
 		width: calc((100% - 2*100px) / 3);
 		margin-bottom: 25px;
-		display: flex;
+		display: flex!important;
 		float: left;
 
 		&:nth-child(3n) {
@@ -115,7 +115,7 @@
 		margin-right: 100px;
 		width: calc((100% - 1*100px) / 2);
 		margin-bottom: 25px;
-		display: flex;
+		display: flex!important;
 		float: left;
 
 		&:nth-child(2n) {
@@ -140,7 +140,7 @@
 		margin-right: 100px;
 		width: calc((100% - 0*100px) / 1);
 		margin-bottom: 25px;
-		display: flex;
+		display: flex!important;
 		float: left;
 
 		&:nth-child(1n) {
