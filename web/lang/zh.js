@@ -753,4 +753,10 @@ export default {
   'LK_MUKUAIJINERMBBLOCK': '模块金额（RMB/block）', // 模块金额（RMB/block）
   'LK_UPLOADBJ': '上传报价', //上传报价
   'LK_SHIFOUSHANGQIDAZHONGZHUANYONGSHEBEIFEI': '是否上汽大众专用设备费', // 是否上汽大众专用设备费
+  'KUOCHANNENGJIHUA': '扩产能计划',//扩产能计划
+  'CAP_EATCHANNENGTIAN': 'E./AT产能/天',//E./AT产能/天
+  'CAP_CHANNENGZHOU': 'E./AT产能/周',//E./AT产能/周
+  'CAP_CHANNENGNIAN': 'E./AT产能/年',//E./AT产能/年
+  'LK_CAOZUOCHENGGONG': '操作成功',//操作成功
+
 }
