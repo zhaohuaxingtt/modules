@@ -1,7 +1,7 @@
 <!--
  * @Author: haojiang
  * @Date: 2021-07-09 15:47:10
- * @LastEditTime: 2021-07-09 17:47:14
+ * @LastEditTime: 2021-07-10 13:13:33
  * @LastEditors: Please set LastEditors
  * @Description: 扩产能计划
 -->
@@ -147,8 +147,12 @@ export default {
       default: false
     }
   },
-  created() {
-    this.getFetchData()
+  watch: {
+    partInfo() {
+      if (this.partInfo) {
+        this.getFetchData()
+      }
+    }
   },
   data() {
     return {
