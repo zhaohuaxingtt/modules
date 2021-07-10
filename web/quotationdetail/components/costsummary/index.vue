@@ -160,8 +160,10 @@
     <!----------------------2.2 制造成本------------------------>
     <!--------------------------------------------------------->
     <tableTemlate class="margin-top20" :cbdSelect='cbdSelect' pageNationReq='cbd' pageNationRes='cbd' title="CBD" selection :tableData='tableDataCbd' :tableTile='titleCBD' iPagination>
-      <iButton @click="downLoadFile">{{$t('LK_XIAZAI')}}</iButton>
-      <iButton v-if='!disabled' @click="disabel">{{$t('delete')}}</iButton>
+      <template #header-control>
+        <iButton @click="downLoadFile">{{$t('LK_XIAZAI')}}</iButton>
+        <iButton v-if='!disabled' @click="disabel">{{$t('delete')}}</iButton>
+      </template>
     </tableTemlate>
   </div>
 </template>
@@ -327,7 +329,7 @@ export default{
      */    
     downLoadFile(){
       const fileList = {
-        applicationName:'rise/quotation',
+        applicationName:'rise',
         fileList:[]
       }
       this.cbdSelect.list.forEach(res=>{

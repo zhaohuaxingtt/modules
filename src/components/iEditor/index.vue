@@ -168,6 +168,11 @@ export default {
     this.showMenu(this.showMenus);
   },
   watch: {
+    value(value) {
+      if (validateValueType(this.valueType)) {
+        this.editor.txt[this.valueType.toLowerCase()](this.value);
+      }
+    },
     disabled(status) {
       status ? this.disable() : this.enable();
     },

@@ -756,4 +756,10 @@ export default {
   'LK_BAOJIABEIZHU': '报价备注', // 报价备注
   'LK_BAOJIAFUJIAN': '报价附件', // 报价附件
   'LK_SHANGCHUANSHIXUANZHUANZHIZHENGCHANGFANGXIANG': '上传时文件请旋转至正常方向后上传', // 上传时文件请旋转至正常方向后上传
+  'KUOCHANNENGJIHUA': '扩产能计划',//扩产能计划
+  'CAP_EATCHANNENGTIAN': 'E./AT产能/天',//E./AT产能/天
+  'CAP_CHANNENGZHOU': 'E./AT产能/周',//E./AT产能/周
+  'CAP_CHANNENGNIAN': 'E./AT产能/年',//E./AT产能/年
+  'LK_CAOZUOCHENGGONG': '操作成功',//操作成功
+
 }
