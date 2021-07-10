@@ -117,7 +117,6 @@ export default {
          */        
         computeReducePrice(basicPrice, priceList) {
             return priceList.reduce((accum, item, index) => {
-                console.log(accum)
                     if (!basicPrice) {
                         return [...accum, item]
                     }
@@ -184,7 +183,7 @@ export default {
                 priceReducePlanInfoList:tableData.map(item => {
                     return {
                         ...item,
-                        yearMonths: moment(item.yearMonths)
+                        yearMonths: moment(item.yearMonths).format('YYYY-MM-DD')
                     }
                 })
             }
