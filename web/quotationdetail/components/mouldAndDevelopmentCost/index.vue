@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-27 17:24:16
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-19 21:58:38
+ * @LastEditTime: 2021-07-12 19:22:29
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\index.vue
 -->
@@ -39,7 +39,7 @@ export default {
       this.$refs.mould.getMouldFee()
       this.$refs.developmentCost.getDevFee()
     },
-    save() {
+    save(type) {
       return new Promise((r,j)=>{
       saveModuleDevFee({
         quotationId: this.partInfo.quotationId,
@@ -67,7 +67,7 @@ export default {
       .then(res => {
         if (res.code == 200) {
           r()
-          iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+          if (type !== "submit") iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
           this.init()
         } else {
           j()

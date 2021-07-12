@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-07-08 17:54:33
+ * @LastEditTime: 2021-07-12 18:38:33
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -369,12 +369,12 @@ export default {
       })
     },
     // 保存
-    async handleSave() {
+    async handleSave(type) {
       const component = this.$refs[this.currentTab][0]
       if (typeof component.save === "function") {
         this.saveLoading = true
         try {
-          component.save().then(()=>{
+          component.save(type).then(()=>{
             this.getPartsQuotations("save");
           }).catch(()=>{
             this.saveLoading = false
@@ -406,7 +406,7 @@ export default {
     async handleSubmit() {
       this.submitLoading = true
 
-      await this.handleSave()
+      await this.handleSave("submit")
 
       submitPartsQuotation({
         quotationId: this.partInfo.quotationId,

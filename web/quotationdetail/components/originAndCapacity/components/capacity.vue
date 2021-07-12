@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-22 15:49:47
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-10 18:19:45
+ * @LastEditTime: 2021-07-12 19:25:01
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\originAndCapacity\components\capacity.vue
 -->
@@ -180,7 +180,7 @@ export default {
         }
       })
     },
-    async saveSupplierPlantCap() {
+    async saveSupplierPlantCap(type) {
       try {
         await this.validateForm()
 
@@ -204,7 +204,7 @@ export default {
         })
         
         if (res.code == 200) {
-          iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+          if (type !== "submit") iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
           this.getSupplierPlantCaps()
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)

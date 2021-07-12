@@ -2,7 +2,7 @@
  * @Author: Luoshuang
  * @Date: 2021-05-27 15:56:15
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-17 11:04:29
+ * @LastEditTime: 2021-07-12 19:30:08
  * @Description: 报价备注与附件
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\remarksAndAttachment\index.vue
 -->
@@ -117,7 +117,7 @@ export default {
       .catch(() => this.remarkLoading = false)
     },
     // 保存备注
-    saveComments() {
+    saveComments(type) {
       saveComments({
         quotationId: this.partInfo.quotationId,
         remark: this.remark
@@ -125,7 +125,11 @@ export default {
       .then(res => {
         const message = this.$i18n.locale === "zh" ? res.desZh : res.desEn
 
-        res.code == 200 ? iMessage.success(message) : iMessage.error(message)
+        if (res.code == 200) {
+          if (type !== "submit") iMessage.success(message)
+        } else {
+          iMessage.error(message)
+        }
       })
     },
     handleSelectionChange(list) {
@@ -255,9 +259,9 @@ export default {
       this.getComments()
       this.getFileHistory()
     },
-    save() {
+    save(type) {
       return Promise.all([
-        this.saveComments(), 
+        this.saveComments(type), 
       ])
     }
   }
