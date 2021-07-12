@@ -169,6 +169,10 @@ export default {
         if (!item.maxWeekManufactureCapability) throw this.$t("LK_ZHOUZUIDACHANNENGBUNENGWEIKONG")
         if (!item.maxWorkDayYear) throw this.$t("LK_NIANZUIDAGONGZUOTIANSHUBUNENGWEIKONG")
         if (!item.startWeek) throw this.$t("LK_QISHIZHOUBUNENGWEIKONG")
+
+        if (index !== this.tableListData.length - 1 && !item.endWeek) {
+          throw this.$t("LK_FEIZUIHOUYIHANGJIEZHIZHOUBUNENGWEIKONG")
+        }
         
         if (index === this.tableListData.length - 1 && item.endWeek) {
           throw this.$t("LK_ZUIHOUYITIAOCHANNENGSHUJUDEJIEZHIZHOUBIXUWEIKONG")
@@ -177,6 +181,16 @@ export default {
         if (item.endWeek) {
           // eslint-disable-next-line no-undef
           if (+moment(item.endWeek) < +moment(item.startWeek)) throw this.$t("LK_JIEZHIZHOUBUNENGXIAOYUQISHIZHOU")
+        }
+
+        if (index !== 0) {
+          if (+moment(item.startWeek) < +moment(this.tableListData[index - 1].endWeek)) {
+            if (this.$i18n.locale === "zh") {
+              throw `第${ index + 1 }行 ${ this.$t("LK_QISHIZHOU") }${ this.$t("LK_BUNENGXIAOYU") } 第${ index }行 ${ this.$t("LK_JIEZHIZHOU") }`
+            } else {
+              throw `Line: ${ index + 1 } ${ this.$t("LK_QISHIZHOU") }${ this.$t("LK_BUNENGXIAOYU") } Line: ${ index } ${ this.$t("LK_JIEZHIZHOU") }`
+            }
+          }
         }
       })
     },
