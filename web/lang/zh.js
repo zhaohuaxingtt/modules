@@ -767,4 +767,6 @@ export default {
   'QINGTIANXIEWANZHENGBAOFEICHENGBEN': '请填写完整报废成本', // 请填写完整报废成本
   'QINGTIANXIEWANZHENGGUANLIFEI': '请填写完整管理费', // 请填写完整管理费
   'QINGTIANXIEWANZHENLIRUN': '请填写完整利润', // 请填写完整利润
+  'LK_FEIZUIHOUYIHANGJIEZHIZHOUBUNENGWEIKONG': '非最后一行截至周不能为空', // 非最后一行截至周不能为空
+  'LK_BUNENGXIAOYU': '不能小于', // 不能小于
 }
