@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-07-06 19:27:06
+ * @LastEditTime: 2021-07-12 16:20:09
  * @LastEditors: Please set LastEditors
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
@@ -401,6 +401,287 @@ export default{
       }
       return data
     },
+    validateByL2(form = {}) {
+      if (Array.isArray(form.levelTwoSumDTO.rawMaterial) && form.levelTwoSumDTO.rawMaterial.length > 0) {
+        const keys = []
+        this.titleYcl.forEach(item => {
+          if (item.type === "input" || item.type === "select") {
+            keys.push(item.props)
+          }
+
+          if (Array.isArray(item.list) && item.list) {
+            item.list.forEach(subItem => {
+              if (subItem.type === "input" || subItem.type === "select") {
+                keys.push(subItem.props)
+              }
+            })
+          }
+        })
+        
+        const rawMaterialFlag = form.levelTwoSumDTO.rawMaterial.every(item => {
+          const flag = keys.every(key => {
+            if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
+              iMessage.warn(this.$t("QINGTIANXIEWANZHENGYUANCAILIAOSANJIAN"))
+              return false
+            } else {
+              return true
+            }
+          })
+
+          return flag
+        })
+        if (!rawMaterialFlag) return false
+      }
+
+      if (Array.isArray(form.levelTwoSumDTO.makeCost) && form.levelTwoSumDTO.makeCost.length > 0) {
+        const keys = []
+        this.titleCbzz.forEach(item => {
+          if (item.type === "input" || item.type === "select") {
+            keys.push(item.props)
+          }
+
+          if (Array.isArray(item.list) && item.list) {
+            item.list.forEach(subItem => {
+              if (subItem.type === "input" || subItem.type === "select") {
+                keys.push(subItem.props)
+              }
+            })
+          }
+        })
+        
+        const makeCostFlag = form.levelTwoSumDTO.makeCost.every(item => {
+          const flag = keys.every(key => {
+            if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
+              iMessage.warn(this.$t("QINGTIANXIEWANZHENGZHIZAOCHENGBEN"))
+              return false
+            } else {
+              return true
+            }
+          })
+
+          return flag
+        })
+        if (!makeCostFlag) return false
+      }
+
+      if (Array.isArray(form.levelTwoSumDTO.discardCost) && form.levelTwoSumDTO.discardCost.length > 0) {
+        const keys = []
+        this.titlebfcb.forEach(item => {
+          if (item.type === "input" || item.type === "select") {
+            keys.push(item.props)
+          }
+
+          if (Array.isArray(item.list) && item.list) {
+            item.list.forEach(subItem => {
+              if (subItem.type === "input" || subItem.type === "select") {
+                keys.push(subItem.props)
+              }
+            })
+          }
+        })
+        
+        const discardCostFlag = form.levelTwoSumDTO.discardCost.every(item => {
+          const flag = keys.every(key => {
+            if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
+              iMessage.warn(this.$t("QINGTIANXIEWANZHENGBAOFEICHENGBEN"))
+              return false
+            } else {
+              return true
+            }
+          })
+
+          return flag
+        })
+        if (!discardCostFlag) return false
+      }
+
+      if (Array.isArray(form.levelTwoSumDTO.manageFee) && form.levelTwoSumDTO.manageFee.length > 0) {
+        const keys = []
+        this.titleglf.forEach(item => {
+          if (item.type === "input" || item.type === "select") {
+            keys.push(item.props)
+          }
+
+          if (Array.isArray(item.list) && item.list) {
+            item.list.forEach(subItem => {
+              if (subItem.type === "input" || subItem.type === "select") {
+                keys.push(subItem.props)
+              }
+            })
+          }
+        })
+        
+        const manageFeeFlag = form.levelTwoSumDTO.manageFee.every(item => {
+          const flag = keys.every(key => {
+            if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
+              iMessage.warn(this.$t("QINGTIANXIEWANZHENGGUANLIFEI"))
+              return false
+            } else {
+              return true
+            }
+          })
+
+          return flag
+        })
+        if (!manageFeeFlag) return false
+      }
+
+      if (Array.isArray(form.levelTwoSumDTO.profit) && form.levelTwoSumDTO.profit.length > 0) {
+        const keys = []
+        this.titlelr.forEach(item => {
+          if (item.type === "input" || item.type === "select") {
+            keys.push(item.props)
+          }
+
+          if (Array.isArray(item.list) && item.list) {
+            item.list.forEach(subItem => {
+              if (subItem.type === "input" || subItem.type === "select") {
+                keys.push(subItem.props)
+              }
+            })
+          }
+        })
+        
+        const profitFlag = form.levelTwoSumDTO.profit.every(item => {
+          const flag = keys.every(key => {
+            if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
+              iMessage.warn(this.$t("QINGTIANXIEWANZHENLIRUN"))
+              return false
+            } else {
+              return true
+            }
+          })
+
+          return flag
+        })
+        if (!profitFlag) return false
+      }
+    },
+    validateByL3(form = {}) {
+      if (Array.isArray(form.levelThreeSumDTO.rawMaterial) && form.levelThreeSumDTO.rawMaterial.length > 0) {
+        const keys = []
+        this.titleYclByL3.forEach(item => {
+          if (item.type === "input" || item.type === "select") {
+            keys.push(item.props)
+          }
+
+          if (Array.isArray(item.list) && item.list) {
+            item.list.forEach(subItem => {
+              if (subItem.type === "input" || subItem.type === "select") {
+                keys.push(subItem.props)
+              }
+            })
+          }
+        })
+        
+        const rawMaterialFlag = form.levelThreeSumDTO.rawMaterial.every(item => {
+          const flag = keys.every(key => {
+            if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
+              iMessage.warn(this.$t("QINGTIANXIEWANZHENGYUANCAILIAOSANJIANCHENGBEN"))
+              return false
+            } else {
+              return true
+            }
+          })
+
+          return flag
+        })
+        if (!rawMaterialFlag) return false
+      }
+
+      if (Array.isArray(form.levelThreeSumDTO.makeCost) && form.levelThreeSumDTO.makeCost.length > 0) {
+        const keys = []
+        this.titleCbzzByL3.forEach(item => {
+          if (item.type === "input" || item.type === "select") {
+            keys.push(item.props)
+          }
+
+          if (Array.isArray(item.list) && item.list) {
+            item.list.forEach(subItem => {
+              if (subItem.type === "input" || subItem.type === "select") {
+                keys.push(subItem.props)
+              }
+            })
+          }
+        })
+        
+        const makeCostFlag = form.levelThreeSumDTO.makeCost.every(item => {
+          const flag = keys.every(key => {
+            if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
+              iMessage.warn(this.$t("QINGTIANXIEWANZHENGZHIZAOCHENGBEN"))
+              return false
+            } else {
+              return true
+            }
+          })
+
+          return flag
+        })
+        if (!makeCostFlag) return false
+      }
+
+      if (Array.isArray(form.levelThreeSumDTO.manageFee) && form.levelThreeSumDTO.manageFee.length > 0) {
+        const keys = []
+        this.titleglfByL3.forEach(item => {
+          if (item.type === "input" || item.type === "select") {
+            keys.push(item.props)
+          }
+
+          if (Array.isArray(item.list) && item.list) {
+            item.list.forEach(subItem => {
+              if (subItem.type === "input" || subItem.type === "select") {
+                keys.push(subItem.props)
+              }
+            })
+          }
+        })
+        
+        const manageFeeFlag = form.levelThreeSumDTO.manageFee.every(item => {
+          const flag = keys.every(key => {
+            if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
+              iMessage.warn(this.$t("QINGTIANXIEWANZHENGGUANLIFEI"))
+              return false
+            } else {
+              return true
+            }
+          })
+
+          return flag
+        })
+        if (!manageFeeFlag) return false
+      }
+
+      if (Array.isArray(form.levelThreeSumDTO.profit) && form.levelThreeSumDTO.profit.length > 0) {
+        const keys = []
+        this.titlelrByL3.forEach(item => {
+          if (item.type === "input" || item.type === "select") {
+            keys.push(item.props)
+          }
+
+          if (Array.isArray(item.list) && item.list) {
+            item.list.forEach(subItem => {
+              if (subItem.type === "input" || subItem.type === "select") {
+                keys.push(subItem.props)
+              }
+            })
+          }
+        })
+        
+        const profitFlag = form.levelThreeSumDTO.profit.every(item => {
+          const flag = keys.every(key => {
+            if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
+              iMessage.warn(this.$t("QINGTIANXIEWANZHENLIRUN"))
+              return false
+            } else {
+              return true
+            }
+          })
+
+          return flag
+        })
+        if (!profitFlag) return false
+      }
+    },
     /**
      * @description: 提交接口save
      * @param {*}
@@ -456,6 +737,14 @@ export default{
           startProductDate: sendData.startProductDate,
         }
 
+        if (form.cbdLevel == 2) {
+          if (!this.validateByL2(form)) return
+        }
+
+        if (form.cbdLevel == 3) {
+          if (!this.validateByL3(form)) return
+        }
+
         // console.log("sendData", sendData)
         // sendData.makeCost = sendData.makeCost.records
         // sendData.rawMaterial = sendData.rawMaterial.records
@@ -467,7 +756,6 @@ export default{
         // sendData.partType = this.partInfo.partType
         // sendData.partProjectType = this.partInfo.partProjectType
 
-        console.log("form", form)
         postCostSummary(this.translateDataForServerce(form)).then(res=>{
           if(res.code == 200){
             r()

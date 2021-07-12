@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-23 15:34:54
- * @LastEditTime: 2021-07-05 16:09:53
+ * @LastEditTime: 2021-07-12 15:17:31
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\components\costsummary\components\data.js
@@ -121,6 +121,11 @@ export const cbdlist = [
 export const isorno = [
   {label:'是',value:true},
   {label:'否',value:false}
+]
+
+export const isornoNum = [
+  {label:'是',value:1},
+  {label:'否',value:0}
 ]
 /**
  * @description:原材料表格 
@@ -320,7 +325,7 @@ export const titleCbzzByL3 = [
   {props:'material',name:'对应原材料/散件（Ref.-ID）',key: 'LK_DUIYINGYUANCAILIAOSANJIAN',tooltip:true,width:'200',type:'input' },
   {props:'machineName',name:'设备名称/型号',key: 'LK_SHEBEIMINGCHENGXINGHAOOTHER',tooltip:true,width:'200',type:'input' },
   {props:'machineInvestInstall',name:'设备投资+安装（RMB）',key: 'LK_SHEBEITOUZIANZHUANGRMB',tooltip:true,width:'200',type:'input', inputType: 'decimal' },
-  {props:'specialDeviceCost',name:'是否上汽大众专用设备费',key: 'LK_SHIFOUSHANGQIDAZHONGZHUANYONGSHEBEIFEI',tooltip:true,width:'200',type:'input' },
+  {props:'specialDeviceCost',name:'是否上汽大众专用设备费',key: 'LK_SHIFOUSHANGQIDAZHONGZHUANYONGSHEBEIFEI',tooltip:true,width:'200',type:'select',options:isornoNum, labelClassName: '' },
   {props:'perHourMachineCost',name:'设备费率（RMB/Hour）',key: 'LK_SHEBEIFEILV',tooltip:true,width:'180',type:'input', inputType: 'decimal'},
   {props:'perHourLaborCost',name:'直接人工费率（RMB/Hour）',key: 'LK_ZHIJIERENGONGFEILV',tooltip:true,width:'180',type:'input', inputType: 'decimal'},
   {props:'workerCount',name:'直接人工数量（0..n）',key: 'LK_ZHIJIERENGONGSHULIANG',tooltip:true,width:'150',type:'input', inputType: 'decimal'},
