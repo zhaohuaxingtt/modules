@@ -120,7 +120,7 @@ export default {
   methods: {
     handleRedirect() {
       if (!this.item.url) {
-        iMessage.warn('url为空')
+        console.log('url为空')
       } else {
         this.item.url.indexOf('http') !== -1 || this.item.url.indexOf('https') !== -1
           ? (location.href = this.item.url)
