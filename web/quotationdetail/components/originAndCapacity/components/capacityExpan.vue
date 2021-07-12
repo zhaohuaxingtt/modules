@@ -1,7 +1,7 @@
 <!--
  * @Author: haojiang
  * @Date: 2021-07-09 15:47:10
- * @LastEditTime: 2021-07-10 14:36:59
+ * @LastEditTime: 2021-07-12 11:08:32
  * @LastEditors: Please set LastEditors
  * @Description: 扩产能计划
 -->
@@ -147,13 +147,6 @@ export default {
       default: false
     }
   },
-  watch: {
-    partInfo() {
-      if (this.partInfo) {
-        this.getFetchData()
-      }
-    }
-  },
   data() {
     return {
       dataList: [],
@@ -189,6 +182,7 @@ export default {
       }
     },
     async save() {
+      let state = true
       try {
         const res = await saveQuotCapacityExtPlan({
           capacityExtPlanDTOS: this.dataList,
@@ -197,12 +191,16 @@ export default {
         if (res.code === '200') {
           this.getFetchData()
           iMessage.success(this.i18nLanguage('LK_CAOZUOCHENGGONG','操作成功'))
+          state = true
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+          state = false
         }
       } catch(e) {
         iMessage.error(this.$i18n.locale === "zh" ? e.desZh : e.desEn)
+        state = false
       }
+      return state
     },
 
   }

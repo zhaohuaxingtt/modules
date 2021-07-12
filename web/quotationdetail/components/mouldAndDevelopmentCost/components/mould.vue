@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 00:21:08
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-07-07 11:49:46
+ * @LastEditTime: 2021-07-12 14:24:21
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\mould.vue
 -->
@@ -144,6 +144,8 @@ export default {
       try {
         if(this.$route.query.agentQutation){
           b =  false
+        }else{
+          b = true
         }
       } catch (error) {
           b =  true        
