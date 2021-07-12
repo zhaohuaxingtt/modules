@@ -1,5 +1,9 @@
 <template>
-  <div :class="['mail-card', !item.isRead ? 'unread' : 'read']" @click="handleRead">
+  <div
+    :class="['mail-card', !item.isRead ? 'unread' : 'read']"
+    @click="handleRead"
+    :style="{ cursor: !item.isRead || item.url ? 'pointer' : 'default' }"
+  >
     <div class="mail-card-closebtn" @click.stop="handleDel">
       <i class="el-icon el-icon-close"></i>
     </div>
@@ -156,7 +160,7 @@ export default {
   border-radius: 5px;
   margin-bottom: 12px;
   height: 120px;
-  cursor: pointer;
+  // cursor: pointer;
   > div {
     > div:last-child {
     }
@@ -206,7 +210,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    cursor: pointer;
+    // cursor: pointer;
   }
   .address,
   .name,
