@@ -761,5 +761,10 @@ export default {
   'CAP_CHANNENGZHOU': 'E./AT产能/周',//E./AT产能/周
   'CAP_CHANNENGNIAN': 'E./AT产能/年',//E./AT产能/年
   'LK_CAOZUOCHENGGONG': '操作成功',//操作成功
-
+  'QINGTIANXIEWANZHENGYUANCAILIAOSANJIAN': '请填写完整原材料散件', // 请填写完整原材料散件
+  'QINGTIANXIEWANZHENGYUANCAILIAOSANJIANCHENGBEN': '请填写完整原材料散件成本', // 请填写完整原材料散件成本
+  'QINGTIANXIEWANZHENGZHIZAOCHENGBEN': '请填写完整制造成本', // 请填写完整制造成本
+  'QINGTIANXIEWANZHENGBAOFEICHENGBEN': '请填写完整报废成本', // 请填写完整报废成本
+  'QINGTIANXIEWANZHENGGUANLIFEI': '请填写完整管理费', // 请填写完整管理费
+  'QINGTIANXIEWANZHENLIRUN': '请填写完整利润', // 请填写完整利润
 }
