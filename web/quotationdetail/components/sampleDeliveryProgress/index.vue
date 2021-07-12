@@ -2,7 +2,7 @@
  * @Author: Luoshuang
  * @Date: 2021-05-27 15:54:05
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-19 22:00:33
+ * @LastEditTime: 2021-07-12 19:31:36
  * @Description: 送样进度
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\sampleDeliveryProgress\index.vue
 -->
@@ -129,7 +129,7 @@ export default {
       })
       .catch(() => this.loading = false)
     },
-    save() {
+    save(type) {
       const sampleProgressDTOS = [
         ...(this.tableDataCache.LC.map(item => ({
           ...item,
@@ -154,7 +154,7 @@ export default {
 
         if (res.code == 200) {
           r()
-          iMessage.success(message)
+          if (type !== "submit") iMessage.success(message)
           this.init()
         } else {
           j()

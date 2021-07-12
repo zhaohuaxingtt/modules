@@ -173,7 +173,7 @@ export default {
             this.loading = false   
         },
         // 保存
-        save(){
+        save(type){
             return new Promise((r,j)=>{
             const { computedBasic,tableData,partInfo } = this;
             const {quotationId} = partInfo; // 258869949
@@ -191,7 +191,7 @@ export default {
             saveLtcPlan(data).then((res)=>{
                 if(res?.result){
                     r()
-                    iMessage.success(this.$i18n.locale === "zh" ? res?.desZh : res?.desEn)
+                    if (type !== "submit") iMessage.success(this.$i18n.locale === "zh" ? res?.desZh : res?.desEn)
                     this.init()
                 }else{
                     j()
