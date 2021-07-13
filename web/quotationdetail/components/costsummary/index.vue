@@ -176,7 +176,7 @@ import {persentDatalist,titleYcl,titleCbzz,titlebfcb,titleglf,titleqtfy,titlelr,
 import {iButton,iMessage} from 'rise'
 import {getCostSummary,packageTransport} from '@/api/rfqManageMent/rfqDetail'
 import {findFiles,postCostSummary,deleteFile,savePackageTransport,getCostSummaryDB,updateCostSummaryDB} from '@/api/rfqManageMent/quotationdetail'
-import {downloadFile} from '@/api/file'
+import {downloadFile, downloadUdFile} from '@/api/file'
 import {selectDictByKeyss} from '@/api/dictionary'
 import quotationAnalysis from './components/quotationAnalysis'
 
@@ -328,23 +328,24 @@ export default{
      * @return {*}
      */    
     downLoadFile(){
-      const fileList = {
-        applicationName:'rise',
-        fileList:[]
-      }
-      this.cbdSelect.list.forEach(res=>{
-        fileList.fileList.push(res.fileName)
-      })
+      // const fileList = {
+      //   applicationName:'rise',
+      //   fileList:[]
+      // }
+      // this.cbdSelect.list.forEach(res=>{
+      //   fileList.fileList.push(res.fileName)
+      // })
       if(this.cbdSelect.list.length == 0) return iMessage.warn('请选择cbd文件')
-      downloadFile(fileList).then(res=>{
-        if(res.code == 200){
-          iMessage.success('操作成功！')
-        }else{
-          iMessage.error(res.desZh)
-        }
-      }).catch(err=>{
-        iMessage.error(err.desZh)
-      })
+      // downloadFile(fileList).then(res=>{
+      //   if(res.code == 200){
+      //     iMessage.success('操作成功！')
+      //   }else{
+      //     iMessage.error(res.desZh)
+      //   }
+      // }).catch(err=>{
+      //   iMessage.error(err.desZh)
+      // })
+      downloadUdFile(this.cbdSelect.list.map(item => item.uploadId))
     },
     /**
      * @description: 删除
