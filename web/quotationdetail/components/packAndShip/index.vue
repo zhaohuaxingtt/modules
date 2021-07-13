@@ -2,11 +2,11 @@
  * @Descripttion: 供应商报价界面-报价页面-零件报价-包装运输
  * @Author: Luoshuang
  * @Date: 2021-04-22 16:53:47
- * @LastEditTime: 2021-07-13 09:51:42
+ * @LastEditTime: 2021-07-13 13:49:03
 -->
 <template>
   <div v-if="partInfo.partProjectType === 'PT04' || partInfo.partProjectType === 'PT19'" v-loading="loading">
-    <iCard :title="'参考包装'">
+    <iCard :title="language('CANKAOBAOZHUANG','参考包装')">
       <iFormGroup
         :row="4"
         inline
@@ -15,13 +15,13 @@
         <iFormItem
           v-for="item in referenceInputs"
           :key="item.props"
-          :label="item.name + '：'"
+          :label="language(item.i18n, item.name) + '：'"
         >
           <iText>{{ params[item.props] }}</iText>
         </iFormItem>
       </iFormGroup>
     </iCard>
-    <iCard :title="'包装要求'" class="margin-top20">
+    <iCard :title="language('BAOZHUANGYAOQIU','包装要求')" class="margin-top20">
       <iFormGroup
         :row="4"
         inline
@@ -30,7 +30,7 @@
         <iFormItem
           v-for="item in referenceInputs"
           :key="item.props"
-          :label="item.name + '：'"
+          :label="language(item.i18n, item.name) + '：'"
         >
           <iText v-if="disabled">{{ params[item.props] }}</iText>
           <iSelect v-else-if="item.type === 'select'" v-model="params[item.props]">
