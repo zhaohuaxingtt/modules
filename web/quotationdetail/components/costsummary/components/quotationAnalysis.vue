@@ -2,22 +2,22 @@
  * @Author: Luoshuang
  * @Date: 2021-06-29 11:09:14
  * @LastEditors: Luoshuang
- * @LastEditTime: 2021-07-13 09:47:53
+ * @LastEditTime: 2021-07-13 14:52:29
  * @Description: DB零件-报价成本汇总-报价分析
  * @FilePath: \front-modules\web\quotationdetail\components\costsummary\components\quotationAnalysis.vue
 -->
 
 <template>
-  <iCard :title="'报价分析'">
-    <el-table class="baojiaTable" ref="multipleTable" :span-method="arraySpanMethod" fit tooltip-effect='light' :height="height" :data='dbDetailList' v-loading='tableLoading' :empty-text="'暂无数据'" >
+  <iCard :title="language('BAOJIAFENXI','报价分析')">
+    <el-table class="baojiaTable" ref="multipleTable" :span-method="arraySpanMethod" fit tooltip-effect='light' :height="height" :data='dbDetailList' v-loading='tableLoading' :empty-text="language('ZANWUSHUJU', '暂无数据')" >
       <el-table-column type='index' width='50' align='center' label='#'>
         <template slot-scope="scope">
           {{scope.$index+1}}
         </template>
       </el-table-column>
-      <el-table-column prop="name" align='center' :label="'项目类型'"></el-table-column>
-      <el-table-column prop="fee" align='center' :label="'金额'">
-        <el-table-column prop="seaPrice" align='center' :label="'海运'">
+      <el-table-column prop="name" align='center' :label="language('XIANGMULEIXING', '项目类型')"></el-table-column>
+      <el-table-column prop="fee" align='center' :label="language('JINE', '金额')">
+        <el-table-column prop="seaPrice" align='center' :label="language('HAIYUN', '海运')">
           <template slot-scope="scope">
             <span v-if="disabled">{{scope.row.seaPrice}}</span>
             <iSelect v-else-if="scope.row.type === 'select'" v-model="scope.row.seaPrice">
@@ -29,14 +29,14 @@
             <!-- <span v-if="scope.row.isRequire" style="color:red;">*</span> -->
           </template>
         </el-table-column>
-        <el-table-column prop="airPrice" align='center' :label="'空运'">
+        <el-table-column prop="airPrice" align='center' :label="language('KONGYUN', '空运')">
           <template slot-scope="scope">
             <span v-if="disabled || scope.row.noairPrice">{{scope.row.airPrice}}</span>
             <iInput v-else v-model="scope.row.airPrice" ></iInput>
           </template>
         </el-table-column>
       </el-table-column>
-      <el-table-column prop="remark" align='center' :label="'备注'">
+      <el-table-column prop="remark" align='center' :label="language('BEIZHU', '备注')">
         <template slot-scope="scope">
           <span v-if="disabled || scope.row.remarkDisabled">{{scope.row.remark}}</span>
           <iInput v-else v-model="scope.row.remark" :default-value="scope.row.remarkDefault"></iInput>

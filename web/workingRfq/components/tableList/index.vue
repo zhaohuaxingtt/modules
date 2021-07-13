@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-02-24 09:42:07
- * @LastEditTime: 2021-07-12 15:21:26
+ * @LastEditTime: 2021-07-13 18:47:34
  * @LastEditors: Please set LastEditors
  * @Description: 零件签收-table组件。
  * @FilePath: \front-supplier\src\views\rfqManageMent\workingRfq\components\tableList\index.vue
@@ -102,7 +102,7 @@
             <span v-else>{{scope.row[items.props]}}</span>
           </template>
           <template v-else>
-            <span v-if="items.type === 'inputRate'">{{scope.row[items.props]}}{{ (scope.row[items.props] == null || scope.row[items.props] == "") && scope.row[items.props] !== 0  ? '' : '%' }}</span>
+            <span v-if="items.type === 'inputRate' && !notEdit">{{scope.row[items.props]}}{{ (scope.row[items.props] == null || scope.row[items.props] == "") && scope.row[items.props] !== 0  ? '' : '%' }}</span>
             <span v-else>{{scope.row[items.props]}}</span>
           </template>
           </template>
