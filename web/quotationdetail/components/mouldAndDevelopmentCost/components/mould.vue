@@ -175,6 +175,7 @@ export default {
       const formData = new FormData()
       formData.append("file", content.file)
       formData.append("round", this.partInfo.round)
+      formData.append('rfqId',this.partInfo.rfqId)
       uploadModuleCbd(formData)
         .then(res => {
           this.uploadSuccess(res, content.file)
