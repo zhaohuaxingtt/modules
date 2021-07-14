@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-23 15:38:31
- * @LastEditTime: 2021-07-14 09:58:06
+ * @LastEditTime: 2021-07-14 10:00:10
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\costsummary\components\timeAndlevTabel.vue
@@ -52,8 +52,8 @@
     <div class="textAlingRight">{{$t('LK_DANWEI')}}：RMB/Pc.</div>
     <!--------------------------------------------------------->
     <!----------------------表格百分比-------------------------->
-    <!--------------------------------------------------------->    
-    <tableList :tableTitle='tableTilel1' :notEdit='allTableData.level == 1?false:(!allTableData.editFlag && !disabled)' :tableData='tableData.tableData' class="margin-top10"></tableList>
+    <!--------------------------------------------------------->
+    <tableList :tableTitle='tableTilel1' :notEdit='disabled ? true : (allTableData.level == 1 ? false : !allTableData.editFlag)' :tableData='tableData.tableData' class="margin-top10"></tableList>
     <persent v-if='!tableData.persent.every(items=>items == 0)' :persentList='tableData.persent' :realDataList='tableData.tableData'></persent>
   </iCard>
 </template>
