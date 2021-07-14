@@ -2,10 +2,10 @@
  * @Descripttion: 供应商报价界面-报价页面-零件报价-包装运输
  * @Author: Luoshuang
  * @Date: 2021-04-22 16:53:47
- * @LastEditTime: 2021-07-13 13:49:03
+ * @LastEditTime: 2021-07-14 15:39:11
 -->
 <template>
-  <div v-if="partInfo.partProjectType === 'PT04' || partInfo.partProjectType === 'PT19'" v-loading="loading">
+  <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU" v-loading="loading">
     <iCard :title="language('CANKAOBAOZHUANG','参考包装')">
       <iFormGroup
         :row="4"
@@ -78,6 +78,7 @@
 import { iCard, iFormGroup, iFormItem, iMessage, iInput, iText } from "rise";
 import { savePackageTransport, getPackageTransport } from '@/api/rfqManageMent/quotationdetail'
 import { getDictByCode } from '@/api/dictionary'
+import {partProjTypes} from '@/config'
 export default {
   components: {
     iCard,
@@ -99,6 +100,8 @@ export default {
   },
   data() {
     return {
+      // 零件项目类型
+      partProjTypes,
       inputs: [
         { props: "packageCost", name: "包装费", i18n: 'LK_BAOZHUANGFEI' },
         { props: "transportCost", name: "运输费", i18n: 'LK_YUNSHUFEI' },
