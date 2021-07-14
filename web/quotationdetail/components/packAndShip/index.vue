@@ -2,7 +2,7 @@
  * @Descripttion: 供应商报价界面-报价页面-零件报价-包装运输
  * @Author: Luoshuang
  * @Date: 2021-04-22 16:53:47
- * @LastEditTime: 2021-07-14 15:39:11
+ * @LastEditTime: 2021-07-14 18:55:25
 -->
 <template>
   <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU" v-loading="loading">
@@ -17,7 +17,7 @@
           :key="item.props"
           :label="language(item.i18n, item.name) + '：'"
         >
-          <iText>{{ params[item.props] }}</iText>
+          <iText></iText>
         </iFormItem>
       </iFormGroup>
     </iCard>
@@ -28,7 +28,7 @@
         class="packAndShip-form margin-top20"
       >
         <iFormItem
-          v-for="item in referenceInputs"
+          v-for="item in requireInputs"
           :key="item.props"
           :label="language(item.i18n, item.name) + '：'"
         >
@@ -36,12 +36,12 @@
           <iSelect v-else-if="item.type === 'select'" v-model="params[item.props]">
             <el-option
               v-for="item in selectOptions[item.selectOption]"
-              :key="item.code"
-              :name="item.name"
-              :value="item.code"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
             ></el-option>
           </iSelect>
-          <iInput v-else v-model="params[item.props]" title="" type="number" oninput="if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+5)}"></iInput>
+          <iInput v-else :value="params[item.props]" title="" type="text" @input="val => handleInput(val, params, item.props)"></iInput>
         </iFormItem>
       </iFormGroup>
     </iCard>
@@ -75,7 +75,7 @@
 </template>
 
 <script>
-import { iCard, iFormGroup, iFormItem, iMessage, iInput, iText } from "rise";
+import { iCard, iFormGroup, iFormItem, iMessage, iInput, iText, iSelect } from "rise";
 import { savePackageTransport, getPackageTransport } from '@/api/rfqManageMent/quotationdetail'
 import { getDictByCode } from '@/api/dictionary'
 import {partProjTypes} from '@/config'
@@ -85,7 +85,8 @@ export default {
     iFormGroup,
     iFormItem,
     iInput,
-    iText
+    iText,
+    iSelect
   },
   props: {
     partInfo:{
@@ -128,19 +129,31 @@ export default {
         { props: "packageHeight", name: "参考包装高(mm)", i18n: 'CANKAOBAOZHUANGGAO_MM' },
         { props: "packageLs", name: "LS(PC)", i18n: 'LS_PC' },
         { props: "packageStack", name: "Stack", i18n: 'STACK' },
-      ]
+      ],
+      selectOptions: {}
     };
   },
   created() {
     this.getPackageOptions()
   },
   methods: {
+    handleInput(val, params, type){
+      if(/^\d*\.?\d*$/.test(val)) {
+        this.$set(params, type, val.indexOf('.')>0 ? val.slice(0,val.indexOf('.')+3) : val)
+      }
+    },
     getPackageOptions() {
       getDictByCode('PACKAGETYPE').then(res => {
         if (res?.result) {
           this.selectOptions = {
             ...this.selectOptions,
-            PACKAGETYPE: res.data[0]?.subDictResultVo || []
+            PACKAGETYPE: (res.data[0]?.subDictResultVo || []).map(item => {
+              return {
+                ...item,
+                value: item.code,
+                label: this.$i18n.locale === 'zh' ? item.name: item.nameEn
+              }
+            })
           }
         }
       })

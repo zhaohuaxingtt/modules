@@ -1,7 +1,7 @@
 <!--
  * @Author: haojiang
  * @Date: 2021-07-09 15:47:10
- * @LastEditTime: 2021-07-12 11:08:32
+ * @LastEditTime: 2021-07-14 18:43:20
  * @LastEditors: Please set LastEditors
  * @Description: 扩产能计划
 -->
@@ -153,8 +153,8 @@ export default {
     }
   },
   methods: {
-    i18nLanguage(key, value) {
-      return this.language ? this.i18nLanguage(key, value) : this.$t(key)
+    i18nLanguage(key) {
+      return this.$t(key)
     },
     async getFetchData() {
       try {
