@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-22 14:10:14
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-10 18:17:42
+ * @LastEditTime: 2021-07-14 22:57:47
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\infoAndReq\components\aggregate\components\projectSchedule.vue
 -->
@@ -14,13 +14,13 @@
     <div class="body margin-top30">
       <tableList class="table" :selection="false" :tableData="[data]" :tableTitle="tableTitle">
         <template #vff="scope">
-          <span>{{ scope.row.vff | dateFilter }}</span>
+          <span>{{ scope.row.vff | dateFilter('YYYY-MM-DD') }}</span>
         </template>
         <template #pvs="scope">
-          <span>{{ scope.row.pvs | dateFilter }}</span>
+          <span>{{ scope.row.pvs | dateFilter('YYYY-MM-DD') }}</span>
         </template>
         <template #os="scope">
-          <span>{{ scope.row.os | dateFilter }}</span>
+          <span>{{ scope.row.os | dateFilter('YYYY-MM-DD') }}</span>
         </template>
         <template #sopDate="scope">
           <span>{{ scope.row.sopDate | dateFilter('YYYY-MM-DD') }}</span>
