@@ -7,11 +7,11 @@
     <iCard class="reducePlan" v-loading="loading">
         <div class="header margin-bottom20">
             <span class="title">{{ $t('LK_JIANGJIAJIHUA') }}</span>
-            <span v-if="partInfo.partProjectType === 'PT04' || partInfo.partProjectType === 'PT19'">
+            <span v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU">
                 降价计划以{{basic}}为准
             </span>
             <!-----------配件报价的降价计划可以选择基于A价或B价，---------------------------------------------->
-            <span v-if="partInfo.partProjectType === 'PT17'"  class="tip margin-left15">
+            <span v-if="partInfo.partProjectType === partProjTypes.PEIJIAN"  class="tip margin-left15">
                 <span class="margin-right15">计算基准：</span>
                 <el-radio-group v-model="computedBasic" @change="handleABChange">
                     <el-radio label="01">A价</el-radio>
@@ -19,7 +19,7 @@
                 </el-radio-group>
             </span>
             <!-----------附件的降价计划只能基于B价，---------------------------------------------->
-            <span v-else-if="partInfo.partProjectType === 'PT18'" class="tip margin-left10">降价计算以B价为准</span>
+            <span v-else-if="partInfo.partProjectType === partProjTypes.FUJIAN" class="tip margin-left10">降价计算以B价为准</span>
             <!-------------正常流程FS零件只基于A价------------------------------------------>
             <span v-else class="tip margin-left10">降价计算以A价为准</span>
         </div>
@@ -37,8 +37,10 @@ import {
     getLtcPlan,
     saveLtcPlan,
  } from '@/api/rfqManageMent/quotationdetail'
+ import {partProjTypes} from '@/config'
 import moment from 'moment'
 import {cloneDeep} from 'lodash'
+
 export default {
     name:'reducePlan',
     components:{
@@ -60,6 +62,8 @@ export default {
     },
     data(){
         return{
+            // 零件项目类型
+            partProjTypes,
             loading:false,
             tableTitle:[
                 {key:'yearMonths',name:'年/月',type:'iDatePicker'},
@@ -151,7 +155,7 @@ export default {
             if (res?.result) {
                 if (!res.data.priceType) {
                     // 如果返回结果没有priceType，则配件默认为A价
-                    this.computedBasic = this.partInfo.partProjectType === 'PT17' ? '01' : this.partInfo.partProjectType === 'PT18' ? '02' : (this.partInfo.partProjectType === 'PT04' || this.partInfo.partProjectType === 'PT19') ? '3' : '01'
+                    this.computedBasic = this.partInfo.partProjectType === partProjTypes.PEIJIAN ? '01' : this.partInfo.partProjectType === partProjTypes.FUJIAN ? '02' : (this.partInfo.partProjectType === partProjTypes.DBLINGJIAN || this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU) ? '3' : '01'
                 } else {
                     this.computedBasic = res.data.priceType
                 }

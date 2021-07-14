@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-07-13 10:54:55
+ * @LastEditTime: 2021-07-14 15:38:57
  * @LastEditors: Please set LastEditors
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
@@ -13,8 +13,8 @@
 -->
 
 <template>
-  <!---partInfo.partProjectType === 'PT04' || partInfo.partProjectType === 'PT19'----->
-  <div v-if="partInfo.partProjectType === 'PT04' || partInfo.partProjectType === 'PT19'">
+  <!---partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU----->
+  <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU">
     <quotationAnalysis :disabled="disabled" :dbDetailList="dbDetailList" />
   </div>
   <div class="cost" v-else>
@@ -179,6 +179,7 @@ import {findFiles,postCostSummary,deleteFile,savePackageTransport,getCostSummary
 import {downloadFile, downloadUdFile} from '@/api/file'
 import {selectDictByKeyss} from '@/api/dictionary'
 import quotationAnalysis from './components/quotationAnalysis'
+import {partProjTypes} from '@/config'
 
 export default{
   components:{persentComponents,tableTemlate,iButton,quotationAnalysis},
@@ -203,6 +204,8 @@ export default{
   },
   data(){
     return {
+      // 零件项目类型
+      partProjTypes,
       cbdlist:[],
       persentDatalist:persentDatalist,
       Aprice:Aprice,
@@ -782,7 +785,7 @@ export default{
      * @return {*}
      */    
     init(type){
-      if (this.partInfo.partProjectType === 'PT19' || this.partInfo.partProjectType === 'PT04') {
+      if (this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || this.partInfo.partProjectType === partProjTypes.DBLINGJIAN) {
         this.getCostSummaryDB()
       } else {
         this.cbdlist = []
@@ -1150,9 +1153,9 @@ export default{
      * @return {*}
      */    
     save(type){
-      if (this.partInfo.partProjectType === 'PT17' || this.partInfo.partProjectType === 'PT18') {
+      if (this.partInfo.partProjectType === partProjTypes.PEIJIAN || this.partInfo.partProjectType === partProjTypes.FUJIAN) {
         return Promise.all(this.postCostSummary(), this.saveBzfreeAndYunshuFree())
-      } else if (this.partInfo.partProjectType === 'PT19' || this.partInfo.partProjectType === 'PT04'){
+      } else if (this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || this.partInfo.partProjectType === partProjTypes.DBLINGJIAN){
         return this.updateCostSummaryDB()
       } else {
         return this.postCostSummary(type)
