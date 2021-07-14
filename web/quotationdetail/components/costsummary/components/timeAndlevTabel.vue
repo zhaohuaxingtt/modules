@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-23 15:38:31
- * @LastEditTime: 2021-07-13 19:07:33
+ * @LastEditTime: 2021-07-14 10:00:10
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\costsummary\components\timeAndlevTabel.vue
@@ -35,6 +35,7 @@
           class="floatright margin-left10"
           :action="uploadUrl + '/cbd-files/uploadPartCbd'"
           :data='{
+          "rfqId":vm.partInfo.rfqId,
           "cbdLevel":allTableData.level,
           "quotationId":quotationId}'
           accept='.xlsx'
