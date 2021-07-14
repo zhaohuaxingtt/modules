@@ -67,8 +67,8 @@ import tableList from "../tableList"
 import { pageMixins } from "@/utils/pageMixins"
 import filters from "@/utils/filters"
 import { getComments, saveComments, getFileHistory, uploadFileList, deleteFiles } from "@/api/rfqManageMent/quotationdetail"
-import { downloadFile } from "@/api/file"
-import { uploadFile } from "@/api/file/upload"
+import { downloadFile, downloadUdFile } from "@/api/file"
+import { uploadFile, uploadUdFile } from "@/api/file/upload"
 
 export default {
   components: { iCard, tableList, iButton, iEditor },
@@ -136,10 +136,10 @@ export default {
       this.multipleSelection = list
     },
     upload(content) {
-      const formData = new FormData()
-      formData.append("multipartFile", content.file)
-      formData.append("applicationName", "rise")
-      uploadFile(formData)
+      // const formData = new FormData()
+      // formData.append("multipartFile", content.file)
+      // formData.append("applicationName", "rise")
+      uploadUdFile({ multifile: content.file })
       .then(res => {
         this.uploadSuccess(res, content.file)
       })
@@ -157,7 +157,7 @@ export default {
         this.fileList = []
         clearTimeout(this.timer)
         iMessage.success(`${ file.name } ${ this.$t('LK_SHANGCHUANCHENGGONG') }`)
-        this.fileList.push({ fileName: res.data[0].fileName, filePath: res.data[0].filePath, fileSize: file.size })
+        this.fileList.push({ id: res.data[0].id, fileName: res.data[0].name, filePath: res.data[0].path, fileSize: file.size })
         this.timer = setTimeout(() => {
           this.uploadFileList()
           clearTimeout(this.timer)
@@ -197,6 +197,7 @@ export default {
     uploadFileList() {
       uploadFileList({
         fileHistoryDTOS: this.fileList.map(item => ({
+          uploadId: item.id,
           fileName: item.fileName,
           filePath: item.filePath,
           fileSize: item.fileSize,
@@ -243,17 +244,19 @@ export default {
     handleDownload() {
       if (this.multipleSelection.length < 1) return iMessage.warn(this.$t("LK_QINGXUANZHEXUYAOXIAZHAIWENJIAN"))
 
-      downloadFile({
-        applicationName: "rise",
-        fileList: this.multipleSelection.map(item => item.fileName)
-      })
+      // downloadFile({
+      //   applicationName: "rise",
+      //   fileList: this.multipleSelection.map(item => item.fileName)
+      // })
+      downloadUdFile(this.multipleSelection.map(item => item.uploadId))
     },
     // 单个文件下载
     download(row) {
-      downloadFile({
-        applicationName: "rise",
-        fileList: row.fileName
-      })
+      // downloadFile({
+      //   applicationName: "rise",
+      //   fileList: row.fileName
+      // })
+      downloadUdFile(row.uploadId)
     },
     init() {
       this.getComments()
