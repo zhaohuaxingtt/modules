@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Luoshuang
- * @LastEditTime: 2021-07-15 16:43:47
+ * @LastEditTime: 2021-07-15 18:26:56
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -360,7 +360,7 @@ export default {
             this.getPartsQuotations("save");
           }).catch(()=>{
             this.saveLoading = false
-          })          
+          })        
           this.saveStatus = false
         } finally {
           this.saveLoading = false

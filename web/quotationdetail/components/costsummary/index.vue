@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-07-14 18:48:56
+ * @LastEditTime: 2021-07-15 18:10:18
  * @LastEditors: Luoshuang
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
@@ -873,19 +873,27 @@ export default{
      * @return {*}
      */    
     saveBzfreeAndYunshuFree() {
-      const params = {
-        ...this.packAndShipFee,
-        packageCost: this.topTableData.packageCost,
-        transportCost: this.topTableData.transportCost,
-        operateCost: this.topTableData.operateCost,
-      }
-      return savePackageTransport(params).then(res => {
-        if (res && res.result) {
-          iMessage.success(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
-        } else {
-          iMessage.error(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
+      return new Promise((r,j)=>{
+        const params = {
+          ...this.packAndShipFee,
+          packageCost: this.topTableData.packageCost,
+          transportCost: this.topTableData.transportCost,
+          operateCost: this.topTableData.operateCost,
         }
+        savePackageTransport(params).then(res => {
+          if (res && res.result) {
+            r()
+            iMessage.success(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
+          } else {
+            j(res.desZh)
+            iMessage.error(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
+          }
+        }).catch(err=>{
+          j(err.desZh)
+          iMessage.error(err.desZh)
+        })
       })
+      
     },
     /**
      * @description: 转换后台数据新增字段 其中根据itemType来判断其他费用类型 如果是1 为分摊模具费，如果是0 则为 分摊的开发费
@@ -1171,40 +1179,50 @@ export default{
     },
     getCostSummaryDB() {
       //this.partInfo.quotationId
-      getCostSummaryDB({quotationId:this.partInfo.quotationId}).then(res => {
-        if (res?.result) {
-          this.dbDetailList = res.data.map(item => {
-            return {
-              ...item,
-              seaPrice: item.sortOrder == 14 ? item.capacity : item.sortOrder == 13 ? item.sopDate : item.sortOrder == 11 ? item.isReduce : item.seaPrice,
-              noairPrice: item.sortOrder == 13 || item.sortOrder == 11,
-              allRow: item.sortOrder == 14,
-              type: item.sortOrder == 13 ? 'date' : item.sortOrder == 11 ? 'select' : 'input',
-              remarkDisabled: item.sortOrder == 10
-            }
-          })
-        } else {
-          iMessage.error(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
-        }
+      return new Promise((r)=>{
+        getCostSummaryDB({quotationId:this.partInfo.quotationId}).then(res => {
+          if (res?.result) {
+            this.dbDetailList = res.data.map(item => {
+              return {
+                ...item,
+                seaPrice: item.sortOrder == 14 ? item.capacity : item.sortOrder == 13 ? item.sopDate : item.sortOrder == 11 ? item.isReduce : item.seaPrice,
+                noairPrice: item.sortOrder == 13 || item.sortOrder == 11,
+                allRow: item.sortOrder == 14,
+                type: item.sortOrder == 13 ? 'date' : item.sortOrder == 11 ? 'select' : 'input',
+                remarkDisabled: item.sortOrder == 10
+              }
+            })
+          } else {
+            iMessage.error(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
+          }
+        })
       })
     },
     updateCostSummaryDB() {
-      const params = this.dbDetailList.map(item => {
-        return {
-          ...item,
-          capacity: item.sortOrder == 14 ? item.seaPrice : item.capacity,
-          sopDate: item.sortOrder == 13 ? item.seaPrice : item.sopDate,
-          isReduce: item.sortOrder == 11 ? item.seaPrice : item.isReduce,
-          seaPrice: item.sortOrder == 14 || item.sortOrder == 13 || item.sortOrder == 11 ? null : item.seaPrice
-        }
+      return new Promise((r,j)=>{
+        const params = this.dbDetailList.map(item => {
+          return {
+            ...item,
+            capacity: item.sortOrder == 14 ? item.seaPrice : item.capacity,
+            sopDate: item.sortOrder == 13 ? item.seaPrice : item.sopDate,
+            isReduce: item.sortOrder == 11 ? item.seaPrice : item.isReduce,
+            seaPrice: item.sortOrder == 14 || item.sortOrder == 13 || item.sortOrder == 11 ? null : item.seaPrice
+          }
+        })
+        return updateCostSummaryDB(params).then(res => {
+          if (res?.result) {
+            r()
+            iMessage.success(this.$i18n.locale === 'zh' ? res?.desZh : res?.desEn)
+          } else {
+            j(res.desZh)
+            iMessage.error(this.$i18n.locale === 'zh' ? res?.desZh : res?.desEn)
+          }
+        }).catch(err=>{
+          j(err.desZh)
+          iMessage.error(err.desZh)
+        })
       })
-      updateCostSummaryDB(params).then(res => {
-        if (res?.result) {
-          iMessage.success(this.$i18n.locale === 'zh' ? res?.desZh : res?.desEn)
-        } else {
-          iMessage.error(this.$i18n.locale === 'zh' ? res?.desZh : res?.desEn)
-        }
-      })
+      
     },
 
     handleSelectionChangeByRawMaterial(list) {
