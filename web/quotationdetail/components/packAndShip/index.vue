@@ -2,7 +2,7 @@
  * @Descripttion: 供应商报价界面-报价页面-零件报价-包装运输
  * @Author: Luoshuang
  * @Date: 2021-04-22 16:53:47
- * @LastEditTime: 2021-07-15 15:46:04
+ * @LastEditTime: 2021-07-15 16:35:55
 -->
 <template>
   <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU" v-loading="loading">
@@ -32,7 +32,7 @@
           :key="item.props"
           :label="language(item.i18n, item.name) + '：'"
         >
-          <iText v-if="disabled">{{ item.type === 'select' ? getName(item.props) : params[item.props] }}</iText>
+          <iText v-if="disabled">{{ item.type === 'select' ? getName(params[item.props]) : params[item.props] }}</iText>
           <iSelect v-else-if="item.type === 'select'" v-model="params[item.props]">
             <el-option
               v-for="item in selectOptions[item.selectOption]"

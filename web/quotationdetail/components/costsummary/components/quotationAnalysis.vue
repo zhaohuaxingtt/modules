@@ -2,7 +2,7 @@
  * @Author: Luoshuang
  * @Date: 2021-06-29 11:09:14
  * @LastEditors: Luoshuang
- * @LastEditTime: 2021-07-15 15:48:14
+ * @LastEditTime: 2021-07-15 16:33:53
  * @Description: DB零件-报价成本汇总-报价分析
  * @FilePath: \front-modules\web\quotationdetail\components\costsummary\components\quotationAnalysis.vue
 -->
@@ -19,7 +19,7 @@
       <el-table-column prop="fee" align='center' :label="language('JINE', '金额')">
         <el-table-column prop="seaPrice" align='center' :label="language('HAIYUN', '海运')">
           <template slot-scope="scope">
-            <span v-if="disabled">{{scope.row.type === 'select' ? scope.row.seaPrice ?language('SHI', '是'): language('FOU', '否') : scope.row.type === 'date' ? moment(scope.row.seaPrice).format('YYYY-MM-DD HH:mm:ss') : scope.row.seaPrice}}</span>
+            <span v-if="disabled">{{scope.row.type === 'select' ? scope.row.seaPrice ?language('SHI', '是'): language('FOU', '否') : scope.row.type === 'date' ? moment(scope.row.seaPrice).format('YYYY-MM-DD') : scope.row.seaPrice}}</span>
             <iSelect v-else-if="scope.row.type === 'select'" v-model="scope.row.seaPrice">
               <el-option :value="true" :label="language('SHI', '是')"></el-option>
               <el-option :value="false" :label="language('FOU', '否')"></el-option>

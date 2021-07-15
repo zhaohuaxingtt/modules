@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Luoshuang
- * @LastEditTime: 2021-07-15 15:40:31
+ * @LastEditTime: 2021-07-15 16:43:47
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -405,7 +405,7 @@ export default {
 
         this.submitLoading = false
       })
-      .catch(() => this.submitLoading = false)
+      .catch(() => this.submitLoading = false).finally(() => this.submitLoading = false)
     },
     tabLeaveBefore(active) {
       if (this.saveStatus) {
