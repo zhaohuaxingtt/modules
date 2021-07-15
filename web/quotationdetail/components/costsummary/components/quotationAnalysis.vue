@@ -2,7 +2,7 @@
  * @Author: Luoshuang
  * @Date: 2021-06-29 11:09:14
  * @LastEditors: Luoshuang
- * @LastEditTime: 2021-07-14 18:15:17
+ * @LastEditTime: 2021-07-15 15:48:14
  * @Description: DB零件-报价成本汇总-报价分析
  * @FilePath: \front-modules\web\quotationdetail\components\costsummary\components\quotationAnalysis.vue
 -->
@@ -19,10 +19,10 @@
       <el-table-column prop="fee" align='center' :label="language('JINE', '金额')">
         <el-table-column prop="seaPrice" align='center' :label="language('HAIYUN', '海运')">
           <template slot-scope="scope">
-            <span v-if="disabled">{{scope.row.seaPrice}}</span>
+            <span v-if="disabled">{{scope.row.type === 'select' ? scope.row.seaPrice ?language('SHI', '是'): language('FOU', '否') : scope.row.type === 'date' ? moment(scope.row.seaPrice).format('YYYY-MM-DD HH:mm:ss') : scope.row.seaPrice}}</span>
             <iSelect v-else-if="scope.row.type === 'select'" v-model="scope.row.seaPrice">
-              <el-option :value="true" label="是"></el-option>
-              <el-option :value="false" label="否"></el-option>
+              <el-option :value="true" :label="language('SHI', '是')"></el-option>
+              <el-option :value="false" :label="language('FOU', '否')"></el-option>
             </iSelect>
             <iDatePicker v-else-if="scope.row.type === 'date'" value-format="" v-model="scope.row.seaPrice" :class="scope.row.sortOrder === 13 && 'withRequire'"></iDatePicker>
             <iInput v-else :value="scope.row.seaPrice" :class="scope.row.isRequire && 'withRequire'" @input="val => onChangeInput(val, scope.row, 'seaPrice')" ></iInput>
@@ -48,7 +48,8 @@
 
 <script>
 import { iCard, iSelect, iDatePicker, iInput } from 'rise'
-import {tableTitleDB,tableDataDB, mockData} from './data'
+import {tableTitleDB,tableDataDB} from './data'
+import moment from 'moment'
 export default {
   components: {iCard, iSelect, iDatePicker, iInput},
   props: {
@@ -58,7 +59,8 @@ export default {
   data() {
     return {
       tableTitle: tableTitleDB,
-      tableData: tableDataDB
+      tableData: tableDataDB,
+      moment
     }
   },
   methods: {

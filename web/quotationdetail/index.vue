@@ -1,8 +1,8 @@
 <!--
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-07-14 15:38:32
+ * @LastEditors: Luoshuang
+ * @LastEditTime: 2021-07-15 15:40:31
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -174,27 +174,6 @@ export default {
       userInfo: state => state.permission.userInfo,
     }),
     trueTabs() {
-      /**
-       *  FS("PT05", "FS零件"),
-          ONE_TIME_PURCHASE("PT06", "一次性采购"),
-          COP("PT07", "COP零件"),
-          DB("PT04", "DB零件"),
-          DB_CHANGE("PT03", "DB仅零件号更改"),
-          CHANGE("PT08", "仅零件号更改"),
-          FS_COMMON("PT09", "FS COMMON SOURCING"),
-          GS_COMMON("PT10", "GS COMMON SOURCING"),
-          GS_PART("PT11", "GS零件"),
-          STELL_PATCH("PT12", "钢材批量"),
-          STELL_ONE_TIME_PURCHASING("PT13", "钢材一次性采购"),
-          SPECIAL("PT01", "SPECIAL零件"),
-          OUTSOURCING("PT14", "工序委外"),
-          CAPACITY_EXPANSION("PT15", "扩产能"),
-          APPRECIATE("PT16", "涨价"),
-          FITTING("PT17", "配件"),
-          ANNEX("PT18", "附件"),
-          AEKO("PT02", "AEKO零件"),
-          DB_ONE_TIME_PURCHASE("PT19", "DB一次性采购"),
-      */
       // Sprint10新增：供应商配件与附件的包装运输页面移除，报价成本汇总页面能够直接填写[原材料/散件成本][制造成本][报废成本][管理费][利润][包装费][运输费][操作费]，起步生产日期不做默认值，L2层级的[包装费][运输费][操作费]也是直接填写
       if (this.partInfo.partProjectType === partProjTypes.PEIJIAN || this.partInfo.partProjectType === partProjTypes.FUJIAN) {
         return this.tabs.filter(item => item.name !== 'packAndShip')
