@@ -11,7 +11,7 @@
                 降价计划以{{basic}}为准
             </span>
             <!-----------配件报价的降价计划可以选择基于A价或B价，---------------------------------------------->
-            <span v-if="partInfo.partProjectType === partProjTypes.PEIJIAN"  class="tip margin-left15">
+            <span v-else-if="partInfo.partProjectType === partProjTypes.PEIJIAN"  class="tip margin-left15">
                 <span class="margin-right15">计算基准：</span>
                 <el-radio-group v-model="computedBasic" @change="handleABChange">
                     <el-radio label="01">A价</el-radio>
