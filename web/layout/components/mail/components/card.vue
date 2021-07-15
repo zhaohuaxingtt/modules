@@ -10,7 +10,7 @@
     <div>
       <div class="title">
         <div>
-          <icon symbol class="icon" :name="type2Icon[tab]['title'][parseInt(item.subType)]"></icon>
+          <icon symbol class="icon" :name="type2Icon[tab]['title'][parseInt(item.subType)] || 'iconmorenxiaoxi'"></icon>
           <span class="multi-ellipsis">{{ item.title }}</span>
         </div>
         <div class="time" v-if="tab || item.subType === '2'">{{ time }}</div>
@@ -39,7 +39,7 @@
         <icon symbol class="icon icon-person" :name="type2Icon[tab]['person'][parseInt(item.subType)]"></icon>
         <span class="multi-ellipsis">{{ item.sponsor }}</span>
       </div>
-      <div class="content" v-if="tab || (!tab && item.subType === '2')">
+      <div class="content" v-if="tab || (!tab && item.subType === '2' || !tab && item.subType === '0' || !tab && item.subType === null)">
         <span class="multi-ellipsis">{{ item.content }}</span>
       </div>
     </div>

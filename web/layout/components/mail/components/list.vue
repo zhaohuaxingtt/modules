@@ -19,7 +19,7 @@
         @delCallback="handleDelCallback"
       ></mail-card>
       <p v-if="loading">加载中...</p>
-      <p v-if="noMore">没有更多了</p>
+      <p v-if="noMore">{{this.total ? '没有更多了' : `${this.tab ? '暂无未读消息' : '暂无未读通知'}`}}</p>
     </div>
   </div>
 </template>
