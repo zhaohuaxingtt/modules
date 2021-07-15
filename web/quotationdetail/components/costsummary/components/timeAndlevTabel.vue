@@ -33,6 +33,7 @@
         <el-upload
           v-if='!disabled' 
           class="floatright margin-left10"
+          :headers="{ token: getToken() }"
           :action="uploadUrl + '/cbd-files/uploadPartCbd'"
           :data='{
           "cbdLevel":allTableData.level,
@@ -62,6 +63,7 @@ import tableList from '../../../../workingRfq/components/tableList'
 import {tableTilel1Fn} from './data'
 import persent from './persent'
 import {partsQuotations,copyPartsQuotation,downPartCbdLoadFile} from '@/api/rfqManageMent/quotationdetail'
+import { getToken } from "@/utils";
 export default{
   components:{iCard,iFormGroup,iFormItem,iText,tableList,persent,iDatePicker,iSelect,iButton},
   props:{
@@ -211,6 +213,7 @@ export default{
         iMessage.error("上传失败！")
       }
     },
+    getToken
   }
 }
 </script>
