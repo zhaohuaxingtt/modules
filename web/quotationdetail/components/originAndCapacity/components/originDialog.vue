@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-28 19:12:06
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-07-16 16:47:10
+ * @LastEditTime: 2021-07-16 19:14:52
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\originAndCapacity\components\originDialog.vue
 -->
@@ -109,7 +109,14 @@ export default {
       getSupplierToken({ supplierId: this.userInfo.supplierId || this.$route.query.supplierId })
       .then(res => {
         if (res.code == 200) {
-          window.open(`${ process.env.VUE_APP_PORTAL_URL }/supplier/supplierDetail?supplierToken=${ res.data }&supplierType=4`, '_blank')
+          const router = this.$router.resolve({
+            path: '/supplier/supplierDetail', 
+            query: { 
+              supplierToken: res.data,
+              supplierType: 4
+            }
+          })
+          window.open(router.href,'_blank')
         }
       })
       .catch(() => {})
