@@ -103,9 +103,9 @@
           </template>
           <template v-else>
             <span v-if="items.type === 'inputRate' && !notEdit">{{scope.row[items.props]}}{{ (scope.row[items.props] == null || scope.row[items.props] == "") && scope.row[items.props] !== 0  ? '' : '%' }}</span>
-            <span v-else>{{scope.row[items.props]}}</span>
+            <span v-else>{{ typeof filterProps[items.props] === "function" ? filterProps[items.props](scope.row[items.props]) : scope.row[items.props] }}</span>
           </template>
-          </template>
+        </template>
       </el-table-column>
     </template>
   </el-table>
@@ -129,7 +129,11 @@ export default{
       default:''
     },
     indexKey:Boolean,
-    notEdit:Boolean
+    notEdit:Boolean,
+    filterProps: {
+      type: Object,
+      default: () => ({})
+    }
   },
   inject:['vm'],
   data(){

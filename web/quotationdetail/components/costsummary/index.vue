@@ -152,7 +152,7 @@
     </el-row>
     <el-row class="row" v-show='allTableData.level == 3'>
       <el-col class="col" :span='12'>
-        <tableTemlate :notEdit='disabled' :tableData='allTableData.otherFee' class="margin-top20" :index='true' :title="`${allTableData.level}.5 ${$t('LK_QITAFEIYONG')}`" :tableTile='titleqtfyByL3' tableIndexString='A'></tableTemlate>
+        <tableTemlate :notEdit='disabled' :tableData='allTableData.otherFee' class="margin-top20" :index='true' :title="`${allTableData.level}.5 ${$t('LK_QITAFEIYONG')}`" :tableTile='titleqtfyByL3' :filterProps="{ itemType: itemTypeFilter }" tableIndexString='A'></tableTemlate>
       </el-col>
       <el-col class="col" :span='12'>
         <tableTemlate :notEdit='disabled' :tableData='allTableData.profit' class="margin-top20" :index='true' :title="`${allTableData.level}.6 ${$t('LK_LIRUN')}`" :tableTile='titlelrByL3' tableIndexString='P' @handleInput="handleInputByProfitL3"></tableTemlate>
@@ -1093,12 +1093,6 @@ export default{
               });
             }
 
-            if(data['otherFee']){
-              data['otherFee'].forEach(element => {
-                element['itemType'] = element['itemType']?"分摊开发费":"分摊模具费"
-              });
-            }
-
             break
           default:
         }
@@ -1429,6 +1423,10 @@ export default{
         return math.add(acc, math.bignumber(cur.amount || 0))
       }, 0)
       this.$set(this.topTableData.tableData[0], "profitSummary", profitSummary.toFixed(4))
+    },
+
+    itemTypeFilter(value) {
+      return value === 1 ? "分摊开发费" : "分摊模具费"
     }
   }
 }
