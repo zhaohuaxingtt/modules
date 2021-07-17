@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-28 19:12:06
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-17 13:32:12
+ * @LastEditTime: 2021-07-16 19:14:52
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\originAndCapacity\components\originDialog.vue
 -->
@@ -39,7 +39,7 @@
 import { iDialog, iButton, iMessage } from "rise"
 import tableList from "../../tableList"
 import { originDialogTableTitle as tableTitle } from "./data"
-import { getSupplierInfo } from "@/api/rfqManageMent/quotationdetail"
+import { getSupplierInfo, getSupplierToken } from "@/api/rfqManageMent/quotationdetail"
 
 export default {
   components: { iDialog, iButton, tableList },
@@ -105,7 +105,23 @@ export default {
       this.$emit("confirm", this.multipleSelection[0])
       this.$emit("update:visible", false)
     },
-    handleAdd() {}
+    handleAdd() {
+      getSupplierToken({ supplierId: this.userInfo.supplierId || this.$route.query.supplierId })
+      .then(res => {
+        if (res.code == 200) {
+          const router = this.$router.resolve({
+            path: '/supplier/supplierDetail', 
+            query: { 
+              supplierToken: res.data,
+              supplierType: 4
+            }
+          })
+          window.open(router.href,'_blank')
+        }
+      })
+      .catch(() => {})
+      
+    }
   }
 };
 </script>

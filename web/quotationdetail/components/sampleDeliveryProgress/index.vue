@@ -1,18 +1,18 @@
 <!--
  * @Author: Luoshuang
  * @Date: 2021-05-27 15:54:05
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-07-12 19:31:36
+ * @LastEditors: Luoshuang
+ * @LastEditTime: 2021-07-15 18:53:04
  * @Description: 送样进度
- * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\sampleDeliveryProgress\index.vue
+ * @FilePath: \front-modules\web\quotationdetail\components\sampleDeliveryProgress\index.vue
 -->
 
 <template>
   <iCard class="sampleDelivery">
     <div class="header margin-bottom20">
-      <span class="title">{{ $t('LK_SONGYANGJINDU') }}</span>
+      <span class="title">{{ language('LK_SONGYANGJINDU','送样进度') }}</span>
       <span class="margin-left10">
-        <span class="tip">{{$t('LK_YISHANGSONGYANGZHOUQIYIDINGDINASHIJIANWEIQISHIRI')}}</span>
+        <span class="tip">{{language('LK_YISHANGSONGYANGZHOUQIYIDINGDINASHIJIANWEIQISHIRI','备注：以上送样周期，均以定点时间为起始日')}}</span>
         <el-radio-group class="margin-left20" v-model="priceType" @change="tableData = tableDataCache[$event]">
           <el-radio label="LC">LC</el-radio>
           <el-radio label="SKD">SKD</el-radio>
@@ -130,40 +130,44 @@ export default {
       .catch(() => this.loading = false)
     },
     save(type) {
-      const sampleProgressDTOS = [
-        ...(this.tableDataCache.LC.map(item => ({
-          ...item,
-          priceType: "LC",
-        }))),
-        ...(this.tableDataCache.SKD.map(item => ({
-          ...item,
-          priceType: "SKD",
-        }))),
-      ]
-      let checkSupplierTimeNull = Boolean(sampleProgressDTOS.filter(o => o.priceType === this.priceType && ['1st Tryout送样周期', 'EM送样周期'].includes(o.sampleDeliverType) && !o.supplierTime).length)
-      this.isBmgpart && !checkSupplierTimeNull && (checkSupplierTimeNull = Boolean(sampleProgressDTOS.filter(o => o.priceType === this.priceType && ['OTS送样周期'].includes(o.sampleDeliverType) && !o.supplierTime).length))
-      if (checkSupplierTimeNull) return iMessage.error(this.$t('LK_BITIANXIANGBUNENGWEIKONG'))
-      
       return new Promise((r,j)=>{
-        saveSampleProgress({
-        quotationId: this.partInfo.quotationId,
-        sampleProgressDTOS
-      })
-      .then(res => {
-        const message = this.$i18n.locale === "zh" ? res.desZh : res.desEn
-
-        if (res.code == 200) {
-          r()
-          if (type !== "submit") iMessage.success(message)
-          this.init()
-        } else {
+        const sampleProgressDTOS = [
+          ...(this.tableDataCache.LC.map(item => ({
+            ...item,
+            priceType: "LC",
+          }))),
+          ...(this.tableDataCache.SKD.map(item => ({
+            ...item,
+            priceType: "SKD",
+          }))),
+        ]
+        let checkSupplierTimeNull = Boolean(sampleProgressDTOS.filter(o => o.priceType === this.priceType && ['1st Tryout送样周期', 'EM送样周期'].includes(o.sampleDeliverType) && !o.supplierTime).length)
+        this.isBmgpart && !checkSupplierTimeNull && (checkSupplierTimeNull = Boolean(sampleProgressDTOS.filter(o => o.priceType === this.priceType && ['OTS送样周期'].includes(o.sampleDeliverType) && !o.supplierTime).length))
+        if (checkSupplierTimeNull) {
           j()
-          iMessage.error(message)
+          iMessage.error(this.language('LK_BITIANXIANGBUNENGWEIKONG','请输入必填项'))
+        } else {
+          saveSampleProgress({
+            quotationId: this.partInfo.quotationId,
+            sampleProgressDTOS
+          })
+          .then(res => {
+            const message = this.$i18n.locale === "zh" ? res.desZh : res.desEn
+
+            if (res.code == 200) {
+              r()
+              if (type !== "submit") iMessage.success(message)
+              this.init()
+            } else {
+              j()
+              iMessage.error(message)
+            }
+          }).catch(()=>{
+            j()
+          })
         }
-      }).catch(()=>{
-        j()
       })
-      })
+        
     },
     handleInputBySupplierTime(value, row) {
       row.supplierTime = numberProcessor(value, 2)

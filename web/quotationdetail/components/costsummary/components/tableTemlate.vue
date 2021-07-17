@@ -20,6 +20,7 @@
       :indexKey='index'
       :selection='selection'
       :notEdit='notEdit'
+      :filterProps="filterProps"
       @handleSelectionChange='handleSelectionChange'
       @handleInput='handleInput'
       @handleInputByRate='handleInputByRate'
@@ -68,6 +69,10 @@ export default{
     cbdSelect:{
       type:Object,
       default:()=>{}
+    },
+    filterProps: {
+      type: Object,
+      default: ()=>{}
     }
   },
   methods:{

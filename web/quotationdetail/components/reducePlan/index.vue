@@ -11,7 +11,7 @@
                 降价计划以{{basic}}为准
             </span>
             <!-----------配件报价的降价计划可以选择基于A价或B价，---------------------------------------------->
-            <span v-if="partInfo.partProjectType === partProjTypes.PEIJIAN"  class="tip margin-left15">
+            <span v-else-if="partInfo.partProjectType === partProjTypes.PEIJIAN"  class="tip margin-left15">
                 <span class="margin-right15">计算基准：</span>
                 <el-radio-group v-model="computedBasic" @change="handleABChange">
                     <el-radio label="01">A价</el-radio>
@@ -161,14 +161,14 @@ export default {
                 }
                 this.aprice = res.data.aprice || 0
                 this.bprice = res.data.bprice || 0
-                if (this.computedBasic === '01' && !res.data.aprice) {
-                    iMessage.warn('A价不存在，无法根据A价计算降价后的价格')
+                if (this.computedBasic === '01' && (!res.data.aprice || res.data.aprice == 0)) {
+                    iMessage.error('A价不存在或为0')
                 }
-                if (this.computedBasic === '02' && !res.data.bprice) {
-                    iMessage.warn('B价不存在，无法根据B价计算降价后的价格')
+                if (this.computedBasic === '02' && (!res.data.bprice || res.data.bprice == 0)) {
+                    iMessage.error('B价不存在或为0')
                 }
-                if (['3','4','5','6','7'].includes(this.computedBasic) && !res.data.bprice) {
-                    iMessage.warn(this.basic+'不存在，无法计算降价后的价格')
+                if (['3','4','5','6','7'].includes(this.computedBasic) && (!res.data.bprice || res.data.bprice == 0)) {
+                    iMessage.error(this.basic+this.language('BUCUNZAIHUOWEIO','不存在或为0'))
                 }
                 this.tableData = this.computeReducePrice(this.computedBasic === '01' ? this.aprice : this.bprice, res.data.pricePlanInfoVOS)
             } else {

@@ -98,9 +98,18 @@ export default {
 <style lang="scss">
 .messageDrawer1 {
   margin-top: 60px;
+  .el-tabs__active-bar {
+    width:50% !important;
+  }
   .el-tabs__item {
     height: 50px;
     line-height: 50px;
+    &:nth-child(2) {
+      padding-right: 0;
+    }
+    &:last-child {
+      padding-left: 0;
+    }
   }
 }
 </style>
