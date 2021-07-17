@@ -2,19 +2,19 @@
  * @Author: Luoshuang
  * @Date: 2021-05-27 16:26:07
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-17 11:14:35
+ * @LastEditTime: 2021-07-17 18:55:25
  * @Description: 
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\sampleDeliveryProgress\tableList.vue
 -->
 
 <template>
   <div class="ptof-table">
-    <el-table fit tooltip-effect='light' :height="height" :data='tableData' v-loading='tableLoading' @selection-change="handleSelectionChange" :empty-text="$t('LK_ZANWUSHUJU')" ref="moviesTable" >
+    <el-table fit tooltip-effect='light' :height="height" :data='tableData' v-loading='tableLoading' @selection-change="handleSelectionChange" :empty-text="language('LK_ZANWUSHUJU','暂无数据')" ref="moviesTable" >
       <el-table-column v-if="selection" type='selection' width="50" align='center'></el-table-column>
       <el-table-column v-if='index' type='index' width='50' align='center' :label='indexLabel'></el-table-column>
       <template v-for="(items,index) in tableTitle">
         <!----------------------可以进行编辑的列，若不编辑则正常展示------------------------>
-        <el-table-column :key="index" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-if='editableItems.includes(items.props)' :prop="items.props" :label="items.key ? $t(items.key) : items.name" >
+        <el-table-column :key="index" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-if='editableItems.includes(items.props)' :prop="items.props" :label="items.key ? language(items.key,items.name) : items.name" >
           <template slot-scope="scope">
             <template v-if="isEdit">
               <iInput v-if="selectedItems.includes(scope.row.partNum) && items.type == 'input'" v-model="scope.row[items.props]" />
@@ -34,11 +34,11 @@
           </template>
         </el-table-column>
         <!----------------------需要高亮的列并且带有打开详情事件------------------------>
-        <el-table-column :key="index" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-else-if='items.props == activeItems' :prop="items.props" :label="items.key ? $t(items.key) : items.name">
-          <template slot-scope="row"><span class="openLinkText cursor" @click="openPage(row.row)">{{activeItems == 'priceList' ? (currentStatus == '09' || currentStatus == '10') ? '查看报价' :`${$t('LK_JINGRUBJ')}` : row.row[activeItems]}}</span></template>
+        <el-table-column :key="index" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-else-if='items.props == activeItems' :prop="items.props" :label="items.key ? language(items.key,items.name) : items.name">
+          <template slot-scope="row"><span class="openLinkText cursor" @click="openPage(row.row)">{{activeItems == 'priceList' ? (currentStatus == '09' || currentStatus == '10') ? '查看报价' :`${language('LK_JINGRUBJ')}` : row.row[activeItems]}}</span></template>
         </el-table-column>
         <!-------------------------正常列--------------------------->
-        <el-table-column :key="index" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip'  v-else :label="items.key ? $t(items.key) : items.name" :prop="items.props"></el-table-column>
+        <el-table-column :key="index" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip'  v-else :label="items.key ? language(items.key,items.name) : items.name" :prop="items.props"></el-table-column>
         
       </template>
     </el-table>
