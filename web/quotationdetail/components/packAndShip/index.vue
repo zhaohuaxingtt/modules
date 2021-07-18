@@ -2,7 +2,7 @@
  * @Descripttion: 供应商报价界面-报价页面-零件报价-包装运输
  * @Author: Luoshuang
  * @Date: 2021-04-22 16:53:47
- * @LastEditTime: 2021-07-15 16:35:55
+ * @LastEditTime: 2021-07-18 11:54:18
 -->
 <template>
   <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU" v-loading="loading">
@@ -179,7 +179,10 @@ export default {
       this.loading = true
       getPackageTransport(params).then(res => {
         if (res && res.result) {
-          this.params = res.data
+          this.params = {
+            ...res.data,
+            quotationId: this.partInfo.quotationId
+          }
         } else {
           iMessage.error(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
         }
