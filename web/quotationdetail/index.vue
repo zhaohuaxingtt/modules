@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-07-16 19:04:17
+ * @LastEditTime: 2021-07-19 21:29:51
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -160,7 +160,7 @@ export default {
       watingSupplier:false,
       dialogVisible:false,
       rejectRason:'',
-      statusObj: {}
+      statusObj: {},
     }
   },
   provide: function () {
@@ -357,6 +357,9 @@ export default {
         this.saveLoading = true
         try {
           return component.save(type).then(()=>{
+            if (this.$route.query.watingSupplier) {
+              this.this.$route.query.watingSupplier = false
+            }
             this.getPartsQuotations("save");
           }).catch(()=>{
             this.saveLoading = false
