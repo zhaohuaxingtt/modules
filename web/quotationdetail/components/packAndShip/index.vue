@@ -2,7 +2,7 @@
  * @Descripttion: 供应商报价界面-报价页面-零件报价-包装运输
  * @Author: Luoshuang
  * @Date: 2021-04-22 16:53:47
- * @LastEditTime: 2021-07-18 11:54:18
+ * @LastEditTime: 2021-07-20 15:09:28
 -->
 <template>
   <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU" v-loading="loading">
@@ -64,7 +64,7 @@
       <iFormItem
         v-for="item in inputs"
         :key="item.props"
-        :label="$t(item.i18n) + '：'"
+        :label="language(item.i18n, item.name) + '：'"
       >
           <!-------只能输入数字，可以输入小数点后四位---------->
         <iInput v-if="!disabled" v-model="params[item.props]" title="" type="number" oninput="if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+5)}"></iInput>
@@ -107,6 +107,7 @@ export default {
         { props: "packageCost", name: "包装费", i18n: 'LK_BAOZHUANGFEI' },
         { props: "transportCost", name: "运输费", i18n: 'LK_YUNSHUFEI' },
         { props: "operateCost", name: "操作费", i18n: 'LK_CAOZUOFEI' },
+        { props: "logisticsQuotationStatus", name: "BNK审核状态", i18n: 'LK_BNKSHENMHEZHUANGTAI' },
       ],
       params: {
         packageCost: "",
