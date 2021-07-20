@@ -2,7 +2,7 @@
  * @Descripttion: 供应商报价界面-报价页面-零件报价-包装运输
  * @Author: Luoshuang
  * @Date: 2021-04-22 16:53:47
- * @LastEditTime: 2021-07-20 15:09:28
+ * @LastEditTime: 2021-07-20 15:57:03
 -->
 <template>
   <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU" v-loading="loading">
@@ -67,7 +67,7 @@
         :label="language(item.i18n, item.name) + '：'"
       >
           <!-------只能输入数字，可以输入小数点后四位---------->
-        <iInput v-if="!disabled" v-model="params[item.props]" title="" type="number" oninput="if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+5)}"></iInput>
+        <iInput v-if="!disabled && item.editable" v-model="params[item.props]" title="" type="number" oninput="if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+5)}"></iInput>
         <iText v-else>{{ params[item.props] }}</iText>
       </iFormItem>
     </iFormGroup>
@@ -104,9 +104,9 @@ export default {
       // 零件项目类型
       partProjTypes,
       inputs: [
-        { props: "packageCost", name: "包装费", i18n: 'LK_BAOZHUANGFEI' },
-        { props: "transportCost", name: "运输费", i18n: 'LK_YUNSHUFEI' },
-        { props: "operateCost", name: "操作费", i18n: 'LK_CAOZUOFEI' },
+        { props: "packageCost", name: "包装费", i18n: 'LK_BAOZHUANGFEI', editable: true },
+        { props: "transportCost", name: "运输费", i18n: 'LK_YUNSHUFEI', editable: true },
+        { props: "operateCost", name: "操作费", i18n: 'LK_CAOZUOFEI', editable: true },
         { props: "logisticsQuotationStatus", name: "BNK审核状态", i18n: 'LK_BNKSHENMHEZHUANGTAI' },
       ],
       params: {

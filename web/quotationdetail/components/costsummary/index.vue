@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-07-20 14:51:14
+ * @LastEditTime: 2021-07-20 16:01:57
  * @LastEditors: Luoshuang
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
@@ -877,9 +877,9 @@ export default{
       return new Promise((r,j)=>{
         const params = {
           ...this.packAndShipFee,
-          packageCost: this.topTableData.packageCost,
-          transportCost: this.topTableData.transportCost,
-          operateCost: this.topTableData.operateCost,
+          packageCost: this.topTableData.tableData[0]?.packageCost,
+          transportCost: this.topTableData.tableData[0]?.transportCost,
+          operateCost: this.topTableData.tableData[0]?.operateCost,
         }
         savePackageTransport(params).then(res => {
           if (res && res.result) {
