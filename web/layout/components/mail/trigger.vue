@@ -19,7 +19,8 @@ export default {
   data() {
     return {
       drawerVisible: false,
-      messageCount: 0
+      messageCount: 0,
+      timer: null
     }
   },
   mounted() {

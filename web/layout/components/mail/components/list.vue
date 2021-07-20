@@ -1,15 +1,24 @@
 <template>
   <div class="imail-list">
     <div class="operation-wrapper">
-      <mailFilter :typeOptions="typeOptions" @filterCallback="handleFilterCallback" />
+      <mailFilter
+        :typeOptions="typeOptions"
+        @filterCallback="handleFilterCallback"
+      />
       <div class="btn-wrapper">
         <el-button type="text" @click="handleReadAll" :disabled="!list.length">
           <span v-if="!query.status">全部已读</span>
         </el-button>
-        <el-button type="text" @click="handleDelAll" :disabled="!list.length">清除全部</el-button>
+        <el-button type="text" @click="handleDelAll" :disabled="!list.length"
+          >清除全部</el-button
+        >
       </div>
     </div>
-    <div class="card-wrapper" v-infinite-scroll="load" infinite-scroll-disabled="disabled">
+    <div
+      class="card-wrapper"
+      v-infinite-scroll="load"
+      infinite-scroll-disabled="disabled"
+    >
       <mail-card
         :tab="tab"
         v-for="(item, index) in list"
@@ -41,7 +50,13 @@
 <script>
 import mailFilter from './filter.vue'
 import mailCard from './card.vue'
-import { getMailList, getUnreadCount, getTypeOptionsByTab, readMailBatch, removeMailBatch } from '@/api/mail'
+import {
+  getMailList,
+  getUnreadCount,
+  getTypeOptionsByTab,
+  readMailBatch,
+  removeMailBatch
+} from '@/api/mail'
 export default {
   props: {
     tab: {
@@ -57,7 +72,10 @@ export default {
   },
   computed: {
     noMore() {
-      return !this.loading && (this.list.length === this.total || this.list > this.total)
+      return (
+        !this.loading &&
+        (this.list.length === this.total || this.list > this.total)
+      )
     },
     disabled() {
       return this.loading || this.noMore
@@ -149,9 +167,11 @@ export default {
       const result = await getMailList(data)
       if (result?.data) {
         this.loading = false
-        this.list = this.current === 1 ? result.data : this.list.concat(result.data)
+        this.list =
+          this.current === 1 ? result.data : this.list.concat(result.data)
         this.total = result.total
       }
+      return result
     },
     async getUnreadCount() {
       const result = await getUnreadCount({ tab: this.tab })
@@ -161,6 +181,7 @@ export default {
           name: this.tab
         })
       }
+      return result
     },
     handleFilterCallback(val) {
       this.query = val
