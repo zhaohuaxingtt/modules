@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-07-21 10:57:25
+ * @LastEditTime: 2021-07-21 17:04:56
  * @LastEditors: Please set LastEditors
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
@@ -706,7 +706,8 @@ export default{
      */    
     postCostSummary(type){
       return new Promise((r,j)=>{
-        const sendData = JSON.parse(JSON.stringify(this.allTableData))
+        // const sendData = JSON.parse(JSON.stringify(this.allTableData))
+        const sendData = this.topTableData.tableData[0]
 
         const baseSumDTO = {
           cbdBlockId: sendData.cbdBlockId,
@@ -772,7 +773,7 @@ export default{
         // sendData['level'] = undefined
         // sendData.partType = this.partInfo.partType
         // sendData.partProjectType = this.partInfo.partProjectType
-
+        
         postCostSummary(form).then(res=>{
           if(res.code == 200){
             r()
