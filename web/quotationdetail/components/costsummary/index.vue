@@ -182,6 +182,7 @@ import {downloadFile, downloadUdFile} from '@/api/file'
 import {selectDictByKeyss} from '@/api/dictionary'
 import quotationAnalysis from './components/quotationAnalysis'
 import {partProjTypes} from '@/config'
+import {cloneDeep} from 'lodash'
 
 export default{
   components:{persentComponents,tableTemlate,iButton,quotationAnalysis},
@@ -825,7 +826,7 @@ export default{
             const data = await this.getBzfreeAndYunshuFree();
             this.packAndShipFee = data
             this.allTableData = this.translateDataForRender(res.data)
-            this.topTableData = this.translateDataTopData(this.allTableData, data)
+            this.topTableData = this.translateDataTopData(cloneDeep(this.allTableData), data)
             this.$refs.components.partsQuotationss(this.partInfo.rfqId,this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId,this.partInfo.round,this.allTableData.level)
             // this.allpagefrom.quotationId,
             this.findFiles()
@@ -876,9 +877,9 @@ export default{
       return new Promise((r,j)=>{
         const params = {
           ...this.packAndShipFee,
-          packageCost: this.topTableData.packageCost,
-          transportCost: this.topTableData.transportCost,
-          operateCost: this.topTableData.operateCost,
+          packageCost: this.topTableData.tableData[0]?.packageCost,
+          transportCost: this.topTableData.tableData[0]?.transportCost,
+          operateCost: this.topTableData.tableData[0]?.operateCost,
         }
         savePackageTransport(params).then(res => {
           if (res && res.result) {
