@@ -1,6 +1,10 @@
 <template>
   <div class="mail">
-    <i-drawer class="messageDrawer1" :visible.sync="visible" v-loading="loading">
+    <i-drawer
+      class="messageDrawer1"
+      :visible.sync="visible"
+      v-loading="loading"
+    >
       <el-tabs :stretch="true" v-model="activeTab" @tab-click="handleClick">
         <el-tab-pane v-for="item in tabs" :key="item.name" :name="item.name">
           <span slot="label">
@@ -26,6 +30,7 @@
 <script>
 import { iDrawer } from 'rise'
 import { list } from './components'
+import { getHomeSocketMessage } from '@/api/mail'
 export default {
   components: { iDrawer },
   props: {
@@ -45,10 +50,36 @@ export default {
       }
     }
   },
+  mounted() {
+    this.closeSocket = getHomeSocketMessage(messages => {
+      const tab = messages.msgTxt.type
+      const type = messages.msgTxt.subType
+      console.log(messages.msgTxt)
+      this.$emit('triggerCallback')
+      if (tab === '4') {
+        this.$refs.list[1].getUnreadCount()
+        this.$refs.list[1].query.type === '' ||
+        this.$refs.list[1].query.type === type
+          ? this.$refs.list[1].list.unshift(messages.msgTxt)
+          : ''
+      } else if (tab === '5') {
+        this.$refs.list[0].getUnreadCount()
+        this.$refs.list[0].query.type === '' ||
+        this.$refs.list[0].query.type === type
+          ? this.$refs.list[0].list.unshift(messages.msgTxt)
+          : ''
+      }
+    })
+  },
+  beforeDestroy() {
+    this.closeSocket()
+  },
   data() {
-    const _self = this
     return {
       activeTab: '0',
+      closeSocket: null,
+      num: [],
+      timer: null,
       tabs: [
         {
           title: '通知',
@@ -98,9 +129,22 @@ export default {
 <style lang="scss">
 .messageDrawer1 {
   margin-top: 60px;
+  .el-tabs__active-bar {
+    width: 50% !important;
+  }
   .el-tabs__item {
+    font-weight: bold;
     height: 50px;
     line-height: 50px;
+    i {
+      font-weight: bold;
+    }
+    &:nth-child(2) {
+      padding-right: 0;
+    }
+    &:last-child {
+      padding-left: 0;
+    }
   }
 }
 </style>

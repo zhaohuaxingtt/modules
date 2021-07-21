@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 14:26:53
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-19 22:00:08
+ * @LastEditTime: 2021-07-13 11:32:48
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\sample\index.vue
 -->
@@ -14,15 +14,15 @@
           <span>{{ $t(scope.row.a) }}</span>
         </template> -->
         <template #sampleUnitPrice="scope">
-          <iInput v-if="!disabled" v-model="scope.row.sampleUnitPrice" />
+          <iInput v-if="!disabled" v-model="scope.row.sampleUnitPrice" @input="handleInputBySampleUnitPrice($event, scope.row)" />
           <span v-else>{{ scope.row.sampleUnitPrice }}</span>
         </template>
         <template #addionalMouldCost="scope">
-          <iInput v-if="!disabled" v-model="scope.row.addionalMouldCost" />
+          <iInput v-if="!disabled" v-model="scope.row.addionalMouldCost" @input="handleInputByAddionalMouldCost($event, scope.row)" />
           <span v-else>{{ scope.row.addionalMouldCost }}</span>
         </template>
         <template #addionalMouldLife="scope">
-          <iInput v-if="!disabled" v-model="scope.row.addionalMouldLife" />
+          <iInput v-if="!disabled" v-model="scope.row.addionalMouldLife" @input="handleInputByAddionalMouldLife($event, scope.row)" />
           <span v-else>{{ scope.row.addionalMouldLife }}</span>
         </template>
         <template #remark="scope">
@@ -39,6 +39,7 @@ import { iCard, iInput,iMessage } from "rise"
 import tableList from "../tableList"
 import { sampleTableTitle as tableTitle } from "./data"
 import { getToolingSample, saveToolingSample } from "@/api/rfqManageMent/quotationdetail"
+import { numberProcessor } from '@/utils'
 
 export default {
   components: {
@@ -80,8 +81,17 @@ export default {
       })
       .catch(() => this.loading = false)
     },
+    handleInputBySampleUnitPrice(value, row) {
+      this.$set(row, "sampleUnitPrice", numberProcessor(value, 2))
+    },
+    handleInputByAddionalMouldCost(value, row) {
+      this.$set(row, "addionalMouldCost", numberProcessor(value, 2))
+    },
+    handleInputByAddionalMouldLife(value, row) {
+      this.$set(row, "addionalMouldLife", numberProcessor(value, 2))
+    },
     // 保存工装样件，父组件通过ref调用
-    save() {
+    save(type) {
       return new Promise((r,j)=>{
         saveToolingSample({
         quotationId: this.partInfo.quotationId,
@@ -90,7 +100,7 @@ export default {
       .then(res => {
         if (res.code == 200) {
           r()
-          iMessage.success(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
+          if (type !== "submit") iMessage.success(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
           this.init()
         } else {
           j()

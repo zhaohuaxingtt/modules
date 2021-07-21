@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-23 15:38:31
- * @LastEditTime: 2021-06-19 13:59:44
+ * @LastEditTime: 2021-07-14 11:46:12
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\costsummary\components\timeAndlevTabel.vue
@@ -27,11 +27,13 @@
           <el-option :value='items.value' :label="items.label" v-for="(items,index) in cbdlist" :key='index'></el-option>
         </iSelect>
       </i-form-item>
-      <i-form-item v-if='!disabled' class="rightFloat">
-        <el-checkbox v-model="allTableData.editFlag" v-show="allTableData.level > 1">{{$t('LK_SHOUDONGSHURU')}}</el-checkbox>
+      <i-form-item class="rightFloat">
+        <el-checkbox v-if='!disabled' v-model="allTableData.editFlag" v-show="allTableData.level > 1">{{$t('LK_SHOUDONGSHURU')}}</el-checkbox>
         <iButton @click="downloadFile" :loading='downLoadLoding'>{{$t('LK_XIAZAICBD')}}</iButton>
         <el-upload
+          v-if='!disabled' 
           class="floatright margin-left10"
+          :headers="{ token: getToken() }"
           :action="uploadUrl + '/cbd-files/uploadPartCbd'"
           :data='{
           "cbdLevel":allTableData.level,
@@ -40,7 +42,7 @@
           style="display:inline-block;"
           :show-file-list='false'
           :on-progress='()=>{uploadLoading=true}'
-          :on-error='()=>{uploadLoading=false;iMessage.error("上传失败！")}'
+          :on-error='onError'
           :on-success='fileSuccess'
         >
           <iButton :loading='uploadLoading'>{{$t('LK_UPLOADBJ')}}</iButton>
@@ -50,8 +52,8 @@
     <div class="textAlingRight">{{$t('LK_DANWEI')}}：RMB/Pc.</div>
     <!--------------------------------------------------------->
     <!----------------------表格百分比-------------------------->
-    <!--------------------------------------------------------->    
-    <tableList :tableTitle='tableTilel1' :notEdit='allTableData.level == 1?false:(!allTableData.editFlag && !disabled)' :tableData='tableData.tableData' class="margin-top10"></tableList>
+    <!--------------------------------------------------------->
+    <tableList :tableTitle='tableTilel1' :notEdit='disabled ? true : (allTableData.level == 1 ? false : !allTableData.editFlag)' :tableData='tableData.tableData' class="margin-top10"></tableList>
     <persent v-if='!tableData.persent.every(items=>items == 0)' :persentList='tableData.persent' :realDataList='tableData.tableData'></persent>
   </iCard>
 </template>
@@ -61,6 +63,7 @@ import tableList from '../../../../workingRfq/components/tableList'
 import {tableTilel1Fn} from './data'
 import persent from './persent'
 import {partsQuotations,copyPartsQuotation,downPartCbdLoadFile} from '@/api/rfqManageMent/quotationdetail'
+import { getToken } from "@/utils";
 export default{
   components:{iCard,iFormGroup,iFormItem,iText,tableList,persent,iDatePicker,iSelect,iButton},
   props:{
@@ -200,7 +203,17 @@ export default{
         this.downLoadLoding = false
         iMessage.error(err.desZh)
       })
-    }
+    },
+    onError(err) {
+      this.uploadLoading = false
+      try {
+        const message = JSON.parse(err.message)
+        iMessage.error(this.$i18n.locale === "zh" ? message.desZh : message.desEn)
+      } catch(e) {
+        iMessage.error("上传失败！")
+      }
+    },
+    getToken
   }
 }
 </script>

@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 00:21:08
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-22 14:02:29
+ * @LastEditTime: 2021-07-12 16:00:25
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\mould.vue
 -->
@@ -142,8 +142,10 @@ export default {
     whenCourcerLogin:function(){
       let b = false
       try {
-        if(this.$route.query.agentQutation){
+        if(this.$route.query.sourcing){
           b =  false
+        }else{
+          b = true
         }
       } catch (error) {
           b =  true        
@@ -173,6 +175,7 @@ export default {
       const formData = new FormData()
       formData.append("file", content.file)
       formData.append("round", this.partInfo.round)
+      formData.append('rfqId',this.partInfo.rfqId)
       uploadModuleCbd(formData)
         .then(res => {
           this.uploadSuccess(res, content.file)
@@ -296,17 +299,17 @@ export default {
       row.totalPrice = math.multiply(
         math.bignumber(row.quantity || 0),
         math.bignumber(row.assetUnitPrice || 0),
-      ).toFixed(4)
+      ).toFixed(2)
 
       this.updateTotal()
     },
     handleInputByAssetUnitPrice(val, row) {
-      row.assetUnitPrice = numberProcessor(val, 4)
+      row.assetUnitPrice = numberProcessor(val, 2)
 
       row.totalPrice = math.multiply(
         math.bignumber(row.quantity || 0),
         math.bignumber(row.assetUnitPrice || 0),
-      ).toFixed(4)
+      ).toFixed(2)
 
       this.updateTotal()
     },
@@ -327,9 +330,9 @@ export default {
         }
       })
 
-      this.$set(this.dataGroup, "totalInvestmentCost", totalInvestmentCost.toFixed(4))
-      this.$set(this.dataGroup, "shareInvestmentFee", shareInvestmentFee.toFixed(4))
-      this.$set(this.dataGroup, "unitInvestmentCost", +this.dataGroup.shareQuantity ? math.divide(shareInvestmentFee, math.bignumber(this.dataGroup.shareQuantity)).toFixed(4) : "0")
+      this.$set(this.dataGroup, "totalInvestmentCost", totalInvestmentCost.toFixed(2))
+      this.$set(this.dataGroup, "shareInvestmentFee", shareInvestmentFee.toFixed(2))
+      this.$set(this.dataGroup, "unitInvestmentCost", +this.dataGroup.shareQuantity ? math.divide(shareInvestmentFee, math.bignumber(this.dataGroup.shareQuantity)).toFixed(2) : "0")
     },
     jump() {
       // 跳转至RFQ模具报价

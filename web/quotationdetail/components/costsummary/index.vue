@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-07-05 16:09:45
+ * @LastEditTime: 2021-07-21 10:57:25
  * @LastEditors: Please set LastEditors
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
@@ -13,9 +13,9 @@
 -->
 
 <template>
-  <!---partInfo.partProjectType === 'PT04' || partInfo.partProjectType === 'PT19'----->
-  <div v-if="partInfo.partProjectType === 'PT04' || partInfo.partProjectType === 'PT19'">
-    <quotationAnalysis :disabled="false" :dbDetailList="dbDetailList" />
+  <!---partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU----->
+  <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU">
+    <quotationAnalysis :disabled="disabled" :dbDetailList="dbDetailList" />
   </div>
   <div class="cost" v-else>
     <!--------------------------------------------------------->
@@ -38,7 +38,8 @@
       :tableTile='titleYcl' 
       :iPagination='disabled' 
       tableIndexString='C'
-      @handleSelectionChange="handleSelectionChangeByRawMaterial">
+      @handleSelectionChange="handleSelectionChangeByRawMaterial"
+      @handleInput="handleInputByRawMaterialL2">
       <template #header-control>
         <div v-if="!disabled">
           <iButton @click="handleAddByRawMaterial">{{ $t("LK_TIANJIAHANG") }}</iButton>
@@ -62,7 +63,7 @@
       :tableData='allTableData.rawMaterial.records'
       tableIndexString='C'
       @handleSelectionChange="handleSelectionChangeByRawMaterial"
-      @handleInput="handleInputByRawMaterial">
+      @handleInput="handleInputByRawMaterialL3">
       <template #header-control>
         <div v-if="!disabled">
           <iButton @click="handleAddByRawMaterial">{{ $t("LK_TIANJIAHANG") }}</iButton>
@@ -86,7 +87,8 @@
       :tableTile='titleCbzz' 
       :iPagination='disabled' 
       tableIndexString='P'
-      @handleSelectionChange="handleSelectionChangeByMakeCost">
+      @handleSelectionChange="handleSelectionChangeByMakeCost"
+      @handleInput="handleInputByMakeCostL2">
       <template #header-control>
         <div v-if="!disabled">
           <iButton @click="handleAddByMakeCost">{{ $t("LK_TIANJIAHANG") }}</iButton>
@@ -110,7 +112,7 @@
       :tableData='allTableData.makeCost.records'
       tableIndexString='P'
       @handleSelectionChange="handleSelectionChangeByMakeCost"
-      @handleInput="handleInputByMakeCost">
+      @handleInput="handleInputByMakeCostL3">
       <template #header-control>
         <div v-if="!disabled">
           <iButton @click="handleAddByMakeCost">{{ $t("LK_TIANJIAHANG") }}</iButton>
@@ -123,10 +125,10 @@
     <!--------------------------------------------------------->
     <el-row class="row" v-show='allTableData.level == 2'>
       <el-col class="col" :span='12'>
-        <tableTemlate :notEdit='disabled' :tableData='allTableData.discardCost' class="margin-top20" :index='true' :title="`${allTableData.level}.3 ${$t('LK_BAOFEICHENGBEN')}`" :tableTile='titlebfcb' tableIndexString='S'></tableTemlate>
+        <tableTemlate :notEdit='disabled' :tableData='allTableData.discardCost' class="margin-top20" :index='true' :title="`${allTableData.level}.3 ${$t('LK_BAOFEICHENGBEN')}`" :tableTile='titlebfcb' tableIndexString='S' @handleInput="handleInputByDiscardCostL2"></tableTemlate>
       </el-col>
       <el-col class="col" :span='12'>
-        <tableTemlate :notEdit='disabled' :tableData='allTableData.manageFee' class="margin-top20" :index='true' :title="`${allTableData.level}.4 ${$t('LK_GUANLIFEI')}`" :tableTile='titleglf' tableIndexString='O'></tableTemlate>
+        <tableTemlate :notEdit='disabled' :tableData='allTableData.manageFee' class="margin-top20" :index='true' :title="`${allTableData.level}.4 ${$t('LK_GUANLIFEI')}`" :tableTile='titleglf' tableIndexString='O' @handleInput="handleInputByManageFeeL2"></tableTemlate>
       </el-col>
     </el-row>
     <el-row class="row" v-show='allTableData.level == 2'>
@@ -134,7 +136,7 @@
         <tableTemlate :notEdit='disabled' :tableData='allTableData.otherFee' class="margin-top20" :index='true' :title="`${allTableData.level}.5 ${$t('LK_QITAFEIYONG')}`" :tableTile='titleqtfy' tableIndexString='A'></tableTemlate>
       </el-col>
       <el-col class="col" :span='12'>
-        <tableTemlate :notEdit='disabled' :tableData='allTableData.profit' class="margin-top20" :index='true' :title="`${allTableData.level}.6 ${$t('LK_LIRUN')}`" :tableTile='titlelr' tableIndexString='P'></tableTemlate>
+        <tableTemlate :notEdit='disabled' :tableData='allTableData.profit' class="margin-top20" :index='true' :title="`${allTableData.level}.6 ${$t('LK_LIRUN')}`" :tableTile='titlelr' tableIndexString='P' @handleInput="handleInputByProfitL2"></tableTemlate>
       </el-col>
     </el-row>
     <!--------------------------------------------------------->
@@ -145,23 +147,25 @@
         <tableTemlate :notEdit='disabled' :tableData='allTableData.discardCost' class="margin-top20" :index='true' :title="`${allTableData.level}.3 ${$t('LK_BAOFEICHENGBEN')}`" :tableTile='titlebfcbByL3' tableIndexString='S'></tableTemlate>
       </el-col>
       <el-col class="col" :span='12'>
-        <tableTemlate :notEdit='disabled' :tableData='allTableData.manageFee' class="margin-top20" :index='true' :title="`${allTableData.level}.4 ${$t('LK_GUANLIFEI')}`" :tableTile='titleglfByL3' tableIndexString='O' @handleInput="handleInputByManageFee"></tableTemlate>
+        <tableTemlate :notEdit='disabled' :tableData='allTableData.manageFee' class="margin-top20" :index='true' :title="`${allTableData.level}.4 ${$t('LK_GUANLIFEI')}`" :tableTile='titleglfByL3' tableIndexString='O' @handleInput="handleInputByManageFeeL3"></tableTemlate>
       </el-col>
     </el-row>
     <el-row class="row" v-show='allTableData.level == 3'>
       <el-col class="col" :span='12'>
-        <tableTemlate :notEdit='disabled' :tableData='allTableData.otherFee' class="margin-top20" :index='true' :title="`${allTableData.level}.5 ${$t('LK_QITAFEIYONG')}`" :tableTile='titleqtfyByL3' tableIndexString='A'></tableTemlate>
+        <tableTemlate :notEdit='disabled' :tableData='allTableData.otherFee' class="margin-top20" :index='true' :title="`${allTableData.level}.5 ${$t('LK_QITAFEIYONG')}`" :tableTile='titleqtfyByL3' :filterProps="{ itemType: itemTypeFilter }" tableIndexString='A'></tableTemlate>
       </el-col>
       <el-col class="col" :span='12'>
-        <tableTemlate :notEdit='disabled' :tableData='allTableData.profit' class="margin-top20" :index='true' :title="`${allTableData.level}.6 ${$t('LK_LIRUN')}`" :tableTile='titlelrByL3' tableIndexString='P' @handleInput="handleInputByProfit"></tableTemlate>
+        <tableTemlate :notEdit='disabled' :tableData='allTableData.profit' class="margin-top20" :index='true' :title="`${allTableData.level}.6 ${$t('LK_LIRUN')}`" :tableTile='titlelrByL3' tableIndexString='P' @handleInput="handleInputByProfitL3"></tableTemlate>
       </el-col>
     </el-row>
     <!--------------------------------------------------------->
     <!----------------------2.2 制造成本------------------------>
     <!--------------------------------------------------------->
     <tableTemlate class="margin-top20" :cbdSelect='cbdSelect' pageNationReq='cbd' pageNationRes='cbd' title="CBD" selection :tableData='tableDataCbd' :tableTile='titleCBD' iPagination>
-      <iButton @click="downLoadFile">{{$t('LK_XIAZAI')}}</iButton>
-      <iButton v-if='!disabled' @click="disabel">{{$t('delete')}}</iButton>
+      <template #header-control>
+        <iButton @click="downLoadFile">{{$t('LK_XIAZAI')}}</iButton>
+        <iButton v-if='!disabled' @click="disabel">{{$t('delete')}}</iButton>
+      </template>
     </tableTemlate>
   </div>
 </template>
@@ -174,9 +178,11 @@ import {persentDatalist,titleYcl,titleCbzz,titlebfcb,titleglf,titleqtfy,titlelr,
 import {iButton,iMessage} from 'rise'
 import {getCostSummary,packageTransport} from '@/api/rfqManageMent/rfqDetail'
 import {findFiles,postCostSummary,deleteFile,savePackageTransport,getCostSummaryDB,updateCostSummaryDB} from '@/api/rfqManageMent/quotationdetail'
-import {downloadFile} from '@/api/file'
+import {downloadFile, downloadUdFile} from '@/api/file'
 import {selectDictByKeyss} from '@/api/dictionary'
 import quotationAnalysis from './components/quotationAnalysis'
+import {partProjTypes} from '@/config'
+import {cloneDeep} from 'lodash'
 
 export default{
   components:{persentComponents,tableTemlate,iButton,quotationAnalysis},
@@ -201,6 +207,8 @@ export default{
   },
   data(){
     return {
+      // 零件项目类型
+      partProjTypes,
       cbdlist:[],
       persentDatalist:persentDatalist,
       Aprice:Aprice,
@@ -251,7 +259,13 @@ export default{
       titlelrByL3,
 
       multipleSelectionByRawMaterial: [],
-      multipleSelectionByMakeCost: []
+      multipleSelectionByMakeCost: [],
+
+      materialSummaryL2: 0,
+      materialSummaryL2ByFalse: 0,
+      laborCostSummaryL2: 0,
+      deviceCostSummaryL2: 0,
+      scrapSummaryL2: 0
     }
   },
   watch:{
@@ -326,23 +340,24 @@ export default{
      * @return {*}
      */    
     downLoadFile(){
-      const fileList = {
-        applicationName:'rise/quotation',
-        fileList:[]
-      }
-      this.cbdSelect.list.forEach(res=>{
-        fileList.fileList.push(res.fileName)
-      })
+      // const fileList = {
+      //   applicationName:'rise',
+      //   fileList:[]
+      // }
+      // this.cbdSelect.list.forEach(res=>{
+      //   fileList.fileList.push(res.fileName)
+      // })
       if(this.cbdSelect.list.length == 0) return iMessage.warn('请选择cbd文件')
-      downloadFile(fileList).then(res=>{
-        if(res.code == 200){
-          iMessage.success('操作成功！')
-        }else{
-          iMessage.error(res.desZh)
-        }
-      }).catch(err=>{
-        iMessage.error(err.desZh)
-      })
+      // downloadFile(fileList).then(res=>{
+      //   if(res.code == 200){
+      //     iMessage.success('操作成功！')
+      //   }else{
+      //     iMessage.error(res.desZh)
+      //   }
+      // }).catch(err=>{
+      //   iMessage.error(err.desZh)
+      // })
+      downloadUdFile(this.cbdSelect.list.map(item => item.uploadId))
     },
     /**
      * @description: 删除
@@ -399,12 +414,297 @@ export default{
       }
       return data
     },
+    validateByL2(form = {}) {
+      if (Array.isArray(form.levelTwoSumDTO.rawMaterial) && form.levelTwoSumDTO.rawMaterial.length > 0) {
+        const keys = []
+        this.titleYcl.forEach(item => {
+          if (item.type === "input" || item.type === "select") {
+            keys.push(item.props)
+          }
+
+          if (Array.isArray(item.list) && item.list) {
+            item.list.forEach(subItem => {
+              if (subItem.type === "input" || subItem.type === "select") {
+                keys.push(subItem.props)
+              }
+            })
+          }
+        })
+        
+        const rawMaterialFlag = form.levelTwoSumDTO.rawMaterial.every(item => {
+          const flag = keys.every(key => {
+            if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
+              iMessage.warn(this.$t("QINGTIANXIEWANZHENGYUANCAILIAOSANJIAN"))
+              return false
+            } else {
+              return true
+            }
+          })
+
+          return flag
+        })
+        if (!rawMaterialFlag) return false
+      }
+
+      if (Array.isArray(form.levelTwoSumDTO.makeCost) && form.levelTwoSumDTO.makeCost.length > 0) {
+        const keys = []
+        this.titleCbzz.forEach(item => {
+          if (item.type === "input" || item.type === "select") {
+            keys.push(item.props)
+          }
+
+          if (Array.isArray(item.list) && item.list) {
+            item.list.forEach(subItem => {
+              if (subItem.type === "input" || subItem.type === "select") {
+                keys.push(subItem.props)
+              }
+            })
+          }
+        })
+        
+        const makeCostFlag = form.levelTwoSumDTO.makeCost.every(item => {
+          const flag = keys.every(key => {
+            if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
+              iMessage.warn(this.$t("QINGTIANXIEWANZHENGZHIZAOCHENGBEN"))
+              return false
+            } else {
+              return true
+            }
+          })
+
+          return flag
+        })
+        if (!makeCostFlag) return false
+      }
+
+      if (Array.isArray(form.levelTwoSumDTO.discardCost) && form.levelTwoSumDTO.discardCost.length > 0) {
+        const keys = []
+        this.titlebfcb.forEach(item => {
+          if (item.type === "input" || item.type === "select") {
+            keys.push(item.props)
+          }
+
+          if (Array.isArray(item.list) && item.list) {
+            item.list.forEach(subItem => {
+              if (subItem.type === "input" || subItem.type === "select") {
+                keys.push(subItem.props)
+              }
+            })
+          }
+        })
+        
+        const discardCostFlag = form.levelTwoSumDTO.discardCost.every(item => {
+          const flag = keys.every(key => {
+            if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
+              iMessage.warn(this.$t("QINGTIANXIEWANZHENGBAOFEICHENGBEN"))
+              return false
+            } else {
+              return true
+            }
+          })
+
+          return flag
+        })
+        if (!discardCostFlag) return false
+      }
+
+      if (Array.isArray(form.levelTwoSumDTO.manageFee) && form.levelTwoSumDTO.manageFee.length > 0) {
+        const keys = []
+        this.titleglf.forEach(item => {
+          if (item.type === "input" || item.type === "select") {
+            keys.push(item.props)
+          }
+
+          if (Array.isArray(item.list) && item.list) {
+            item.list.forEach(subItem => {
+              if (subItem.type === "input" || subItem.type === "select") {
+                keys.push(subItem.props)
+              }
+            })
+          }
+        })
+        
+        const manageFeeFlag = form.levelTwoSumDTO.manageFee.every(item => {
+          const flag = keys.every(key => {
+            if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
+              iMessage.warn(this.$t("QINGTIANXIEWANZHENGGUANLIFEI"))
+              return false
+            } else {
+              return true
+            }
+          })
+
+          return flag
+        })
+        if (!manageFeeFlag) return false
+      }
+
+      if (Array.isArray(form.levelTwoSumDTO.profit) && form.levelTwoSumDTO.profit.length > 0) {
+        const keys = []
+        this.titlelr.forEach(item => {
+          if (item.type === "input" || item.type === "select") {
+            keys.push(item.props)
+          }
+
+          if (Array.isArray(item.list) && item.list) {
+            item.list.forEach(subItem => {
+              if (subItem.type === "input" || subItem.type === "select") {
+                keys.push(subItem.props)
+              }
+            })
+          }
+        })
+        
+        const profitFlag = form.levelTwoSumDTO.profit.every(item => {
+          const flag = keys.every(key => {
+            if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
+              iMessage.warn(this.$t("QINGTIANXIEWANZHENLIRUN"))
+              return false
+            } else {
+              return true
+            }
+          })
+
+          return flag
+        })
+        if (!profitFlag) return false
+      }
+
+      return true
+    },
+    validateByL3(form = {}) {
+      if (Array.isArray(form.levelThreeSumDTO.rawMaterial) && form.levelThreeSumDTO.rawMaterial.length > 0) {
+        const keys = []
+        this.titleYclByL3.forEach(item => {
+          if (item.type === "input" || item.type === "select") {
+            keys.push(item.props)
+          }
+
+          if (Array.isArray(item.list) && item.list) {
+            item.list.forEach(subItem => {
+              if (subItem.type === "input" || subItem.type === "select") {
+                keys.push(subItem.props)
+              }
+            })
+          }
+        })
+        
+        const rawMaterialFlag = form.levelThreeSumDTO.rawMaterial.every(item => {
+          const flag = keys.every(key => {
+            if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
+              iMessage.warn(this.$t("QINGTIANXIEWANZHENGYUANCAILIAOSANJIANCHENGBEN"))
+              return false
+            } else {
+              return true
+            }
+          })
+
+          return flag
+        })
+        if (!rawMaterialFlag) return false
+      }
+
+      if (Array.isArray(form.levelThreeSumDTO.makeCost) && form.levelThreeSumDTO.makeCost.length > 0) {
+        const keys = []
+        this.titleCbzzByL3.forEach(item => {
+          if (item.type === "input" || item.type === "select") {
+            keys.push(item.props)
+          }
+
+          if (Array.isArray(item.list) && item.list) {
+            item.list.forEach(subItem => {
+              if (subItem.type === "input" || subItem.type === "select") {
+                keys.push(subItem.props)
+              }
+            })
+          }
+        })
+        
+        const makeCostFlag = form.levelThreeSumDTO.makeCost.every(item => {
+          const flag = keys.every(key => {
+            if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
+              iMessage.warn(this.$t("QINGTIANXIEWANZHENGZHIZAOCHENGBEN"))
+              return false
+            } else {
+              return true
+            }
+          })
+
+          return flag
+        })
+        if (!makeCostFlag) return false
+      }
+
+      if (Array.isArray(form.levelThreeSumDTO.manageFee) && form.levelThreeSumDTO.manageFee.length > 0) {
+        const keys = []
+        this.titleglfByL3.forEach(item => {
+          if (item.type === "input" || item.type === "select") {
+            keys.push(item.props)
+          }
+
+          if (Array.isArray(item.list) && item.list) {
+            item.list.forEach(subItem => {
+              if (subItem.type === "input" || subItem.type === "select") {
+                keys.push(subItem.props)
+              }
+            })
+          }
+        })
+        
+        const manageFeeFlag = form.levelThreeSumDTO.manageFee.every(item => {
+          const flag = keys.every(key => {
+            if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
+              iMessage.warn(this.$t("QINGTIANXIEWANZHENGGUANLIFEI"))
+              return false
+            } else {
+              return true
+            }
+          })
+
+          return flag
+        })
+        if (!manageFeeFlag) return false
+      }
+
+      if (Array.isArray(form.levelThreeSumDTO.profit) && form.levelThreeSumDTO.profit.length > 0) {
+        const keys = []
+        this.titlelrByL3.forEach(item => {
+          if (item.type === "input" || item.type === "select") {
+            keys.push(item.props)
+          }
+
+          if (Array.isArray(item.list) && item.list) {
+            item.list.forEach(subItem => {
+              if (subItem.type === "input" || subItem.type === "select") {
+                keys.push(subItem.props)
+              }
+            })
+          }
+        })
+        
+        const profitFlag = form.levelThreeSumDTO.profit.every(item => {
+          const flag = keys.every(key => {
+            if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
+              iMessage.warn(this.$t("QINGTIANXIEWANZHENLIRUN"))
+              return false
+            } else {
+              return true
+            }
+          })
+
+          return flag
+        })
+        if (!profitFlag) return false
+      }
+
+      return true
+    },
     /**
      * @description: 提交接口save
      * @param {*}
      * @return {*}
      */    
-    postCostSummary(){
+    postCostSummary(type){
       return new Promise((r,j)=>{
         const sendData = JSON.parse(JSON.stringify(this.allTableData))
 
@@ -454,6 +754,14 @@ export default{
           startProductDate: sendData.startProductDate,
         }
 
+        if (form.cbdLevel == 2) {
+          if (!this.validateByL2(form)) return
+        }
+
+        if (form.cbdLevel == 3) {
+          if (!this.validateByL3(form)) return
+        }
+
         // console.log("sendData", sendData)
         // sendData.makeCost = sendData.makeCost.records
         // sendData.rawMaterial = sendData.rawMaterial.records
@@ -465,11 +773,10 @@ export default{
         // sendData.partType = this.partInfo.partType
         // sendData.partProjectType = this.partInfo.partProjectType
 
-        console.log("form", form)
-        postCostSummary(this.translateDataForServerce(form)).then(res=>{
+        postCostSummary(form).then(res=>{
           if(res.code == 200){
             r()
-            iMessage.success('操作成功')
+            if (type !== "submit") iMessage.success('操作成功')
             this.updateCbdLevel(this.allTableData.level)
           }else{
             j(res.desZh)
@@ -487,7 +794,7 @@ export default{
      * @return {*}
      */    
     init(type){
-      if (this.partInfo.partProjectType === 'PT19' || this.partInfo.partProjectType === 'PT04') {
+      if (this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || this.partInfo.partProjectType === partProjTypes.DBLINGJIAN) {
         this.getCostSummaryDB()
       } else {
         this.cbdlist = []
@@ -519,7 +826,7 @@ export default{
             const data = await this.getBzfreeAndYunshuFree();
             this.packAndShipFee = data
             this.allTableData = this.translateDataForRender(res.data)
-            this.topTableData = this.translateDataTopData(this.allTableData, data)
+            this.topTableData = this.translateDataTopData(cloneDeep(this.allTableData), data)
             this.$refs.components.partsQuotationss(this.partInfo.rfqId,this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId,this.partInfo.round,this.allTableData.level)
             // this.allpagefrom.quotationId,
             this.findFiles()
@@ -567,19 +874,27 @@ export default{
      * @return {*}
      */    
     saveBzfreeAndYunshuFree() {
-      const params = {
-        ...this.packAndShipFee,
-        packageCost: this.topTableData.packageCost,
-        transportCost: this.topTableData.transportCost,
-        operateCost: this.topTableData.operateCost,
-      }
-      return savePackageTransport(params).then(res => {
-        if (res && res.result) {
-          iMessage.success(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
-        } else {
-          iMessage.error(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
+      return new Promise((r,j)=>{
+        const params = {
+          ...this.packAndShipFee,
+          packageCost: this.topTableData.tableData[0]?.packageCost,
+          transportCost: this.topTableData.tableData[0]?.transportCost,
+          operateCost: this.topTableData.tableData[0]?.operateCost,
         }
+        savePackageTransport(params).then(res => {
+          if (res && res.result) {
+            r()
+            iMessage.success(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
+          } else {
+            j(res.desZh)
+            iMessage.error(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
+          }
+        }).catch(err=>{
+          j(err.desZh)
+          iMessage.error(err.desZh)
+        })
       })
+      
     },
     /**
      * @description: 转换后台数据新增字段 其中根据itemType来判断其他费用类型 如果是1 为分摊模具费，如果是0 则为 分摊的开发费
@@ -599,10 +914,85 @@ export default{
 
         switch(this.allpagefrom.cbdLevel) {
           case 1:
-            data = baseData.levelOneSumVO
+            data = {
+              ...baseData.levelOneSumVO,
+              rawMaterial: { records: [] },
+              makeCost: { records: [] },
+              discardCost: [],
+              manageFee: [],
+              otherFee: [],
+              profit: []
+            }
             break
           case 2:
-            data = baseData.levelTwoSumVO
+            data = {
+              ...baseData.levelTwoSumVO,
+              rawMaterial: baseData.levelTwoSumVO.rawMaterial ? baseData.levelTwoSumVO.rawMaterial : { records: [] },
+              makeCost: baseData.levelTwoSumVO.makeCost ? baseData.levelTwoSumVO.makeCost : { records: [] },
+              discardCost: 
+                Array.isArray(baseData.levelTwoSumVO.discardCost) && baseData.levelTwoSumVO.discardCost.length > 0 ?
+                baseData.levelTwoSumVO.discardCost : 
+                [
+                  {
+                    cbdId: baseData.levelTwoSumVO.cbdId,
+                    amount: "0",
+                    ratio: "0"
+                  }
+                ],
+              manageFee: 
+                Array.isArray(baseData.levelTwoSumVO.manageFee) && baseData.levelTwoSumVO.manageFee.length > 0 ?
+                baseData.levelTwoSumVO.manageFee : 
+                [
+                  {
+                    cbdId: baseData.levelTwoSumVO.cbdId,
+                    typeName: "原材料与散件（不含SVW指定散件）管理费",
+                    amount: "0",
+                    ratio: "0"
+                  },
+                  {
+                    cbdId: baseData.levelTwoSumVO.cbdId,
+                    typeName: "制造管理费",
+                    amount: "0",
+                    ratio: "0"
+                  }
+                ],
+              otherFee: 
+                Array.isArray(baseData.levelTwoSumVO.otherFee) && baseData.levelTwoSumVO.otherFee.length > 0 ?
+                baseData.levelTwoSumVO.otherFee : 
+                [
+                  // {
+                  //   cbdId: baseData.levelTwoSumVO.cbdId,
+                  //   itemType: 1,
+                  //   shareAmount: "0",
+                  //   shareQuantity: "0",
+                  //   shareTotal: "0",
+                  //   totalPrice: "0"
+                  // },
+                  // {
+                  //   cbdId: baseData.levelTwoSumVO.cbdId,
+                  //   itemType: 0,
+                  //   shareAmount: "0",
+                  //   shareQuantity: "0",
+                  //   shareTotal: "0",
+                  //   totalPrice: "0"
+                  // }
+                ],
+              profit: 
+                Array.isArray(baseData.levelTwoSumVO.profit) && baseData.levelTwoSumVO.profit.length > 0 ?
+                baseData.levelTwoSumVO.profit : 
+                [
+                  {
+                    cbdId: baseData.levelTwoSumVO.cbdId,
+                    amount: "0",
+                    ratio: "0"
+                  },
+                  // {
+                  //   cbdId: baseData.levelTwoSumVO.cbdId,
+                  //   amount: "0",
+                  //   ratio: "0"
+                  // }
+                ],
+            }
 
             if(data['discardCost']){
               data['discardCost'].forEach(element => {
@@ -622,7 +1012,80 @@ export default{
             }
             break
           case 3:
-            data = baseData.levelThreeSumVO
+            data = {
+              ...baseData.levelThreeSumVO,
+              rawMaterial: baseData.levelThreeSumVO.rawMaterial ? baseData.levelThreeSumVO.rawMaterial : { records: [] },
+              makeCost: baseData.levelThreeSumVO.makeCost ? baseData.levelThreeSumVO.makeCost : { records: [] },
+              discardCost: 
+                Array.isArray(baseData.levelThreeSumVO.discardCost) && baseData.levelThreeSumVO.discardCost.length > 0 ?
+                baseData.levelThreeSumVO.discardCost : 
+                [
+                  {
+                    cbdId: baseData.levelThreeSumVO.cbdId,
+                    amount: "0",
+                    ratio: "0"
+                  }
+                ],
+              manageFee: 
+                Array.isArray(baseData.levelThreeSumVO.manageFee) && baseData.levelThreeSumVO.manageFee.length > 0 ?
+                baseData.levelThreeSumVO.manageFee : 
+                [
+                  {
+                    cbdId: baseData.levelThreeSumVO.cbdId,
+                    typeName: "材料管理和销售费用",
+                    amount: "0",
+                    blockAmount: "0",
+                    ratio: "0"
+                  },
+                  {
+                    cbdId: baseData.levelThreeSumVO.cbdId,
+                    typeName: "制造管理和销售费用",
+                    amount: "0",
+                    blockAmount: "0",
+                    ratio: "0"
+                  }
+                ],
+              otherFee: 
+                Array.isArray(baseData.levelThreeSumVO.otherFee) && baseData.levelThreeSumVO.otherFee.length > 0 ?
+                baseData.levelThreeSumVO.otherFee : 
+                [
+                  // {
+                  //   cbdId: baseData.levelThreeSumVO.cbdId,
+                  //   itemType: 0,
+                  //   shareAmount: "0",
+                  //   shareQuantity: "0",
+                  //   shareTotal: "0",
+                  //   totalPrice: "0"
+                  // },
+                  // {
+                  //   cbdId: baseData.levelThreeSumVO.cbdId,
+                  //   itemType: 1,
+                  //   shareAmount: "0",
+                  //   shareQuantity: "0",
+                  //   shareTotal: "0",
+                  //   totalPrice: "0"
+                  // }
+                ],
+              profit: 
+                Array.isArray(baseData.levelThreeSumVO.profit) && baseData.levelThreeSumVO.profit.length > 0 ?
+                baseData.levelThreeSumVO.profit : 
+                [
+                  {
+                    cbdId: baseData.levelThreeSumVO.cbdId,
+                    typeName: "材料利润",
+                    amount: "0",
+                    blockAmount: "0",
+                    ratio: "0"
+                  },
+                  {
+                    cbdId: baseData.levelThreeSumVO.cbdId,
+                    typeName: "制造利润",
+                    amount: "0",
+                    blockAmount: "0",
+                    ratio: "0"
+                  }
+                ],
+            }
 
             if(data['discardCost']){
               data['discardCost'].forEach(element => {
@@ -630,6 +1093,7 @@ export default{
                 element['ztbfcb'] = 'Scrap Cost'
               });
             }
+
             break
           default:
         }
@@ -700,51 +1164,61 @@ export default{
      * @param {*}
      * @return {*}
      */    
-    save(){
-      if (this.partInfo.partProjectType === 'PT17' || this.partInfo.partProjectType === 'PT18') {
+    save(type){
+      if (this.partInfo.partProjectType === partProjTypes.PEIJIAN || this.partInfo.partProjectType === partProjTypes.FUJIAN) {
         return Promise.all(this.postCostSummary(), this.saveBzfreeAndYunshuFree())
-      } else if (this.partInfo.partProjectType === 'PT19' || this.partInfo.partProjectType === 'PT04'){
+      } else if (this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || this.partInfo.partProjectType === partProjTypes.DBLINGJIAN){
         return this.updateCostSummaryDB()
       } else {
-        return this.postCostSummary()
+        return this.postCostSummary(type)
       }
     },
     getCostSummaryDB() {
       //this.partInfo.quotationId
-      getCostSummaryDB({quotationId:this.partInfo.quotationId}).then(res => {
-        if (res?.result) {
-          this.dbDetailList = res.data.map(item => {
-            return {
-              ...item,
-              seaPrice: item.sortOrder == 14 ? item.capacity : item.sortOrder == 13 ? item.sopDate : item.sortOrder == 11 ? item.isReduce : item.seaPrice,
-              noairPrice: item.sortOrder == 13 || item.sortOrder == 11,
-              allRow: item.sortOrder == 14,
-              type: item.sortOrder == 13 ? 'date' : item.sortOrder == 11 ? 'select' : 'input',
-              remarkDisabled: item.sortOrder == 10
-            }
-          })
-        } else {
-          iMessage.error(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
-        }
+      return new Promise((r)=>{
+        getCostSummaryDB({quotationId:this.partInfo.quotationId}).then(res => {
+          if (res?.result) {
+            this.dbDetailList = res.data.map(item => {
+              return {
+                ...item,
+                seaPrice: item.sortOrder == 14 ? item.capacity : item.sortOrder == 13 ? item.sopDate : item.sortOrder == 11 ? item.isReduce : item.seaPrice,
+                noairPrice: item.sortOrder == 13 || item.sortOrder == 11,
+                allRow: item.sortOrder == 14,
+                type: item.sortOrder == 13 ? 'date' : item.sortOrder == 11 ? 'select' : 'input',
+                remarkDisabled: item.sortOrder == 10
+              }
+            })
+          } else {
+            iMessage.error(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
+          }
+        })
       })
     },
     updateCostSummaryDB() {
-      const params = this.dbDetailList.map(item => {
-        return {
-          ...item,
-          capacity: item.sortOrder == 14 ? item.seaPrice : item.capacity,
-          sopDate: item.sortOrder == 13 ? item.seaPrice : item.sopDate,
-          isReduce: item.sortOrder == 11 ? item.seaPrice : item.isReduce,
-          seaPrice: item.sortOrder == 14 || item.sortOrder == 13 || item.sortOrder == 11 ? null : item.seaPrice
-        }
+      return new Promise((r,j)=>{
+        const params = this.dbDetailList.map(item => {
+          return {
+            ...item,
+            capacity: item.sortOrder == 14 ? item.seaPrice : item.capacity,
+            sopDate: item.sortOrder == 13 ? item.seaPrice : item.sopDate,
+            isReduce: item.sortOrder == 11 ? item.seaPrice : item.isReduce,
+            seaPrice: item.sortOrder == 14 || item.sortOrder == 13 || item.sortOrder == 11 ? null : item.seaPrice
+          }
+        })
+        return updateCostSummaryDB(params).then(res => {
+          if (res?.result) {
+            r()
+            iMessage.success(this.$i18n.locale === 'zh' ? res?.desZh : res?.desEn)
+          } else {
+            j(res.desZh)
+            iMessage.error(this.$i18n.locale === 'zh' ? res?.desZh : res?.desEn)
+          }
+        }).catch(err=>{
+          j(err.desZh)
+          iMessage.error(err.desZh)
+        })
       })
-      updateCostSummaryDB(params).then(res => {
-        if (res?.result) {
-          iMessage.success(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
-        } else {
-          iMessage.error(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
-        }
-      })
+      
     },
 
     handleSelectionChangeByRawMaterial(list) {
@@ -752,7 +1226,9 @@ export default{
     }, 
     // 添加行ByRawMaterial
     handleAddByRawMaterial() {
-      this.allTableData.rawMaterial.records.push({})
+      this.allTableData.rawMaterial.records.push({
+        cbdId: this.allTableData.cbdId
+      })
     },
     // 删除行ByRawMaterial
     handleDelByRawMaterial() {
@@ -764,13 +1240,83 @@ export default{
     },
     // 添加行ByMakeCost
     handleAddByMakeCost() {
-      this.allTableData.makeCost.records.push({})
+      this.allTableData.makeCost.records.push({
+        cbdId: this.allTableData.cbdId
+      })
     },
     // 删除行ByMakeCost
     handleDelByMakeCost() {
       this.allTableData.makeCost.records = this.allTableData.makeCost.records.filter(item => !this.multipleSelectionByMakeCost.includes(item))
     },
-    handleInputByRawMaterial(value, row) {
+
+    // L2计算
+    handleInputByRawMaterialL2(value, row) {
+      this.$set(row, "indirectMaterialCost", math.evaluate(`${ row.unitPrice || 0 } * ${ row.quantity || 0 }`).toFixed(4))
+      this.$set(row, "materialManageCost", math.evaluate(`${ row.indirectMaterialCost || 0 } * (${ row.materialManageCostRate || 0 } / 100)`).toFixed(4))
+      this.$set(row, "materialCost", math.evaluate(`${ row.indirectMaterialCost || 0 } + ${ row.materialManageCost || 0 }`).toFixed(4))
+
+      this.materialSummaryL2 = 0 // 头表原材料/散件
+      this.materialSummaryL2ByFalse = 0 // 原材料/散件 by SVW指定价格散件为否
+
+      this.allTableData.rawMaterial.records.forEach(item => {
+        this.materialSummaryL2 = math.add(this.materialSummaryL2, math.bignumber(item.materialCost || 0)) // 计算头表原材料/散件
+        this.materialSummaryL2ByFalse = item.isSvwAssignPriceParts ? this.materialSummaryL2ByFalse : math.add(this.materialSummaryL2ByFalse, math.bignumber(item.materialCost || 0))
+      })
+
+      this.$set(this.topTableData.tableData[0], "materialSummary", this.materialSummaryL2.toFixed(4))
+
+      this.handleInputByDiscardCostL2("", this.allTableData.discardCost[0])
+      this.handleInputByManageFeeL2()
+      this.handleInputByProfitL2("", this.allTableData.profit[0])
+    },
+
+    handleInputByMakeCostL2(value, row) {
+      this.$set(row, "indirectManufacturingAmount", math.evaluate(`(${ row.deviceRate || 0 } + ${ row.directLaborRate || 0 } * ${ row.directLaborQuantity || 0 }) * ${ row.taktTime || 0 } / 3600 / ${ row.taktTimeNumber ? row.taktTimeNumber : 1 } * (${ row.indirectManufacturingRate || 0 } / 100)`).toFixed(4))
+      this.$set(row, "laborCost", math.evaluate(`${ row.directLaborRate || 0 } * ${ row.directLaborQuantity || 0 } * ${ row.taktTime || 0 } / 3600 / ${ row.taktTimeNumber ? row.taktTimeNumber : 1 } * (1 + (${ row.indirectManufacturingRate || 0 } / 100))`).toFixed(4))
+      this.$set(row, "deviceCost", math.evaluate(`${ row.deviceRate || 0 } * ${ row.taktTime || 0 } / 3600 / ${ row.taktTimeNumber ? row.taktTimeNumber : 1 } * (1 + (${ row.indirectManufacturingRate || 0 } / 100))`).toFixed(4))
+    
+      this.laborCostSummaryL2 = 0 // 人工成本
+      this.deviceCostSummaryL2 = 0 // 设备成本
+
+      this.allTableData.makeCost.records.forEach(item => {
+        this.laborCostSummaryL2 = math.add(this.laborCostSummaryL2, math.bignumber(item.laborCost || 0)) // 计算人工成本
+        this.deviceCostSummaryL2 = math.add(this.deviceCostSummaryL2, math.bignumber(item.deviceCost || 0)) // 计算设备成本
+      })
+
+      this.$set(this.topTableData.tableData[0], "productionSummary", math.add(this.laborCostSummaryL2, this.deviceCostSummaryL2).toFixed(4))
+
+      this.handleInputByDiscardCostL2("", this.allTableData.discardCost[0])
+      this.handleInputByManageFeeL2()
+      this.handleInputByProfitL2("", this.allTableData.profit[0])
+    },
+
+    handleInputByDiscardCostL2(value, row) {
+      this.$set(row, "amount", math.evaluate(`(${ this.materialSummaryL2 || 0 } + ${ this.laborCostSummaryL2 || 0 } + ${ this.deviceCostSummaryL2 || 0 }) / (1 - (${ row.ratio || 0 } / 100)) - (${ this.materialSummaryL2 || 0 } + ${ this.laborCostSummaryL2 || 0 } + ${ this.deviceCostSummaryL2 || 0 })`).toFixed(4))
+    
+      this.scrapSummaryL2 = 0 // 报废成本
+
+      this.allTableData.discardCost.forEach(item => {
+        this.scrapSummaryL2 = math.add(this.scrapSummaryL2, math.bignumber(item.amount || 0)) // 计算报废成本
+      })
+
+      this.$set(this.topTableData.tableData[0], "scrapSummary", this.scrapSummaryL2.toFixed(4))
+    },
+
+    handleInputByManageFeeL2(value, row) {
+      this.$set(this.allTableData.manageFee[0], "amount", math.evaluate(`${ this.materialSummaryL2ByFalse || 0 } * (${ this.allTableData.manageFee[0].ratio || 0 } / 100)`).toFixed(4))
+      this.$set(this.allTableData.manageFee[1], "amount", math.evaluate(`(${ math.add(this.laborCostSummaryL2, this.deviceCostSummaryL2) || 0 }) * (${ this.allTableData.manageFee[1].ratio || 0 } / 100)`).toFixed(4))
+    
+      this.$set(this.topTableData.tableData[0], "manageSummary", math.add(math.bignumber(this.allTableData.manageFee[0].amount || 0), math.bignumber(this.allTableData.manageFee[1].amount || 0)).toFixed(4))
+    },
+
+    handleInputByProfitL2(value, row) {
+      this.$set(row, "amount", math.evaluate(`(${ row.ratio || 0 } / 100) * (${ math.add(this.laborCostSummaryL2, this.deviceCostSummaryL2) || 0 } + ${ this.materialSummaryL2ByFalse || 0 })`).toFixed(4))
+    
+      this.$set(this.topTableData.tableData[0], "profitSummary", math.add(math.bignumber(this.allTableData.profit[0].amount || 0), 0).toFixed(4))
+    },
+
+    // L3计算
+    handleInputByRawMaterialL3(value, row) {
       this.$set(row, "directMaterialCost", math.evaluate(`(${ row.unitPrice || 0 } * ${ row.roughWeight || 0 }) - (${ row.roughWeight || 0 } - ${ row.suttleWeight || 0 }) * ${ row.recycleUnitPrice || 0 }`).toFixed(4))
       this.$set(row, "lossCost", math.evaluate(`${ row.directMaterialCost || 0 } / (1 - ${ row.lossCostRate || 0 } / 100) - ${ row.directMaterialCost || 0 }`).toFixed(4))
       this.$set(row, "indirectMaterialCost", math.evaluate(`${ row.indirectMaterialCostRatio || 0 } / 100 * (${ row.unitPrice || 0 } * ${ row.roughWeight || 0 } + ${ row.lossCost || 0 })`).toFixed(4))
@@ -815,7 +1361,7 @@ export default{
       this.$set(this.topTableData.tableData[0], "profitSummary", profitSummary.toFixed(4))
     },
 
-    handleInputByMakeCost(value, row) {
+    handleInputByMakeCostL3(value, row) {
       this.$set(row, "directProduceCost", math.evaluate(`(${ row.perHourMachineCost || 0 } + ${ row.perHourLaborCost || 0 } * ${ row.workerCount || 0 }) * ${ row.perProduceTime } / 3600 / ${ row.perCycleCount ? row.perCycleCount : 1 }`).toFixed(4))
       this.$set(row, "lossCost", math.evaluate(`${ row.directProduceCost || 0 } / (1 - ${ row.lossCostRate || 0 } / 100) - ${ row.directProduceCost || 0 }`).toFixed(4))
       this.$set(row, "indirectProduceCost", math.evaluate(`(${ row.directProduceCost || 0 } + ${ row.lossCost || 0 } + ${ row.produceSwitchCost || 0 }) * (${ row.indirectProduceCostRate || 0 } / 100)`).toFixed(4))
@@ -860,7 +1406,7 @@ export default{
       this.$set(this.topTableData.tableData[0], "profitSummary", profitSummary.toFixed(4))
     },
 
-    handleInputByManageFee(value, row) {
+    handleInputByManageFeeL3(value, row) {
       this.$set(row, "amount", math.evaluate(`${ this.topTableData.tableData[0].productionSummary } * (${ row.ratio || 0 } / 100)`).toFixed(4))
       this.$set(row, "blockAmount", math.evaluate(`${ row.amount || 0 } * 1`).toFixed(4))
 
@@ -870,7 +1416,7 @@ export default{
       this.$set(this.topTableData.tableData[0], "manageSummary", manageSummary.toFixed(4))
     },
 
-    handleInputByProfit(value, row) {
+    handleInputByProfitL3(value, row) {
       this.$set(row, "amount", math.evaluate(`${ this.topTableData.tableData[0].productionSummary } * (${ row.ratio || 0 } / 100)`).toFixed(4))
       this.$set(row, "blockAmount", math.evaluate(`${ row.amount || 0 } * 1`).toFixed(4))
 
@@ -878,6 +1424,10 @@ export default{
         return math.add(acc, math.bignumber(cur.amount || 0))
       }, 0)
       this.$set(this.topTableData.tableData[0], "profitSummary", profitSummary.toFixed(4))
+    },
+
+    itemTypeFilter(value) {
+      return value === 1 ? "分摊开发费" : "分摊模具费"
     }
   }
 }

@@ -1,15 +1,24 @@
 <template>
   <div class="imail-list">
     <div class="operation-wrapper">
-      <mailFilter :typeOptions="typeOptions" @filterCallback="handleFilterCallback" />
+      <mailFilter
+        :typeOptions="typeOptions"
+        @filterCallback="handleFilterCallback"
+      />
       <div class="btn-wrapper">
         <el-button type="text" @click="handleReadAll" :disabled="!list.length">
           <span v-if="!query.status">全部已读</span>
         </el-button>
-        <el-button type="text" @click="handleDelAll" :disabled="!list.length">清除全部</el-button>
+        <el-button type="text" @click="handleDelAll" :disabled="!list.length"
+          >清除全部</el-button
+        >
       </div>
     </div>
-    <div class="card-wrapper" v-infinite-scroll="load" infinite-scroll-disabled="disabled">
+    <div
+      class="card-wrapper"
+      v-infinite-scroll="load"
+      infinite-scroll-disabled="disabled"
+    >
       <mail-card
         :tab="tab"
         v-for="(item, index) in list"
@@ -19,7 +28,21 @@
         @delCallback="handleDelCallback"
       ></mail-card>
       <p v-if="loading">加载中...</p>
-      <p v-if="noMore">没有更多了</p>
+      <p v-if="noMore">
+        {{
+          this.total
+            ? '没有更多了'
+            : `${
+                this.tab
+                  ? this.query.status
+                    ? '暂无已读消息'
+                    : '暂无未读消息'
+                  : this.query.status
+                  ? '暂无已读通知'
+                  : '暂无未读通知'
+              }`
+        }}
+      </p>
     </div>
   </div>
 </template>
@@ -27,7 +50,13 @@
 <script>
 import mailFilter from './filter.vue'
 import mailCard from './card.vue'
-import { getMailList, getUnreadCount, getTypeOptionsByTab, readMailBatch, removeMailBatch } from '@/api/mail'
+import {
+  getMailList,
+  getUnreadCount,
+  getTypeOptionsByTab,
+  readMailBatch,
+  removeMailBatch
+} from '@/api/mail'
 export default {
   props: {
     tab: {
@@ -43,7 +72,10 @@ export default {
   },
   computed: {
     noMore() {
-      return !this.loading && (this.list.length === this.total || this.list > this.total)
+      return (
+        !this.loading &&
+        (this.list.length === this.total || this.list > this.total)
+      )
     },
     disabled() {
       return this.loading || this.noMore
@@ -135,9 +167,11 @@ export default {
       const result = await getMailList(data)
       if (result?.data) {
         this.loading = false
-        this.list = this.current === 1 ? result.data : this.list.concat(result.data)
+        this.list =
+          this.current === 1 ? result.data : this.list.concat(result.data)
         this.total = result.total
       }
+      return result
     },
     async getUnreadCount() {
       const result = await getUnreadCount({ tab: this.tab })
@@ -147,6 +181,7 @@ export default {
           name: this.tab
         })
       }
+      return result
     },
     handleFilterCallback(val) {
       this.query = val

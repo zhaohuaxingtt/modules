@@ -2,10 +2,10 @@
  * @Descripttion: 供应商报价界面-报价页面-零件报价-包装运输
  * @Author: Luoshuang
  * @Date: 2021-04-22 16:53:47
- * @LastEditTime: 2021-07-07 09:43:19
+ * @LastEditTime: 2021-07-20 15:57:03
 -->
 <template>
-  <div v-if="partInfo.partProjectType === 'PT04' || partInfo.partProjectType === 'PT19'" v-loading="loading">
+  <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU" v-loading="loading">
     <iCard :title="language('CANKAOBAOZHUANG','参考包装')">
       <iFormGroup
         :row="4"
@@ -17,7 +17,7 @@
           :key="item.props"
           :label="language(item.i18n, item.name) + '：'"
         >
-          <iText>{{ params[item.props] }}</iText>
+          <iText></iText>
         </iFormItem>
       </iFormGroup>
     </iCard>
@@ -28,20 +28,20 @@
         class="packAndShip-form margin-top20"
       >
         <iFormItem
-          v-for="item in referenceInputs"
+          v-for="item in requireInputs"
           :key="item.props"
           :label="language(item.i18n, item.name) + '：'"
         >
-          <iText v-if="disabled">{{ params[item.props] }}</iText>
+          <iText v-if="disabled">{{ item.type === 'select' ? getName(params[item.props]) : params[item.props] }}</iText>
           <iSelect v-else-if="item.type === 'select'" v-model="params[item.props]">
             <el-option
               v-for="item in selectOptions[item.selectOption]"
-              :key="item.code"
-              :name="item.name"
-              :value="item.code"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
             ></el-option>
           </iSelect>
-          <iInput v-else v-model="params[item.props]" title="" type="number" oninput="if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+5)}"></iInput>
+          <iInput v-else :value="params[item.props]" title="" type="text" @input="val => handleInput(val, params, item.props)"></iInput>
         </iFormItem>
       </iFormGroup>
     </iCard>
@@ -64,10 +64,10 @@
       <iFormItem
         v-for="item in inputs"
         :key="item.props"
-        :label="$t(item.i18n) + '：'"
+        :label="language(item.i18n, item.name) + '：'"
       >
           <!-------只能输入数字，可以输入小数点后四位---------->
-        <iInput v-if="!disabled" v-model="params[item.props]" title="" type="number" oninput="if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+5)}"></iInput>
+        <iInput v-if="!disabled && item.editable" v-model="params[item.props]" title="" type="number" oninput="if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+5)}"></iInput>
         <iText v-else>{{ params[item.props] }}</iText>
       </iFormItem>
     </iFormGroup>
@@ -75,16 +75,18 @@
 </template>
 
 <script>
-import { iCard, iFormGroup, iFormItem, iMessage, iInput, iText } from "rise";
+import { iCard, iFormGroup, iFormItem, iMessage, iInput, iText, iSelect } from "rise";
 import { savePackageTransport, getPackageTransport } from '@/api/rfqManageMent/quotationdetail'
 import { getDictByCode } from '@/api/dictionary'
+import {partProjTypes} from '@/config'
 export default {
   components: {
     iCard,
     iFormGroup,
     iFormItem,
     iInput,
-    iText
+    iText,
+    iSelect
   },
   props: {
     partInfo:{
@@ -99,10 +101,13 @@ export default {
   },
   data() {
     return {
+      // 零件项目类型
+      partProjTypes,
       inputs: [
-        { props: "packageCost", name: "包装费", i18n: 'LK_BAOZHUANGFEI' },
-        { props: "transportCost", name: "运输费", i18n: 'LK_YUNSHUFEI' },
-        { props: "operateCost", name: "操作费", i18n: 'LK_CAOZUOFEI' },
+        { props: "packageCost", name: "包装费", i18n: 'LK_BAOZHUANGFEI', editable: true },
+        { props: "transportCost", name: "运输费", i18n: 'LK_YUNSHUFEI', editable: true },
+        { props: "operateCost", name: "操作费", i18n: 'LK_CAOZUOFEI', editable: true },
+        { props: "logisticsQuotationStatus", name: "BNK审核状态", i18n: 'LK_BNKSHENMHEZHUANGTAI' },
       ],
       params: {
         packageCost: "",
@@ -125,19 +130,34 @@ export default {
         { props: "packageHeight", name: "参考包装高(mm)", i18n: 'CANKAOBAOZHUANGGAO_MM' },
         { props: "packageLs", name: "LS(PC)", i18n: 'LS_PC' },
         { props: "packageStack", name: "Stack", i18n: 'STACK' },
-      ]
+      ],
+      selectOptions: {}
     };
   },
   created() {
     this.getPackageOptions()
   },
   methods: {
+    getName(val) {
+      return this.selectOptions.PACKAGETYPE?.find(item => item.value === val)?.label
+    },
+    handleInput(val, params, type){
+      if(/^\d*\.?\d*$/.test(val)) {
+        this.$set(params, type, val.indexOf('.')>0 ? val.slice(0,val.indexOf('.')+3) : val)
+      }
+    },
     getPackageOptions() {
       getDictByCode('PACKAGETYPE').then(res => {
         if (res?.result) {
           this.selectOptions = {
             ...this.selectOptions,
-            PACKAGETYPE: res.data[0]?.subDictResultVo || []
+            PACKAGETYPE: (res.data[0]?.subDictResultVo || []).map(item => {
+              return {
+                ...item,
+                value: item.code,
+                label: this.$i18n.locale === 'zh' ? item.name: item.nameEn
+              }
+            })
           }
         }
       })
@@ -160,7 +180,10 @@ export default {
       this.loading = true
       getPackageTransport(params).then(res => {
         if (res && res.result) {
-          this.params = res.data
+          this.params = {
+            ...res.data,
+            quotationId: this.partInfo.quotationId
+          }
         } else {
           iMessage.error(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
         }
@@ -171,13 +194,13 @@ export default {
     /**
      * 保存修改的包装运输数据
      */
-    save() {
+    save(type) {
       return new Promise((r,j)=>{
         this.loading = true
         savePackageTransport(this.params).then(res => {
           if (res && res.result) {
             r()
-            iMessage.success(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
+            if (type !== "submit") iMessage.success(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
             this.init()
           } else {
            j()

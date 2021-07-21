@@ -15,43 +15,33 @@
             <div class="table-data-item"  v-for="(item,index) in tableData" :key="'newTableData_'+index">
                 <p v-for="(titleItem,titleIndex) in tableTitle" :key="'newTableitem_'+titleIndex">
                     <template v-if="reducePlanedit" >
-                        <iInput v-if="titleItem.type == 'iInput'" type="number" v-model="item[titleItem.key]" @input="val=>$emit('rateChange',val,titleIndex)"/>
+                        <iInput v-if="titleItem.type == 'iInput'" type="number" oninput="if(value>100){value=100}if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+5)}" v-model="item[titleItem.key]" @input="val=>$emit('rateChange',val,titleIndex)"/>
                         <iDatePicker 
-                        v-else-if="titleItem.type == 'iDatePicker'" 
-                        v-model="item[titleItem.key]"
-                        type="month"
-                        :clearable="false"
-                        :picker-options="{
-                            disabledDate(time) {
-                                // 不允许时间上有重复且后一时间必须晚于前一时间
-                                const pickerMonth = moment(time).get('month')+1;
-                                const pickerYear = moment(time).get('year');
-                                // 后一时间
-                                const afterTime = tableData[index+1] ? moment(tableData[index+1][titleItem.key]).unix()*1000 : null;
-                                // 前一时间
-                                const beforeTime = (index-1)>-1 ? moment(tableData[index-1][titleItem.key]).unix()*1000 : null;
-                                if(afterTime && beforeTime){
-                                    const beforeTimeList = tableData[index-1][titleItem.key].split('-');
-                                    if(pickerYear == beforeTimeList[0] && pickerMonth==beforeTimeList[1]){
-                                        return true;
-                                    }else{
-                                        return time.getTime() >= afterTime || time.getTime() <= beforeTime;
+                            v-else-if="titleItem.type == 'iDatePicker'" 
+                            v-model="item[titleItem.key]"
+                            value-format="yyyy-MM"
+                            type="month"
+                            :clearable="false"
+                            :picker-options="{
+                                disabledDate(time){
+                                    const date = new Date(time)
+                                    const pickerYear = date.getFullYear()
+                                    const afterDate = tableData[index+1] ? new Date(tableData[index+1][titleItem.key]) : null
+                                    const afterYear = afterDate ? afterDate.getFullYear() : null
+                                    const beforeDate = (index-1)>-1 ? new Date(tableData[index-1][titleItem.key]) : null
+                                    const beforeYear = beforeDate ? beforeDate.getFullYear() : null
+                                    if (afterYear && beforeYear) {
+                                        return pickerYear <= beforeYear || pickerYear >= afterYear
                                     }
-                                }else if(afterTime){
-                                     return time.getTime() >= afterTime;
-                                }else if(beforeTime){
-                                    const beforeTimeList = tableData[index-1][titleItem.key].split('-');
-                                    if(pickerYear == beforeTimeList[0] && pickerMonth==beforeTimeList[1]){
-                                        return true;
-                                    }else{
-                                        return time.getTime() <= beforeTime;
+                                    if (afterYear) {
+                                        return pickerYear >= afterYear
                                     }
-                                }else{
+                                    if (beforeYear) {
+                                        return pickerYear <= beforeYear
+                                    }
                                     return false
-                                }
-                                
-                            },
-                        }"
+                                }}"
+                            
                         />
                         <span v-else>{{item[titleItem.key]}}</span>
                     </template>

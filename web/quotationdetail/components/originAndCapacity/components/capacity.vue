@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-22 15:49:47
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-10 18:19:45
+ * @LastEditTime: 2021-07-12 19:25:01
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\originAndCapacity\components\capacity.vue
 -->
@@ -142,7 +142,7 @@ export default {
       })
       .then(res => {
         if (res.code == 200) {
-          this.tableListData = Array.isArray(res.data.data) ? res.data.data : []
+          this.tableListData = Array.isArray(res.data) ? res.data : []
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
         }
@@ -169,6 +169,10 @@ export default {
         if (!item.maxWeekManufactureCapability) throw this.$t("LK_ZHOUZUIDACHANNENGBUNENGWEIKONG")
         if (!item.maxWorkDayYear) throw this.$t("LK_NIANZUIDAGONGZUOTIANSHUBUNENGWEIKONG")
         if (!item.startWeek) throw this.$t("LK_QISHIZHOUBUNENGWEIKONG")
+
+        if (index !== this.tableListData.length - 1 && !item.endWeek) {
+          throw this.$t("LK_FEIZUIHOUYIHANGJIEZHIZHOUBUNENGWEIKONG")
+        }
         
         if (index === this.tableListData.length - 1 && item.endWeek) {
           throw this.$t("LK_ZUIHOUYITIAOCHANNENGSHUJUDEJIEZHIZHOUBIXUWEIKONG")
@@ -178,9 +182,19 @@ export default {
           // eslint-disable-next-line no-undef
           if (+moment(item.endWeek) < +moment(item.startWeek)) throw this.$t("LK_JIEZHIZHOUBUNENGXIAOYUQISHIZHOU")
         }
+
+        if (index !== 0) {
+          if (+moment(item.startWeek) < +moment(this.tableListData[index - 1].endWeek)) {
+            if (this.$i18n.locale === "zh") {
+              throw `第${ index + 1 }行 ${ this.$t("LK_QISHIZHOU") }${ this.$t("LK_BUNENGXIAOYU") } 第${ index }行 ${ this.$t("LK_JIEZHIZHOU") }`
+            } else {
+              throw `Line: ${ index + 1 } ${ this.$t("LK_QISHIZHOU") }${ this.$t("LK_BUNENGXIAOYU") } Line: ${ index } ${ this.$t("LK_JIEZHIZHOU") }`
+            }
+          }
+        }
       })
     },
-    async saveSupplierPlantCap() {
+    async saveSupplierPlantCap(type) {
       try {
         await this.validateForm()
 
@@ -204,7 +218,7 @@ export default {
         })
         
         if (res.code == 200) {
-          iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+          if (type !== "submit") iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
           this.getSupplierPlantCaps()
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)

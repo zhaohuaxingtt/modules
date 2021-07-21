@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-02-24 09:42:07
- * @LastEditTime: 2021-06-21 21:03:30
+ * @LastEditTime: 2021-07-13 18:47:34
  * @LastEditors: Please set LastEditors
  * @Description: 零件签收-table组件。
  * @FilePath: \front-supplier\src\views\rfqManageMent\workingRfq\components\tableList\index.vue
@@ -75,7 +75,7 @@
                       <span v-else>{{scope.row[itemss.props]}}</span>
                     </template>
                     <template v-else-if='itemss.type == "input"'>
-                      <iInput v-model="scope.row[itemss.props]" v-if='!notEdit' @input="handleInput($event, scope.row, items.props)"></iInput>
+                      <iInput v-model="scope.row[itemss.props]" v-if='!notEdit' @input="handleInput($event, scope.row, itemss.props, itemss)"></iInput>
                       <span v-else>{{scope.row[itemss.props]}}</span>
                     </template>
                     <template v-else>{{scope.row[itemss.props]}}</template>
@@ -87,12 +87,12 @@
         <template v-if='!items.list' slot-scope="scope">
           <template v-if='items.type == "select"'>
             <iSelect v-model="scope.row[items.props]" v-if='!notEdit'>
-                <el-option :value="options.value" v-for='(options,optionIndex) in items.options' :key='optionIndex' :label="options.name"></el-option>
+                <el-option :value="options.value" v-for='(options,optionIndex) in items.options' :key='optionIndex' :label="options.name || options.label"></el-option>
             </iSelect>
             <span v-else>{{scope.row[items.props]}}</span>  
           </template>
           <template v-else-if='items.type == "input"'>
-            <iInput v-model="scope.row[items.props]" v-if='!notEdit' @input="handleInput($event, scope.row, items.props)"></iInput>
+            <iInput v-model="scope.row[items.props]" v-if='!notEdit' @input="handleInput($event, scope.row, items.props, items)"></iInput>
             <span v-else>{{scope.row[items.props]}}</span>
           </template>
           <template v-else-if='items.type == "inputRate"'>
@@ -102,10 +102,10 @@
             <span v-else>{{scope.row[items.props]}}</span>
           </template>
           <template v-else>
-            <span v-if="items.type === 'inputRate'">{{scope.row[items.props]}}{{ (scope.row[items.props] == null || scope.row[items.props] == "") && scope.row[items.props] !== 0  ? '' : '%' }}</span>
-            <span v-else>{{scope.row[items.props]}}</span>
+            <span v-if="items.type === 'inputRate' && !notEdit">{{scope.row[items.props]}}{{ (scope.row[items.props] == null || scope.row[items.props] == "") && scope.row[items.props] !== 0  ? '' : '%' }}</span>
+            <span v-else>{{ typeof filterProps[items.props] === "function" ? filterProps[items.props](scope.row[items.props]) : scope.row[items.props] }}</span>
           </template>
-          </template>
+        </template>
       </el-table-column>
     </template>
   </el-table>
@@ -129,7 +129,11 @@ export default{
       default:''
     },
     indexKey:Boolean,
-    notEdit:Boolean
+    notEdit:Boolean,
+    filterProps: {
+      type: Object,
+      default: () => ({})
+    }
   },
   inject:['vm'],
   data(){
@@ -196,7 +200,10 @@ export default{
       this.$set(row, key, numberProcessor(value, 2))
       this.$emit("handleInputByRate", value, row, key)
     },
-    handleInput(value, row, key) {
+    handleInput(value, row, key, column) {
+      if (column.type === "input" && column.inputType === "decimal") {
+        this.$set(row, key, numberProcessor(value, 4))
+      }
       this.$emit("handleInput", value, row, key)
     }
   }

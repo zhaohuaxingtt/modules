@@ -751,4 +751,22 @@ export default {
   'LK_SHENGCHANQIEHUANCHENGBEN': '生产切换成本（RMB/PC.）', // 生产切换成本（RMB/PC.）
   'LK_ZONGZHIZAOCHENGBENRMBPC': '总制造成本（RMB/PC.）', // 总制造成本（RMB/PC.）
   'LK_MUKUAIJINERMBBLOCK': '模块金额（RMB/block）', // 模块金额（RMB/block）
+  'LK_UPLOADBJ': '上传报价', //上传报价
+  'LK_SHIFOUSHANGQIDAZHONGZHUANYONGSHEBEIFEI': '是否上汽大众专用设备费', // 是否上汽大众专用设备费
+  'LK_BAOJIABEIZHU': '报价备注', // 报价备注
+  'LK_BAOJIAFUJIAN': '报价附件', // 报价附件
+  'LK_SHANGCHUANSHIXUANZHUANZHIZHENGCHANGFANGXIANG': '上传时文件请旋转至正常方向后上传', // 上传时文件请旋转至正常方向后上传
+  'KUOCHANNENGJIHUA': '扩产能计划',//扩产能计划
+  'CAP_EATCHANNENGTIAN': 'E./AT产能/天',//E./AT产能/天
+  'CAP_CHANNENGZHOU': 'E./AT产能/周',//E./AT产能/周
+  'CAP_CHANNENGNIAN': 'E./AT产能/年',//E./AT产能/年
+  'LK_CAOZUOCHENGGONG': '操作成功',//操作成功
+  'QINGTIANXIEWANZHENGYUANCAILIAOSANJIAN': '请填写完整原材料散件', // 请填写完整原材料散件
+  'QINGTIANXIEWANZHENGYUANCAILIAOSANJIANCHENGBEN': '请填写完整原材料散件成本', // 请填写完整原材料散件成本
+  'QINGTIANXIEWANZHENGZHIZAOCHENGBEN': '请填写完整制造成本', // 请填写完整制造成本
+  'QINGTIANXIEWANZHENGBAOFEICHENGBEN': '请填写完整报废成本', // 请填写完整报废成本
+  'QINGTIANXIEWANZHENGGUANLIFEI': '请填写完整管理费', // 请填写完整管理费
+  'QINGTIANXIEWANZHENLIRUN': '请填写完整利润', // 请填写完整利润
+  'LK_FEIZUIHOUYIHANGJIEZHIZHOUBUNENGWEIKONG': '非最后一行截至周不能为空', // 非最后一行截至周不能为空
+  'LK_BUNENGXIAOYU': '不能小于', // 不能小于
 }

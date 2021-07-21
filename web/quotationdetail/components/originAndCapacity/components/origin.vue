@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-22 15:11:58
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-10 18:19:52
+ * @LastEditTime: 2021-07-12 19:46:27
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\originAndCapacity\components\origin.vue
 -->
@@ -77,7 +77,8 @@ export default {
         if (res.code == 200) {
           this.tableListData = [{
             ...res.data,
-            ...res.data.addressInfoVo
+            ...res.data.addressInfoVo,
+            id: res.data.id
           }]
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
@@ -91,7 +92,7 @@ export default {
     updateOrigin(data) {
       this.tableListData = [{ ...data, factoryAbbrName: data.factoryShortname, effectFlag: data.isActive }]
     },
-    saveSupplierPartAddLocation() {
+    saveSupplierPartAddLocation(type) {
       if (!this.tableListData[0]) return
 
       return saveSupplierPartAddLocation({
@@ -101,7 +102,7 @@ export default {
       })
         .then(res => {
           if (res.code == 200) {
-            iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+            if (type !== "submit") iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
             this.getSupplierPartLocation()
           } else {
             iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)

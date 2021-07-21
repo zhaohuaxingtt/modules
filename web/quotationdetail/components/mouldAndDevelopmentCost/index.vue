@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-27 17:24:16
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-19 21:58:38
+ * @LastEditTime: 2021-07-12 19:22:29
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\index.vue
 -->
@@ -39,7 +39,17 @@ export default {
       this.$refs.mould.getMouldFee()
       this.$refs.developmentCost.getDevFee()
     },
-    save() {
+    save(type) {
+      if (this.$refs.mould.tableListData.some(item => item.isShared == 1)) {
+        if (!this.$refs.mould.dataGroup.shareQuantity || this.$refs.mould.dataGroup.shareQuantity == 0)
+          return iMessage.warn("模具费用存在分摊数据，请填写一个大于0的分摊数量")
+      }
+
+      if (this.$refs.developmentCost.tableListData.some(item => item.isShared == 1)) {
+        if (!this.$refs.developmentCost.dataGroup.shareQuantity || this.$refs.developmentCost.dataGroup.shareQuantity == 0)
+          return iMessage.warn("开发费用存在分摊数据，请填写一个大于0的分摊数量")
+      }
+      
       return new Promise((r,j)=>{
       saveModuleDevFee({
         quotationId: this.partInfo.quotationId,
@@ -51,7 +61,7 @@ export default {
         moduleOtherFee: {
           itemType: 0,
           shareTotal: this.$refs.mould.dataGroup.shareInvestmentFee, // 金额 
-          shareQuantity: this.$refs.mould.dataGroup.shareQuantity, // 分摊数量
+          shareQuantity: this.$refs.mould.dataGroup.shareQuantity || "0", // 分摊数量
           shareAmount: this.$refs.mould.dataGroup.unitInvestmentCost, // 分摊金额
           totalPrice: this.$refs.mould.dataGroup.totalInvestmentCost // 总投资成本/开发费⽤
         },
@@ -59,7 +69,7 @@ export default {
         devOtherFee: {
           itemType: 1,
           shareTotal: this.$refs.developmentCost.dataGroup.shareDevFee, // 金额
-          shareQuantity: this.$refs.developmentCost.dataGroup.shareQuantity, // 分摊数量
+          shareQuantity: this.$refs.developmentCost.dataGroup.shareQuantity || "0", // 分摊数量
           shareAmount: this.$refs.developmentCost.dataGroup.unitPrice, // 分摊金额 
           totalPrice: this.$refs.developmentCost.dataGroup.devFee  // 总投资成本/开发费⽤
         },
@@ -67,7 +77,7 @@ export default {
       .then(res => {
         if (res.code == 200) {
           r()
-          iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+          if (type !== "submit") iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
           this.init()
         } else {
           j()

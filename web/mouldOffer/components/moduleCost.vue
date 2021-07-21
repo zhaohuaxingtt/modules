@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 15:20:44
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-23 20:57:56
+ * @LastEditTime: 2021-07-14 11:46:55
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\mouldOffer\components\moduleCost.vue
 -->
@@ -280,6 +280,7 @@ export default {
       formData.append("file", content.file)
       formData.append("round", this.partInfo.currentRounds)
       formData.append('supplierId',this.supplierId)
+      formData.append('rfqId',this.partInfo.rfqId)
       uploadModuleCbd(formData)
         .then(res => {
           this.uploadSuccess(res, content.file)
