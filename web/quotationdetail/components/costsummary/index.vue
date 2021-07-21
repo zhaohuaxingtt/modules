@@ -1,8 +1,8 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-07-20 16:01:57
- * @LastEditors: Luoshuang
+ * @LastEditTime: 2021-07-21 10:57:25
+ * @LastEditors: Please set LastEditors
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
                   2）用户点击“保存”按钮，则保存当前页面已经编辑和输入的所有信息
@@ -182,7 +182,6 @@ import {downloadFile, downloadUdFile} from '@/api/file'
 import {selectDictByKeyss} from '@/api/dictionary'
 import quotationAnalysis from './components/quotationAnalysis'
 import {partProjTypes} from '@/config'
-import {cloneDeep} from 'lodash'
 
 export default{
   components:{persentComponents,tableTemlate,iButton,quotationAnalysis},
@@ -773,7 +772,7 @@ export default{
         // sendData.partType = this.partInfo.partType
         // sendData.partProjectType = this.partInfo.partProjectType
 
-        postCostSummary(this.translateDataForServerce(form)).then(res=>{
+        postCostSummary(form).then(res=>{
           if(res.code == 200){
             r()
             if (type !== "submit") iMessage.success('操作成功')
@@ -826,7 +825,7 @@ export default{
             const data = await this.getBzfreeAndYunshuFree();
             this.packAndShipFee = data
             this.allTableData = this.translateDataForRender(res.data)
-            this.topTableData = this.translateDataTopData(cloneDeep(this.allTableData), data)
+            this.topTableData = this.translateDataTopData(this.allTableData, data)
             this.$refs.components.partsQuotationss(this.partInfo.rfqId,this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId,this.partInfo.round,this.allTableData.level)
             // this.allpagefrom.quotationId,
             this.findFiles()
@@ -877,9 +876,9 @@ export default{
       return new Promise((r,j)=>{
         const params = {
           ...this.packAndShipFee,
-          packageCost: this.topTableData.tableData[0]?.packageCost,
-          transportCost: this.topTableData.tableData[0]?.transportCost,
-          operateCost: this.topTableData.tableData[0]?.operateCost,
+          packageCost: this.topTableData.packageCost,
+          transportCost: this.topTableData.transportCost,
+          operateCost: this.topTableData.operateCost,
         }
         savePackageTransport(params).then(res => {
           if (res && res.result) {
