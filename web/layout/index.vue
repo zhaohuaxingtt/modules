@@ -15,10 +15,12 @@
       </template>
     </leftLayout>
     <div class="app-content" :class="{ keepAlive: $route.meta.keepAlive }">
-      <keep-alive>
-        <router-view v-if="$route.meta.keepAlive" :key="$route.fullPath" />
-      </keep-alive>
-      <router-view v-if="!$route.meta.keepAlive" :key="$route.fullPath" />
+      <div class="clickhiddenMenu"  @click='clickhiddenMenu'>
+        <keep-alive>
+          <router-view v-if="$route.meta.keepAlive" :key="$route.fullPath" />
+        </keep-alive>
+        <router-view v-if="!$route.meta.keepAlive" :key="$route.fullPath" />
+      </div>
     </div>
   </div>
 </template>
@@ -65,6 +67,9 @@ export default {
     hideSideMenu() {
       this.$refs.leftLayout.hideSideMenu()
     },
+    clickhiddenMenu() {
+      this.$refs.leftLayout.hideSideMenu()
+    },
     getMenusMap(menus, parent, res) {
       res = res || {}
       for (let i = 0; i < menus.length; i++) {
@@ -94,6 +99,12 @@ export default {
     padding-top: 60px;
     height: 100%;
     width: 100%;
+    position: absolute;
+    .clickhiddenMenu{
+      height: 100%;
+      width: 100%;
+      position: relative;
+    }
   }
 }
 </style>
