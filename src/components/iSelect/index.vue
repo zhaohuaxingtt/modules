@@ -1,10 +1,10 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-02-20 14:35:10
- * @LastEditTime: 2021-04-21 21:41:58
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-07-23 10:00:50
+ * @LastEditors: 舒杰
  * @Description: In User Settings Edit
- * @FilePath: \rise\src\components\iSelect\index.vue
+ * @FilePath: \front-modules\src\components\iSelect\index.vue
 -->
 <script>
 import {Select} from 'element-ui' 
@@ -23,7 +23,7 @@ export default{
 </script>
 <style lang='scss' scoped>
   .el-select{
-    height: $input-height;
+    min-height: $input-height;
     width: 100%;
     ::v-deep .el-input__inner{
       @include input_inner;
