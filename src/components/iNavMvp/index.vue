@@ -1,7 +1,7 @@
 <!--
 * @author:shujie
 * @Date: 2021-2-25 16:13:25
- * @LastEditors: Please set LastEditors
+ * @LastEditors: 舒杰
 * @Description: mvp顶部导航栏
  -->
 <template>
@@ -120,14 +120,16 @@
 			/**
 			 * @parmars
 			*/
-			change(item) {
-				this.$emit('change',item)
-				this.activeIndex = item.value - 1
-				if(this.routerPage){
-					this.$router.push({
-						path:item.url,
-						query:this.query
-					})
+			change(item,index) {
+				if(this.activeIndex!=index){
+					this.$emit('change',item)
+					this.activeIndex = item.value - 1
+					if(this.routerPage){
+						this.$router.push({
+							path:item.url,
+							query:this.query
+						})
+					}
 				}
 			},
 			clickMessage(item, e) {
