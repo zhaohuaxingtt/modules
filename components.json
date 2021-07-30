@@ -25,5 +25,6 @@
   "i-download": "./src/components/iDownload/index.js",
   "i-upload": "./src/components/iUpload/index.js",
   "i-dropdown": "./src/components/iDropdown/index.js",
-  "i-log": "./src/components/iLog/index.js"
+  "i-log": "./src/components/iLog/index.js",
+  "i-select-custom": "./src/components/iSelectCustom/index.js"
 }
