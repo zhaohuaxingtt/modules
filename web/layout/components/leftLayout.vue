@@ -212,11 +212,11 @@ export default {
     width: 100%;
 
     span {
-      height: 120px;
+      height: 90px;
       width: 100%;
       display: inline-block;
       text-align: center;
-      line-height: 120px;
+      line-height: 90px;
       background-color: $color-white;
       font-size: 32px;
       cursor: pointer;
