@@ -12,18 +12,18 @@
         class="flex-align-center header-col"
         v-for="(item, index) in data"
         :key="index"
-        :id="item.id"
-        :data-id="item.id"
+        :id="item[value]"
+        :data-id="item[value]"
       >
         <div><icon symbol class="icon" name="iconshunxubiaoqian" /></div>
-        <el-switch v-model="item.isHidden" active-color="#CDD4E2" inactive-color="#1660F1"></el-switch>
-        <div>{{ item.name }}</div>
+        <el-switch v-model="item[visiableKey]" active-color="#CDD4E2" inactive-color="#1660F1"></el-switch>
+        <div>{{ item[label] }}</div>
       </div>
     </div>
     <span slot="footer" class="dialog-footer">
       <i-button @click="handleSave">保存</i-button>
       <i-button @click="handleReset">重置</i-button>
-      <i-button @click="handleCancel">退出</i-button>
+      <!-- <i-button @click="handleCancel">退出</i-button> -->
     </span>
   </i-dialog>
 </template>
@@ -40,6 +40,24 @@ export default {
     icon
   },
   props: {
+    visiableKey: {
+      type: String,
+      default: function() {
+        return 'isHidden'
+      }
+    },
+    label: {
+      type: String,
+      default: function() {
+        return 'name'
+      }
+    },
+    value: {
+      type: String,
+      default: function() {
+        return 'id'
+      }
+    },
     data: {
       type: Array,
       default: function() {
@@ -74,14 +92,14 @@ export default {
     handleSave() {
       const newData = _.cloneDeep(this.newData)
       const hiddenMenus = this.data.filter(item => {
-        return item.isHidden
+        return item[this.visiableKey]
       })
       const hiddenMenusIds = hiddenMenus.map(menu => {
-        return menu.id
+        return menu[this.value]
       })
       newData.forEach(nd => {
-        if (hiddenMenusIds.includes(nd.id)) {
-          nd.isHidden = true
+        if (hiddenMenusIds.includes(nd[this.value])) {
+          nd[this.visiableKey] = true
         }
       })
       this.isShow = false
@@ -109,7 +127,7 @@ export default {
           const newData = []
           arr.forEach(a => {
             const obj = data.find(item => {
-              return parseInt(item.id) === parseInt(a)
+              return parseInt(item[this.value]) === parseInt(a)
             })
             newData.push(obj)
           })
