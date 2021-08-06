@@ -35,6 +35,8 @@ import iDownload from './components/iDownload'
 import iDropdown from './components/iDropdown'
 import iLog from './components/iLog'
 import iSelectCustom from './components/iSelectCustom'
+import iTableHeaderSorter from './components/iTableHeaderSorter'
+
 const components = [
   iMessage,
   iMessageBox,
@@ -62,7 +64,8 @@ const components = [
   iDownload,
   iDropdown,
   iLog,
-  iSelectCustom
+  iSelectCustom,
+  iTableHeaderSorter
 ]
 const install = function(Vue) {
   components.map(component => {
@@ -101,5 +104,6 @@ export {
   iDownload,
   iDropdown,
   iLog,
-  iSelectCustom
+  iSelectCustom,
+  iTableHeaderSorter
 }
