@@ -1,12 +1,12 @@
 <!--
 * @author:shujie
 * @Date: 2021-2-25 16:13:25
- * @LastEditors: 舒杰
+ * @LastEditors: Please set LastEditors
 * @Description: mvp顶部导航栏
  -->
 <template>
 	<div class="nav flex-align-center" :class="[center && 'justify-center',right && 'justify-right',{lev1:lev == 1, lev2:lev == 2}]">
-		<div v-for="(item,index) in list" :key="index" @click="change(item,index)">
+		<div v-for="(item,index) in navList" :key="index" @click="change(item,index)">
 			<span class="name" :class="index==activeIndex && 'active'">{{ lang ? language(item.key, item.name) : $t(item.key) }}</span>
 			<!-- <span class="circle" v-show="item.message>0">{{item.message}}</span> -->
 			<el-badge class="badge" :max="99" v-if="item.message" :value="item.message" @click.native="clickMessage(item, $event)"></el-badge>
@@ -17,6 +17,8 @@
 	/**
 	 * @example ./README.me
 	*/
+	import { cloneDeep } from "lodash"
+
 	export default {
 		name:'iNavMvp',
 		props: {
@@ -86,14 +88,21 @@
 			lang: {
 				type: Boolean,
 				default: false
+			},
+			routerParam: {
+				type: Boolean,
+				default: false
 			}
 		},
 		data() {
 			return {
 				activeIndex: 0,
+				navList: []
 			}
 		},
 		created() {
+			this.navList = cloneDeep(this.list)
+
 			//由于当前组件存在于业务组件中，他的选中只需要在加载的时候去路由上取值和当前的list对比即可
 			if(this.routerPage){
 				for (let i = 0, item; (item = this.list[i++]); ) {
@@ -107,13 +116,19 @@
 		watch: {
 			"$route.path"(nv) {
 				if(this.routerPage) {
-					for (let i = 0, item; (item = this.list[i++]); ) {
+					for (let i = 0, item; (item = this.navList[i++]); ) {
 						if (nv.indexOf(item.activePath) > -1) {
 							this.activeIndex = --i
 							break
 						}
 					}
 				}
+			},
+			list: {
+				handler(value) {
+					this.navList = cloneDeep(value)
+				},
+				deep: true
 			}
 		},
 		methods: {
@@ -122,12 +137,18 @@
 			*/
 			change(item,index) {
 				if(this.activeIndex!=index){
+					let oldIndex = this.activeIndex
 					this.$emit('change',item)
 					this.activeIndex = item.value - 1
+
+					if (this.routerParam) {
+						this.navList[oldIndex].query = this.$route.query
+					}
+
 					if(this.routerPage){
 						this.$router.push({
 							path:item.url,
-							query:this.query
+							query: this.navList[this.activeIndex].query ? this.navList[this.activeIndex].query : this.query
 						})
 					}
 				}

@@ -116,9 +116,15 @@ export default {
     margin-top: 22px;
     position: relative;
     text-align: right;
+    .rotate {
+      transform: rotate(180deg);
+      color: $color-blue;
+      position: absolute !important;
+      top: -16px !important;
+    }
     .icon{
       position: absolute;
-      top: -20px;
+      top: -26px;
       right: 0px;
       }
       button{
@@ -134,10 +140,10 @@ export default {
   top: 8px;
 }
 
-.rotate {
-  transform: rotate(180deg);
-  color: $color-blue;
-}
+// .rotate {
+//   transform: rotate(180deg);
+//   color: $color-blue;
+// }
 
 .icon {
   font-size: 20px;
