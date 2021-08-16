@@ -16,11 +16,7 @@
       @set-menu-modal-visible="setMenuModalVisible"
     >
       <template slot="menu">
-        <sideMenu
-          :side-menus="sideMenus"
-          :menu-map="menuMap"
-          @hide-side-menu="hideSideMenu"
-        />
+        <sideMenu :side-menus="sideMenus" :menu-map="menuMap" @hide-side-menu="hideSideMenu" />
       </template>
     </leftLayout>
     <div class="app-content" :class="{ keepAlive: $route.meta.keepAlive }">
@@ -28,11 +24,7 @@
         <router-view v-if="$route.meta.keepAlive" :key="$route.fullPath" />
       </keep-alive>
       <router-view v-if="!$route.meta.keepAlive" :key="$route.fullPath" />
-      <div
-        v-if="menuModelVisible"
-        class="app-menu-model"
-        @click="hideSideMenu"
-      ></div>
+      <div v-if="menuModelVisible" class="app-menu-model" @click="hideSideMenu"></div>
     </div>
   </div>
 </template>
@@ -60,10 +52,7 @@ export default {
       menu2IconMap: {
         RISE_HOME: ['iconhomeweixuanzhong', 'iconhomexuanzhong'],
         RISE_WORKBENCH: ['iconworkbenchweixuanzhong', 'iconworkbenchxuanzhong'],
-        RISE_COMMON_FUNCTION: [
-          'iconcommonfunctionweixuanzhong',
-          'iconcommonfunctionxuanzhong'
-        ],
+        RISE_COMMON_FUNCTION: ['iconcommonfunctionweixuanzhong', 'iconcommonfunctionxuanzhong'],
         RISE_ADMIN: ['', '']
       },
       menuModelVisible: false
@@ -92,8 +81,8 @@ export default {
       item.key = item.id
       item.url = item.url || ''
       if (!item.parentId) {
-        item.icon = this.menu2IconMap[item.permissionKey][0]
-        item.activeIcon = this.menu2IconMap[item.permissionKey][1]
+        item.icon = (this.menu2IconMap[item.permissionKey] && this.menu2IconMap[item.permissionKey][0]) || ''
+        item.activeIcon = (this.menu2IconMap[item.permissionKey] && this.menu2IconMap[item.permissionKey][1]) || ''
       }
     })
     const menus_tree_all = arrayToTree(list, 'id', 'parentId', 'subMenus')
