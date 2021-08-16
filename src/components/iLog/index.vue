@@ -5,11 +5,11 @@
         <el-form row="1" :model="query" ref="queryForm">
           <el-form-item :label="'操作类型'">
             <el-select v-model="query.type" filterable placeholder="请选择（支持搜索）">
-              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
+              <el-option v-for="item in options" :key="item.code" :label="item.name" :value="item.code"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item :label="'操作人'">
-            <i-input :placeholder="'请输入'" v-model="query.createBy"/>
+            <i-input :placeholder="'请输入'" v-model="query.createBy" />
           </el-form-item>
         </el-form>
       </i-search>
@@ -36,7 +36,7 @@ import iSearch from '../iSearch'
 import iInput from '../iInput'
 
 export default {
-  components: {iDialog, iSearch, iInput},
+  components: { iDialog, iSearch, iInput },
   props: {
     bizId: {
       type: Number,
@@ -101,7 +101,20 @@ export default {
       }
     },
     handleOpen() {
+      this.getOptions()
       this.getList()
+    },
+    getOptions() {
+      const http = new XMLHttpRequest()
+      const url = `/baseInfo/web/selectDictByKeys?keys=LOG_TYPE`
+      http.open('GET', url, true)
+      http.setRequestHeader('content-type', 'application/json')
+      http.onreadystatechange = () => {
+        if (http.readyState === 4) {
+          this.options = JSON.parse(http.responseText).data?.LOG_TYPE || []
+        }
+      }
+      http.send()
     },
     getList() {
       console.log('bizId', this.bizId)
@@ -114,7 +127,7 @@ export default {
           this.tableData = JSON.parse(http.responseText)
         }
       }
-      this.query.bizId = this.bizId;
+      this.query.bizId = this.bizId
       const sendData = {
         extendFields: this.query
       }
