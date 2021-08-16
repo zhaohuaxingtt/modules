@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-07-21 17:04:56
+ * @LastEditTime: 2021-08-16 14:48:58
  * @LastEditors: Please set LastEditors
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
@@ -752,7 +752,7 @@ export default{
           } : undefined,
           partType: this.partInfo.partType,
           quotationId: this.partInfo.quotationId,
-          startProductDate: sendData.startProductDate,
+          startProductDate: this.allTableData.startProductDate,
         }
 
         if (form.cbdLevel == 2) {
@@ -762,18 +762,6 @@ export default{
         if (form.cbdLevel == 3) {
           if (!this.validateByL3(form)) return
         }
-
-        // console.log("sendData", sendData)
-        // sendData.makeCost = sendData.makeCost.records
-        // sendData.rawMaterial = sendData.rawMaterial.records
-        // sendData['sumDTO'] = this.topTableData.tableData[0]
-        // sendData['quotationId'] = this.partInfo.quotationId
-        // sendData['cbdLevel'] = this.allTableData.level
-        // sendData['sumVO'] = undefined
-        // sendData['level'] = undefined
-        // sendData.partType = this.partInfo.partType
-        // sendData.partProjectType = this.partInfo.partProjectType
-        
         postCostSummary(form).then(res=>{
           if(res.code == 200){
             r()
@@ -1102,9 +1090,6 @@ export default{
         data['level'] = this.allTableData && this.allTableData.level?this.allTableData.level:this.partInfo.currentCbdLevel
         // eslint-disable-next-line no-undef
         data['startProductDate'] = baseData.startProductDate?moment(new Date(baseData.startProductDate)).format('YYYY-MM-DD HH:mm:ss'):''
-
-        console.log("data", data)
-
         return data
       } catch (error) {
         console.warn(error)
