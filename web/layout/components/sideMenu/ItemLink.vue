@@ -11,43 +11,19 @@
       <icon
         symbol
         class="icon margin-right20 leftIconActive"
-        :name="
-          isActive
-            ? 'iconxunyuandingdianxuanzhong'
-            : 'iconxunyuandingdianweixuanzhong'
-        "
+        :name="isActive ? 'iconxunyuandingdianxuanzhong' : 'iconxunyuandingdianweixuanzhong'"
       />
       <span>{{ item.title }}</span>
-      <icon
-        symbol
-        class="icon floatright margin-top32"
-        v-if="!isActive"
-        name="iconmuluweixuanzhongshijiantou"
-      />
+      <icon symbol class="icon floatright margin-top32" v-if="!isActive" name="iconmuluweixuanzhongshijiantou" />
     </router-link>
-    <a
-      v-else
-      :href="item.url"
-      :target="item.target"
-      class="side-menu-link"
-      @click.native="handleRouterClick"
-    >
+    <a v-else :href="item.url" :target="item.target" class="side-menu-link" @click.native="handleRouterClick">
       <icon
         symbol
         class="icon margin-right20 leftIconActive"
-        :name="
-          isActive
-            ? 'iconxunyuandingdianxuanzhong'
-            : 'iconxunyuandingdianweixuanzhong'
-        "
+        :name="isActive ? 'iconxunyuandingdianxuanzhong' : 'iconxunyuandingdianweixuanzhong'"
       />
       <span>{{ item.title }}</span>
-      <icon
-        symbol
-        class="icon floatright margin-top32"
-        v-if="!isActive"
-        name="iconmuluweixuanzhongshijiantou"
-      />
+      <icon symbol class="icon floatright margin-top32" v-if="!isActive" name="iconmuluweixuanzhongshijiantou" />
     </a>
   </div>
 </template>
@@ -74,9 +50,6 @@ export default {
   computed: {
     isActive() {
       const curRoutePath = this.$route.path
-      if (!this.item.url) {
-        return false
-      }
       if (curRoutePath === this.item.url) {
         return true
       }
