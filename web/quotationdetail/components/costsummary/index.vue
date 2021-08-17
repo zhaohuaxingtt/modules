@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-08-16 14:48:58
+ * @LastEditTime: 2021-08-17 15:11:53
  * @LastEditors: Please set LastEditors
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
@@ -1135,8 +1135,8 @@ export default{
             fileType:this.allTableData.level - 1,
             partPrjCode:this.partInfo.fsNum || 'FS-21-0000015'
           }).then(res=>{
-            if(res.data && res.data.records){
-              this.tableDataCbd = res.data.records
+            if(res.code === '200' && res.data){
+              this.tableDataCbd = res.data
               this.tableDataCbdModel = res.data
               r(res.data)
             }

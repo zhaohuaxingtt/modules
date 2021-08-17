@@ -21,7 +21,7 @@
         </el-table-column>
         <el-table-column label="模块" prop="module" align="center"></el-table-column>
         <el-table-column label="操作类型" prop="typeName" align="center"></el-table-column>
-        <el-table-column label="操作人" prop="createBy" align="center"></el-table-column>
+        <el-table-column label="操作人" prop="creator" align="center"></el-table-column>
         <el-table-column label="请求时间" prop="rqTime" align="center"></el-table-column>
         <el-table-column label="响应时间" prop="respTime" align="center"></el-table-column>
         <el-table-column label="结果" prop="result" align="center"></el-table-column>

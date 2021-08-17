@@ -12,14 +12,29 @@
       <pInput v-model="search" :placeholder="$t('search') | capitalizeFilter" />
     </div>
     <div class="right">
-      <i-user-setting :userInfo="userInfo" :menus="menus"></i-user-setting>
-      <div class="language" @click="handleChangeLang">
-        <icon
-          symbol
-          v-if="lang === 'zh'"
+      <div class="user">
+        <el-avatar
           class="icon"
-          name="iconzhongyingwenzhuanhuanzhong"
-        />
+          src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3729239676,1542549068&fm=26&gp=0.jpg"
+        ></el-avatar>
+        <div class="info">
+          <p class="name">{{ userInfo.nameZh || 'admin' }}</p>
+          <p class="dept">CSP</p>
+        </div>
+      </div>
+      <div class="setting">
+        <el-dropdown size="small" @command="loginOut">
+          <span>
+            <icon symbol class="icon" name="iconSetting" />
+            <span>{{ $t('setting') | capitalizeFilter }}</span>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item icon="el-icon-switch-button">{{ $t('LK_TUICHUDENGLU') }}</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div>
+      <div class="language" @click="handleChangeLang">
+        <icon symbol v-if="lang === 'zh'" class="icon" name="iconzhongyingwenzhuanhuanzhong" />
         <icon symbol v-else class="icon" name="iconzhongyingwenzhuanhuanying" />
       </div>
       <iMailTrigger />
@@ -47,9 +62,8 @@ import notify from '../message/notify'
 import filters from '@/utils/filters'
 import { getCountInMail } from '@/api/layout/topLayout'
 import { messageSocket } from '@/api/socket'
-import { removeToken, updataComponents } from '@/utils'
+import { removeToken, updataComponents } from '@/utils/index.js'
 import iMailTrigger from '../mail/trigger.vue'
-import iUserSetting from './userSetting.vue'
 import store from '@/store'
 export default {
   mixins: [filters],
@@ -58,16 +72,7 @@ export default {
     icon,
     drawer,
     notify,
-    iMailTrigger,
-    iUserSetting
-  },
-  props: {
-    menus: {
-      type: Array,
-      default: function() {
-        return []
-      }
-    }
+    iMailTrigger
   },
   data() {
     return {
@@ -98,7 +103,6 @@ export default {
     //this.getCountInMail();
     this.getMessageBySocket('1001')
   },
-
   beforeDestroy() {
     this.socketVm && this.socketVm.close()
   },
@@ -184,11 +188,9 @@ export default {
     },
     // 获取消息数目
     getCountInMail() {
-      getCountInMail({ receiverId: this.userInfo.id, inMailType: 5 }).then(
-        res => {
-          this.messageCount = res.data
-        }
-      )
+      getCountInMail({ receiverId: this.userInfo.id, inMailType: 5 }).then(res => {
+        this.messageCount = res.data
+      })
     },
     afterClear() {
       this.getCountInMail()
@@ -234,7 +236,7 @@ export default {
       line-height: 60px;
       display: flex;
       align-items: center;
-      cursor: pointer;
+
       .icon {
         width: 44px;
         height: 44px;
