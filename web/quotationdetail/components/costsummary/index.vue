@@ -21,7 +21,7 @@
     <!--------------------------------------------------------->
     <!----------------------百分比模块-------------------------->
     <!--------------------------------------------------------->
-    <persentComponents ref='components' :cbdlist='cbdlist' :quotationId='partInfo.quotationId' :tableData='topTableData' :disabled='disabled' :allTableData='allTableData' :partType="partInfo.partType" :partProjectType="partInfo.partProjectType"></persentComponents>
+    <persentComponents ref='components' :cbdlist='cbdlist' :isSteel="isSteel" :quotationId='partInfo.quotationId' :tableData='topTableData' :disabled='disabled' :allTableData='allTableData' :partType="partInfo.partType" :partProjectType="partInfo.partProjectType"></persentComponents>
     <!--------------------------------------------------------->
     <!----------------------2.1 原材料/散件--------------------->
     <!--------------------------------------------------------->
@@ -203,6 +203,10 @@ export default{
     disabled:{
       type:Boolean,
       default:false
+    },
+    isSteel: {
+      type: Boolean,
+      default: false
     }
   },
   data(){
@@ -306,7 +310,7 @@ export default{
     // eslint-disable-next-line no-undef
     ...Vuex.mapState({
       userInfo: state => state.permission.userInfo,
-    }),
+    })
   },
   methods:{    
     translateDicKeyCodeToName(list){
@@ -794,6 +798,7 @@ export default{
         this.allpagefrom.rfqId = this.partInfo.rfqId
         this.allpagefrom.quotationId = this.partInfo.quotationId
         this.translateCbdList(this.partInfo.cbdLevel)
+
         this.getCostSummary()
       }
     },
@@ -1104,9 +1109,14 @@ export default{
         })
 
         data['tableData'].push(a)
-        const total = getAallPrice(this.Aprice,a)
-        data['tableData'][0]['totalPrice'] = total
-        data['persent'] = getPersent(total,this.Aprice,a)
+        if (!this.isSteel) {
+          const total = getAallPrice(this.Aprice,a)
+          data['tableData'][0]['totalPrice'] = total
+          data['persent'] = getPersent(total,this.Aprice,a)
+        } else {
+          data['persent'] = getPersent(data['tableData'][0]['totalPrice'],this.Aprice,a)
+        }
+
         console.log("data", data)
         return data
       } catch (error) {
