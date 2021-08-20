@@ -30,8 +30,7 @@
         <iButton @click="rejectPrice">拒绝报价</iButton>
       </div>
       <div class="floatright" v-else>
-        
-        <iButton v-if="!forceDisabled && disabled" @click="handleAgentQutation">{{ $t("LK_DAIGONGYINGSHANGBAOJIA") }}</iButton>
+        <iButton v-if="!forceDisabled && disabled  && !isSteel" @click="handleAgentQutation">{{ $t("LK_DAIGONGYINGSHANGBAOJIA") }}</iButton>
         <iButton v-if="!forceDisabled && !disabled" @click="handleCancelQutation">{{ $t("LK_QUXIAO") }}</iButton>
         <iButton v-if="!isQuoteBatchPrice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="quoteBatchPriceLoading" @click="handleQuoteBatchPrice">{{ $t("LK_YINYONGPILIANGJIAGE") }}</iButton>
         <iButton v-if="isQuoteBatchPrice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="cancelQuoteBatchPriceLoading" @click="handleCancelBatchPrice">{{ $t("LK_QUXIAOPILIANGJIAGE") }}</iButton>
@@ -59,7 +58,7 @@
     <div id="tabList" v-loading="tabLoading">
       <iTabsList class="margin-top20" type="card" v-model="currentTab" :before-leave="tabLeaveBefore" @tab-click="tabChange">
         <el-tab-pane v-for="(tab, $tabIndex) in trueTabs" :key="$tabIndex" :label="$t(tab.key)" :name="tab.name">
-          <component :ref="tab.name" :is="component" :partInfo="partInfo" v-for="(component, $componentIndex) in tab.components" :class="$componentIndex !== 0 ? 'margin-top20' : ''" :key="$componentIndex" :disabled="disabled || partInfo.isOriginprice" @changeReduceStatus="changeReduceStatus"/>
+          <component :ref="tab.name" :is="component" :partInfo="partInfo" v-for="(component, $componentIndex) in tab.components" :class="$componentIndex !== 0 ? 'margin-top20' : ''" :key="$componentIndex" :disabled="disabled || partInfo.isOriginprice" :isSteel="isSteel" @changeReduceStatus="changeReduceStatus"/>
         </el-tab-pane>
       </iTabsList>
     </div>
@@ -185,6 +184,9 @@ export default {
         return this.tabs.filter(item => tabNames.includes(item.name))
       }
       return this.tabs
+    },
+    isSteel() {
+      return this.partInfo.partProjectType === partProjTypes.GANGCAIPILIANGCAIGOU
     }
   },
   watch: {
@@ -205,6 +207,12 @@ export default {
           tabTipDom.style.opacity = "0"
         }
       })
+    },
+    isSteel(value) {
+      if (value) {
+        this.tabs = this.tabs.filter(item => item.name === "infoAndReq" || item.name === "costsummary" || item.name === "remarksAndAttachment")
+        this.disabled = true
+      }
     }
   },
   created() {
