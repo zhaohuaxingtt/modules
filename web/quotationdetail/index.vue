@@ -92,7 +92,7 @@ import reducePlan from "./components/reducePlan"
 import sampleDeliveryProgress from './components/sampleDeliveryProgress'
 import remarksAndAttachment from './components/remarksAndAttachment'
 
-import { getPartsQuotations, getStates, submitPartsQuotation, quoteBatchPrice, cancelQuoteBatchPrice } from "@/api/rfqManageMent/quotationdetail"
+import { getPartsQuotations, getStates, submitPartsQuotation, quoteBatchPrice, cancelQuoteBatchPrice, quotations } from "@/api/rfqManageMent/quotationdetail"
 import { cloneDeep } from "lodash"
 import {partProjTypes} from '@/config'
 
@@ -240,13 +240,46 @@ export default {
      * @param {*}
      * @return {*}
      */
-    sueReject(){},
+    sueReject() {
+      if(this.rejectRason == ''){
+        iMessage.warn('拒绝理由不能为空')
+        return
+      }
+      this.quotations(2)
+    },
     /**
      * @description: 接受报价按钮 
      * @param {*}
      * @return {*}
      */
-    agreePrice(){},
+    agreePrice() {
+      this.quotations(1)
+    },
+       /**
+     * @description: 签收拒绝 
+     * @param {*} type
+     * @return {*}
+     */    
+    quotations(type){
+      const sendData = {
+        acceptType:type,
+        rfqRoundInfoList:[{rounds:this.$route.query.round,rfqId:this.$route.query.rfqId}],
+        supplierId: this.supplierId || this.$route.query.supplierId
+      }
+      quotations({rfqAcceptQuotationScenes:sendData}).then(res=>{
+        if(res.code == 200){
+          this.getPartsQuotations()
+          iMessage.success('操作成功！')
+          this.dialogVisible = false
+        }else{
+          iMessage.error(res.desZh)
+          this.dialogVisible = false
+        }
+      }).catch(err=>{
+        iMessage.error(err.desZh)
+        console.warn(err)
+      })
+    },
     log() {},
     getPartsQuotations(type) {
       return new Promise(r=>{
@@ -331,9 +364,9 @@ export default {
             this.forceDisabled = true
           }
           if(res.data.quotationStateCode == 0){ //如果采购员是点击横岗过来的 则要看当前报价单的状态
-            if(this.$route.query.watingSupplier){
+            // if(this.$route.query.watingSupplier){
               this.watingSupplier = true
-            }
+            // }
           }else{
             if(this.$route.query.watingSupplier){
               this.watingSupplier = false
