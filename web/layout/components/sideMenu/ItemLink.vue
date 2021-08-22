@@ -16,7 +16,14 @@
       <span>{{ item.title }}</span>
       <icon symbol class="icon floatright margin-top32" v-if="!isActive" name="iconmuluweixuanzhongshijiantou" />
     </router-link>
-    <a v-else :href="item.url" :target="item.target" class="side-menu-link" @click.native="handleRouterClick">
+    <a
+      v-else
+      :href="item.url"
+      :class="{ active: isActive, disabled: !item.url }"
+      :target="item.target"
+      class="side-menu-link"
+      @click.stop="handleRouterClick"
+    >
       <icon
         symbol
         class="icon margin-right20 leftIconActive"
@@ -49,14 +56,35 @@ export default {
   },
   computed: {
     isActive() {
-      const curRoutePath = this.$route.path
-      if (curRoutePath === this.item.url) {
-        return true
+      const list = this.$route.matched
+      const url =
+        this.item.url?.match(/((?<=#).*(?=\?))|((?<=#).*)/g) && this.item.url?.match(/((?<=#).*(?=\?))|((?<=#).*)/g)[0]
+      for (let key in list) {
+        if (url === list[key].path) {
+          return true
+        }
       }
-      if (this.menuMap[curRoutePath]) {
-        return this.menuMap[curRoutePath].includes(this.item.url)
-      }
-      return false
+      return this.item.url.includes(this.$route.path) || this.item.url.includes(this.$route.redirectedFrom)
+      // const curRoutePath = this.$route.path
+      // const curRoutePath = location.hash.match(/((?<=#).*(?=\?))|((?<=#).*)/g)
+      //   ?.length
+      //   ? location.hash.match(/((?<=#).*(?=\?))|((?<=#).*)/g)[0]
+      //   : ''
+      // return this.item.url.includes(this.$route.path)
+      // console.log(this.item.url.includes(curRoutePath))
+      // if (!this.item.url) {
+      //   return false
+      // }
+      // if (this.item.url.includes(curRoutePath)) {
+      //   return true
+      // }
+      // if (curRoutePath === this.item.url) {
+      //   return true
+      // }
+      // if (this.menuMap[curRoutePath]) {
+      //   return this.menuMap[curRoutePath].includes(this.item.url)
+      // }
+      // return false
     }
   },
   methods: {
