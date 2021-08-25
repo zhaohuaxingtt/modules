@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-08-17 15:11:53
+ * @LastEditTime: 2021-08-19 14:14:29
  * @LastEditors: Please set LastEditors
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
@@ -21,7 +21,7 @@
     <!--------------------------------------------------------->
     <!----------------------百分比模块-------------------------->
     <!--------------------------------------------------------->
-    <persentComponents ref='components' :cbdlist='cbdlist' :quotationId='partInfo.quotationId' :tableData='topTableData' :disabled='disabled' :allTableData='allTableData' :partType="partInfo.partType" :partProjectType="partInfo.partProjectType"></persentComponents>
+    <persentComponents ref='components' :cbdlist='cbdlist' :isSteel="isSteel" :quotationId='partInfo.quotationId' :tableData='topTableData' :disabled='disabled' :allTableData='allTableData' :partType="partInfo.partType" :partProjectType="partInfo.partProjectType"></persentComponents>
     <!--------------------------------------------------------->
     <!----------------------2.1 原材料/散件--------------------->
     <!--------------------------------------------------------->
@@ -177,8 +177,8 @@ import tableTemlate from './components/tableTemlate'
 import {persentDatalist,titleYcl,titleCbzz,titlebfcb,titleglf,titleqtfy,titlelr,titleCBD,allpagefrom,needContactData,Aprice,getAallPrice,getPersent,cbdlist, titleYclByL3, titleCbzzByL3, titlebfcbByL3, titleglfByL3, titleqtfyByL3, titlelrByL3} from './components/data'
 import {iButton,iMessage} from 'rise'
 import {getCostSummary,packageTransport} from '@/api/rfqManageMent/rfqDetail'
-import {findFiles,postCostSummary,deleteFile,savePackageTransport,getCostSummaryDB,updateCostSummaryDB} from '@/api/rfqManageMent/quotationdetail'
-import {downloadFile, downloadUdFile} from '@/api/file'
+import {postCostSummary,savePackageTransport,getCostSummaryDB,updateCostSummaryDB} from '@/api/rfqManageMent/quotationdetail'
+import {getFiles,deleteFiles,downloadUdFile} from '@/api/file'
 import {selectDictByKeyss} from '@/api/dictionary'
 import quotationAnalysis from './components/quotationAnalysis'
 import {partProjTypes} from '@/config'
@@ -203,6 +203,10 @@ export default{
     disabled:{
       type:Boolean,
       default:false
+    },
+    isSteel: {
+      type: Boolean,
+      default: false
     }
   },
   data(){
@@ -245,11 +249,11 @@ export default{
         tableData:[]
       },
       tableDataCbd:[],
-      tableDataCbdModel:{},
       cbdSelect:{
         list:[]
       },
       dbDetailList: [],
+      tableDataCbdModel:{},
       titleYclByL3,
       titleYclByL3Status: false,
       titleCbzzByL3,
@@ -306,7 +310,7 @@ export default{
     // eslint-disable-next-line no-undef
     ...Vuex.mapState({
       userInfo: state => state.permission.userInfo,
-    }),
+    })
   },
   methods:{    
     translateDicKeyCodeToName(list){
@@ -366,11 +370,7 @@ export default{
      */    
     disabel(){
       if(this.cbdSelect.list.length == 0) return iMessage.warn('请选择cbd文件')
-      const fileIds = []
-      this.cbdSelect.list.forEach(res=>{
-        fileIds.push(res.id)
-      })
-      deleteFile({fileIds:fileIds}).then(res=>{
+      deleteFiles(this.cbdSelect.list.map(r=>r.id)).then(res=>{
         if(res.code == 200){
           iMessage.success('操作成功!')
           this.findFiles()
@@ -798,6 +798,7 @@ export default{
         this.allpagefrom.rfqId = this.partInfo.rfqId
         this.allpagefrom.quotationId = this.partInfo.quotationId
         this.translateCbdList(this.partInfo.cbdLevel)
+
         this.getCostSummary()
       }
     },
@@ -1108,9 +1109,14 @@ export default{
         })
 
         data['tableData'].push(a)
-        const total = getAallPrice(this.Aprice,a)
-        data['tableData'][0]['totalPrice'] = total
-        data['persent'] = getPersent(total,this.Aprice,a)
+        if (!this.isSteel) {
+          const total = getAallPrice(this.Aprice,a)
+          data['tableData'][0]['totalPrice'] = total
+          data['persent'] = getPersent(total,this.Aprice,a)
+        } else {
+          data['persent'] = getPersent(data['tableData'][0]['totalPrice'],this.Aprice,a)
+        }
+
         console.log("data", data)
         return data
       } catch (error) {
@@ -1127,17 +1133,15 @@ export default{
      */    
     findFiles(pageSize=10,currPage=1){
       return new Promise((r)=>{
-          findFiles({
-            rfqId:this.partInfo.rfqId,
-            round:this.partInfo.round || 1,
-            size:pageSize,
-            current:currPage,
+          getFiles({
+            hostId:this.partInfo.quotationId,
             fileType:this.allTableData.level - 1,
-            partPrjCode:this.partInfo.fsNum || 'FS-21-0000015'
+            page:pageSize,
+            currPage:currPage
           }).then(res=>{
-            if(res.code === '200' && res.data){
+            if(res.data){
               this.tableDataCbd = res.data
-              this.tableDataCbdModel = res.data
+              this.tableDataCbdModel = res
               r(res.data)
             }
         }).catch(err=>{

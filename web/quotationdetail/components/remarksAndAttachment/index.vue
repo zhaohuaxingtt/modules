@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { iCard, iButton, iEditor, iMessage } from 'rise'
+import { iCard, iButton, iEditor, iMessage, iPagination } from 'rise'
 import { tableTitle } from './data'
 import tableList from "../tableList"
 import { pageMixins } from "@/utils/pageMixins"
@@ -71,7 +71,7 @@ import { downloadFile, downloadUdFile } from "@/api/file"
 import { uploadFile, uploadUdFile } from "@/api/file/upload"
 
 export default {
-  components: { iCard, tableList, iButton, iEditor },
+  components: { iCard, tableList, iButton, iEditor, iPagination },
   mixins: [pageMixins, filters],
   props: {
     partInfo: {
@@ -154,7 +154,6 @@ export default {
       if (res.code != 200) {
         iMessage.error(`${ this.$i18n.locale === 'zh' ? res.desZh : res.desEn }`)
       } else {
-        this.fileList = []
         clearTimeout(this.timer)
         iMessage.success(`${ file.name } ${ this.$t('LK_SHANGCHUANCHENGGONG') }`)
         this.fileList.push({ id: res.data[0].id, fileName: res.data[0].name, filePath: res.data[0].path, fileSize: file.size })
@@ -183,8 +182,8 @@ export default {
       })
       .then(res => {
         if (res.code == 200) {
-          this.tableData = Array.isArray(res.data.records) ? res.data.records : []
-          this.page.totalCount = res.data.total || 0
+          this.tableData = Array.isArray(res.data) ? res.data : []
+          this.page.totalCount = res.total || 0
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
         }
@@ -195,22 +194,23 @@ export default {
     },
     // 关联附件
     uploadFileList() {
-      uploadFileList({
-        fileHistoryDTOS: this.fileList.map(item => ({
+      uploadFileList(
+        this.fileList.map(item => ({
           uploadId: item.id,
           fileName: item.fileName,
           filePath: item.filePath,
           fileSize: item.fileSize,
           fileType: "4",
-          quotationId: this.partInfo.quotationId,
+          hostId: this.partInfo.quotationId,
         }))
-      })
+      )
       .then(res => {
         const message = this.$i18n.locale === "zh" ? res.desZh : res.desEn
 
         if (res.code == 200) {
           iMessage.success(message)
           this.getFileHistory()
+          this.fileList = []
         } else {
           iMessage.error(message)
         }
@@ -223,9 +223,9 @@ export default {
     handleDelete() {
       if (this.multipleSelection.length < 1) return iMessage.warn(this.$t("LK_QINGXUANZHEXUYAOSHANCHUYOUJIAN"))
       this.deleteLoading = true
-      deleteFiles({
-        fileIds: this.multipleSelection.map(item => item.id)
-      })
+      deleteFiles(
+        this.multipleSelection.map(item => item.id)
+      )
       .then(res => {
         const message = this.$i18n.locale === "zh" ? res.desZh : res.desEn
 

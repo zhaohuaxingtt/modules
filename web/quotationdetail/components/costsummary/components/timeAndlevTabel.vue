@@ -53,7 +53,7 @@
     <!--------------------------------------------------------->
     <!----------------------表格百分比-------------------------->
     <!--------------------------------------------------------->
-    <tableList :tableTitle='tableTilel1' :notEdit='disabled ? true : (allTableData.level == 1 ? false : !allTableData.editFlag)' :tableData='tableData.tableData' class="margin-top10"></tableList>
+    <tableList :tableTitle='tableTilel1' :notEdit='disabled ? true : (allTableData.level == 1 ? false : !allTableData.editFlag)' :tableData='tableData.tableData' :isSteel="isSteel" class="margin-top10"></tableList>
     <persent v-if='!tableData.persent.every(items=>items == 0)' :persentList='tableData.persent' :realDataList='tableData.tableData'></persent>
   </iCard>
 </template>
@@ -93,6 +93,10 @@ export default{
     partProjectType:{
       type:String,
       default:'',
+    },
+    isSteel: {
+      type: Boolean,
+      default: false,
     }
   },
   inject:['vm'],

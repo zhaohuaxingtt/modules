@@ -7,7 +7,7 @@
  * @FilePath: \rise\src\layout\components\topLayout\input.vue
 -->
 <template>
-  <iInput class="search" :placeholder="placeholder" :value="value" @input="handleInput">
+  <iInput class="search" :placeholder="placeholder" v-model="keywords" @keyup.enter.native="handleSearch">
     <icon symbol class="icon" slot="prefix" name="iconsousudingbu" />
   </iInput>
 </template>
@@ -31,11 +31,29 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      keywords: ''
+    }
   },
   methods: {
-    handleInput(e) {
-      this.$emit('input', e)
+    handleSearch(e) {
+      if (this.keywords) {
+        const url = window.location.origin + '/portal/#' + '/search?q=' + this.keywords
+        this.openUrl(url)
+      }
+    },
+    openUrl(url, target) {
+      if (url.indexOf('http') === -1) {
+        url = process.env.VUE_APP_PUBLICPATH + url
+      }
+      target = target || '_blank'
+      const a = document.createElement('a')
+      a.setAttribute('href', url)
+      a.setAttribute('style', 'display:none')
+      a.setAttribute('target', target)
+      document.body.appendChild(a)
+      a.click()
+      a.parentNode.removeChild(a)
     }
   }
 }

@@ -9,9 +9,8 @@
     <div class="admin-menus">
       <div class="title flex-align-center">
         <icon symbol class="icon" name="iconSetting" />
-        <span class="margin-left10">{{
-          $t('topLayout.setting.personal') | capitalizeFilter
-        }}</span>
+        <!-- <span class="margin-left10">{{ $t('topLayout.setting.personal') | capitalizeFilter }}</span> -->
+        <span class="margin-left10">个人设置</span>
       </div>
       <div>
         <div
@@ -31,9 +30,8 @@
       <div v-if="menus_admin.length">
         <div class="title flex-align-center">
           <icon symbol class="icon" name="iconguanliyuanshezhi" />
-          <span class="margin-left10">{{
-            $t('topLayout.setting.admin') | capitalizeFilter
-          }}</span>
+          <!-- <span class="margin-left10">{{ $t('topLayout.setting.admin') | capitalizeFilter }}</span> -->
+          <span class="margin-left10">管理端</span>
         </div>
         <div>
           <div
@@ -43,7 +41,7 @@
             :class="{
               'flex-between-center-center': true,
               menu: true,
-              active: $route.path === menu.url,
+              active: menu.url.includes($route.path),
               disabled: !menu.url
             }"
           >
@@ -56,8 +54,7 @@
       <el-avatar
         class="icon"
         src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3729239676,1542549068&fm=26&gp=0.jpg"
-      >
-      </el-avatar>
+      ></el-avatar>
       <div class="info">
         <p class="name">{{ userInfo.nameZh || 'admin' }}</p>
         <p class="dept">CSP</p>
@@ -69,7 +66,7 @@
 <script>
 import { icon, iMessage } from 'rise'
 import filters from '@/utils/filters'
-import { removeToken } from '@/utils'
+import { removeToken } from '@/utils/index.js'
 export default {
   mixins: [filters],
   props: {
@@ -95,7 +92,7 @@ export default {
       active: false,
       menus_genaral: [
         {
-          title: _self.$t('LK_PROFILE'),
+          title: '个人信息',
           name: 'profile'
         },
         {
@@ -134,11 +131,8 @@ export default {
     handleRedirect(menu) {
       if (!menu.url) {
         iMessage.success('coming soon')
-      } else if (
-        menu?.url.indexOf('http') !== -1 ||
-        menu?.url.indexOf('https') !== -1
-      ) {
-        window.open(menu.url, '_blank')
+      } else if (menu?.url.indexOf('http') !== -1 || menu?.url.indexOf('https') !== -1) {
+        menu.target === '_blank' ? window.open(menu.url) : (location.href = menu.url)
       } else {
         if (this.$route.path !== menu.url) {
           this.$router.push(menu.url)
