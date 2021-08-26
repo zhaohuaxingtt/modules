@@ -1,7 +1,7 @@
 <!--
  * @Author: haojiang
  * @Date: 2021-02-25 16:34:49
- * @LastEditTime: 2021-08-25 17:53:06
+ * @LastEditTime: 2021-08-26 10:50:06
  * @LastEditors: Please set LastEditors
  * @Description: 通过selectDictByKeyss字典接口查询的下拉值。
  * @FilePath: \rise\src\components\iDicoptions\index.vue
@@ -22,7 +22,6 @@
       :label="items.value"
       v-for="(items, index) in options"
       :key="index"
-      style="max-width: 190px"
     ></el-option>
   </iSelect>
 </template>
@@ -50,7 +49,12 @@ export default {
     optionAll: {
       type: Boolean,
       default: true
-    }
+    },
+    // 是否开启语言国际化
+    lang: {
+      type: Boolean,
+      default: true
+    },
   },
   data() {
     return {
@@ -86,7 +90,12 @@ export default {
         this.optionKey,
       ];
       selectDictByKeyss(types).then((res) => {
-        this.options = res.data && res.data[this.optionKey];
+        const options = res.data && res.data[this.optionKey] || [];
+        this.options = options.map(o => {
+          o.value = o.value || o.name || o.nameEn
+          if (this.lang) o.value = this.$i18n.locale === 'zh' ? o.value : o.nameEn
+          return o
+        })
       });
     }
   }
