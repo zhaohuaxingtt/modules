@@ -1,146 +1,37 @@
 <template>
-  <div
-    class="i-table-custom"
-    :class="{
+  <div class="i-table-custom" :class="{
       'single-choise': singleChoice,
       'disable-children-selection': disableChildrenSelection,
       'i-table-custom-expand': treeExpand
-    }"
-    :style="{ minHeight: minHeight }"
-  >
-    <el-table
-      tooltip-effect="light"
-      :height="height"
-      :max-height="maxHeight"
-      :data="realTableData"
-      v-loading="loading"
-      :row-key="rowKey || 'uniqueId'"
-      :highlight-current-row="highlightCurrentRow"
-      :empty-text="$t('LK_ZANWUSHUJU')"
-      ref="theCustomTable"
-      :row-class-name="getRowClassNameDefault"
-      :row-style="getRowStyle"
-      :cell-class-name="getCellClassName"
-      @selection-change="handleSelectionChange"
-      @select="handleSelect"
-      @select-all="handleAllSelect"
-      @current-change="handleCurrentChange"
-      @cell-click="handleCellClick"
-      @sort-change="handleSortChange"
-      fit
-      :span-method="getSpanMethod"
-      :stripe="stripe"
-      @row-click="rowClick"
-    >
+    }" :style="{ minHeight: minHeight }">
+    <el-table tooltip-effect="light" :height="height" :max-height="maxHeight" :data="realTableData" v-loading="loading" :row-key="rowKey || 'uniqueId'" :highlight-current-row="highlightCurrentRow" :empty-text="$t('LK_ZANWUSHUJU')" ref="theCustomTable" :row-class-name="getRowClassNameDefault" :row-style="getRowStyle" :cell-class-name="getCellClassName" @selection-change="handleSelectionChange" @select="handleSelect" @select-all="handleAllSelect" @current-change="handleCurrentChange" @cell-click="handleCellClick" @sort-change="handleSortChange" fit :span-method="getSpanMethod" :stripe="stripe" @row-click="rowClick">
       <template v-for="(item, index) in columns">
-        <el-table-column
-          :key="index"
-          v-if="['selection', 'index'].includes(item.type)"
-          :reserve-selection="item.reserveSelection || false"
-          :type="item.type"
-          :label="item.i18n ? $t(item.i18n) : item.label"
-          :width="item.width || '50'"
-          :min-width="item.minWidth"
-          :align="item.align || 'center'"
-          :selectable="handleSelectable"
-        />
-        <el-table-column
-          :key="index"
-          v-else-if="['customSelection'].includes(item.type)"
-          reserve-selection
-          :type="item.type"
-          :label="item.i18n ? $t(item.i18n) : item.label"
-          :width="item.width || '50'"
-          :min-width="item.minWidth || '50'"
-          :align="item.align || 'center'"
-          :selectable="handleSelectable"
-        >
-          <template slot="header" slot-scope="scope">
+        <el-table-column :key="index" v-if="['selection', 'index'].includes(item.type)" :reserve-selection="item.reserveSelection || false" :type="item.type" :label="item.i18n ? $t(item.i18n) : item.label" :width="item.width || '50'" :min-width="item.minWidth" :align="item.align || 'center'" :selectable="handleSelectable" />
+        <el-table-column :key="index" v-else-if="['customSelection'].includes(item.type)" reserve-selection :type="item.type" :label="item.i18n ? $t(item.i18n) : item.label" :width="item.width || '50'" :min-width="item.minWidth || '50'" :align="item.align || 'center'" :selectable="handleSelectable">
+          <template slot="header">
             <el-checkbox v-model="checkedAll" :indeterminate="indeterminateAll" @change="handleCheckedAll" />
           </template>
           <template slot-scope="scope">
-            <el-checkbox
-              v-model="scope.row.checked"
-              :indeterminate="scope.row.isIndeterminate"
-              :disabled="scope.row.disabledChecked"
-              @change="val => handleCheckedRow(val, scope.row)"
-            ></el-checkbox>
+            <el-checkbox v-model="scope.row.checked" :indeterminate="scope.row.isIndeterminate" :disabled="scope.row.disabledChecked" @change="val => handleCheckedRow(val, scope.row)"></el-checkbox>
           </template>
         </el-table-column>
-        <el-table-column
-          :key="index"
-          v-else-if="['fullIndex'].includes(item.type)"
-          :type="item.type"
-          :label="item.i18n ? $t(item.i18n) : item.label"
-          :width="item.width || '50'"
-          :align="item.align || 'center'"
-          :selectable="handleSelectable"
-        >
+        <el-table-column :key="index" v-else-if="['fullIndex'].includes(item.type)" :type="item.type" :label="item.i18n ? $t(item.i18n) : item.label" :width="item.width || '50'" :align="item.align || 'center'" :selectable="handleSelectable">
           <template slot-scope="scope">
             {{ getFullIndex(scope.row) }}
           </template>
         </el-table-column>
-        <el-table-column
-          v-else
-          :render-header="item.headerRender"
-          :key="index"
-          :type="item.type"
-          :align="item.align || 'center'"
-          :header-align="item.headerAlign"
-          :show-overflow-tooltip="item.tooltip"
-          :prop="item.prop"
-          :label="item.i18n ? $t(item.i18n) : item.label"
-          :sortable="item.sortable"
-          :sort-method="item.sortMethod"
-          :sort-by="item.sortBy"
-          :sort-orders="item.sortOrders"
-          :width="item.width ? item.width.toString() : ''"
-          :min-width="item.minWidth ? item.minWidth.toString() : ''"
-          :fixed="item.fixed"
-        >
+        <el-table-column v-else :render-header="item.headerRender" :key="index" :type="item.type" :align="item.align || 'center'" :header-align="item.headerAlign" :show-overflow-tooltip="item.tooltip" :prop="item.prop" :label="item.i18n ? $t(item.i18n) : item.label" :sortable="item.sortable" :sort-method="item.sortMethod" :sort-by="item.sortBy" :sort-orders="item.sortOrders" :width="item.width ? item.width.toString() : ''" :min-width="item.minWidth ? item.minWidth.toString() : ''" :fixed="item.fixed">
           <template slot-scope="scope">
             <template v-if="item.children">
-              <el-table-column
-                v-for="(subItem, subIndex) of item.children"
-                :render-header="subItem.headerRender"
-                :key="subIndex"
-                :type="subItem.type"
-                :align="subItem.align || 'center'"
-                :header-align="subItem.headerAlign"
-                :show-overflow-tooltip="subItem.tooltip"
-                :prop="subItem.prop"
-                :label="subItem.i18n ? $t(subItem.i18n) : subItem.label"
-                :width="subItem.width ? subItem.width.toString() : ''"
-                :min-width="subItem.minWidth ? subItem.minWidth.toString() : ''"
-                :sortable="subItem.sortable"
-                :sort-method="item.sortMethod"
-                :sort-by="item.sortBy"
-                :sort-orders="item.sortOrders"
-              >
-                <i-table-column
-                  v-if="subItem.customRender || subItem.type === 'expanded'"
-                  :scope="scope"
-                  :column="subItem"
-                  :custom-render="subItem.customRender"
-                  :extra-data="extraData"
-                  :prop="subItem.prop"
-                  :child-num-visible="childNumVisible"
-                />
+              <el-table-column v-for="(subItem, subIndex) of item.children" :render-header="subItem.headerRender" :key="subIndex" :type="subItem.type" :align="subItem.align || 'center'" :header-align="subItem.headerAlign" :show-overflow-tooltip="subItem.tooltip" :prop="subItem.prop" :label="subItem.i18n ? $t(subItem.i18n) : subItem.label" :width="subItem.width ? subItem.width.toString() : ''" :min-width="subItem.minWidth ? subItem.minWidth.toString() : ''" :sortable="subItem.sortable" :sort-method="item.sortMethod" :sort-by="item.sortBy" :sort-orders="item.sortOrders">
+                <i-table-column v-if="subItem.customRender || subItem.type === 'expanded'" :scope="scope" :column="subItem" :custom-render="subItem.customRender" :extra-data="extraData" :prop="subItem.prop" :child-num-visible="childNumVisible" />
                 <span v-else>
                   {{ scope.row[subItem.prop] }}
                 </span>
               </el-table-column>
             </template>
             <div @click="handleEmit(item, scope.row)" v-else>
-              <i-table-column
-                v-if="item.customRender || item.type === 'expanded'"
-                :scope="scope"
-                :column="item"
-                :custom-render="item.customRender"
-                :extra-data="extraData"
-                :prop="item.prop"
-                :child-num-visible="childNumVisible"
-              />
+              <i-table-column v-if="item.customRender || item.type === 'expanded'" :scope="scope" :column="item" :custom-render="item.customRender" :extra-data="extraData" :prop="item.prop" :child-num-visible="childNumVisible" />
               <span v-else>
                 {{ scope.row[item.prop] }}
               </span>
