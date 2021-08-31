@@ -1,7 +1,7 @@
 <!--
  * @Author: ldh
  * @Date: 2021-05-28 22:43:53
- * @LastEditTime: 2021-08-30 14:20:46
+ * @LastEditTime: 2021-08-31 10:26:02
  * @LastEditors: zbin
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\src\components\iEditor\index.vue
@@ -168,11 +168,11 @@ export default {
     this.showMenu(this.showMenus);
   },
   watch: {
-    // value(value) {
-    //   if (validateValueType(this.valueType)) {
-    //     this.editor.txt[this.valueType.toLowerCase()](this.value);
-    //   }
-    // },
+    value(value) {
+      if (validateValueType(this.valueType)) {
+        this.editor.txt[this.valueType.toLowerCase()](this.value);
+      }
+    },
     disabled(status) {
       status ? this.disable() : this.enable();
     },
