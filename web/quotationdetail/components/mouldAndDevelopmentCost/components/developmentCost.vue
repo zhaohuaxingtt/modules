@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 00:21:17
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-08-25 17:36:50
+ * @LastEditTime: 2021-08-31 15:10:01
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\developmentCost.vue
 -->
@@ -147,10 +147,21 @@ export default {
       if (this.multipleSelection.length < 1) {
         iMessage.warn(this.$t('LK_QINGXUANZEXUYAOSHANCHUDEHANG'))
         return
-      }
-      this.tableListData = this.tableListData.filter(item => !this.multipleSelection.includes(item))
+      }else{
+         this.$confirm(
+            this.language('LK_TIPS_SHIFOUSHANCHUBEIXUANZHONGDEHANGXIANGMU','是否删除被选中的行项目？'),
+            this.language('LK_SHANCHU','删除'),
+            {
+                confirmButtonText: this.language('nominationLanguage.Yes','是'),
+                cancelButtonText: this.language('nominationLanguage.No','否'),
+            }).then(()=>{
+               this.tableListData = this.tableListData.filter(item => !this.multipleSelection.includes(item))
+                this.updateTotal()
+            }).catch(()=>{
 
-      this.updateTotal()
+            })
+      }
+     
     },
     handleInputByUnitPrice(val, row) {
       row.unitPrice = numberProcessor(val, 2)
