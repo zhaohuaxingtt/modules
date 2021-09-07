@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 00:21:17
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-07-07 11:41:45
+ * @LastEditTime: 2021-08-31 15:10:01
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\developmentCost.vue
 -->
@@ -21,6 +21,7 @@
             </iFormGroup>
           </div>
           <div v-if="!disabled" class="control">
+            <iButton v-if="isAeko" @click="save">{{language('LK_BAOCUN','保存')}}</iButton>
             <iButton @click="handleAdd">{{ $t('LK_TIANJIAHANG') }}</iButton>
             <iButton @click="handleDel">{{ $t('LK_SHANCHUHANG') }}</iButton>
           </div>
@@ -91,6 +92,10 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    isAeko:{
+      type:Boolean,
+      default:false
     }
   },
   filters: {
@@ -142,10 +147,21 @@ export default {
       if (this.multipleSelection.length < 1) {
         iMessage.warn(this.$t('LK_QINGXUANZEXUYAOSHANCHUDEHANG'))
         return
-      }
-      this.tableListData = this.tableListData.filter(item => !this.multipleSelection.includes(item))
+      }else{
+         this.$confirm(
+            this.language('LK_TIPS_SHIFOUSHANCHUBEIXUANZHONGDEHANGXIANGMU','是否删除被选中的行项目？'),
+            this.language('LK_SHANCHU','删除'),
+            {
+                confirmButtonText: this.language('nominationLanguage.Yes','是'),
+                cancelButtonText: this.language('nominationLanguage.No','否'),
+            }).then(()=>{
+               this.tableListData = this.tableListData.filter(item => !this.multipleSelection.includes(item))
+                this.updateTotal()
+            }).catch(()=>{
 
-      this.updateTotal()
+            })
+      }
+     
     },
     handleInputByUnitPrice(val, row) {
       row.unitPrice = numberProcessor(val, 2)
@@ -186,6 +202,11 @@ export default {
       this.$set(this.dataGroup, "devFee", devFee.toFixed(2))
       this.$set(this.dataGroup, "shareDevFee", shareDevFee.toFixed(2))
       this.$set(this.dataGroup, "unitPrice", +this.dataGroup.shareQuantity ? math.divide(shareDevFee, math.bignumber(this.dataGroup.shareQuantity)).toFixed(2) : "0")
+    },
+    // 保存
+    save(){
+      const { tableListData } = this;
+      this.$emit('save',tableListData);
     }
   }
 }

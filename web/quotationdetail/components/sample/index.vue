@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 14:26:53
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-07-13 11:32:48
+ * @LastEditTime: 2021-08-31 15:45:54
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\sample\index.vue
 -->
@@ -55,6 +55,10 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    isAeko:{
+      type:Boolean,
+      default:false,
     }
   },
   data() {
@@ -62,6 +66,11 @@ export default {
       loading: false,
       tableTitle,
       tableListData: []
+    }
+  },
+  created(){
+    if(this.isAeko){
+      this.tableTitle = this.tableTitle.filter((item)=>item.isAeko);
     }
   },
   methods: {

@@ -11,13 +11,13 @@
     <el-table-column v-if="selection" type="selection" align="center"></el-table-column>
     <el-table-column v-if="index" type="index" align="center" :label="indexLabel"></el-table-column>
     <template v-for="(item, $index) in tableTitle">
-      <el-table-column :key="$index" align="center" :label="item.key ? $t(item.key) : item.name" :prop="item.props" :show-overflow-tooltip="item.tooltip" :width="item.width">
+      <el-table-column :key="$index" align="center" :label="`${ item.seq ? item.seq + ' ' : '' }${ item.key ? (lang ? language(item.key, item.name) : $t(item.key)) : item.name }`" :prop="item.props" :show-overflow-tooltip="item.tooltip" :width="item.width" :render-header="item.renderHeader">
         <template v-if="$scopedSlots[item.props] || $slots[item.props]" v-slot="scope">
           <slot :name="item.props" v-bind="scope" ></slot>
           <!-- :\$index="scope.$index" :row="scope.row" -->
         </template>
         <template #header="scope">
-          <el-popover
+        <el-popover
             placement="top"
             trigger="hover"
             popper-class="tableTitleTip"
@@ -32,7 +32,6 @@
           </el-popover>
         </template>
       </el-table-column>
-      <slot></slot> <!-- 直接传入el-table-column -->
     </template>
   </el-table>
 </template>
@@ -72,6 +71,10 @@ export default {
     },
     cellClassName: {
       type: Function
+    },
+    lang: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {

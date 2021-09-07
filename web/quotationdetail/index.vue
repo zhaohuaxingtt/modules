@@ -30,8 +30,7 @@
         <iButton @click="rejectPrice">拒绝报价</iButton>
       </div>
       <div class="floatright" v-else>
-        
-        <iButton v-if="!forceDisabled && disabled" @click="handleAgentQutation">{{ $t("LK_DAIGONGYINGSHANGBAOJIA") }}</iButton>
+        <iButton v-if="!forceDisabled && disabled  && !isSteel" @click="handleAgentQutation">{{ $t("LK_DAIGONGYINGSHANGBAOJIA") }}</iButton>
         <iButton v-if="!forceDisabled && !disabled" @click="handleCancelQutation">{{ $t("LK_QUXIAO") }}</iButton>
         <iButton v-if="!isQuoteBatchPrice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="quoteBatchPriceLoading" @click="handleQuoteBatchPrice">{{ $t("LK_YINYONGPILIANGJIAGE") }}</iButton>
         <iButton v-if="isQuoteBatchPrice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="cancelQuoteBatchPriceLoading" @click="handleCancelBatchPrice">{{ $t("LK_QUXIAOPILIANGJIAGE") }}</iButton>
@@ -59,7 +58,7 @@
     <div id="tabList" v-loading="tabLoading">
       <iTabsList class="margin-top20" type="card" v-model="currentTab" :before-leave="tabLeaveBefore" @tab-click="tabChange">
         <el-tab-pane v-for="(tab, $tabIndex) in trueTabs" :key="$tabIndex" :label="$t(tab.key)" :name="tab.name">
-          <component :ref="tab.name" :is="component" :partInfo="partInfo" v-for="(component, $componentIndex) in tab.components" :class="$componentIndex !== 0 ? 'margin-top20' : ''" :key="$componentIndex" :disabled="disabled || partInfo.isOriginprice" @changeReduceStatus="changeReduceStatus"/>
+          <component :ref="tab.name" :is="component" :partInfo="partInfo" v-for="(component, $componentIndex) in tab.components" :class="$componentIndex !== 0 ? 'margin-top20' : ''" :key="$componentIndex" :disabled="disabled || partInfo.isOriginprice" :isSteel="isSteel" @changeReduceStatus="changeReduceStatus"/>
         </el-tab-pane>
       </iTabsList>
     </div>
@@ -93,7 +92,7 @@ import reducePlan from "./components/reducePlan"
 import sampleDeliveryProgress from './components/sampleDeliveryProgress'
 import remarksAndAttachment from './components/remarksAndAttachment'
 
-import { getPartsQuotations, getStates, submitPartsQuotation, quoteBatchPrice, cancelQuoteBatchPrice } from "@/api/rfqManageMent/quotationdetail"
+import { getPartsQuotations, getStates, submitPartsQuotation, quoteBatchPrice, cancelQuoteBatchPrice, quotations } from "@/api/rfqManageMent/quotationdetail"
 import { cloneDeep } from "lodash"
 import {partProjTypes} from '@/config'
 
@@ -185,6 +184,9 @@ export default {
         return this.tabs.filter(item => tabNames.includes(item.name))
       }
       return this.tabs
+    },
+    isSteel() {
+      return this.partInfo.partProjectType === partProjTypes.GANGCAIPILIANGCAIGOU
     }
   },
   watch: {
@@ -205,6 +207,12 @@ export default {
           tabTipDom.style.opacity = "0"
         }
       })
+    },
+    isSteel(value) {
+      if (value) {
+        this.tabs = this.tabs.filter(item => item.name === "infoAndReq" || item.name === "costsummary" || item.name === "remarksAndAttachment")
+        this.disabled = true
+      }
     }
   },
   created() {
@@ -232,13 +240,46 @@ export default {
      * @param {*}
      * @return {*}
      */
-    sueReject(){},
+    sueReject() {
+      if(this.rejectRason == ''){
+        iMessage.warn('拒绝理由不能为空')
+        return
+      }
+      this.quotations(2)
+    },
     /**
      * @description: 接受报价按钮 
      * @param {*}
      * @return {*}
      */
-    agreePrice(){},
+    agreePrice() {
+      this.quotations(1)
+    },
+       /**
+     * @description: 签收拒绝 
+     * @param {*} type
+     * @return {*}
+     */    
+    quotations(type){
+      const sendData = {
+        acceptType:type,
+        rfqRoundInfoList:[{rounds:this.$route.query.round,rfqId:this.$route.query.rfqId}],
+        supplierId: this.supplierId || this.$route.query.supplierId
+      }
+      quotations({rfqAcceptQuotationScenes:sendData}).then(res=>{
+        if(res.code == 200){
+          this.getPartsQuotations()
+          iMessage.success('操作成功！')
+          this.dialogVisible = false
+        }else{
+          iMessage.error(res.desZh)
+          this.dialogVisible = false
+        }
+      }).catch(err=>{
+        iMessage.error(err.desZh)
+        console.warn(err)
+      })
+    },
     log() {},
     getPartsQuotations(type) {
       return new Promise(r=>{
@@ -323,9 +364,9 @@ export default {
             this.forceDisabled = true
           }
           if(res.data.quotationStateCode == 0){ //如果采购员是点击横岗过来的 则要看当前报价单的状态
-            if(this.$route.query.watingSupplier){
+            // if(this.$route.query.watingSupplier){
               this.watingSupplier = true
-            }
+            // }
           }else{
             if(this.$route.query.watingSupplier){
               this.watingSupplier = false

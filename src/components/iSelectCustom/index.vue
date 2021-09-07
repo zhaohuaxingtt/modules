@@ -1,14 +1,6 @@
 <template>
   <div class="custom-select">
-    <el-popover
-      placement="bottom"
-      trigger="click"
-      @show="handleShow"
-      @hide="handleHide"
-      :popper-class="`${popoverClass} custom-select-popover`"
-      :disabled="disabled"
-      ref="selectPopover"
-    >
+    <el-popover placement="bottom" trigger="click" @show="handleShow" @hide="handleHide" :popper-class="`${popoverClass} custom-select-popover`" :disabled="disabled" ref="selectPopover">
       <div class="search-wrapper" v-if="typeof searchMethod === 'function'">
         <el-input v-model="query" placeholder="开始搜索吧..." @input="handleInputChange" ref="searchInput"></el-input>
       </div>
@@ -36,37 +28,24 @@
             <i class="el-icon-loading"></i>
           </div>
           <div v-else>
-            <div
-              v-for="(item, index) in originData"
-              :key="index"
-              @click="handleSelectItem(item)"
-              :class="{
+            <div v-for="(item, index) in originData" :key="index" @click="handleSelectItem(item)" :class="{
                 disabled:
                   multiple && multipleLimit
                     ? selectedData.length === multipleLimit || selectedData.length > multipleLimit
                     : false
-              }"
-            >
+              }">
               {{ item[label] }}
             </div>
           </div>
         </div>
       </div>
-      <el-input
-        :class="`${inputClass} custom-select-input`"
-        v-model="inputData"
-        slot="reference"
-        :disabled="disabled"
-        :readonly="true"
-        placeholder="请选择"
-        :title="inputData"
-        ref="selectInput"
-      ></el-input>
+      <el-input :class="`${inputClass} custom-select-input`" v-model="inputData" slot="reference" :disabled="disabled" :readonly="true" :placeholder="placeholder" :title="inputData" ref="selectInput"></el-input>
     </el-popover>
   </div>
 </template>
 
 <script>
+import _ from "lodash";
 export default {
   props: {
     values: {
@@ -131,7 +110,12 @@ export default {
         return false
       }
     },
-    searchMethod: Function
+    searchMethod: Function,
+    placeholder: {
+      type: String, default: () => {
+        return '请选择'
+      }
+    }
   },
   model: {
     prop: 'values',
@@ -169,10 +153,10 @@ export default {
         this.inputData =
           newValue instanceof Array
             ? newValue
-                .map(d => {
-                  return d[this.label]
-                })
-                .join(',')
+              .map(d => {
+                return d[this.label]
+              })
+              .join(',')
             : newValue && newValue[this.label]
       }
     }
@@ -274,10 +258,10 @@ export default {
         this.selectedData.length === 1
           ? this.selectedData[0][this.label]
           : this.selectedData
-              .map(d => {
-                return d[this.label]
-              })
-              .join(',')
+            .map(d => {
+              return d[this.label]
+            })
+            .join(',')
       this.$emit('change', this.multiple ? this.selectedData : this.selectedData[0])
       !this.multiple ? this.$refs['selectPopover'].doClose() : ''
     }

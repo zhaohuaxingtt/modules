@@ -56,6 +56,7 @@
 </template>
 <script>
 import { icon } from 'rise'
+import _ from 'lodash'
 export default {
   components: { icon },
   props: {
@@ -97,9 +98,12 @@ export default {
             this.showSideMenu()
           }
         } else if (activeMenu.url) {
-          if (this.$route.path !== activeMenu.url) {
-            this.$router.push({ path: activeMenu.url })
+          if (activeMenu.url.indexOf('http') !== -1 || activeMenu.url.indexOf('https') !== -1) {
+            activeMenu.target ? window.open(activeMenu.url) : (location.href = activeMenu.url)
           }
+          // if (this.$route.path !== activeMenu.url) {
+          //   this.$router.push({ path: activeMenu.url })
+          // }
           this.hideSideMenu()
         }
         this.activeIndex = index
@@ -112,22 +116,36 @@ export default {
     hideSideMenu() {
       this.menuVisible = false
     },
-    getActiveIndex(menus, rootIndex) {
-      const curRoutePath = this.$route.path
-      for (let i = 0; i < menus.length; i++) {
-        const menu = menus[i]
-
-        if (curRoutePath === menu.url) {
-          return rootIndex || i
+    getActiveIndex(menus) {
+      let index = -1
+      index = _.findIndex(menus, item => {
+        const url =
+          item.url?.match(/((?<=#).*(?=\?))|((?<=#).*)/g) && item.url?.match(/((?<=#).*(?=\?))|((?<=#).*)/g)[0]
+        if (url === this.$route.path) {
+          return item
         }
+      })
 
-        if (menu.subMenus) {
-          const s = this.getActiveIndex(menu.subMenus, rootIndex || i)
-          if (s !== undefined) {
-            return s
-          }
-        }
+      if (
+        process.env.VUE_APP_PUBLICPATH === '/portal' &&
+        this.$route.path !== '/index' &&
+        this.$route.meta.perm !== 'admin'
+      ) {
+        index = _.findIndex(menus, item => {
+          return item.permissionKey === 'RISE_COMMON_FUNCTION'
+        })
       }
+
+      if (
+        process.env.VUE_APP_PUBLICPATH !== '/portal' &&
+        process.env.VUE_APP_PUBLICPATH !== '/portal/contract' &&
+        process.env.VUE_APP_PUBLICPATH !== '/portal/meeting'
+      ) {
+        index = _.findIndex(menus, item => {
+          return item.permissionKey === 'RISE_WORKBENCH'
+        })
+      }
+      return index
     }
   }
 }
