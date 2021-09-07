@@ -34,7 +34,7 @@
 /* eslint-disable no-undef */
 
 import { iButton, iInput } from "rise"
-import tableList from "../../../../../quotationdetail/components/tableList"
+import tableList from "rise/web/quotationdetail/components/tableList"
 import { scrapCostTableTitle as tableTitle } from "../data"
 import { numberProcessor } from "@/utils"
 // import performanceInput from "../../../../components/performanceInput"
