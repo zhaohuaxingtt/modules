@@ -49,8 +49,9 @@ export default {
   },
   methods:{
     // 保存
-    save(){
-      this.$refs.sample.save();
+    async save(){
+      await this.$refs.sample.save();
+      await this.$emit('getBasicInfo');
     },
     init(){
       this.$refs.sample.init();
