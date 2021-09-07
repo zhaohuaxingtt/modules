@@ -73,8 +73,8 @@
 
 <script>
 import { iPage, iButton, icon, iCard, iFormGroup, iFormItem, iText, iTabsList,iMessage } from "rise"
-import logButton from "../../quotationdetail/components/logButton"
-import tableList from "../../quotationdetail/components/tableList"
+import logButton from "rise/web/quotationdetail/components/logButton"
+import tableList from "rise/web/quotationdetail/components/tableList"
 import aPriceChange from "./components/aPriceChange"
 import mouldInvestmentChange from "./components/mouldInvestmentChange"
 import developmentFee from "./components/developmentFee"

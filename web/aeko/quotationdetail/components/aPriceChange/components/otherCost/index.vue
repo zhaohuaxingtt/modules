@@ -25,7 +25,7 @@
 /* eslint-disable no-undef */
 
 import { iButton } from "rise"
-import tableList from "../../../../../quotationdetail/components/tableList"
+import tableList from "rise/web/quotationdetail/components/tableList"
 import { otherCostTableTitle as tableTitle } from "../data"
 
 export default {
