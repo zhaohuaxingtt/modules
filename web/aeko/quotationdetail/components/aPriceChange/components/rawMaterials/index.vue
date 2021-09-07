@@ -12,7 +12,7 @@
     <div class="body margin-top20">
       <el-table class="table" ref="table" :data="tableListData" :row-class-name="originRowClass" @selection-change="selectionChange">
         <el-table-column :label="language('YUANCAILIAOSANJIANCHENGBEN', '原材料/散件成本')" align="center">
-          <el-table-column type="selection" align="center" width="55"></el-table-column>
+          <el-table-column type="selection" align="center" width="40"></el-table-column>
           <el-table-column label="#" prop="index" align="center" width="55" ></el-table-column>
           <el-table-column :label="language('LEIXING', '类型')" align="center" width="132" >
             <template v-slot="scope">
@@ -310,7 +310,18 @@ export default {
       let newMaterialCostSum = 0
       let newMaterialCostSumByNotSvwAssignPriceParts = 0
 
+      const changeList = []
       this.tableListData.forEach(item => {
+        if (item.partCbdType == 2) {
+          if (this.originMap[item.frontOriginMaterialId ? item.frontOriginMaterialId : item.originMaterialId]) {
+            changeList.push(this.originMap[item.frontOriginMaterialId ? item.frontOriginMaterialId : item.originMaterialId])
+          }
+
+          changeList.push(item)
+        }
+      })
+
+      changeList.forEach(item => {
         if (item.partCbdType == 0 || item.partCbdType == 1) {
           originMaterialCostSum = math.add(originMaterialCostSum, math.bignumber(item.materialCost || 0))
 

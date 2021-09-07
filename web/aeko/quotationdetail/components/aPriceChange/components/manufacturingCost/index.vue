@@ -12,7 +12,7 @@
     <div class="body margin-top20">
       <el-table class="table" ref="table" :data="tableListData" :row-class-name="originRowClass" @selection-change="selectionChange">
         <el-table-column :label="language('ZHIZAOCHENGBEN', '制造成本')" align="center">
-          <el-table-column type="selection" align="center" width="55"></el-table-column>
+          <el-table-column type="selection" align="center" width="40"></el-table-column>
           <el-table-column label="#" prop="index" align="center" width="55" ></el-table-column>
           <el-table-column :label="language('ZHIZAOGONGXU', '制造工序')" align="center" width="136">
             <template v-slot="scope">
@@ -319,7 +319,18 @@ export default {
       const originTableListData = []
       const newTableListData = []
 
+      const changeList = []
       this.tableListData.forEach(item => {
+        if (item.partCbdType == 2) {
+          if (this.originMap[item.frontOriginProductionId ? item.frontOriginProductionId : item.originProductionId]) {
+            changeList.push(this.originMap[item.frontOriginProductionId ? item.frontOriginProductionId : item.originProductionId])
+          }
+
+          changeList.push(item)
+        }
+      })
+
+      changeList.forEach(item => {
         if (item.partCbdType == 0 || item.partCbdType == 1) {
           originTableListData.push(item)
         }
@@ -343,7 +354,18 @@ export default {
       const originTableListData = []
       const newTableListData = []
 
+      const changeList = []
       this.tableListData.forEach(item => {
+        if (item.partCbdType == 2) {
+          if (this.originMap[item.frontOriginProductionId ? item.frontOriginProductionId : item.originProductionId]) {
+            changeList.push(this.originMap[item.frontOriginProductionId ? item.frontOriginProductionId : item.originProductionId])
+          }
+
+          changeList.push(item)
+        }
+      })
+
+      changeList.forEach(item => {
         if (item.partCbdType == 0 || item.partCbdType == 1) {
           originTableListData.push(item)
         }
@@ -366,7 +388,19 @@ export default {
     computeMakeCost(originValue, originKey, row) {
       let originIndirectManufacturingAmount = 0
       let newIndirectManufacturingAmount = 0
+      
+      const changeList = []
       this.tableListData.forEach(item => {
+        if (item.partCbdType == 2) {
+          if (this.originMap[item.frontOriginProductionId ? item.frontOriginProductionId : item.originProductionId]) {
+            changeList.push(this.originMap[item.frontOriginProductionId ? item.frontOriginProductionId : item.originProductionId])
+          }
+
+          changeList.push(item)
+        }
+      })
+
+      changeList.forEach(item => {
         if (item.partCbdType == 0 || item.partCbdType == 1) {
           originIndirectManufacturingAmount = math.add(originIndirectManufacturingAmount, math.bignumber(item.indirectManufacturingAmount || 0))
         }
