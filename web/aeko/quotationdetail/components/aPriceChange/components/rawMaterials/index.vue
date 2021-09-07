@@ -310,7 +310,18 @@ export default {
       let newMaterialCostSum = 0
       let newMaterialCostSumByNotSvwAssignPriceParts = 0
 
+      const changeList = []
       this.tableListData.forEach(item => {
+        if (item.partCbdType == 2) {
+          if (this.originMap[item.frontOriginMaterialId ? item.frontOriginMaterialId : item.originMaterialId]) {
+            changeList.push(this.originMap[item.frontOriginMaterialId ? item.frontOriginMaterialId : item.originMaterialId])
+          }
+
+          changeList.push(item)
+        }
+      })
+
+      changeList.forEach(item => {
         if (item.partCbdType == 0 || item.partCbdType == 1) {
           originMaterialCostSum = math.add(originMaterialCostSum, math.bignumber(item.materialCost || 0))
 

@@ -319,7 +319,18 @@ export default {
       const originTableListData = []
       const newTableListData = []
 
+      const changeList = []
       this.tableListData.forEach(item => {
+        if (item.partCbdType == 2) {
+          if (this.originMap[item.frontOriginProductionId ? item.frontOriginProductionId : item.originProductionId]) {
+            changeList.push(this.originMap[item.frontOriginProductionId ? item.frontOriginProductionId : item.originProductionId])
+          }
+
+          changeList.push(item)
+        }
+      })
+
+      changeList.forEach(item => {
         if (item.partCbdType == 0 || item.partCbdType == 1) {
           originTableListData.push(item)
         }
@@ -343,7 +354,18 @@ export default {
       const originTableListData = []
       const newTableListData = []
 
+      const changeList = []
       this.tableListData.forEach(item => {
+        if (item.partCbdType == 2) {
+          if (this.originMap[item.frontOriginProductionId ? item.frontOriginProductionId : item.originProductionId]) {
+            changeList.push(this.originMap[item.frontOriginProductionId ? item.frontOriginProductionId : item.originProductionId])
+          }
+
+          changeList.push(item)
+        }
+      })
+
+      changeList.forEach(item => {
         if (item.partCbdType == 0 || item.partCbdType == 1) {
           originTableListData.push(item)
         }
@@ -366,7 +388,19 @@ export default {
     computeMakeCost(originValue, originKey, row) {
       let originIndirectManufacturingAmount = 0
       let newIndirectManufacturingAmount = 0
+      
+      const changeList = []
       this.tableListData.forEach(item => {
+        if (item.partCbdType == 2) {
+          if (this.originMap[item.frontOriginProductionId ? item.frontOriginProductionId : item.originProductionId]) {
+            changeList.push(this.originMap[item.frontOriginProductionId ? item.frontOriginProductionId : item.originProductionId])
+          }
+
+          changeList.push(item)
+        }
+      })
+
+      changeList.forEach(item => {
         if (item.partCbdType == 0 || item.partCbdType == 1) {
           originIndirectManufacturingAmount = math.add(originIndirectManufacturingAmount, math.bignumber(item.indirectManufacturingAmount || 0))
         }
