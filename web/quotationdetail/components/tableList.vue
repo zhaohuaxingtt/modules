@@ -1,14 +1,14 @@
 <!--
  * @Author: ldh
  * @Date: 2021-04-22 12:34:50
- * @LastEditors: ldh
- * @LastEditTime: 2021-04-30 10:40:09
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-09-07 15:58:35
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\tableList.vue
 -->
 <template>
   <el-table class="table" tooltip-effect="light" :height="height" :data="tableData" :cell-class-name="cellClassName" v-loading="tableLoading" @selection-change="handleSelectionChange" :empty-text="$t('LK_ZANWUSHUJU')">
-    <el-table-column v-if="selection" type="selection" align="center"></el-table-column>
+    <el-table-column v-if="selection" type="selection" width="40" align="center"></el-table-column>
     <el-table-column v-if="index" type="index" align="center" :label="indexLabel"></el-table-column>
     <template v-for="(item, $index) in tableTitle">
       <el-table-column :key="$index" align="center" :label="`${ item.seq ? item.seq + ' ' : '' }${ item.key ? (lang ? language(item.key, item.name) : $t(item.key)) : item.name }`" :prop="item.props" :show-overflow-tooltip="item.tooltip" :width="item.width" :render-header="item.renderHeader">
