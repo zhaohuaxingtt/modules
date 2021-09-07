@@ -105,7 +105,7 @@ export default {
       hasManualInput: false,
       apriceChange: "",
       moduleOptions: [],
-      modules: [""],
+      modules: [],
       moduleMap: {},
       rawMaterialsTableData: [],
       rawMaterialsSumData: {
@@ -414,7 +414,7 @@ export default {
       this.saveLoading = true
 
       saveAekoQuotationSummary({
-        hasManualInput: this.hasManualInput,
+        hasManualInput: this.hasManualInput || false,
         ...(this.hasManualInput ? 
           {
             apriceChange: this.apriceChange
