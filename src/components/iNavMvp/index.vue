@@ -102,7 +102,6 @@
 		},
 		created() {
 			this.navList = cloneDeep(this.list)
-
 			//由于当前组件存在于业务组件中，他的选中只需要在加载的时候去路由上取值和当前的list对比即可
 			if(this.routerPage){
 				for (let i = 0, item; (item = this.list[i++]); ) {
