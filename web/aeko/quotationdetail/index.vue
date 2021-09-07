@@ -229,7 +229,7 @@ export default {
       // token：由后端提供
 
       const data = {
-        partProjId:aekoPartInfo.partProjId,
+        partProjId:aekoPartInfo.partProjectId,
         tmRfqId:rfqId,
         ppSupplierId:supplierId,
         ppSupplierUserId:userInfo.id
@@ -243,7 +243,7 @@ export default {
       // partProjId    零件采购项目Id String
       // rfqId           rfqId  String
       await bnkSupplierToken({
-        partProjId:aekoPartInfo.partProjId,
+        partProjId:aekoPartInfo.partProjectId,
         rfqId,
       }).then((res)=>{
         this.tableLoading = false;
