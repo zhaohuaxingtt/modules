@@ -158,12 +158,13 @@ export default {
       await getQuotationInfo(quotationId).then(async (res)=>{
         const {code,data={}} = res;
         if(code == 200){
-          const {aekoPartInfo={},quotationPriceSummaryInfo={},supplierId='',rfqId='',fsnrGsnrNum='',source=''} = data;
+          const {aekoPartInfo={},quotationPriceSummaryInfo={},supplierId='',rfqId='',fsnrGsnrNum='',source='',round} = data;
           this.partInfo = {
             ...aekoPartInfo,
             quotationId,
             rfqId,
-            fsNum: fsnrGsnrNum
+            fsNum: fsnrGsnrNum,
+            round
             };
           this.tableListData=[{ ...quotationPriceSummaryInfo, source }];
           this.basicInfo = data;
