@@ -3,4 +3,5 @@
   "version": "1.4.0",
   "private": false,
   "main":"./lib/rise.min.js"
+  
 }
