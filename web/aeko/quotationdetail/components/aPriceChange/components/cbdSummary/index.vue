@@ -40,7 +40,9 @@ export default {
   watch: {
     tableListData: {
       handler(list) {
-        this.$set(list[0], "apriceChange", math.evaluate(`${ list[0].materialChange } + ${ list[0].makeCostChange } + ${ list[0].discardCostChange } + ${ list[0].manageFeeChange } + ${ list[0].otherFee } + ${ list[0].profitChange }`).toFixed(2))
+        const apriceChange = math.evaluate(`${ list[0].materialChange } + ${ list[0].makeCostChange } + ${ list[0].discardCostChange } + ${ list[0].manageFeeChange } + ${ list[0].otherFee } + ${ list[0].profitChange }`).toFixed(2)
+        this.$set(list[0], "apriceChange", apriceChange)
+        this.$emit("updateApriceChange", apriceChange)
       }, 
       deep: true
     }

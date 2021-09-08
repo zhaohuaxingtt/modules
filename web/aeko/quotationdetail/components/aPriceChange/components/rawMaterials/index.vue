@@ -103,7 +103,7 @@
 
 import { iButton, iInput, iSelect, iMessage, iMessageBox } from "rise"
 import iconFont from "../iconFont"
-import { uuidv4, originRowClass } from "../data"
+import { uuidv4, originRowClass, validateChangeKeysByRawMaterials as validateChangeKeys } from "../data"
 import { numberProcessor } from "@/utils"
 import { cloneDeep } from "lodash"
 
@@ -146,31 +146,7 @@ export default {
       originMap: {},
       originTableListData: [],
       multipleSelection: [],
-      validateNewDataChangeKeys: [
-        "partName",
-        "partNumber",
-        "supplierName",
-        "productionCountry",
-        "isSvwAssignPriceParts",
-        "quantityUnit",
-        "unitPrice",
-        "quantity",
-        "materialManageCostRate"
-      ],
-      validateOriginDataChangeKeys: [
-        "partName",
-        "partNumber",
-        "supplierName",
-        "productionCountry",
-        "isSvwAssignPriceParts",
-        "quantityUnit",
-        "unitPrice",
-        "quantity",
-        "directMaterialCost",
-        "materialManageCostRate",
-        "materialManageCost",
-        "materialCost"
-      ]
+      validateChangeKeys,
     }
   },
   filters: {
@@ -208,15 +184,27 @@ export default {
     handleAddNewData() {
       if (!this.multipleSelection.some(item => item.partCbdType == 0 || item.partCbdType == 1)) return iMessage.warn(this.language("QINGXUANZEZHISHAOYITIAOYUANLINGJIANSHUJUZUOWEITIANJIAYANGBAN", "请选择至少一条原零件数据作为添加样板"))
 
+      
+
       this.multipleSelection.forEach(item => {
-        if (item.partCbdType == 0 || item.partCbdType == 1) {
-          const data = cloneDeep(item)
-          data.id = ""
-          data.frontOriginMaterialId = item.id ? item.id : item.frontProductionId
-          data.index = ""
-          data.partCbdType = 2
-          this.tableListData.splice(this.tableListData.indexOf(item) + 1, 0, data)
+        const data = cloneDeep(item)
+        data.id = ""
+        data.index = ""
+        data.partCbdType = 2
+
+        if (item.partCbdType == 0) {
+          data.originMaterialId = item.id
         }
+
+        if (item.partCbdType == 1) {
+          data.frontOriginMaterialId = item.id ? item.id : item.frontMaterialId
+        }
+
+        if (item.partCbdType == 0 || item.partCbdType == 1) {
+          if (!this.validateChangeKeys.every(key => item[key] || item[key] === 0)) throw iMessage.warn(this.language("QINGXUANZETIANXIEWANZHENGDEYUANLINGJIANSHUJUZUOWEITIANJIAYANGBAN", "请选择填写完整的原零件数据作为添加样板"))
+        }
+
+        this.tableListData.splice(this.tableListData.indexOf(item) + 1, 0, data)
       })
 
       this.$refs.table.clearSelection()
@@ -227,22 +215,20 @@ export default {
       for (let i = 0, item; item = this.multipleSelection[i++]; ) {
         if (item.partCbdType == 0) return iMessage.warn(this.language("WUFASHANCHUYUANYOUYUANLINGJIANHANGXIANGMU", "无法删除原有原零件行项目！"))
       
-        let originMaterialId = item.frontOriginMaterialId ? item.frontOriginMaterialId : item.originMaterialId
-        
-        if ((item.partCbdType == 2 && this.validateNewDataChangeKeys.some(key => item[key] !== this.originMap[originMaterialId][key])) || (item.partCbdType == 1 && this.validateOriginDataChangeKeys.some(key => item[key] || item[key] === 0))) {
+        if ((item.partCbdType == 2 && this.validateChangeKeys.some(key => item[key] !== this.originMap[item.frontOriginMaterialId ? item.frontOriginMaterialId : item.originMaterialId][key])) || (item.partCbdType == 1 && this.validateChangeKeys.some(key => item[key] || item[key] === 0))) { 
           await iMessageBox(
             this.language("HASCHANGEDELETE", "已维护的有值，请确认是否删除？"),
             { confirmButtonText: this.language("SHI", "是"), cancelButtonText: this.language("FOU", "否") }
           )
         }
         
-        if (item.partCbdType == 1 && this.tableListData.some(row => item.partCbdType == 2 && ((row.originMaterialId === item.frontMaterialId || row.originMaterialId === item.id) || (row.frontOriginMaterialId === item.id || row.frontOriginMaterialId === item.frontMaterialId)))) {
+        if (item.partCbdType == 1 && this.tableListData.some(row => row.partCbdType == 2 && ((row.originMaterialId === item.frontMaterialId || row.originMaterialId === item.id) || (row.frontOriginMaterialId === item.id || row.frontOriginMaterialId === item.frontMaterialId)))) {
           await iMessageBox(
             this.language("HASNEWDATADELETE", "该原零件行项目对应的所有新零件行项目也将一并删除，请确认是否删除？"),
             { confirmButtonText: this.language("SHI", "是"), cancelButtonText: this.language("FOU", "否") }
           )
 
-          this.multipleSelection = this.multipleSelection.concat(this.tableListData.filter(row => item.partCbdType == 2 && ((row.originMaterialId === item.frontMaterialId || row.originMaterialId === item.id) || (row.frontOriginMaterialId === item.id || row.frontOriginMaterialId === item.frontMaterialId))))
+          this.multipleSelection = this.multipleSelection.concat(this.tableListData.filter(row => row.partCbdType == 2 && ((row.originMaterialId === item.frontMaterialId || row.originMaterialId === item.id) || (row.frontOriginMaterialId === item.id || row.frontOriginMaterialId === item.frontMaterialId))))
         }
       }
 
