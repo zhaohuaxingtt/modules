@@ -431,8 +431,6 @@ export default {
       this.saveLoading = true
 
       saveAekoQuotationSummary({
-        hasManualInput: this.hasManualInput || false,
-        aprice: this.allSummaryData()[0].aprice || "0.00",
         ...(this.hasManualInput ? 
           {
             hasManualInput: this.hasManualInput || false,
@@ -441,7 +439,7 @@ export default {
           } : 
           {
           ...this.form,
-          price: this.allSummaryData()[0].aprice || "0.00",
+          aprice: this.allSummaryData()[0].aprice || "0.00",
           hasManualInput: this.hasManualInput || false,
           quotationId: this.partInfo.quotationId,
           rawMaterialList: this.moduleMap.material ? this.rawMaterialsTableData : undefined,
