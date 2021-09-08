@@ -435,11 +435,14 @@ export default {
         aprice: this.allSummaryData()[0].aprice || "0.00",
         ...(this.hasManualInput ? 
           {
+            hasManualInput: this.hasManualInput || false,
             apriceChange: this.apriceChange,
             quotationId: this.partInfo.quotationId
           } : 
           {
           ...this.form,
+          price: this.allSummaryData()[0].aprice || "0.00",
+          hasManualInput: this.hasManualInput || false,
           quotationId: this.partInfo.quotationId,
           rawMaterialList: this.moduleMap.material ? this.rawMaterialsTableData : undefined,
           makeCostList: this.moduleMap.production ? this.manufacturingCostTableData : undefined,
