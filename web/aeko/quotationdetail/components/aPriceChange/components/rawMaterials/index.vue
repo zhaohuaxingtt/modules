@@ -184,8 +184,6 @@ export default {
     handleAddNewData() {
       if (!this.multipleSelection.some(item => item.partCbdType == 0 || item.partCbdType == 1)) return iMessage.warn(this.language("QINGXUANZEZHISHAOYITIAOYUANLINGJIANSHUJUZUOWEITIANJIAYANGBAN", "请选择至少一条原零件数据作为添加样板"))
 
-      
-
       this.multipleSelection.forEach(item => {
         const data = cloneDeep(item)
         data.id = ""
@@ -201,7 +199,7 @@ export default {
         }
 
         if (item.partCbdType == 0 || item.partCbdType == 1) {
-          if (!this.validateChangeKeys.every(key => item[key] || item[key] === 0)) throw iMessage.warn(this.language("QINGXUANZETIANXIEWANZHENGDEYUANLINGJIANSHUJUZUOWEITIANJIAYANGBAN", "请选择填写完整的原零件数据作为添加样板"))
+          if (!this.validateChangeKeys.every(key => item[key] || item[key] === 0 || item[key] === false)) throw iMessage.warn(this.language("QINGXUANZETIANXIEWANZHENGDEYUANLINGJIANSHUJUZUOWEITIANJIAYANGBAN", "请选择填写完整的原零件数据作为添加样板"))
         }
 
         this.tableListData.splice(this.tableListData.indexOf(item) + 1, 0, data)
