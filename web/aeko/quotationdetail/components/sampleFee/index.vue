@@ -12,7 +12,7 @@
             <span class="title">{{ language('LK_DAMAGES_SAMPLEFEE_YANGJIANFEI','样件费') }}</span>
           </div>
           <div class="control">
-            <iButton @click="save">{{language('LK_BAOCUN','保存')}}</iButton>
+            <iButton v-permission.auto="AEKO_QUOTATION_DETAIL_SAMPLEFEE_SAVE|样件费_保存" @click="save">{{language('LK_BAOCUN','保存')}}</iButton>
           </div>
         </div>
       </template>
