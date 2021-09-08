@@ -6,7 +6,7 @@
  -->
 <template>
 	<div class="nav flex-align-center" :class="[center && 'justify-center',right && 'justify-right',{lev1:lev == 1, lev2:lev == 2}]">
-		<div v-for="(item,index) in navList" :key="index" @click="change(item,index)">
+		<div v-for="(item,index) in navList" :key="index" @click="change(item,index)" v-permission.auto="`${item[permissionKey]}|${item[permissionName]}`">
 			<span class="name" :class="index==activeIndex && 'active'">{{ lang ? language(item.key, item.name) : $t(item.key) }}</span>
 			<!-- <span class="circle" v-show="item.message>0">{{item.message}}</span> -->
 			<el-badge class="badge" :max="99" v-if="item.message" :value="item.message" @click.native="clickMessage(item, $event)"></el-badge>
@@ -28,6 +28,20 @@
 			lev:{
 				type:Number,
 				default: 0
+			},
+			/**
+			 * 数据中作为权限key的字段
+			*/
+			permissionKey:{
+				type:String,
+				default: 'permissionKey'
+			},
+			/**
+			 * 数据中的权限名字字段，默认为导航名称
+			*/
+			permissionName:{
+				type:String,
+				default: 'name'
 			},
 			/**
 			 * 是点击是否切换路由，目标路由为list中的 url
@@ -102,7 +116,6 @@
 		},
 		created() {
 			this.navList = cloneDeep(this.list)
-
 			//由于当前组件存在于业务组件中，他的选中只需要在加载的时候去路由上取值和当前的list对比即可
 			if(this.routerPage){
 				for (let i = 0, item; (item = this.list[i++]); ) {

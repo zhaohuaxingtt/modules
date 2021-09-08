@@ -1,8 +1,8 @@
 <!--
  * @Author: ldh
  * @Date: 2021-05-28 22:43:53
- * @LastEditTime: 2021-08-31 10:26:02
- * @LastEditors: zbin
+ * @LastEditTime: 2021-09-08 14:39:03
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\src\components\iEditor\index.vue
 -->
@@ -168,7 +168,7 @@ export default {
 		this.showMenu(this.showMenus)
 	},
 	watch: {
-		value(value) {
+		value() {
 			if (validateValueType(this.valueType)) {
 				this.editor.txt[this.valueType.toLowerCase()](this.value)
 			}
