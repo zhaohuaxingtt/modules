@@ -3,7 +3,7 @@
     <div class="margin-bottom20 clearFloat">
       <span class="font18 font-weight">{{ language("AEKOHAO", "AEKO号") }}：{{ basicInfo.aekoCode }}</span>
       <div class="floatright">
-        <iButton v-permission.auto="AEKO_QUOTATION_DETAIL_BUTTON_TIJIAO|提交" :loading="submitLoading" @click="handleSubmit">{{ language("TIJIAO", "提交") }}</iButton>
+        <iButton v-permission.auto="AEKO_QUOTATION_DETAIL_BUTTON_TIJIAO|提交" v-if="!disabled" :loading="submitLoading" @click="handleSubmit">{{ language("TIJIAO", "提交") }}</iButton>
         <logButton class="margin-left20" @click="log" v-permission.auto="AEKO_QUOTATION_DETAIL_BUTTON_RIZHI|日志" />
         <span class="margin-left20">
 					<icon symbol name="icondatabaseweixuanzhong" class="font18" />
@@ -73,8 +73,8 @@
 
 <script>
 import { iPage, iButton, icon, iCard, iFormGroup, iFormItem, iText, iTabsList,iMessage } from "rise"
-import logButton from "../../quotationdetail/components/logButton"
-import tableList from "../../quotationdetail/components/tableList"
+import logButton from "rise/web/quotationdetail/components/logButton"
+import tableList from "rise/web/quotationdetail/components/tableList"
 import aPriceChange from "./components/aPriceChange"
 import mouldInvestmentChange from "./components/mouldInvestmentChange"
 import developmentFee from "./components/developmentFee"
@@ -158,13 +158,14 @@ export default {
       await getQuotationInfo(quotationId).then(async (res)=>{
         const {code,data={}} = res;
         if(code == 200){
-          const {aekoPartInfo={},quotationPriceSummaryInfo={},supplierId='',rfqId='',fsnrGsnrNum='',source='',round} = data;
+          const {aekoPartInfo={},quotationPriceSummaryInfo={},supplierId='',rfqId='',fsnrGsnrNum='',source='',round,objectAekoId} = data;
           this.partInfo = {
             ...aekoPartInfo,
             quotationId,
             rfqId,
             fsNum: fsnrGsnrNum,
-            round
+            round,
+            objectAekoId
             };
           this.tableListData=[{ ...quotationPriceSummaryInfo, source }];
           this.basicInfo = data;
@@ -263,7 +264,8 @@ export default {
       this.submitLoading = true
 
       submitAekoQuotation({
-        quotationId: this.$route.query.quotationId
+        quotationId: this.$route.query.quotationId,
+        objectAekoId: this.partInfo.objectAekoId
       })
       .then(res => {
         if (res.code == 200) {

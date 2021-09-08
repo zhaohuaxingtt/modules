@@ -17,7 +17,7 @@
 <script>
 /* eslint-disable no-undef */
 
-import tableList from "../../../../../quotationdetail/components/tableList"
+import tableList from "rise/web/quotationdetail/components/tableList"
 import { cbdSummaryTableTitle as tableTitle } from "../data"
 
 export default {

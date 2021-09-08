@@ -33,7 +33,7 @@
 /* eslint-disable no-undef */
 
 import { iButton, iInput } from "rise"
-import tableList from "../../../../../quotationdetail/components/tableList"
+import tableList from "rise/web/quotationdetail/components/tableList"
 import { profitTableTitle as tableTitle } from "../data"
 import { numberProcessor } from "@/utils"
 
