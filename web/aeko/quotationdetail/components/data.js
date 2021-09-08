@@ -21,7 +21,7 @@ export const tableTitle = [
   { props: "originBnkFee", key: "YUANBNKJIA", name: "原BNK价", tooltip: true },
   { props: "bnkFee", key: "XINBNKJIA", name: "新BNK价", tooltip: true },
   { props: "toolingCost", key: "MUJUTOUZIBIANDONG", name: "模具投资变动", tooltip: true },
-  { props: "quotationPriceSummaryInfo", key: "KAIFAFEI", name: "开发费", tooltip: true },
+  { props: "developmentCost", key: "KAIFAFEI", name: "开发费", tooltip: true },
   { props: "terminationPrice", key: "ZHONGZHIFEI", name: "终止费", tooltip: true },
   { props: "sampleCost", key: "YANGJIANFEI", name: "样件费", tooltip: true },
   { props: "currency", key: "HUOBI", name: "货币", tooltip: true },

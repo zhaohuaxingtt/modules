@@ -50,3 +50,28 @@ export const uuidv4 = function() {
 export const originRowClass = function ({ row }) {
   return row.partCbdType == 0 || row.partCbdType == 1 ? "originRow" : ""
 }
+
+export const validateChangeKeysByRawMaterials = [
+  "partName",
+  "partNumber",
+  "supplierName",
+  "productionCountry",
+  "isSvwAssignPriceParts",
+  "quantityUnit",
+  "unitPrice",
+  "quantity",
+  "materialManageCostRate"
+]
+
+export const validateChangeKeysByManufacturingCost = [
+  "manufacturingMethod",
+  "material",
+  "machineName",
+  "specialDeviceCost",
+  "taktTime",
+  "taktTimeNumber",
+  "directLaborRate",
+  "directLaborQuantity",
+  "deviceRate",
+  "indirectManufacturingRate"
+]

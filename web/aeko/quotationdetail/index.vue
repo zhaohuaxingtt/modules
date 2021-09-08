@@ -64,7 +64,7 @@
     <iTabsList class="margin-top20" type="card" v-model="currentTab" :before-leave="tabLeaveBefore" @tab-click="tabChange">
       <el-tab-pane v-for="(tab, $tabIndex) in tabs" :key="$tabIndex" :label="language(tab.key, tab.label)" :name="tab.name" v-permission.dynamic.auto="tab.permissionKey">
         <template v-if="tab.name == currentTab">
-          <component :ref="tab.name" :is="component" v-for="(component, $componentIndex) in tab.components" :class="$componentIndex !== 0 ? 'margin-top20' : ''" :key="$componentIndex" :partInfo="partInfo" :basicInfo="basicInfo" :disabled="disabled" @getBasicInfo="getBasicInfo"/>
+          <component :ref="tab.name" :is="component" v-for="(component, $componentIndex) in tab.components" :class="$componentIndex !== 0 ? 'margin-top20' : ''" :key="$componentIndex" :partInfo="partInfo" :basicInfo="basicInfo" :disabled="disabled" @getBasicInfo="getBasicInfo" @updateApriceChange="updateApriceChange" />
         </template>
       </el-tab-pane>
     </iTabsList>
@@ -88,8 +88,6 @@ import {
  } from '@/api/aeko/quotationdetail'
  import { getStates } from "@/api/rfqManageMent/quotationdetail"
 
-
-
 export default {
   components: { iPage, iButton, icon, iCard, iFormGroup, iFormItem, iText, iTabsList, logButton, tableList, aPriceChange, mouldInvestmentChange, developmentFee, damages, sampleFee },
   data() {
@@ -110,7 +108,8 @@ export default {
       partInfo:{},
       basicInfo:{},
       tableLoading:false,
-      disabled: false
+      disabled: false,
+      aprice: 0
     }
   },
   created(){
@@ -124,7 +123,8 @@ export default {
   },
   provide() {
     return {
-      getBasicInfo: this.getBasicInfo
+      getBasicInfo: this.getBasicInfo,
+      allSummaryData: () => this.tableListData
     }
   },
   methods: {
@@ -278,6 +278,14 @@ export default {
         this.submitLoading = false
       })
       .catch(() => this.submitLoading = false)
+    },
+
+    updateApriceChange(apriceChange) {
+      this.$set(this.tableListData[0], "apriceChange", apriceChange)
+
+      const aprice = math.add(math.bignumber(this.tableListData[0].originalAPrice || 0), math.bignumber(apriceChange || 0)).toFixed(2)
+      this.$set(this.tableListData[0], "aprice", aprice)
+      this.aprice = aprice
     }
   }
 }

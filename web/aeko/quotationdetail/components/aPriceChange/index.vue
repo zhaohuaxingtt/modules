@@ -39,7 +39,7 @@
             ></el-option>
           </iSelect> 
         </div>
-        <cbdSummary class="margin-top20" v-model="cbdSummaryTableData" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_BIANDONGZHICBDHUIZONG|变动值CBD汇总" />
+        <cbdSummary class="margin-top20" v-model="cbdSummaryTableData" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_BIANDONGZHICBDHUIZONG|变动值CBD汇总" @updateApriceChange="$emit('updateApriceChange', $event)" />
         <div v-if="!loading">
           <rawMaterials 
             topCutLine 
@@ -80,6 +80,7 @@ import scrapCost from "./components/scrapCost"
 import manageCost from "./components/manageCost"
 import otherCost from "./components/otherCost"
 import profit from "./components/profit"
+import { validateChangeKeysByRawMaterials, validateChangeKeysByManufacturingCost } from "./components/data"
 import { getAekoCarDosage, getAekoQuotationSummary, saveAekoQuotationSummary, exportQuotation } from "@/api/aeko/quotationdetail"
 import { numberProcessor } from "@/utils"
 
@@ -131,7 +132,7 @@ export default {
       profitChange: 0
     }
   },
-  inject: ["getBasicInfo"],
+  inject: ["getBasicInfo", "allSummaryData"],
   computed: {
     cbdSummarySelected() {
       if (this.modules.length) {
@@ -231,6 +232,10 @@ export default {
     },
     handleInputByApriceChange(value) {
       this.apriceChange = numberProcessor(value, 2)
+
+      if (this.hasManualInput) {
+        this.$emit("updateApriceChange", this.apriceChange)
+      }
     },
     handleChangeByModules(modules) {
       this.moduleMap = {}
@@ -411,16 +416,31 @@ export default {
       return result
     },
     handleSave() {
+      if (!this.hasManualInput && this.moduleMap.material) {
+        if (!this.rawMaterialsTableData.length || !this.rawMaterialsTableData.every(item => validateChangeKeysByRawMaterials.every(key => item[key] || item[key] === 0 || item[key] === false))) {
+          return iMessage.warn(this.language("QINGTIANXIEWANZHENGYUANCAILIAOSANJIANCHENGBEN", "请填写完整原材料/散件成本"))
+        }
+      }
+
+      if (!this.hasManualInput && this.moduleMap.production) {
+        if (!this.manufacturingCostTableData.length || !this.manufacturingCostTableData.every(item => validateChangeKeysByManufacturingCost.every(key => item[key] || item[key] === 0))) {
+          return iMessage.warn(this.language("QINGTIANXIEWANZHENGZHIZAOCHENGBEN", "请填写完整制造成本"))
+        }
+      }
+
       this.saveLoading = true
 
       saveAekoQuotationSummary({
         hasManualInput: this.hasManualInput || false,
+        aprice: this.allSummaryData()[0].aprice || "0.00",
         ...(this.hasManualInput ? 
           {
-            apriceChange: this.apriceChange
+            apriceChange: this.apriceChange,
+            quotationId: this.partInfo.quotationId
           } : 
           {
           ...this.form,
+          quotationId: this.partInfo.quotationId,
           rawMaterialList: this.moduleMap.material ? this.rawMaterialsTableData : undefined,
           makeCostList: this.moduleMap.production ? this.manufacturingCostTableData : undefined,
           scrapVO: this.moduleMap.scrap ? this.scrapCostTableData[0] : undefined,
