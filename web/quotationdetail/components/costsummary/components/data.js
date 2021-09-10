@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2021-04-23 15:34:54
- * @LastEditTime: 2021-08-19 13:56:14
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-09-10 15:04:48
+ * @LastEditors: Hao,Jiang
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\components\costsummary\components\data.js
  */
@@ -142,7 +142,7 @@ export const titleYcl = (productionCountryList = []) => [
   {props:'quantityUnit',name:'数量单位（UoM）',key: 'LK_SHULIANGDANWEI',tooltip:true,width:'150',type:'input' },
   {props:'unitPrice',name:'单价（RMB/UoM）',key: 'LK_DANJIARMB',tooltip:true,width:'150',type:'input', inputType: 'decimal' },
   {props:'quantity',name:'数量',key: 'LK_SHULIANG',tooltip:true,width:'',type:'input', inputType: 'decimal' },
-  {props:'indirectMaterialCost',name:'直接原材料/散件成本（RMB/Pc.）',key: 'LK_ZHIJIEYUANCAILIAOSANJIANCHENGBEN',tooltip:true,width:'250', inputType: 'decimal' },
+  {props:'directMaterialCost',name:'直接原材料/散件成本（RMB/Pc.）',key: 'LK_ZHIJIEYUANCAILIAOSANJIANCHENGBEN',tooltip:true,width:'250', inputType: 'decimal' },
   {props:'tpPartID',name:'物料管理费',key: 'LK_WULAOGLF',tooltip:true,width:'' ,list:[
     {props:'materialManageCostRate',name:'(%)',key: '',tooltip:true,width:'100',type:'input', inputType: 'decimal'},
     {props:'materialManageCost',name:'(RMB/Pc.)',key: '',tooltip:true,width:''}
