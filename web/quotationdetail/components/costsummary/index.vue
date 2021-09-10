@@ -767,6 +767,7 @@ export default{
             r()
             if (type !== "submit") iMessage.success('操作成功')
             this.updateCbdLevel(this.allTableData.level)
+            this.init()
           }else{
             j(res.desZh)
             iMessage.error(res.desZh)
