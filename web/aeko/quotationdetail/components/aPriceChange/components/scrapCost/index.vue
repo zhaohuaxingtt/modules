@@ -37,10 +37,10 @@ import { iButton, iInput } from "rise"
 import tableList from "rise/web/quotationdetail/components/tableList"
 import { scrapCostTableTitle as tableTitle } from "../data"
 import { numberProcessor } from "@/utils"
-// import performanceInput from "../../../../components/performanceInput"
+import sInput from "rise/web/aeko/quotationdetail/components/sInput"
 
 export default {
-  components: { iButton, iInput, tableList },
+  components: { iButton, iInput, tableList, sInput },
   model: {
     prop: "tableListData",
     event: "change"
@@ -135,6 +135,7 @@ export default {
     font-style: italic;
     color: #1660F1;
 
+    .staticInputInner,
     input {
       font-style: italic;
       color: #1660F1;
