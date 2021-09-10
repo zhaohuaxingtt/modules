@@ -9,7 +9,7 @@
             </el-select>
           </el-form-item>
           <el-form-item :label="'操作人'">
-            <i-input :placeholder="'请输入'" v-model="query.createBy" />
+            <i-input :placeholder="'请输入'" v-model="query.creator" />
           </el-form-item>
         </el-form>
       </i-search>
@@ -51,7 +51,7 @@ export default {
       tableData: [],
       query: {
         type: '',
-        createBy: ''
+        creator: ''
       },
       options: [
         {
@@ -81,15 +81,15 @@ export default {
   },
   methods: {
     sure() {
-      if (this.query.type || this.query.createBy) {
+      if (this.query.type || this.query.creator) {
         this.getList()
       }
     },
     reset() {
-      if (this.query.type || this.query.createBy) {
+      if (this.query.type || this.query.creator) {
         this.query = {
           type: '',
-          createBy: ''
+          creator: ''
         }
         this.getList()
       }
@@ -97,7 +97,7 @@ export default {
     handleClose() {
       this.query = {
         type: '',
-        createBy: ''
+        creator: ''
       }
     },
     handleOpen() {
