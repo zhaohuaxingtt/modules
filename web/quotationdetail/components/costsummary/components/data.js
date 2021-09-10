@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2021-04-23 15:34:54
- * @LastEditTime: 2021-08-19 13:56:14
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-09-10 15:04:48
+ * @LastEditors: Hao,Jiang
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\components\costsummary\components\data.js
  */
