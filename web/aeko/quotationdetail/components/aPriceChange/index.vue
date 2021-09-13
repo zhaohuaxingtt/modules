@@ -233,7 +233,7 @@ export default {
       .catch(() => this.loading = false)
     },
     handleInputByApriceChange(value) {
-      this.apriceChange = numberProcessor(value, 2)
+      this.apriceChange = numberProcessor(value, 2, true)
 
       if (this.hasManualInput) {
         this.$emit("updateApriceChange", this.apriceChange)

@@ -399,7 +399,7 @@ export default {
         try {
           return component.save(type).then(()=>{
             if (this.$route.query.watingSupplier) {
-              this.this.$route.query.watingSupplier = false
+              this.$route.query.watingSupplier = false
             }
             this.getPartsQuotations("save");
           }).catch(()=>{
