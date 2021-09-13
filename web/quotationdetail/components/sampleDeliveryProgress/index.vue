@@ -1,8 +1,8 @@
 <!--
  * @Author: Luoshuang
  * @Date: 2021-05-27 15:54:05
- * @LastEditors: Luoshuang
- * @LastEditTime: 2021-07-15 18:53:04
+ * @LastEditors: Hao,Jiang
+ * @LastEditTime: 2021-09-13 14:10:30
  * @Description: 送样进度
  * @FilePath: \front-modules\web\quotationdetail\components\sampleDeliveryProgress\index.vue
 -->
@@ -70,7 +70,7 @@ export default {
   computed: {
     // 判断是否是bmg零件
     isBmgpart() {
-      return this.partInfo && Number(this.partInfo.partType) === 50
+      return this.partInfo && this.partInfo.isBmg
     }
   },
   data() {
