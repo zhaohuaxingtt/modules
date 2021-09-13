@@ -21,7 +21,7 @@
             </iFormGroup>
           </div>
           <div v-if="!disabled" class="control">
-            <iButton v-if="isAeko" @click="save">{{language('LK_BAOCUN','保存')}}</iButton>
+            <iButton v-if="isAeko" @click="save" :loading="saveLoading">{{language('LK_BAOCUN','保存')}}</iButton>
             <iButton @click="handleAdd">{{ $t('LK_TIANJIAHANG') }}</iButton>
             <iButton @click="handleDel">{{ $t('LK_SHANCHUHANG') }}</iButton>
           </div>
@@ -109,7 +109,8 @@ export default {
       dataGroup: {},
       tableTitle,
       tableListData: [],
-      multipleSelection: []
+      multipleSelection: [],
+      saveLoading: false
     }
   },
   methods: {
@@ -207,6 +208,9 @@ export default {
     save(){
       const { tableListData } = this;
       this.$emit('save',tableListData);
+    },
+    updateSaveLoading(value = false) {
+      this.saveLoading = value
     }
   }
 }

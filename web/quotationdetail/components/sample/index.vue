@@ -108,15 +108,17 @@ export default {
       })
       .then(res => {
         if (res.code == 200) {
-          r()
-          if (type !== "submit") iMessage.success(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
+          if (type !== "submit") {
+            iMessage.success(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
+          }
           this.init()
+          r(res)
         } else {
-          j()
           iMessage.error(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
+          j(res)
         }
-      }).catch(()=>{
-        j()
+      }).catch(rej=>{
+        j(rej)
       })
       })
     }
