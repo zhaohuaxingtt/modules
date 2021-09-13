@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 14:26:53
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-08-31 15:45:54
+ * @LastEditTime: 2021-09-13 15:24:45
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\sample\index.vue
 -->
@@ -97,7 +97,8 @@ export default {
       this.$set(row, "addionalMouldCost", numberProcessor(value, 2))
     },
     handleInputByAddionalMouldLife(value, row) {
-      this.$set(row, "addionalMouldLife", numberProcessor(value, 2))
+      const limit = this.isAeko ? 0 : 2;
+      this.$set(row, "addionalMouldLife", numberProcessor(value, limit))
     },
     // 保存工装样件，父组件通过ref调用
     save(type) {

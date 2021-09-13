@@ -12,14 +12,14 @@
           <div>
             <span class="title">{{ language('LK_DAMAGES_ZHONGZHIFEI','终⽌费') }}</span>
           </div>
-          <div class="control">
+          <div v-if="!disabled" class="control">
             <iButton :loading="btnLoading" v-permission.auto="AEKO_BAOJIADAN_TAB_ZHONGZHIFEI_BUTTON_SAVE|保存"  @click="handleSave">{{language('LK_BAOCUN','保存')}}</iButton>
           </div>
         </div>
       </template>
       <div class="contain">
         <span class="contain-label">{{ language('LK_DAMAGES_ZHONGZHIFEI','终⽌费') }}:</span>
-        <iInput class="contain-input" @input="handleInputBySampleUnitPrice" v-model.trim="value"></iInput>
+        <iInput class="contain-input" :disabled="disabled" @input="handleInputBySampleUnitPrice" v-model.trim="value"></iInput>
       </div>
   </iCard>
 </template>
@@ -44,7 +44,11 @@ export default {
     basicInfo:{
       type:Object,
       default:()=>{},
-    }
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
   },
   data(){
     return{
