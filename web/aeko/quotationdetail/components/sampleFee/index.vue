@@ -11,13 +11,13 @@
           <div>
             <span class="title">{{ language('LK_DAMAGES_SAMPLEFEE_YANGJIANFEI','样件费') }}</span>
           </div>
-          <div class="control">
+          <div v-if="!disabled" class="control">
             <iButton v-permission.auto="AEKO_QUOTATION_DETAIL_SAMPLEFEE_SAVE|样件费_保存" @click="save">{{language('LK_BAOCUN','保存')}}</iButton>
           </div>
         </div>
       </template>
       <div>
-        <sample ref="sample" :partInfo="basicInfo" :isAeko="true"/>
+        <sample :disabled="disabled" ref="sample" :partInfo="basicInfo" :isAeko="true"/>
       </div>
   </iCard>
 </template>
@@ -40,7 +40,11 @@ export default {
     basicInfo:{
       type:Object,
       default:()=>{},
-    }
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
   },
   data(){
     return{
