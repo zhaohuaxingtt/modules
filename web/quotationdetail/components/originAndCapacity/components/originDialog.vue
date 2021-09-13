@@ -109,14 +109,7 @@ export default {
       getSupplierToken({ supplierId: this.userInfo.supplierId || this.$route.query.supplierId })
       .then(res => {
         if (res.code == 200) {
-          const router = this.$router.resolve({
-            path: '/supplier/supplierDetail', 
-            query: { 
-              supplierToken: res.data,
-              supplierType: 4
-            }
-          })
-          window.open(router.href,'_blank')
+          window.open(`${ window.origin }/supplier/#/supplier/supplierDetail?supplierToken=${ res.data }&supplierType=4`,'_blank')
         }
       })
       .catch(() => {})

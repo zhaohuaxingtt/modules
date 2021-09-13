@@ -209,7 +209,7 @@ export default {
       .then(res => {
         if (res.code == 200) {
           this.form = res.data
-          this.hasManualInput = res.data.hasManualInput
+          this.hasManualInput = res.data.hasManualInput ? (res.data.hasManualInput === null ? true : false) : true
           this.apriceChange = res.data.apriceChange
           this.setCbdSummarySelected(res.data.cbdSummarySelected)
           this.rawMaterialsTableData = Array.isArray(res.data.rawMaterialList) ? res.data.rawMaterialList : []
