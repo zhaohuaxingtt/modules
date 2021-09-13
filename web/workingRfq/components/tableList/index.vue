@@ -206,7 +206,7 @@ export default{
     },
     handleInput(value, row, key, column) {
       if (column.type === "input" && column.inputType === "decimal") {
-        this.$set(row, key, numberProcessor(value, 4))
+        this.$set(row, key, numberProcessor(value, 2))
       }
       this.$emit("handleInput", value, row, key)
     }
