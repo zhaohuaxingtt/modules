@@ -1,9 +1,13 @@
 <template>
   <div class="sInput">
     <div v-if="staticStatus" class="staticInput">
-      <div class="staticInputInner" @click="handleStaticStatusChange">{{ thousandsProcessor(value) }}</div>
+      <div class="staticInputWrapper">
+        <div class="staticScroll">
+          <div ref="staticInputInner" class="staticInputInner" @click="handleStaticStatusChange">{{ thousandsProcessor(value) }}</div>
+        </div>
+      </div>
     </div>
-    <iInput v-else ref="input" type="text" v-bind="$props" v-on="{ ...$listeners, input: handleInput }" v-model="text" @blur.native.capture="handleBlur"/>
+    <iInput v-else ref="input" type="text" v-bind="$props" v-on="{ ...$listeners, input: handleInput }" v-model="value" @blur.native.capture="handleBlur"/>
   </div>  
 </template>
 
@@ -71,11 +75,7 @@ export default {
   data() {
     return {
       staticStatus: true,
-      text: ""
     }
-  },
-  created() {
-    this.text = this.value
   },
   computed: {
     numberOptionsComputed() {
@@ -95,10 +95,13 @@ export default {
     },
     handleInput(value) {
       if (this.number) {
-        this.text = numberProcessor(value, this.numberOptionsComputed.decimals, this.numberOptionsComputed.negative)
+        const result = numberProcessor(value, this.numberOptionsComputed.decimals, this.numberOptionsComputed.negative)
+        this.value = result
+        this.$emit("input", result)
+      } else {
+        this.value = value
+        this.$emit("input", value)
       }
-
-      this.$emit("input", this.number ? this.text : value)
     },
     handleBlur(e) {
       this.staticStatus = true
@@ -114,15 +117,9 @@ export default {
     margin: 2px 0;
     width: 100%;
 
-    .staticInputInner {
-      width: auto;
-      margin: 0 auto;
-      font-size: 12px;
-      text-align: left;
-      word-break: keep-all;
+    .staticInputWrapper {
+      width: 97%;
       height: 30px;
-      line-height: 28px;
-      letter-spacing: normal;
       -webkit-appearance: none;
       background-color: #FFFFFF;
       background-image: none;
@@ -139,6 +136,24 @@ export default {
       transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
       box-shadow: 0 0 4px rgb(0 38 98 / 15%);
       border-color: transparent;
+      overflow: hidden;
+      vertical-align: middle;
+
+      .staticScroll {
+        width: 100%;
+        overflow-x: scroll;
+      }
+    }
+
+    .staticInputInner {
+      width: auto;
+      margin: 0 auto;
+      font-size: 12px;
+      text-align: left;
+      word-break: keep-all;
+      height: 30px;
+      line-height: 28px;
+      letter-spacing: normal;
       vertical-align: middle;
     }
   }

@@ -11,13 +11,13 @@
           <div>
             <span class="title">{{ language('LK_DAMAGES_SAMPLEFEE_YANGJIANFEI','样件费') }}</span>
           </div>
-          <div class="control">
-            <iButton v-permission.auto="AEKO_QUOTATION_DETAIL_SAMPLEFEE_SAVE|样件费_保存" @click="save">{{language('LK_BAOCUN','保存')}}</iButton>
+          <div v-if="!disabled" class="control">
+            <iButton :loading="saveLoading" v-permission.auto="AEKO_QUOTATION_DETAIL_SAMPLEFEE_SAVE|样件费_保存" @click="handleSave">{{language('LK_BAOCUN','保存')}}</iButton>
           </div>
         </div>
       </template>
       <div>
-        <sample ref="sample" :partInfo="basicInfo" :isAeko="true"/>
+        <sample :disabled="disabled" ref="sample" :partInfo="basicInfo" :isAeko="true"/>
       </div>
   </iCard>
 </template>
@@ -40,18 +40,29 @@ export default {
     basicInfo:{
       type:Object,
       default:()=>{},
-    }
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
   },
   data(){
     return{
-      loading:false,
+      saveLoading: false
     }
   },
   methods:{
-    // 保存
-    async save(){
-      await this.$refs.sample.save();
-      await this.$emit('getBasicInfo');
+    save() {
+      this.saveLoading = true
+
+      return this.$refs.sample.save("submit").finally(() => {
+        this.saveLoading = false
+      })
+    },
+    handleSave() {
+      this.$refs.sample.save().then(res => {
+        this.$emit('getBasicInfo')
+      })
     },
     init(){
       this.$refs.sample.init();

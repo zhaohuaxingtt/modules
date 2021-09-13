@@ -2,7 +2,7 @@
   <iPage class="quotationdetail" v-permission.auto="AEKO_QUOTATION_DETAIL|报价单">
     <div class="margin-bottom20 clearFloat">
       <span class="font18 font-weight">{{ language("AEKOHAO", "AEKO号") }}：{{ basicInfo.aekoCode }}</span>
-      <div class="floatright">
+      <div class="floatright" v-if="!loading">
         <iButton v-permission.auto="AEKO_QUOTATION_DETAIL_BUTTON_TIJIAO|提交" v-if="!disabled" :loading="submitLoading" @click="handleSubmit">{{ language("TIJIAO", "提交") }}</iButton>
         <logButton class="margin-left20" @click="log" v-permission.auto="AEKO_QUOTATION_DETAIL_BUTTON_RIZHI|日志" />
         <span class="margin-left20">
@@ -11,7 +11,7 @@
       </div>
     </div>
 
-    <iCard class="info" :title="language('JICHUXINXI', '基础信息')" v-permission.auto="AEKO_QUOTATION_DETAIL_VIEW_JICHUXINXI|基础信息">
+    <iCard class="info" v-loading="loading" :title="language('JICHUXINXI', '基础信息')" v-permission.auto="AEKO_QUOTATION_DETAIL_VIEW_JICHUXINXI|基础信息">
       <iFormGroup :key="$index" :row="4" inline>
         <iFormItem v-for="item in infoItems" :key="item.props" :label="language(item.key, item.name)" v-permission.dynamic.auto="item.permissionKey">
           <iText>{{ partInfo[item.props] || '-' }}</iText>
@@ -21,7 +21,7 @@
 
     <iCard class="margin-top20" v-permission.auto="AEKO_QUOTATION_DETAIL_VIEW_HUIZONG|报价汇总">
       <tableList
-        :tableLoading="tableLoading"
+        :tableLoading="tableLoading || loading"
         lang
         class="table"
         :selection="false"
@@ -109,7 +109,8 @@ export default {
       basicInfo:{},
       tableLoading:false,
       disabled: false,
-      aprice: 0
+      aprice: 0,
+      loading: false
     }
   },
   created(){
@@ -149,12 +150,13 @@ export default {
       })
     },
 
-
     // 获取基础信息
     async getBasicInfo(){
       const {query,path} = this.$route;
       const { quotationId ='',aekoCode=""} = query;
       this.aekoCode = aekoCode;
+
+      this.loading = true
       await getQuotationInfo(quotationId).then(async (res)=>{
         const {code,data={}} = res;
         if(code == 200){
@@ -188,7 +190,7 @@ export default {
         }else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
         }
-      }).catch((err)=>{});
+      }).catch((err)=>{}).finally(() => this.loading = false);
     },
 
     async getStates() {
@@ -260,8 +262,20 @@ export default {
       
     },
 
-    handleSubmit() {
+    async handleSubmit() {
       this.submitLoading = true
+
+      const component = this.$refs[this.currentTab][0]
+      if (typeof component.save === "function") {
+        const res = await component.save()
+
+        console.log("res", res)
+
+        if (res.code != 200) {
+          iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+          return
+        }
+      }
 
       submitAekoQuotation({
         quotationId: this.$route.query.quotationId,

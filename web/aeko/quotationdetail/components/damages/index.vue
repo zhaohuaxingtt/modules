@@ -12,14 +12,14 @@
           <div>
             <span class="title">{{ language('LK_DAMAGES_ZHONGZHIFEI','终⽌费') }}</span>
           </div>
-          <div class="control">
-            <iButton :loading="btnLoading" v-permission.auto="AEKO_BAOJIADAN_TAB_ZHONGZHIFEI_BUTTON_SAVE|保存"  @click="save">{{language('LK_BAOCUN','保存')}}</iButton>
+          <div v-if="!disabled" class="control">
+            <iButton :loading="btnLoading" v-permission.auto="AEKO_BAOJIADAN_TAB_ZHONGZHIFEI_BUTTON_SAVE|保存"  @click="handleSave">{{language('LK_BAOCUN','保存')}}</iButton>
           </div>
         </div>
       </template>
       <div class="contain">
         <span class="contain-label">{{ language('LK_DAMAGES_ZHONGZHIFEI','终⽌费') }}:</span>
-        <iInput class="contain-input" @input="handleInputBySampleUnitPrice" v-model.trim="value"></iInput>
+        <iInput class="contain-input" :disabled="disabled" @input="handleInputBySampleUnitPrice" v-model.trim="value"></iInput>
       </div>
   </iCard>
 </template>
@@ -44,7 +44,11 @@ export default {
     basicInfo:{
       type:Object,
       default:()=>{},
-    }
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
   },
   data(){
     return{
@@ -59,25 +63,37 @@ export default {
       const terminationPrice = quotationPriceSummaryInfo.terminationPrice;
       this.value = terminationPrice ? cloneDeep(terminationPrice)  : '';
     },
-    // 保存
-    async save(){
+    save() {
+      return this.saveTerminationPrice(
+        () => this.btnLoading = true,
+        () => this.btnLoading = false
+      )
+    },
+    handleSave() {
+      this.save()
+      .then(res => {
+        if(res.code == 200){
+          iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+          this.$emit('getBasicInfo');
+        }else{
+          iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+        }
+      })
+    },
+    saveTerminationPrice(beforeHook, afterHook) {
       const {value} = this;
       if(!value) return iMessage.warn(this.language('LK_AEKO_TAB_DAMAGES_TIPS','请填写后提交'));
-      this.btnLoading = true;
       const {basicInfo={}} = this;
       const {quotationId=""} = basicInfo;
       const data = {
         terminationPrice:value,
         quotationId,
       }
-      await saveTerminationPrice(data).then((res)=>{
-        this.btnLoading = false;
-        if(res.code==200){
-          iMessage.success(this.language('LK_CAOZUOCHENGGONG','操作成功'))
-          this.$emit('getBasicInfo');
-        }else{
-          iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
-        }
+
+      if (typeof beforeHook === "function") beforeHook()
+
+      return saveTerminationPrice(data).finally(() => {
+        if (typeof afterHook === "function") afterHook()
       })
     },
     handleInputBySampleUnitPrice(){

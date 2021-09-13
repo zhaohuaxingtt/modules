@@ -209,6 +209,8 @@ export default {
       .then(res => {
         if (res.code == 200) {
           this.form = res.data
+          this.hasManualInput = res.data.hasManualInput
+          this.apriceChange = res.data.apriceChange
           this.setCbdSummarySelected(res.data.cbdSummarySelected)
           this.rawMaterialsTableData = Array.isArray(res.data.rawMaterialList) ? res.data.rawMaterialList : []
           this.manufacturingCostTableData = Array.isArray(res.data.makeCostList) ? res.data.makeCostList : []
@@ -415,7 +417,24 @@ export default {
 
       return result
     },
+    save() {
+      return this.saveAekoQuotationSummary(
+        () => this.saveLoading = true,
+        () => this.saveLoading = false
+      )
+    },
     handleSave() {
+      this.save()
+      .then(res => {
+        if (res.code == 200) {
+          iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+          this.getBasicInfo()
+        } else {
+          iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+        }
+      })
+    },
+    saveAekoQuotationSummary(beforeHook, afterHook) {
       if (!this.hasManualInput && this.moduleMap.material) {
         if (!this.rawMaterialsTableData.length || !this.rawMaterialsTableData.every(item => validateChangeKeysByRawMaterials.every(key => item[key] || item[key] === 0 || item[key] === false))) {
           return iMessage.warn(this.language("QINGTIANXIEWANZHENGYUANCAILIAOSANJIANCHENGBEN", "请填写完整原材料/散件成本"))
@@ -428,14 +447,15 @@ export default {
         }
       }
 
-      this.saveLoading = true
+      if (typeof beforeHook === "function") beforeHook()
 
-      saveAekoQuotationSummary({
+      return saveAekoQuotationSummary({
         ...(this.hasManualInput ? 
           {
             hasManualInput: this.hasManualInput || false,
             apriceChange: this.apriceChange,
-            quotationId: this.partInfo.quotationId
+            quotationId: this.partInfo.quotationId,
+            aprice: this.allSummaryData()[0].aprice || "0.00",
           } : 
           {
           ...this.form,
@@ -456,19 +476,11 @@ export default {
           manageFeeChange: this.cbdSummaryTableData[0].manageFeeChange,
           otherFee: this.cbdSummaryTableData[0].otherFee,
           profitChange: this.cbdSummaryTableData[0].profitChange
-        }),
+        })
       })
-      .then(res => {
-        if (res.code == 200) {
-          iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
-          this.getBasicInfo()
-        } else {
-          iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
-        }
-
-        this.saveLoading = false
+      .finally(() => {
+        if (typeof afterHook === "function") afterHook()
       })
-      .catch(() => this.saveLoading = false)
     },
     async handleDownload() {
       this.downloadLoading = true
