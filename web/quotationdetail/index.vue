@@ -68,10 +68,10 @@
        width="400px"
       :visible.sync="dialogVisible"
     >
-      <iInput v-model='rejectRason' style="margin-bottom:20px;"></iInput>  
+      <iInput v-model="refuseReason" style="margin-bottom:20px;"></iInput>  
       <span slot="footer" class="dialog-footer">
         <iButton @click="dialogVisible = false">取 消</iButton>
-        <iButton @click="sueReject">确 定</iButton>
+        <iButton @click="confrimReject">确 定</iButton>
       </span>
     </iDialog>
     <startProductionDateDialog :visible.sync="startProductionDateDialogVisible" @confirm="confirmQuoteBatchPrice" />
@@ -162,7 +162,7 @@ export default {
       supplierId: "",
       watingSupplier:false,
       dialogVisible:false,
-      rejectRason:'',
+      refuseReason: "",
       statusObj: {},
       startProductionDateDialogVisible: false,
     }
@@ -245,12 +245,12 @@ export default {
      * @param {*}
      * @return {*}
      */
-    sueReject() {
-      if(this.rejectRason == ''){
-        iMessage.warn('拒绝理由不能为空')
-        return
+    confrimReject() {
+      if (!this.refuseReason) {
+        return iMessage.warn('拒绝理由不能为空')
       }
-      this.quotations(2)
+
+      this.updateQuotations(2)
     },
     /**
      * @description: 接受报价按钮 
@@ -258,20 +258,22 @@ export default {
      * @return {*}
      */
     agreePrice() {
-      this.quotations(1)
+      this.updateQuotations(1)
     },
        /**
      * @description: 签收拒绝 
      * @param {*} type
      * @return {*}
      */    
-    quotations(type){
+    updateQuotations(type) {
       const sendData = {
         acceptType:type,
         rfqRoundInfoList:[{rounds:this.$route.query.round,rfqId:this.$route.query.rfqId}],
-        supplierId: this.supplierId || this.$route.query.supplierId
+        supplierId: this.supplierId || this.$route.query.supplierId,
+        refuseReason: this.refuseReason
       }
-      quotations({rfqAcceptQuotationScenes:sendData}).then(res=>{
+
+      quotations({ rfqAcceptQuotationScenes: sendData }).then(res=>{
         if(res.code == 200){
           this.getPartsQuotations()
           iMessage.success('操作成功！')
@@ -282,7 +284,6 @@ export default {
         }
       }).catch(err=>{
         iMessage.error(err.desZh)
-        console.warn(err)
       })
     },
     log() {},
