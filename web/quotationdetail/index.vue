@@ -74,6 +74,7 @@
         <iButton @click="sueReject">确 定</iButton>
       </span>
     </iDialog>
+    <startProductionDateDialog :visible.sync="startProductionDateDialogVisible" @confirm="confirmQuoteBatchPrice" />
   </iPage>
 </template>
 
@@ -91,10 +92,12 @@ import packAndShip from "./components/packAndShip"
 import reducePlan from "./components/reducePlan"
 import sampleDeliveryProgress from './components/sampleDeliveryProgress'
 import remarksAndAttachment from './components/remarksAndAttachment'
+import startProductionDateDialog from "./components/startProductionDateDialog"
 
 import { getPartsQuotations, getStates, submitPartsQuotation, quoteBatchPrice, cancelQuoteBatchPrice, quotations } from "@/api/rfqManageMent/quotationdetail"
 import { cloneDeep } from "lodash"
 import {partProjTypes} from '@/config'
+import { getEnumValue as $enum } from "rise/web/config"
 
 export default {
   components: { 
@@ -118,7 +121,8 @@ export default {
     sampleDeliveryProgress,
     remarksAndAttachment,
     iInput,
-    iDialog
+    iDialog,
+    startProductionDateDialog
   },
   mixins: [ filters ],
   data() {
@@ -160,6 +164,7 @@ export default {
       dialogVisible:false,
       rejectRason:'',
       statusObj: {},
+      startProductionDateDialogVisible: false,
     }
   },
   provide: function () {
@@ -352,10 +357,10 @@ export default {
       .then(res => {
         if (res.code == 200) {
           this.tabLoading = false
-          let fsStateDisabled = res.data.fsStateCode != "12" && res.data.fsStateCode != "13"
-          let rfqStateDisabled = res.data.rfqStateCode != "01" && res.data.rfqStateCode != "03"
-          let quotationStateDisabled = res.data.quotationStateCode == "0" || res.data.quotationStateCode == "2" || res.data.quotationStateCode == "6"
-          let rfqRoundStateDisabled = res.data.rfqRoundStateCode != "01"
+          let fsStateDisabled = res.data.fsStateCode != $enum("PURCHASE_PROJECT_STATE_ENUM.HAS_RFQ") && res.data.fsStateCode != $enum("PURCHASE_PROJECT_STATE_ENUM.APPLICATION_DESIGNAT")
+          let rfqStateDisabled = res.data.rfqStateCode != $enum("RFQ_STATE_ENUM.INQUIRY_ING") && res.data.rfqStateCode != $enum("RFQ_STATE_ENUM.NEGOTIATE_ING")
+          let quotationStateDisabled = res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.NOT_QUOTED") || res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.REFUSE") || res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.DELEGATE_REFUSE")
+          let rfqRoundStateDisabled = res.data.rfqRoundStateCode != $enum("RFQ_ROUNDS_STATE_ENUM.RUNNING")
           let roundDisabled = +this.partInfo.round != +res.data.currentRounds
           
           this.disabled = fsStateDisabled || rfqStateDisabled || quotationStateDisabled || rfqRoundStateDisabled || roundDisabled
@@ -363,7 +368,7 @@ export default {
             this.disabled = true
             this.forceDisabled = true
           }
-          if(res.data.quotationStateCode == 0){ //如果采购员是点击横岗过来的 则要看当前报价单的状态
+          if(res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.NOT_QUOTED")){ //如果采购员是点击横岗过来的 则要看当前报价单的状态
             // if(this.$route.query.watingSupplier){
               this.watingSupplier = true
             // }
@@ -374,7 +379,7 @@ export default {
               this.disabled = true
             }
           }
-          if (res.data.quotationStateCode == "2" || res.data.quotationStateCode == "6") {
+          if (res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.REFUSE") || res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.DELEGATE_REFUSE")) {
             if(this.$route.query.watingSupplier){
               this.fix = true
               this.disabled = true
@@ -491,11 +496,16 @@ export default {
     },
     // 引用批量价格
     handleQuoteBatchPrice() {
+      this.startProductionDateDialogVisible = true
+    },
+    confirmQuoteBatchPrice(date) {
       this.quoteBatchPriceLoading = true
 
       quoteBatchPrice({
-        partNum: this.partNum,
-        quotationId: this.partInfo.quotationId
+        partNum: this.partInfo.partNum,
+        quotationId: this.partInfo.quotationId,
+        sopDate: date,
+        supplierId: this.supplierId
       })
       .then(res => {
         const message = this.$i18n.locale === "zh" ? res.desZh : res.desEn
@@ -507,10 +517,10 @@ export default {
         } else {
           iMessage.error(message)
         }
-
+      })
+      .finally(() => {
         this.quoteBatchPriceLoading = false
       })
-      .catch(() => this.quoteBatchPriceLoading = false)
     },
     // 取消引用批量价格
     handleCancelBatchPrice() {

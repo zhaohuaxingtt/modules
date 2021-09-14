@@ -87,6 +87,7 @@ import {
   submitAekoQuotation,
  } from '@/api/aeko/quotationdetail'
  import { getStates } from "@/api/rfqManageMent/quotationdetail"
+ import { getEnumValue as $enum } from "rise/web/config"
 
 export default {
   components: { iPage, iButton, icon, iCard, iFormGroup, iFormItem, iText, iTabsList, logButton, tableList, aPriceChange, mouldInvestmentChange, developmentFee, damages, sampleFee },
@@ -201,10 +202,10 @@ export default {
       })
       .then(res => {
         if (res.code == 200) {
-          let fsStateDisabled = res.data.fsStateCode != "12" && res.data.fsStateCode != "13"
-          let rfqStateDisabled = res.data.rfqStateCode != "01" && res.data.rfqStateCode != "03"
-          let quotationStateDisabled = res.data.quotationStateCode == "0" || res.data.quotationStateCode == "2" || res.data.quotationStateCode == "6"
-          let rfqRoundStateDisabled = res.data.rfqRoundStateCode != "01"
+          let fsStateDisabled = res.data.fsStateCode != $enum("PURCHASE_PROJECT_STATE_ENUM.HAS_RFQ") && res.data.fsStateCode != $enum("PURCHASE_PROJECT_STATE_ENUM.APPLICATION_DESIGNAT")
+          let rfqStateDisabled = res.data.rfqStateCode != $enum("RFQ_STATE_ENUM.INQUIRY_ING") && res.data.rfqStateCode != $enum("RFQ_STATE_ENUM.NEGOTIATE_ING")
+          let quotationStateDisabled = res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.NOT_QUOTED") || res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.REFUSE") || res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.DELEGATE_REFUSE")
+          let rfqRoundStateDisabled = res.data.rfqRoundStateCode != $enum("RFQ_ROUNDS_STATE_ENUM.RUNNING")
           let roundDisabled = +this.partInfo.round != +res.data.currentRounds
           
           this.disabled = fsStateDisabled || rfqStateDisabled || quotationStateDisabled || rfqRoundStateDisabled || roundDisabled

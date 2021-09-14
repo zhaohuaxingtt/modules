@@ -292,5 +292,11 @@ export default {
 			z-index: 0;
 		}
 	}
+
+	.w-e-content-preview {
+		p {
+			word-break: break-all;
+		}
+	}
 }
 </style>
