@@ -185,6 +185,8 @@ export default {
       if (!this.multipleSelection.some(item => item.partCbdType == 0 || item.partCbdType == 1)) return iMessage.warn(this.language("QINGXUANZEZHISHAOYITIAOYUANLINGJIANSHUJUZUOWEITIANJIAYANGBAN", "请选择至少一条原零件数据作为添加样板"))
 
       this.multipleSelection.forEach(item => {
+        if (item.partCbdType != 0 && item.partCbdType != 1) return
+
         const data = cloneDeep(item)
         data.id = ""
         data.index = ""
