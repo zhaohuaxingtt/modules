@@ -70,7 +70,7 @@
             </template>
           </el-table-column>
         </el-table-column>
-        <el-table-column :label="language('SHEBEIFEI', '设备费')" align="center">
+        <el-table-column :label="language('AEKO_SHEBEIFEIBIANDONG', '设备费变动')" align="center">
           <el-table-column align="center" width="104" :render-header="h => h('span', { domProps: { innerHTML: `${ language('SHEBEIFEILV', '设备费率') }<br/>（RMB/Hour）` }})">
             <template v-slot="scope">
               <iInput v-if="(scope.row.partCbdType == 1 || scope.row.partCbdType == 2) && !disabled" class="input-center" v-model="scope.row.deviceRate" :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.deviceRate !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].deviceRate) : false }" @input="handleInputByNumber($event, 'deviceRate', scope.row, 2, updateDeviceRate)"></iInput>
@@ -87,8 +87,8 @@
           </el-table-column>
           <el-table-column label="(RMB/Pc.)" align="center" width="93" prop="indirectManufacturingAmount"></el-table-column>
         </el-table-column>
-        <el-table-column align="center" width="100" prop="laborCost" :render-header="h => h('span', { domProps: { innerHTML: `${ language('RENGONGCHENGBEN', '人工成本') }<br/>（RMB/Pc.）` }})"></el-table-column>
-        <el-table-column align="center" min-width="102" prop="deviceCost" :render-header="h => h('span', { domProps: { innerHTML: `${ language('SHEBEICHENGBEN', '设备成本') }<br/>（RMB/Pc.）` }})"></el-table-column>
+        <el-table-column align="center" width="100" prop="laborCost" :render-header="h => h('span', { domProps: { innerHTML: `${ language('AEKO_RENGONGCHENGBENBIANDONG', '人工成本变动') }<br/>（RMB/Pc.）` }})"></el-table-column>
+        <el-table-column align="center" min-width="102" prop="deviceCost" :render-header="h => h('span', { domProps: { innerHTML: `${ language('AEKO_SHEBEICHENGBENBIANDONG', '设备成本变动') }<br/>（RMB/Pc.）` }})"></el-table-column>
       </el-table>
     </div>
   </div>  
