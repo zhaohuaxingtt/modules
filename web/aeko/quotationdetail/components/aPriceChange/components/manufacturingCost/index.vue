@@ -78,7 +78,7 @@
             </template>
           </el-table-column>
         </el-table-column>
-        <el-table-column :label="language('JIANJIEZHIZAOCHENGBEN', '间接制造成本')" align="center">
+        <el-table-column :label="language('AEKO_JIANJIEZHIZAOCHENGBENBIANDONG', '间接制造成本变动')" align="center">
           <el-table-column label="(%)" align="center" width="88">
             <template v-slot="scope">
               <iInput v-if="(scope.row.partCbdType == 1 || scope.row.partCbdType == 2) && !disabled" class="input-center" v-model="scope.row.indirectManufacturingRate" :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.indirectManufacturingRate !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].indirectManufacturingRate) : false }" @input="handleInputByNumber($event, 'indirectManufacturingRate', scope.row, 2, updateIndirectManufacturingRate)"></iInput>
