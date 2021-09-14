@@ -252,7 +252,7 @@ export default {
       }).then((res)=>{
         this.tableLoading = false;
         if(res.code == 200){
-          const link = `http://svmwt038/sol-bnk/pages/bnk/quotes/lsp-view.jsf?${paramsStr}&token=${res.data}`;
+          const link = `http://svmwt038/sol-bnk/pages/bnk/quotes/lsp-view.jsf?${paramsStr}token=${res.data}`;
           window.open(link,'_blank');
         }else{
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
