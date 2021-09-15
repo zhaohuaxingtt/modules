@@ -70,7 +70,11 @@ export default {
           }
         })
 
-        const otherFee = math.evaluate(`(${ math.bignumber(develop.shareTotal) || 0 } - ${ math.bignumber(develop.shareAmount) }) + (${ math.bignumber(module.shareTotal) || 0 } - ${ math.bignumber(module.shareAmount) })`).toFixed(2)
+        const otherFee = math.add(
+          math.subtract(math.bignumber(develop.shareTotal || 0), math.bignumber(develop.shareAmount || 0)),
+          math.subtract(math.bignumber(module.shareTotal || 0), math.bignumber(module.shareAmount || 0))
+        ).toFixed(2)
+
         this.$emit("update:otherFee", otherFee || 0)
       },
       deep: true

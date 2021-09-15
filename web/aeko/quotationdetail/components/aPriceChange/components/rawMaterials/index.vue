@@ -222,13 +222,13 @@ export default {
           )
         }
         
-        if (item.partCbdType == 1 && this.tableListData.some(row => row.partCbdType == 2 && ((row.originMaterialId === item.frontMaterialId || row.originMaterialId === item.id) || (row.frontOriginMaterialId === item.id || row.frontOriginMaterialId === item.frontMaterialId)))) {
+        if (item.partCbdType == 1 && this.tableListData.some(row => row.partCbdType == 2 && this.isRelatedNewData(item, row))) {
           await iMessageBox(
             this.language("HASNEWDATADELETE", "该原零件行项目对应的所有新零件行项目也将一并删除，请确认是否删除？"),
             { confirmButtonText: this.language("SHI", "是"), cancelButtonText: this.language("FOU", "否") }
           )
 
-          this.multipleSelection = this.multipleSelection.concat(this.tableListData.filter(row => row.partCbdType == 2 && ((row.originMaterialId === item.frontMaterialId || row.originMaterialId === item.id) || (row.frontOriginMaterialId === item.id || row.frontOriginMaterialId === item.frontMaterialId))))
+          this.multipleSelection = this.multipleSelection.concat(this.tableListData.filter(row => row.partCbdType == 2 && this.isRelatedNewData(item, row)))
         }
       }
 
@@ -253,6 +253,12 @@ export default {
 
       this.allCompute()
     },
+    isRelatedNewData(originData, newData) {
+      if (originData.id) return originData.id === newData.originMaterialId || originData.id === newData.frontOriginMaterialId
+      if (originData.frontMaterialId) return originData.frontMaterialId === newData.originMaterialId || originData.frontMaterialId === newData.frontOriginMaterialId
+
+      return false
+    },
     updateOriginDataIndex() {
       this.originTableListData.forEach((item, index) => this.$set(item, "index", `C${ ++index }`))
     },
@@ -270,7 +276,7 @@ export default {
       this.computeDirectMaterialCost(value, key, row)
     },
     computeDirectMaterialCost(originValue, originKey, row) {
-      const directMaterialCost = math.evaluate(`${ math.bignumber(row.unitPrice || 0) } * ${ math.bignumber(row.quantity || 0) }`).toFixed(2)
+      const directMaterialCost = math.multiply(math.bignumber(row.unitPrice || 0), math.bignumber(row.quantity || 0)).toFixed(2)
       this.$set(row, "directMaterialCost", directMaterialCost)
     
       this.computeMaterialManageCost(directMaterialCost, "directMaterialCost", row)
@@ -279,13 +285,16 @@ export default {
       this.computeMaterialManageCost(value, key, row)
     },
     computeMaterialManageCost(originValue, originKey, row) {
-      const materialManageCost = math.evaluate(`${ math.bignumber(row.directMaterialCost || 0) } * (${ math.bignumber(row.materialManageCostRate || 0) } / 100)`).toFixed(2)
+      const materialManageCost = math.multiply(
+        math.bignumber(row.directMaterialCost || 0),
+        math.divide(math.bignumber(row.materialManageCostRate || 0), 100)
+      ).toFixed(2)
       this.$set(row, "materialManageCost", materialManageCost)
 
       this.computeMaterialCost(materialManageCost, "materialManageCost", row)
     },
     computeMaterialCost(originValue, originKey, row) {
-      const materialCost = math.evaluate(`${ math.bignumber(row.directMaterialCost || 0) } + ${ math.bignumber(row.materialManageCost || 0) }`).toFixed(2)
+      const materialCost = math.add(math.bignumber(row.directMaterialCost || 0), math.bignumber(row.materialManageCost || 0)).toFixed(2)
       this.$set(row, "materialCost", materialCost)
     
       this.computeMaterialCostSum(materialCost, "materialCost", row)
@@ -325,7 +334,7 @@ export default {
         }
       })
 
-      const materialChange = math.evaluate(`${ newMaterialCostSum } - ${ originMaterialCostSum }`).toFixed(2)
+      const materialChange = math.subtract(newMaterialCostSum, originMaterialCostSum).toFixed(2)
       originMaterialCostSum = originMaterialCostSum.toFixed(2)
       originMaterialCostSumByNotSvwAssignPriceParts = originMaterialCostSumByNotSvwAssignPriceParts.toFixed(2)
       newMaterialCostSum = newMaterialCostSum.toFixed(2)

@@ -191,7 +191,7 @@ export default {
       return this.tabs
     },
     isSteel() {
-      return this.partInfo.partProjectType === partProjTypes.GANGCAIPILIANGCAIGOU
+      return this.partInfo.partProjectType === partProjTypes.GANGCAIPILIANGCAIGOU || this.partInfo.partProjectType === partProjTypes.GANGCAIYICIXINGCAIGOU
     }
   },
   watch: {

@@ -91,9 +91,40 @@ export default {
       }
     },
     computeChangeAmount() {
-      const originSum = math.evaluate(`${ this.sumData.originMaterialCostSum || 0 } + ${ this.sumData.originLaborCostSum || 0 } + ${ this.sumData.originDeviceCostSum || 0 }`)
-      const newSum = math.evaluate(`${ this.sumData.newMaterialCostSum || 0 } + ${ this.sumData.newLaborCostSum || 0 } + ${ this.sumData.newDeviceCostSum || 0 }`)
-      const discardCostChange = math.evaluate(`(${ newSum } / (1 - (${ this.tableListData[0].ratio || 0 } / 100)) - ${ newSum }) - (${ originSum } / (1 - (${ this.tableListData[0].originRatio || 0} / 100)) - ${ originSum })`).toFixed(2)
+      const originSum = math.add(
+        math.bignumber(this.sumData.originMaterialCostSum || 0),
+        math.bignumber(this.sumData.originLaborCostSum || 0),
+        math.bignumber(this.sumData.originDeviceCostSum || 0)
+      )
+
+      const newSum = math.add(
+        math.bignumber(this.sumData.newMaterialCostSum || 0),
+        math.bignumber(this.sumData.newLaborCostSum || 0),
+        math.bignumber(this.sumData.newDeviceCostSum || 0)
+      )
+
+      const discardCostChange = math.subtract(
+        math.subtract(
+          math.divide(
+            newSum,
+            math.subtract(
+              1,
+              math.divide(math.bignumber(this.tableListData[0].ratio || 0), 100)
+            )
+          ),
+          newSum
+        ),
+        math.subtract(
+          math.divide(
+            originSum,
+            math.subtract(
+              1,
+              math.divide(math.bignumber(this.tableListData[0].originRatio || 0), 100)
+            )
+          ),
+          originSum
+        ),
+      ).toFixed(2)
 
       this.$set(this.tableListData[0], "changeAmount", discardCostChange)
       this.$emit("update:discardCostChange", discardCostChange)
