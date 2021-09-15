@@ -276,7 +276,7 @@ export default {
       this.computeDirectMaterialCost(value, key, row)
     },
     computeDirectMaterialCost(originValue, originKey, row) {
-      const directMaterialCost = math.evaluate(`${ math.bignumber(row.unitPrice || 0) } * ${ math.bignumber(row.quantity || 0) }`).toFixed(2)
+      const directMaterialCost = math.multiply(math.bignumber(row.unitPrice || 0), math.bignumber(row.quantity || 0)).toFixed(2)
       this.$set(row, "directMaterialCost", directMaterialCost)
     
       this.computeMaterialManageCost(directMaterialCost, "directMaterialCost", row)
@@ -285,13 +285,16 @@ export default {
       this.computeMaterialManageCost(value, key, row)
     },
     computeMaterialManageCost(originValue, originKey, row) {
-      const materialManageCost = math.evaluate(`${ math.bignumber(row.directMaterialCost || 0) } * (${ math.bignumber(row.materialManageCostRate || 0) } / 100)`).toFixed(2)
+      const materialManageCost = math.multiply(
+        math.bignumber(row.directMaterialCost || 0),
+        math.divide(math.bignumber(row.materialManageCostRate || 0), 100)
+      ).toFixed(2)
       this.$set(row, "materialManageCost", materialManageCost)
 
       this.computeMaterialCost(materialManageCost, "materialManageCost", row)
     },
     computeMaterialCost(originValue, originKey, row) {
-      const materialCost = math.evaluate(`${ math.bignumber(row.directMaterialCost || 0) } + ${ math.bignumber(row.materialManageCost || 0) }`).toFixed(2)
+      const materialCost = math.add(math.bignumber(row.directMaterialCost || 0), math.bignumber(row.materialManageCost || 0)).toFixed(2)
       this.$set(row, "materialCost", materialCost)
     
       this.computeMaterialCostSum(materialCost, "materialCost", row)
@@ -331,7 +334,7 @@ export default {
         }
       })
 
-      const materialChange = math.evaluate(`${ newMaterialCostSum } - ${ originMaterialCostSum }`).toFixed(2)
+      const materialChange = math.subtract(newMaterialCostSum, originMaterialCostSum).toFixed(2)
       originMaterialCostSum = originMaterialCostSum.toFixed(2)
       originMaterialCostSumByNotSvwAssignPriceParts = originMaterialCostSumByNotSvwAssignPriceParts.toFixed(2)
       newMaterialCostSum = newMaterialCostSum.toFixed(2)

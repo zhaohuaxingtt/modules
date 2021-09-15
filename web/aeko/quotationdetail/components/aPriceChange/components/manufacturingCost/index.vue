@@ -287,19 +287,61 @@ export default {
       this.computeDeviceCost(value, key, row)
     },
     computeIndirectManufacturingAmount(originValue, originKey, row) {
-      const indirectManufacturingAmount = math.evaluate(`(${ math.bignumber(row.deviceRate || 0) } + ${ math.bignumber(row.directLaborRate || 0) } * ${ math.bignumber(row.directLaborQuantity || 0) }${ math.bignumber(row.directLaborRate || 0) } * ${ math.bignumber(row.directLaborQuantity || 0) }) * ${ math.bignumber(row.taktTime || 0) } / 3600 / ${ +row.taktTimeNumber ? math.bignumber(row.taktTimeNumber) : 1 } * (${ math.bignumber(row.indirectManufacturingRate || 0) } / 100)`).toFixed(2)
+      const indirectManufacturingAmount = math.chain(
+        math.add(
+          math.bignumber(row.deviceRate || 0),
+          math.multiply(
+            math.bignumber(row.directLaborRate || 0),
+            math.bignumber(row.directLaborQuantity || 0)
+          )
+        )
+      )
+      .multiply(math.bignumber(row.taktTime || 0))
+      .divide(3600)
+      .divide(+row.taktTimeNumber ? math.bignumber(row.taktTimeNumber) : 1)
+      .multiply(
+        math.divide(math.bignumber(row.indirectManufacturingRate || 0), 100)
+      )
+      .done()
+      .toFixed(2)
+
       this.$set(row, "indirectManufacturingAmount", indirectManufacturingAmount)
     
       this.computeMakeCost(indirectManufacturingAmount, "indirectManufacturingAmount", row)
     },
     computeLaborCost(originValue, originKey, row) {
-      const laborCost = math.evaluate(`(${ math.bignumber(row.directLaborRate || 0) } * ${ math.bignumber(row.directLaborQuantity || 0) } * ${ math.bignumber(row.taktTime || 0) }) / 3600 / ${ +row.taktTimeNumber ? math.bignumber(row.taktTimeNumber) : 1 } * (1 + (${ math.bignumber(row.indirectManufacturingRate || 0) } / 100))`).toFixed(2)
+      const laborCost = math.chain(math.bignumber(row.directLaborRate || 0))
+      .multiply(math.bignumber(row.directLaborQuantity || 0))
+      .multiply(math.bignumber(row.taktTime || 0))
+      .divide(3600)
+      .divide(+row.taktTimeNumber ? math.bignumber(row.taktTimeNumber) : 1)
+      .multiply(
+        math.add(
+          1,
+          math.divide(math.bignumber(row.indirectManufacturingRate || 0), 100)
+        )
+      )
+      .done()
+      .toFixed(2)
+
       this.$set(row, "laborCost", laborCost)
     
       this.computeLaborCostSum(laborCost, "laborCost", row)
     },
     computeDeviceCost(originValue, originKey, row) {
-      const deviceCost = math.evaluate(`(${ math.bignumber(row.deviceRate || 0) } * ${ math.bignumber(row.taktTime || 0) }) / 3600 / ${ +row.taktTimeNumber ? math.bignumber(row.taktTimeNumber) : 1 } * (1 + (${ math.bignumber(row.indirectManufacturingRate || 0) } / 100))`).toFixed(2)
+      const deviceCost = math.chain(math.bignumber(row.deviceRate || 0))
+      .multiply(math.bignumber(row.taktTime || 0))
+      .divide(3600)
+      .divide(+row.taktTimeNumber ? math.bignumber(row.taktTimeNumber) : 1)
+      .multiply(
+        math.add(
+          1,
+          math.divide(math.bignumber(row.indirectManufacturingRate || 0), 100)
+        )
+      )
+      .done()
+      .toFixed(2)
+      
       this.$set(row, "deviceCost", deviceCost)
 
       this.computeDeviceCostSum(deviceCost, "deviceCost", row)
@@ -402,7 +444,7 @@ export default {
       originIndirectManufacturingAmount = originIndirectManufacturingAmount.toFixed(2)
       newIndirectManufacturingAmount = newIndirectManufacturingAmount.toFixed(2)
 
-      this.sumDataReal.makeCostChange = math.evaluate(`${ newIndirectManufacturingAmount } - ${ originIndirectManufacturingAmount }`).toFixed(2)
+      this.sumDataReal.makeCostChange = math.subtract(math.bignumber(newIndirectManufacturingAmount), math.bignumber(originIndirectManufacturingAmount)).toFixed(2)
       this.updateSumData()
     },
     updateSumData(data) {

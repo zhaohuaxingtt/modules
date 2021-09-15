@@ -89,9 +89,35 @@ export default {
       }
     },
     computeChangeAmount() {
-      const rawMaterialManageChangeAmount = math.evaluate(`(${ math.bignumber(this.sumData.newMaterialCostSumByNotSvwAssignPriceParts || 0) } * (${ math.bignumber(this.tableListData[0].ratio || 0) } / 100)) - (${ math.bignumber(this.sumData.originMaterialCostSumByNotSvwAssignPriceParts || 0) } * (${ math.bignumber(this.tableListData[0].originRatio || 0) } / 100))`).toFixed(2)
-      const makeManageChangeAmount = math.evaluate(`((${ math.bignumber(this.tableListData[1].ratio || 0) } / 100) * (${ math.bignumber(this.sumData.newLaborCostSum || 0) } + ${ math.bignumber(this.sumData.newDeviceCostSum || 0) })) - ((${ math.bignumber(this.tableListData[1].originRatio || 0) } / 100) * (${ math.bignumber(this.sumData.originLaborCostSum || 0) } + ${ math.bignumber(this.sumData.originDeviceCostSum || 0) }))`).toFixed(2)
-      const manageFeeChange = math.evaluate(`${ rawMaterialManageChangeAmount } + ${ makeManageChangeAmount }`).toFixed(2)
+      const rawMaterialManageChangeAmount = math.subtract(
+        math.multiply(
+          math.bignumber(this.sumData.newMaterialCostSumByNotSvwAssignPriceParts || 0),
+          math.divide(math.bignumber(this.tableListData[0].ratio || 0), 100)
+        ),
+        math.multiply(
+          math.bignumber(this.sumData.originMaterialCostSumByNotSvwAssignPriceParts || 0),
+          math.divide(math.bignumber(this.tableListData[0].originRatio || 0), 100)
+        )
+      ).toFixed(2)
+
+      const makeManageChangeAmount = math.subtract(
+        math.multiply(
+          math.divide(math.bignumber(this.tableListData[1].ratio || 0), 100),
+          math.add(
+            math.bignumber(this.sumData.newLaborCostSum || 0),
+            math.bignumber(this.sumData.newDeviceCostSum || 0)
+          )
+        ),
+        math.multiply(
+          math.divide(math.bignumber(this.tableListData[1].originRatio || 0), 100),
+          math.add(
+            math.bignumber(this.sumData.originLaborCostSum || 0),
+            math.bignumber(this.sumData.originDeviceCostSum || 0)
+          )
+        )
+      ).toFixed(2)
+
+      const manageFeeChange = math.add(math.bignumber(rawMaterialManageChangeAmount), math.bignumber(makeManageChangeAmount)).toFixed(2)
 
       this.$set(this.tableListData[0], "changeAmount", rawMaterialManageChangeAmount)
       this.$set(this.tableListData[1], "changeAmount", makeManageChangeAmount)
