@@ -15,8 +15,11 @@
       @toggle-active="toggleActive"
       @set-menu-modal-visible="setMenuModalVisible"
     >
-      <template slot="menu">
+      <template slot="menu" v-if="activeIndex != '0'">
         <sideMenu :side-menus="sideMenus" :menu-map="menuMap" @hide-side-menu="hideSideMenu" />
+      </template>
+      <template slot="dashboard" v-else>
+        <myModules :index="activeIndex" />
       </template>
     </leftLayout>
     <div class="app-content" :class="{ keepAlive: $route.meta.keepAlive }">
@@ -32,10 +35,11 @@
 import topLayout from './components/topLayout/'
 import LeftLayout from './components/leftLayout'
 import sideMenu from './components/sideMenu'
+import myModules from './components/myModules'
 import { arrayToTree, treeToArray } from '@/utils'
 import _ from 'lodash'
 export default {
-  components: { topLayout, LeftLayout, sideMenu },
+  components: { topLayout, LeftLayout, sideMenu, myModules },
   props: {
     menus: {
       type: Array,
@@ -87,9 +91,12 @@ export default {
       list.forEach(item => {
         item.title = item.name
         item.key = item.id
-        item.permissionKey === 'RISE_HOME' ? (item.url = process.env.VUE_APP_HOST + item.url) : ''
+        item.permissionKey === 'RISE_HOME'
+          ? // item.url.slice(9)//
+            (item.url = item.url = process.env.VUE_APP_HOST + item.url)
+          : ''
         if (item.parentId && item.url && item.url.indexOf('http') === -1 && item.url.indexOf('https') === -1) {
-          item.url = process.env.VUE_APP_HOST + item.url
+          item.url = process.env.VUE_APP_HOST + item.url //item.url.slice(9)//
         } else {
           item.url = item.url || ''
         }
