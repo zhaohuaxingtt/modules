@@ -41,7 +41,13 @@
         }"
       >
         <div class="meunTopContent">
-          <span>Workbench</span>
+          <span>{{
+            activeIndex == '0'
+              ? 'Personalized Modules'
+              : activeIndex == '1'
+              ? 'Workbench'
+              : 'Common Function'
+          }}</span>
           <icon
             symbol
             name="iconcaidanshouqi"
@@ -50,6 +56,7 @@
           />
         </div>
         <slot name="menu"></slot>
+        <slot name="dashboard"></slot>
       </div>
     </div>
   </div>
