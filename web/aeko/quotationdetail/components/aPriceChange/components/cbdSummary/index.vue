@@ -40,7 +40,15 @@ export default {
   watch: {
     tableListData: {
       handler(list) {
-        const apriceChange = math.evaluate(`${ list[0].materialChange } + ${ list[0].makeCostChange } + ${ list[0].discardCostChange } + ${ list[0].manageFeeChange } + ${ list[0].otherFee } + ${ list[0].profitChange }`).toFixed(2)
+        const apriceChange = math.add(
+          math.bignumber(list[0].materialChange || 0),
+          math.bignumber(list[0].makeCostChange || 0),
+          math.bignumber(list[0].discardCostChange || 0),
+          math.bignumber(list[0].manageFeeChange || 0),
+          math.bignumber(list[0].otherFee || 0),
+          math.bignumber(list[0].profitChange || 0)
+        ).toFixed(2)
+        
         this.$set(list[0], "apriceChange", apriceChange)
         this.$emit("updateApriceChange", apriceChange)
       }, 

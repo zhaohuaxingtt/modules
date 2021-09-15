@@ -212,13 +212,13 @@ export default {
           )
         }
         
-        if (item.partCbdType == 1 && this.tableListData.some(row => row.partCbdType == 2 && ((row.originProductionId === item.id || row.originProductionId === item.frontProductionId) || (row.frontOriginProductionId === item.id || row.frontOriginProductionId === row.frontProductionId)))) {
+        if (item.partCbdType == 1 && this.tableListData.some(row => row.partCbdType == 2 && this.isRelatedNewData(item, row))) {
           await iMessageBox(
             this.language("HASNEWDATADELETE", "该原零件行项目对应的所有新零件行项目也将一并删除，请确认是否删除？"),
             { confirmButtonText: this.language("SHI", "是"), cancelButtonText: this.language("FOU", "否") }
           )
 
-          this.multipleSelection = this.multipleSelection.concat(this.tableListData.filter(row => row.partCbdType == 2 && ((row.originProductionId === item.id || row.originProductionId === item.frontProductionId) || (row.frontOriginProductionId === item.id || row.frontOriginProductionId === row.frontProductionId))))
+          this.multipleSelection = this.multipleSelection.concat(this.tableListData.filter(row => row.partCbdType == 2 && this.isRelatedNewData(item, row)))
         }
       }
 
@@ -235,7 +235,6 @@ export default {
             delete this.originMap[item.frontProductionId]
           }
           
-
           flag = true
         }
       })
@@ -243,6 +242,12 @@ export default {
       flag && (this.updateOriginDataIndex())
 
       this.allCompute()
+    },
+    isRelatedNewData(originData, newData) {
+      if (originData.id) return originData.id === newData.originProductionId || originData.id === newData.frontOriginProductionId
+      if (originData.frontProductionId) return originData.frontProductionId === newData.originProductionId || originData.frontProductionId === newData.frontOriginProductionId
+
+      return false
     },
     updateOriginDataIndex() {
       this.originTableListData.forEach((item, index) => this.$set(item, "index", `P${ ++index }`))
@@ -282,19 +287,61 @@ export default {
       this.computeDeviceCost(value, key, row)
     },
     computeIndirectManufacturingAmount(originValue, originKey, row) {
-      const indirectManufacturingAmount = math.evaluate(`(${ math.bignumber(row.deviceRate || 0) } + ${ math.bignumber(row.directLaborRate || 0) } * ${ math.bignumber(row.directLaborQuantity || 0) }${ math.bignumber(row.directLaborRate || 0) } * ${ math.bignumber(row.directLaborQuantity || 0) }) * ${ math.bignumber(row.taktTime || 0) } / 3600 / ${ +row.taktTimeNumber ? math.bignumber(row.taktTimeNumber) : 1 } * (${ math.bignumber(row.indirectManufacturingRate || 0) } / 100)`).toFixed(2)
+      const indirectManufacturingAmount = math.chain(
+        math.add(
+          math.bignumber(row.deviceRate || 0),
+          math.multiply(
+            math.bignumber(row.directLaborRate || 0),
+            math.bignumber(row.directLaborQuantity || 0)
+          )
+        )
+      )
+      .multiply(math.bignumber(row.taktTime || 0))
+      .divide(3600)
+      .divide(+row.taktTimeNumber ? math.bignumber(row.taktTimeNumber) : 1)
+      .multiply(
+        math.divide(math.bignumber(row.indirectManufacturingRate || 0), 100)
+      )
+      .done()
+      .toFixed(2)
+
       this.$set(row, "indirectManufacturingAmount", indirectManufacturingAmount)
     
       this.computeMakeCost(indirectManufacturingAmount, "indirectManufacturingAmount", row)
     },
     computeLaborCost(originValue, originKey, row) {
-      const laborCost = math.evaluate(`(${ math.bignumber(row.directLaborRate || 0) } * ${ math.bignumber(row.directLaborQuantity || 0) } * ${ math.bignumber(row.taktTime || 0) }) / 3600 / ${ +row.taktTimeNumber ? math.bignumber(row.taktTimeNumber) : 1 } * (1 + (${ math.bignumber(row.indirectManufacturingRate || 0) } / 100))`).toFixed(2)
+      const laborCost = math.chain(math.bignumber(row.directLaborRate || 0))
+      .multiply(math.bignumber(row.directLaborQuantity || 0))
+      .multiply(math.bignumber(row.taktTime || 0))
+      .divide(3600)
+      .divide(+row.taktTimeNumber ? math.bignumber(row.taktTimeNumber) : 1)
+      .multiply(
+        math.add(
+          1,
+          math.divide(math.bignumber(row.indirectManufacturingRate || 0), 100)
+        )
+      )
+      .done()
+      .toFixed(2)
+
       this.$set(row, "laborCost", laborCost)
     
       this.computeLaborCostSum(laborCost, "laborCost", row)
     },
     computeDeviceCost(originValue, originKey, row) {
-      const deviceCost = math.evaluate(`(${ math.bignumber(row.deviceRate || 0) } * ${ math.bignumber(row.taktTime || 0) }) / 3600 / ${ +row.taktTimeNumber ? math.bignumber(row.taktTimeNumber) : 1 } * (1 + (${ math.bignumber(row.indirectManufacturingRate || 0) } / 100))`).toFixed(2)
+      const deviceCost = math.chain(math.bignumber(row.deviceRate || 0))
+      .multiply(math.bignumber(row.taktTime || 0))
+      .divide(3600)
+      .divide(+row.taktTimeNumber ? math.bignumber(row.taktTimeNumber) : 1)
+      .multiply(
+        math.add(
+          1,
+          math.divide(math.bignumber(row.indirectManufacturingRate || 0), 100)
+        )
+      )
+      .done()
+      .toFixed(2)
+      
       this.$set(row, "deviceCost", deviceCost)
 
       this.computeDeviceCostSum(deviceCost, "deviceCost", row)
@@ -397,7 +444,7 @@ export default {
       originIndirectManufacturingAmount = originIndirectManufacturingAmount.toFixed(2)
       newIndirectManufacturingAmount = newIndirectManufacturingAmount.toFixed(2)
 
-      this.sumDataReal.makeCostChange = math.evaluate(`${ newIndirectManufacturingAmount } - ${ originIndirectManufacturingAmount }`).toFixed(2)
+      this.sumDataReal.makeCostChange = math.subtract(math.bignumber(newIndirectManufacturingAmount), math.bignumber(originIndirectManufacturingAmount)).toFixed(2)
       this.updateSumData()
     },
     updateSumData(data) {

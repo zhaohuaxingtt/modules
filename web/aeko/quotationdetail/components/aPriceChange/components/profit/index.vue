@@ -89,7 +89,24 @@ export default {
       }
     },
     computeChangeAmount() {
-      const profitChange = math.evaluate(`((${ math.bignumber(this.tableListData[0]?.ratio || 0) } / 100) * (${ math.bignumber(this.sumData.newMaterialCostSumByNotSvwAssignPriceParts || 0) } + ${ math.bignumber(this.sumData.newLaborCostSum || 0) } + ${ math.bignumber(this.sumData.newDeviceCostSum || 0) })) - ((${ math.bignumber(this.tableListData[0]?.originRatio || 0) } / 100) * (${ math.bignumber(this.sumData.originMaterialCostSumByNotSvwAssignPriceParts || 0) } + ${ math.bignumber(this.sumData.originLaborCostSum || 0) } + ${ math.bignumber(this.sumData.originDeviceCostSum || 0) }))`).toFixed(2)
+      const profitChange = math.subtract(
+        math.multiply(
+          math.divide(math.bignumber(this.tableListData[0]?.ratio || 0), 100),
+          math.add(
+            math.bignumber(this.sumData.newMaterialCostSumByNotSvwAssignPriceParts || 0),
+            math.bignumber(this.sumData.newLaborCostSum || 0),
+            math.bignumber(this.sumData.newDeviceCostSum || 0)
+          )
+        ),
+        math.multiply(
+          math.divide(math.bignumber(this.tableListData[0]?.originRatio || 0), 100),
+          math.add(
+            math.bignumber(this.sumData.originMaterialCostSumByNotSvwAssignPriceParts || 0),
+            math.bignumber(this.sumData.originLaborCostSum || 0),
+            math.bignumber(this.sumData.originDeviceCostSum || 0)
+          )
+        )
+      ).toFixed(2)
 
       this.$set(this.tableListData[0], "changeAmount", profitChange)
       this.$emit("update:profitChange", profitChange)

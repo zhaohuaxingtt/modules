@@ -24,8 +24,7 @@
             v-model="modules"
             :placeholder="language('QINGXUANZE','请选择')"
             :disabled="disabled"
-            @change="handleChangeByModules"
-            >
+            @change="handleChangeByModules">
             <el-option
               value=""
               :label="language('ALL', '全部') | capitalizeFilter"
@@ -136,12 +135,11 @@ export default {
   computed: {
     cbdSummarySelected() {
       if (this.modules.length) {
-         if (this.modules[0] === "") {
+        if (this.modules[0] === "") {
           return this.moduleOptions.map(item => item.code).join(",")
         } else {
           const selected = this.moduleOptions.filter(item => this.modules.includes(item.value))
-
-          return selected.join(",")
+          return selected.map(item => item.code).join(",")
         } 
       } else {
         return ""
@@ -163,6 +161,14 @@ export default {
         profitChange: this.profitChange || "0.00"
       }]
     },
+  },
+  watch: {
+    moduleMap: {
+      handler(nv, ov) {
+
+      },
+      deep: true
+    }
   },
   methods: {
     init() {
@@ -209,7 +215,7 @@ export default {
       .then(res => {
         if (res.code == 200) {
           this.form = res.data
-          this.hasManualInput = res.data.hasManualInput ? (res.data.hasManualInput === null ? true : false) : true
+          this.hasManualInput = res.data.hasManualInput ? true : (res.data.hasManualInput === null ? true : false)
           this.apriceChange = res.data.apriceChange
           this.setCbdSummarySelected(res.data.cbdSummarySelected)
           this.rawMaterialsTableData = Array.isArray(res.data.rawMaterialList) ? res.data.rawMaterialList : []
