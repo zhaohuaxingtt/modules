@@ -51,7 +51,7 @@
 
 <script>
 import { iInput, Icon } from 'rise'
-import { updateModules } from '@/api/home'
+import { updateModules } from '../../api/index'
 export default {
   components: { iInput, Icon },
   data() {
@@ -69,15 +69,15 @@ export default {
         },
         {
           component: 'Volume',
-          avatar: require('@/assets/images/home/volume.png')
+          avatar: require('../../assets/images/volume.png')
         },
         {
           component: 'Sponser',
-          avatar: require('@/assets/images/home/sponsor.png')
+          avatar: require('../../assets/images/sponsor.png')
         },
         {
           component: 'Sourcing',
-          avatar: require('@/assets/images/home/sourcing.png')
+          avatar: require('../../assets/images/sourcing.png')
         }
       ]
     }
