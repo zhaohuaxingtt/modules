@@ -19,8 +19,16 @@
               <div class="partNameColumn">
                 <iconFont v-if="scope.row.partCbdType == 2" class="iconFont" />
                 <div>
-                  <iInput v-if="(scope.row.partCbdType == 1 || scope.row.partCbdType == 2) && !disabled" class="input-center" v-model="scope.row.partName" :class="{ changeClass: originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId] ? (scope.row.partName !== originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId].partName) : false }"></iInput>
-                  <div v-else :class="{ changeClass: originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId] ? (scope.row.partName !== originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId].partName) : false }">{{ scope.row.partName }}</div>
+                  <iSelect v-if="(scope.row.partCbdType == 1 || scope.row.partCbdType == 2) && !disabled" class="select-center" v-model="scope.row.partName" :class="{ changeClass: originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId] ? (scope.row.partName !== originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId].partName) : false }">
+                    <el-option
+                      v-for="item in materialTypeOptions"
+                      :key="item.key"
+                      :label="item.label"
+                      :value="item.value"
+                    ></el-option>
+                  </iSelect>
+                  <!-- <iInput v-if="(scope.row.partCbdType == 1 || scope.row.partCbdType == 2) && !disabled" class="input-center" v-model="scope.row.partName" :class="{ changeClass: originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId] ? (scope.row.partName !== originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId].partName) : false }"></iInput> -->
+                  <div v-else :class="{ changeClass: originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId] ? (scope.row.partName !== originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId].partName) : false }">{{ partNameTranslate(scope.row.partName) }}</div>
                 </div>
               </div>
             </template>
@@ -131,6 +139,11 @@ export default {
       type: Object,
       default: () => ({})
     },
+    materialTypeOptions: {
+      type: Array,
+      required: true,
+      default: () => ([])
+    }
   },
   data() {
     return {
@@ -354,6 +367,10 @@ export default {
         this.computeMaterialManageCost("", "", item)
         this.computeMaterialCost("", "", item)
       })
+    },
+    partNameTranslate(value) {
+      const data = this.materialTypeOptions.find(item => item.value === value)
+      return data ? data.label : value
     }
   }
 }

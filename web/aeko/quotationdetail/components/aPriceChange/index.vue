@@ -47,6 +47,7 @@
             v-if="moduleMap.material" 
             v-model="rawMaterialsTableData" 
             :disabled="disabled"
+            :materialTypeOptions="materialTypeOptions"
             :sumData.sync="rawMaterialsSumData"
             v-permission.auto="AEKO_QUOTATION_CBD_VIEW_YUANCAILIAOSANJIAN|原材料/散件" />
           <manufacturingCost 
@@ -81,6 +82,7 @@ import otherCost from "./components/otherCost"
 import profit from "./components/profit"
 import { validateChangeKeysByRawMaterials, validateChangeKeysByManufacturingCost } from "./components/data"
 import { getAekoCarDosage, getAekoQuotationSummary, saveAekoQuotationSummary, exportQuotation } from "@/api/aeko/quotationdetail"
+import { getDictByCode } from "@/api/dictionary"
 import { numberProcessor } from "@/utils"
 
 export default {
@@ -128,7 +130,8 @@ export default {
       otherCostTableData: [],
       otherFee: 0,
       profitTableData: [],
-      profitChange: 0
+      profitChange: 0,
+      materialTypeOptions: []
     }
   },
   inject: ["getBasicInfo", "allSummaryData"],
@@ -153,12 +156,12 @@ export default {
     },
     cbdSummaryTableData() {
       return [{
-        materialChange: this.rawMaterialsSumData.materialChange || "0.00",
-        makeCostChange: this.manufacturingCostSumData.makeCostChange || "0.00",
-        discardCostChange: this.discardCostChange || "0.00",
-        manageFeeChange: this.manageFeeChange || "0.00",
+        materialChange: this.moduleMap.material ? (this.rawMaterialsSumData.materialChange || "0.00") : "0.00",
+        makeCostChange: this.moduleMap.production ? (this.manufacturingCostSumData.makeCostChange || "0.00") : "0.00",
+        discardCostChange: this.moduleMap.scrap ? (this.discardCostChange || "0.00") : "0.00",
+        manageFeeChange: this.moduleMap.manage ? (this.manageFeeChange || "0.00") : "0.00",
         otherFee: this.otherFee || "0.00",
-        profitChange: this.profitChange || "0.00"
+        profitChange: this.moduleMap.profit ? (this.profitChange || "0.00") : "0.00"
       }]
     },
   },
@@ -168,7 +171,17 @@ export default {
 
       },
       deep: true
+    },
+    hasManualInput(value) {
+      if (value) {
+        this.$emit("updateApriceChange", this.apriceChange)
+      } else {
+        this.$emit("updateApriceChange", this.cbdSummaryTableData[0].apriceChange)
+      }
     }
+  },
+  created() {
+    this.getMaterialTypeOptions()
   },
   methods: {
     init() {
@@ -205,6 +218,23 @@ export default {
         }
       })
       .catch()
+    },
+    getMaterialTypeOptions() {
+      getDictByCode("MaterialType")
+      .then(res => {
+        if (res.code == 200) {
+          this.materialTypeOptions = 
+            Array.isArray(res.data) && res.data[0] && Array.isArray(res.data[0].subDictResultVo) ?
+            res.data[0].subDictResultVo.map(item => ({
+              key: item.code,
+              label: item.name,
+              value: item.code
+            })) :
+            []
+        } else {
+          iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+        }
+      })
     },
     getAekoQuotationSummary() {
       this.loading = true
