@@ -212,13 +212,13 @@ export default {
           )
         }
         
-        if (item.partCbdType == 1 && this.tableListData.some(row => row.partCbdType == 2 && ((row.originProductionId === item.id || row.originProductionId === item.frontProductionId) || (row.frontOriginProductionId === item.id || row.frontOriginProductionId === row.frontProductionId)))) {
+        if (item.partCbdType == 1 && this.tableListData.some(row => row.partCbdType == 2 && this.isRelatedNewData(item, row))) {
           await iMessageBox(
             this.language("HASNEWDATADELETE", "该原零件行项目对应的所有新零件行项目也将一并删除，请确认是否删除？"),
             { confirmButtonText: this.language("SHI", "是"), cancelButtonText: this.language("FOU", "否") }
           )
 
-          this.multipleSelection = this.multipleSelection.concat(this.tableListData.filter(row => row.partCbdType == 2 && ((row.originProductionId === item.id || row.originProductionId === item.frontProductionId) || (row.frontOriginProductionId === item.id || row.frontOriginProductionId === row.frontProductionId))))
+          this.multipleSelection = this.multipleSelection.concat(this.tableListData.filter(row => row.partCbdType == 2 && this.isRelatedNewData(item, row)))
         }
       }
 
@@ -235,7 +235,6 @@ export default {
             delete this.originMap[item.frontProductionId]
           }
           
-
           flag = true
         }
       })
@@ -243,6 +242,12 @@ export default {
       flag && (this.updateOriginDataIndex())
 
       this.allCompute()
+    },
+    isRelatedNewData(originData, newData) {
+      if (originData.id) return originData.id === newData.originProductionId || originData.id === newData.frontOriginProductionId
+      if (originData.frontProductionId) return originData.frontProductionId === newData.originProductionId || originData.frontProductionId === newData.frontOriginProductionId
+
+      return false
     },
     updateOriginDataIndex() {
       this.originTableListData.forEach((item, index) => this.$set(item, "index", `P${ ++index }`))
