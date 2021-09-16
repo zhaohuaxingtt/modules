@@ -270,7 +270,7 @@ export default{
       laborCostSummaryL2: 0,
       deviceCostSummaryL2: 0,
       scrapSummaryL2: 0,
-      sourceRequestData: {}
+      sourceResponseData: {}
     }
   },
   watch:{
@@ -815,7 +815,7 @@ export default{
          getCostSummary({ ...allpagefrom, rfqId: undefined }).then(async res=>{
           if(res.data){
             r(res.data)
-            this.sourceRequestData = cloneDeep(res.data)
+            this.sourceResponseData = cloneDeep(res.data)
             const data = await this.getBzfreeAndYunshuFree();
             this.packAndShipFee = data
             this.allTableData = this.translateDataForRender(res.data)
@@ -1119,10 +1119,10 @@ export default{
           data['persent'] = getPersent(total,this.Aprice,a)
 
           if (!this.Aprice.some(key => data['tableData'][0][key] || data['tableData'][0][key] === 0)) {
-            this.$set(data['tableData'][0], "totalPrice", this.sourceRequestData.aprice)
+            this.$set(data['tableData'][0], "totalPrice", this.sourceResponseData.aprice)
 
             if (['packageCost','transportCost','operateCost'].some(key => b[key] || b[key] === 0)) {
-              this.$set(data['tableData'][0], "totalPriceBprice", this.sourceRequestData.bprice)
+              this.$set(data['tableData'][0], "totalPriceBprice", this.sourceResponseData.bprice)
             }
           }
         } else {
