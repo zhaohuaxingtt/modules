@@ -24,20 +24,17 @@
                             :clearable="false"
                             :picker-options="{
                                 disabledDate(time){
-                                    const date = new Date(time)
-                                    const pickerYear = date.getFullYear()
-                                    const afterDate = tableData[index+1] ? new Date(tableData[index+1][titleItem.key]) : null
-                                    const afterYear = afterDate ? afterDate.getFullYear() : null
-                                    const beforeDate = (index-1)>-1 ? new Date(tableData[index-1][titleItem.key]) : null
-                                    const beforeYear = beforeDate ? beforeDate.getFullYear() : null
-                                    if (afterYear && beforeYear) {
-                                        return pickerYear <= beforeYear || pickerYear >= afterYear
+                                    const pickDate = +moment(time)
+                                    const afterDate = +(moment(tableData[index+1] ? new Date(tableData[index+1][titleItem.key]) : null).startOf('month'))
+                                    const beforeDate = +(moment((index-1)>-1 ? new Date(tableData[index-1][titleItem.key]) : null).endOf('month'))
+                                    if (afterDate && beforeDate) {
+                                        return pickDate <= beforeDate || pickDate >= afterDate
                                     }
-                                    if (afterYear) {
-                                        return pickerYear >= afterYear
+                                    if (afterDate) {
+                                        return pickDate >= afterDate
                                     }
-                                    if (beforeYear) {
-                                        return pickerYear <= beforeYear
+                                    if (beforeDate) {
+                                        return pickDate <= beforeDate
                                     }
                                     return false
                                 }}"

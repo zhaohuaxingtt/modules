@@ -1,8 +1,8 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-07-21 17:04:56
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-09-10 14:59:33
+ * @LastEditors: Hao,Jiang
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
                   2）用户点击“保存”按钮，则保存当前页面已经编辑和输入的所有信息
@@ -21,7 +21,7 @@
     <!--------------------------------------------------------->
     <!----------------------百分比模块-------------------------->
     <!--------------------------------------------------------->
-    <persentComponents ref='components' :cbdlist='cbdlist' :quotationId='partInfo.quotationId' :tableData='topTableData' :disabled='disabled' :allTableData='allTableData' :partType="partInfo.partType" :partProjectType="partInfo.partProjectType"></persentComponents>
+    <persentComponents ref='components' :cbdlist='cbdlist' :isSteel="isSteel" :quotationId='partInfo.quotationId' :tableData='topTableData' :disabled='disabled' :allTableData='allTableData' :partType="partInfo.partType" :partProjectType="partInfo.partProjectType"></persentComponents>
     <!--------------------------------------------------------->
     <!----------------------2.1 原材料/散件--------------------->
     <!--------------------------------------------------------->
@@ -177,8 +177,8 @@ import tableTemlate from './components/tableTemlate'
 import {persentDatalist,titleYcl,titleCbzz,titlebfcb,titleglf,titleqtfy,titlelr,titleCBD,allpagefrom,needContactData,Aprice,getAallPrice,getPersent,cbdlist, titleYclByL3, titleCbzzByL3, titlebfcbByL3, titleglfByL3, titleqtfyByL3, titlelrByL3} from './components/data'
 import {iButton,iMessage} from 'rise'
 import {getCostSummary,packageTransport} from '@/api/rfqManageMent/rfqDetail'
-import {findFiles,postCostSummary,deleteFile,savePackageTransport,getCostSummaryDB,updateCostSummaryDB} from '@/api/rfqManageMent/quotationdetail'
-import {downloadFile, downloadUdFile} from '@/api/file'
+import {postCostSummary,savePackageTransport,getCostSummaryDB,updateCostSummaryDB} from '@/api/rfqManageMent/quotationdetail'
+import {getFiles,deleteFiles,downloadUdFile} from '@/api/file'
 import {selectDictByKeyss} from '@/api/dictionary'
 import quotationAnalysis from './components/quotationAnalysis'
 import {partProjTypes} from '@/config'
@@ -203,6 +203,10 @@ export default{
     disabled:{
       type:Boolean,
       default:false
+    },
+    isSteel: {
+      type: Boolean,
+      default: false
     }
   },
   data(){
@@ -245,11 +249,11 @@ export default{
         tableData:[]
       },
       tableDataCbd:[],
-      tableDataCbdModel:{},
       cbdSelect:{
         list:[]
       },
       dbDetailList: [],
+      tableDataCbdModel:{},
       titleYclByL3,
       titleYclByL3Status: false,
       titleCbzzByL3,
@@ -265,7 +269,8 @@ export default{
       materialSummaryL2ByFalse: 0,
       laborCostSummaryL2: 0,
       deviceCostSummaryL2: 0,
-      scrapSummaryL2: 0
+      scrapSummaryL2: 0,
+      sourceRequestData: {}
     }
   },
   watch:{
@@ -306,7 +311,7 @@ export default{
     // eslint-disable-next-line no-undef
     ...Vuex.mapState({
       userInfo: state => state.permission.userInfo,
-    }),
+    })
   },
   methods:{    
     translateDicKeyCodeToName(list){
@@ -366,11 +371,7 @@ export default{
      */    
     disabel(){
       if(this.cbdSelect.list.length == 0) return iMessage.warn('请选择cbd文件')
-      const fileIds = []
-      this.cbdSelect.list.forEach(res=>{
-        fileIds.push(res.id)
-      })
-      deleteFile({fileIds:fileIds}).then(res=>{
+      deleteFiles(this.cbdSelect.list.map(r=>r.id)).then(res=>{
         if(res.code == 200){
           iMessage.success('操作成功!')
           this.findFiles()
@@ -734,27 +735,27 @@ export default{
           levelOneSumDTO: this.allTableData.level === 1 ? baseSumDTO : undefined,
           levelTwoSumDTO: this.allTableData.level === 2 ? {
             ...baseSumDTO,
-            discardCost: sendData.discardCost,
-            makeCost: sendData.makeCost.records,
-            manageFee: sendData.manageFee,
-            otherFee: sendData.otherFee,
-            profit: sendData.profit,
-            rawMaterial: sendData.rawMaterial.records,
+            discardCost: this.allTableData.discardCost,
+            makeCost: this.allTableData.makeCost.records,
+            manageFee: this.allTableData.manageFee,
+            otherFee: this.allTableData.otherFee,
+            profit: this.allTableData.profit,
+            rawMaterial: this.allTableData.rawMaterial.records,
           } : undefined,
           levelThreeSumDTO: this.allTableData.level === 3 ? {
             ...baseSumDTO,
-            discardCost: sendData.discardCost,
-            makeCost: sendData.makeCost.records,
-            manageFee: sendData.manageFee,
-            otherFee: sendData.otherFee,
-            profit: sendData.profit,
-            rawMaterial: sendData.rawMaterial.records,
+            discardCost: this.allTableData.discardCost,
+            makeCost: this.allTableData.makeCost.records,
+            manageFee: this.allTableData.manageFee,
+            otherFee: this.allTableData.otherFee,
+            profit: this.allTableData.profit,
+            rawMaterial: this.allTableData.rawMaterial.records,
           } : undefined,
           partType: this.partInfo.partType,
           quotationId: this.partInfo.quotationId,
-          startProductDate: sendData.startProductDate,
+          startProductDate: this.allTableData.startProductDate,
         }
-
+        
         if (form.cbdLevel == 2) {
           if (!this.validateByL2(form)) return
         }
@@ -762,23 +763,12 @@ export default{
         if (form.cbdLevel == 3) {
           if (!this.validateByL3(form)) return
         }
-
-        // console.log("sendData", sendData)
-        // sendData.makeCost = sendData.makeCost.records
-        // sendData.rawMaterial = sendData.rawMaterial.records
-        // sendData['sumDTO'] = this.topTableData.tableData[0]
-        // sendData['quotationId'] = this.partInfo.quotationId
-        // sendData['cbdLevel'] = this.allTableData.level
-        // sendData['sumVO'] = undefined
-        // sendData['level'] = undefined
-        // sendData.partType = this.partInfo.partType
-        // sendData.partProjectType = this.partInfo.partProjectType
-        
         postCostSummary(form).then(res=>{
           if(res.code == 200){
             r()
             if (type !== "submit") iMessage.success('操作成功')
             this.updateCbdLevel(this.allTableData.level)
+            this.init()
           }else{
             j(res.desZh)
             iMessage.error(res.desZh)
@@ -810,6 +800,7 @@ export default{
         this.allpagefrom.rfqId = this.partInfo.rfqId
         this.allpagefrom.quotationId = this.partInfo.quotationId
         this.translateCbdList(this.partInfo.cbdLevel)
+
         this.getCostSummary()
       }
     },
@@ -824,9 +815,11 @@ export default{
          getCostSummary({ ...allpagefrom, rfqId: undefined }).then(async res=>{
           if(res.data){
             r(res.data)
+            this.sourceRequestData = cloneDeep(res.data)
             const data = await this.getBzfreeAndYunshuFree();
             this.packAndShipFee = data
             this.allTableData = this.translateDataForRender(res.data)
+            console.log("data", data)
             this.topTableData = this.translateDataTopData(cloneDeep(this.allTableData), data)
             this.$refs.components.partsQuotationss(this.partInfo.rfqId,this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId,this.partInfo.round,this.allTableData.level)
             // this.allpagefrom.quotationId,
@@ -1102,9 +1095,6 @@ export default{
         data['level'] = this.allTableData && this.allTableData.level?this.allTableData.level:this.partInfo.currentCbdLevel
         // eslint-disable-next-line no-undef
         data['startProductDate'] = baseData.startProductDate?moment(new Date(baseData.startProductDate)).format('YYYY-MM-DD HH:mm:ss'):''
-
-        console.log("data", data)
-
         return data
       } catch (error) {
         console.warn(error)
@@ -1123,9 +1113,22 @@ export default{
         })
 
         data['tableData'].push(a)
-        const total = getAallPrice(this.Aprice,a)
-        data['tableData'][0]['totalPrice'] = total
-        data['persent'] = getPersent(total,this.Aprice,a)
+        if (!this.isSteel) {
+          const total = getAallPrice(this.Aprice,a)
+          data['tableData'][0]['totalPrice'] = total
+          data['persent'] = getPersent(total,this.Aprice,a)
+
+          if (!this.Aprice.some(key => data['tableData'][0][key] || data['tableData'][0][key] === 0)) {
+            this.$set(data['tableData'][0], "totalPrice", this.sourceRequestData.aprice)
+
+            if (['packageCost','transportCost','operateCost'].some(key => b[key] || b[key] === 0)) {
+              this.$set(data['tableData'][0], "totalPriceBprice", this.sourceRequestData.bprice)
+            }
+          }
+        } else {
+          data['persent'] = getPersent(data['tableData'][0]['totalPrice'],this.Aprice,a)
+        }
+
         console.log("data", data)
         return data
       } catch (error) {
@@ -1142,17 +1145,15 @@ export default{
      */    
     findFiles(pageSize=10,currPage=1){
       return new Promise((r)=>{
-          findFiles({
-            rfqId:this.partInfo.rfqId,
-            round:this.partInfo.round || 1,
-            size:pageSize,
-            current:currPage,
+          getFiles({
+            hostId:this.partInfo.quotationId,
             fileType:this.allTableData.level - 1,
-            partPrjCode:this.partInfo.fsNum || 'FS-21-0000015'
+            page:pageSize,
+            currPage:currPage
           }).then(res=>{
-            if(res.data && res.data.records){
-              this.tableDataCbd = res.data.records
-              this.tableDataCbdModel = res.data
+            if(res.data){
+              this.tableDataCbd = res.data
+              this.tableDataCbdModel = res
               r(res.data)
             }
         }).catch(err=>{
@@ -1252,9 +1253,9 @@ export default{
 
     // L2计算
     handleInputByRawMaterialL2(value, row) {
-      this.$set(row, "indirectMaterialCost", math.evaluate(`${ row.unitPrice || 0 } * ${ row.quantity || 0 }`).toFixed(4))
-      this.$set(row, "materialManageCost", math.evaluate(`${ row.indirectMaterialCost || 0 } * (${ row.materialManageCostRate || 0 } / 100)`).toFixed(4))
-      this.$set(row, "materialCost", math.evaluate(`${ row.indirectMaterialCost || 0 } + ${ row.materialManageCost || 0 }`).toFixed(4))
+      this.$set(row, "indirectMaterialCost", math.evaluate(`${ row.unitPrice || 0 } * ${ row.quantity || 0 }`).toFixed(2))
+      this.$set(row, "materialManageCost", math.evaluate(`${ row.indirectMaterialCost || 0 } * (${ row.materialManageCostRate || 0 } / 100)`).toFixed(2))
+      this.$set(row, "materialCost", math.evaluate(`${ row.indirectMaterialCost || 0 } + ${ row.materialManageCost || 0 }`).toFixed(2))
 
       this.materialSummaryL2 = 0 // 头表原材料/散件
       this.materialSummaryL2ByFalse = 0 // 原材料/散件 by SVW指定价格散件为否
@@ -1264,7 +1265,7 @@ export default{
         this.materialSummaryL2ByFalse = item.isSvwAssignPriceParts ? this.materialSummaryL2ByFalse : math.add(this.materialSummaryL2ByFalse, math.bignumber(item.materialCost || 0))
       })
 
-      this.$set(this.topTableData.tableData[0], "materialSummary", this.materialSummaryL2.toFixed(4))
+      this.$set(this.topTableData.tableData[0], "materialSummary", this.materialSummaryL2.toFixed(2))
 
       this.handleInputByDiscardCostL2("", this.allTableData.discardCost[0])
       this.handleInputByManageFeeL2()
@@ -1272,9 +1273,9 @@ export default{
     },
 
     handleInputByMakeCostL2(value, row) {
-      this.$set(row, "indirectManufacturingAmount", math.evaluate(`(${ row.deviceRate || 0 } + ${ row.directLaborRate || 0 } * ${ row.directLaborQuantity || 0 }) * ${ row.taktTime || 0 } / 3600 / ${ row.taktTimeNumber ? row.taktTimeNumber : 1 } * (${ row.indirectManufacturingRate || 0 } / 100)`).toFixed(4))
-      this.$set(row, "laborCost", math.evaluate(`${ row.directLaborRate || 0 } * ${ row.directLaborQuantity || 0 } * ${ row.taktTime || 0 } / 3600 / ${ row.taktTimeNumber ? row.taktTimeNumber : 1 } * (1 + (${ row.indirectManufacturingRate || 0 } / 100))`).toFixed(4))
-      this.$set(row, "deviceCost", math.evaluate(`${ row.deviceRate || 0 } * ${ row.taktTime || 0 } / 3600 / ${ row.taktTimeNumber ? row.taktTimeNumber : 1 } * (1 + (${ row.indirectManufacturingRate || 0 } / 100))`).toFixed(4))
+      this.$set(row, "indirectManufacturingAmount", math.evaluate(`(${ row.deviceRate || 0 } + ${ row.directLaborRate || 0 } * ${ row.directLaborQuantity || 0 }) * ${ row.taktTime || 0 } / 3600 / ${ row.taktTimeNumber ? row.taktTimeNumber : 1 } * (${ row.indirectManufacturingRate || 0 } / 100)`).toFixed(2))
+      this.$set(row, "laborCost", math.evaluate(`${ row.directLaborRate || 0 } * ${ row.directLaborQuantity || 0 } * ${ row.taktTime || 0 } / 3600 / ${ row.taktTimeNumber ? row.taktTimeNumber : 1 } * (1 + (${ row.indirectManufacturingRate || 0 } / 100))`).toFixed(2))
+      this.$set(row, "deviceCost", math.evaluate(`${ row.deviceRate || 0 } * ${ row.taktTime || 0 } / 3600 / ${ row.taktTimeNumber ? row.taktTimeNumber : 1 } * (1 + (${ row.indirectManufacturingRate || 0 } / 100))`).toFixed(2))
     
       this.laborCostSummaryL2 = 0 // 人工成本
       this.deviceCostSummaryL2 = 0 // 设备成本
@@ -1284,7 +1285,7 @@ export default{
         this.deviceCostSummaryL2 = math.add(this.deviceCostSummaryL2, math.bignumber(item.deviceCost || 0)) // 计算设备成本
       })
 
-      this.$set(this.topTableData.tableData[0], "productionSummary", math.add(this.laborCostSummaryL2, this.deviceCostSummaryL2).toFixed(4))
+      this.$set(this.topTableData.tableData[0], "productionSummary", math.add(this.laborCostSummaryL2, this.deviceCostSummaryL2).toFixed(2))
 
       this.handleInputByDiscardCostL2("", this.allTableData.discardCost[0])
       this.handleInputByManageFeeL2()
@@ -1292,7 +1293,7 @@ export default{
     },
 
     handleInputByDiscardCostL2(value, row) {
-      this.$set(row, "amount", math.evaluate(`(${ this.materialSummaryL2 || 0 } + ${ this.laborCostSummaryL2 || 0 } + ${ this.deviceCostSummaryL2 || 0 }) / (1 - (${ row.ratio || 0 } / 100)) - (${ this.materialSummaryL2 || 0 } + ${ this.laborCostSummaryL2 || 0 } + ${ this.deviceCostSummaryL2 || 0 })`).toFixed(4))
+      this.$set(row, "amount", math.evaluate(`(${ this.materialSummaryL2 || 0 } + ${ this.laborCostSummaryL2 || 0 } + ${ this.deviceCostSummaryL2 || 0 }) / (1 - (${ row.ratio || 0 } / 100)) - (${ this.materialSummaryL2 || 0 } + ${ this.laborCostSummaryL2 || 0 } + ${ this.deviceCostSummaryL2 || 0 })`).toFixed(2))
     
       this.scrapSummaryL2 = 0 // 报废成本
 
@@ -1300,28 +1301,28 @@ export default{
         this.scrapSummaryL2 = math.add(this.scrapSummaryL2, math.bignumber(item.amount || 0)) // 计算报废成本
       })
 
-      this.$set(this.topTableData.tableData[0], "scrapSummary", this.scrapSummaryL2.toFixed(4))
+      this.$set(this.topTableData.tableData[0], "scrapSummary", this.scrapSummaryL2.toFixed(2))
     },
 
     handleInputByManageFeeL2(value, row) {
-      this.$set(this.allTableData.manageFee[0], "amount", math.evaluate(`${ this.materialSummaryL2ByFalse || 0 } * (${ this.allTableData.manageFee[0].ratio || 0 } / 100)`).toFixed(4))
-      this.$set(this.allTableData.manageFee[1], "amount", math.evaluate(`(${ math.add(this.laborCostSummaryL2, this.deviceCostSummaryL2) || 0 }) * (${ this.allTableData.manageFee[1].ratio || 0 } / 100)`).toFixed(4))
+      this.$set(this.allTableData.manageFee[0], "amount", math.evaluate(`${ this.materialSummaryL2ByFalse || 0 } * (${ this.allTableData.manageFee[0].ratio || 0 } / 100)`).toFixed(2))
+      this.$set(this.allTableData.manageFee[1], "amount", math.evaluate(`(${ math.add(this.laborCostSummaryL2, this.deviceCostSummaryL2) || 0 }) * (${ this.allTableData.manageFee[1].ratio || 0 } / 100)`).toFixed(2))
     
-      this.$set(this.topTableData.tableData[0], "manageSummary", math.add(math.bignumber(this.allTableData.manageFee[0].amount || 0), math.bignumber(this.allTableData.manageFee[1].amount || 0)).toFixed(4))
+      this.$set(this.topTableData.tableData[0], "manageSummary", math.add(math.bignumber(this.allTableData.manageFee[0].amount || 0), math.bignumber(this.allTableData.manageFee[1].amount || 0)).toFixed(2))
     },
 
     handleInputByProfitL2(value, row) {
-      this.$set(row, "amount", math.evaluate(`(${ row.ratio || 0 } / 100) * (${ math.add(this.laborCostSummaryL2, this.deviceCostSummaryL2) || 0 } + ${ this.materialSummaryL2ByFalse || 0 })`).toFixed(4))
+      this.$set(row, "amount", math.evaluate(`(${ row.ratio || 0 } / 100) * (${ math.add(this.laborCostSummaryL2, this.deviceCostSummaryL2) || 0 } + ${ this.materialSummaryL2ByFalse || 0 })`).toFixed(2))
     
-      this.$set(this.topTableData.tableData[0], "profitSummary", math.add(math.bignumber(this.allTableData.profit[0].amount || 0), 0).toFixed(4))
+      this.$set(this.topTableData.tableData[0], "profitSummary", math.add(math.bignumber(this.allTableData.profit[0].amount || 0), 0).toFixed(2))
     },
 
     // L3计算
     handleInputByRawMaterialL3(value, row) {
-      this.$set(row, "directMaterialCost", math.evaluate(`(${ row.unitPrice || 0 } * ${ row.roughWeight || 0 }) - (${ row.roughWeight || 0 } - ${ row.suttleWeight || 0 }) * ${ row.recycleUnitPrice || 0 }`).toFixed(4))
-      this.$set(row, "lossCost", math.evaluate(`${ row.directMaterialCost || 0 } / (1 - ${ row.lossCostRate || 0 } / 100) - ${ row.directMaterialCost || 0 }`).toFixed(4))
-      this.$set(row, "indirectMaterialCost", math.evaluate(`${ row.indirectMaterialCostRatio || 0 } / 100 * (${ row.unitPrice || 0 } * ${ row.roughWeight || 0 } + ${ row.lossCost || 0 })`).toFixed(4))
-      this.$set(row, "materialCost", math.evaluate(`${ row.directMaterialCost || 0 } + ${ row.lossCost || 0 } + ${ row.earlierLogisticsCost || 0 } + ${ row.indirectMaterialCost || 0 }`).toFixed(4))
+      this.$set(row, "directMaterialCost", math.evaluate(`(${ row.unitPrice || 0 } * ${ row.roughWeight || 0 }) - (${ row.roughWeight || 0 } - ${ row.suttleWeight || 0 }) * ${ row.recycleUnitPrice || 0 }`).toFixed(2))
+      this.$set(row, "lossCost", math.evaluate(`${ row.directMaterialCost || 0 } / (1 - ${ row.lossCostRate || 0 } / 100) - ${ row.directMaterialCost || 0 }`).toFixed(2))
+      this.$set(row, "indirectMaterialCost", math.evaluate(`${ row.indirectMaterialCostRatio || 0 } / 100 * (${ row.unitPrice || 0 } * ${ row.roughWeight || 0 } + ${ row.lossCost || 0 })`).toFixed(2))
+      this.$set(row, "materialCost", math.evaluate(`${ row.directMaterialCost || 0 } + ${ row.lossCost || 0 } + ${ row.earlierLogisticsCost || 0 } + ${ row.indirectMaterialCost || 0 }`).toFixed(2))
     
       let materialSummary = 0 // 头表原材料/散件
       let scrapSummary = 0 // 报废成本
@@ -1334,39 +1335,39 @@ export default{
         scrapSummary = math.add(scrapSummary, math.bignumber(item.lossCost || 0)) // 计算报废成本
       })
 
-      this.$set(this.topTableData.tableData[0], "materialSummary", materialSummary.toFixed(4))
-      this.$set(this.allTableData.discardCost[0], "amount", scrapSummary.toFixed(4))
-      this.$set(this.topTableData.tableData[0], "scrapSummary", scrapSummary.toFixed(4))
+      this.$set(this.topTableData.tableData[0], "materialSummary", materialSummary.toFixed(2))
+      this.$set(this.allTableData.discardCost[0], "amount", scrapSummary.toFixed(2))
+      this.$set(this.topTableData.tableData[0], "scrapSummary", scrapSummary.toFixed(2))
 
       // 计算报废率
       if (math.evaluate(`${ this.topTableData.tableData[0].materialSummary || 0 } + ${ this.topTableData.tableData[0].productionSummary || 0 }`) === "0") {
         this.$set(this.allTableData.discardCost[0], "ratio", 0)
       } else {
-        this.$set(this.allTableData.discardCost[0], "ratio", math.evaluate(`${ this.allTableData.discardCost[0].amount } / (${ this.topTableData.tableData[0].materialSummary || 0 } + ${ this.topTableData.tableData[0].productionSummary || 0 })`).toFixed(4))
+        this.$set(this.allTableData.discardCost[0], "ratio", math.evaluate(`${ this.allTableData.discardCost[0].amount } / (${ this.topTableData.tableData[0].materialSummary || 0 } + ${ this.topTableData.tableData[0].productionSummary || 0 })`).toFixed(2))
       }
 
-      this.$set(this.allTableData.manageFee[0], "amount", math.evaluate(`${ this.topTableData.tableData[0].materialSummary } * (${ this.allTableData.manageFee[0].ratio } / 100)`).toFixed(4))
-      this.$set(this.allTableData.manageFee[0], "blockAmount", math.evaluate(`${ this.allTableData.manageFee[0].amount } * 1`).toFixed(4))
+      this.$set(this.allTableData.manageFee[0], "amount", math.evaluate(`${ this.topTableData.tableData[0].materialSummary } * (${ this.allTableData.manageFee[0].ratio } / 100)`).toFixed(2))
+      this.$set(this.allTableData.manageFee[0], "blockAmount", math.evaluate(`${ this.allTableData.manageFee[0].amount } * 1`).toFixed(2))
 
-      this.$set(this.allTableData.profit[0], "amount", math.evaluate(`${ this.topTableData.tableData[0].materialSummary } * (${ this.allTableData.profit[0].ratio } / 100)`).toFixed(4))
-      this.$set(this.allTableData.profit[0], "blockAmount", math.evaluate(`${ this.allTableData.profit[0].amount } * 1`).toFixed(4))
+      this.$set(this.allTableData.profit[0], "amount", math.evaluate(`${ this.topTableData.tableData[0].materialSummary } * (${ this.allTableData.profit[0].ratio } / 100)`).toFixed(2))
+      this.$set(this.allTableData.profit[0], "blockAmount", math.evaluate(`${ this.allTableData.profit[0].amount } * 1`).toFixed(2))
     
       const manageSummary = this.allTableData.manageFee.reduce((acc, cur) => {
         return math.add(acc, math.bignumber(cur.amount || 0))
       }, 0)
-      this.$set(this.topTableData.tableData[0], "manageSummary", manageSummary.toFixed(4))
+      this.$set(this.topTableData.tableData[0], "manageSummary", manageSummary.toFixed(2))
 
       const profitSummary = this.allTableData.profit.reduce((acc, cur) => {
         return math.add(acc, math.bignumber(cur.amount || 0))
       }, 0)
-      this.$set(this.topTableData.tableData[0], "profitSummary", profitSummary.toFixed(4))
+      this.$set(this.topTableData.tableData[0], "profitSummary", profitSummary.toFixed(2))
     },
 
     handleInputByMakeCostL3(value, row) {
-      this.$set(row, "directProduceCost", math.evaluate(`(${ row.perHourMachineCost || 0 } + ${ row.perHourLaborCost || 0 } * ${ row.workerCount || 0 }) * ${ row.perProduceTime } / 3600 / ${ row.perCycleCount ? row.perCycleCount : 1 }`).toFixed(4))
-      this.$set(row, "lossCost", math.evaluate(`${ row.directProduceCost || 0 } / (1 - ${ row.lossCostRate || 0 } / 100) - ${ row.directProduceCost || 0 }`).toFixed(4))
-      this.$set(row, "indirectProduceCost", math.evaluate(`(${ row.directProduceCost || 0 } + ${ row.lossCost || 0 } + ${ row.produceSwitchCost || 0 }) * (${ row.indirectProduceCostRate || 0 } / 100)`).toFixed(4))
-      this.$set(row, "totalCost", math.evaluate(`${ row.directProduceCost || 0 } + ${ row.lossCost || 0 } + ${ row.produceSwitchCost || 0 } + ${ row.indirectProduceCost || 0 }`).toFixed(4))
+      this.$set(row, "directProduceCost", math.evaluate(`(${ row.perHourMachineCost || 0 } + ${ row.perHourLaborCost || 0 } * ${ row.workerCount || 0 }) * ${ row.perProduceTime } / 3600 / ${ row.perCycleCount ? row.perCycleCount : 1 }`).toFixed(2))
+      this.$set(row, "lossCost", math.evaluate(`${ row.directProduceCost || 0 } / (1 - ${ row.lossCostRate || 0 } / 100) - ${ row.directProduceCost || 0 }`).toFixed(2))
+      this.$set(row, "indirectProduceCost", math.evaluate(`(${ row.directProduceCost || 0 } + ${ row.lossCost || 0 } + ${ row.produceSwitchCost || 0 }) * (${ row.indirectProduceCostRate || 0 } / 100)`).toFixed(2))
+      this.$set(row, "totalCost", math.evaluate(`${ row.directProduceCost || 0 } + ${ row.lossCost || 0 } + ${ row.produceSwitchCost || 0 } + ${ row.indirectProduceCost || 0 }`).toFixed(2))
     
       let productionSummary = 0 // 头表制造成本
       let scrapSummary = 0 // 报废成本
@@ -1379,52 +1380,52 @@ export default{
         scrapSummary = math.add(scrapSummary, math.bignumber(item.lossCost || 0)) // 计算报废成本
       })
 
-      this.$set(this.topTableData.tableData[0], "productionSummary", productionSummary.toFixed(4))
-      this.$set(this.allTableData.discardCost[0], "amount", scrapSummary.toFixed(4))
-      this.$set(this.topTableData.tableData[0], "scrapSummary", scrapSummary.toFixed(4))
+      this.$set(this.topTableData.tableData[0], "productionSummary", productionSummary.toFixed(2))
+      this.$set(this.allTableData.discardCost[0], "amount", scrapSummary.toFixed(2))
+      this.$set(this.topTableData.tableData[0], "scrapSummary", scrapSummary.toFixed(2))
 
       // 计算报废率
       if (math.evaluate(`${ this.topTableData.tableData[0].materialSummary || 0 } + ${ this.topTableData.tableData[0].productionSummary || 0 }`) === "0") {
         this.$set(this.allTableData.discardCost[0], "ratio", 0)
       } else {
-        this.$set(this.allTableData.discardCost[0], "ratio", math.evaluate(`${ this.allTableData.discardCost[0].amount } / (${ this.topTableData.tableData[0].materialSummary || 0 } + ${ this.topTableData.tableData[0].productionSummary || 0 })`).toFixed(4))
+        this.$set(this.allTableData.discardCost[0], "ratio", math.evaluate(`${ this.allTableData.discardCost[0].amount } / (${ this.topTableData.tableData[0].materialSummary || 0 } + ${ this.topTableData.tableData[0].productionSummary || 0 })`).toFixed(2))
       }
 
-      this.$set(this.allTableData.manageFee[1], "amount", math.evaluate(`${ this.topTableData.tableData[0].productionSummary } * (${ this.allTableData.manageFee[1].ratio } / 100)`).toFixed(4))
-      this.$set(this.allTableData.manageFee[1], "blockAmount", math.evaluate(`${ this.allTableData.manageFee[1].amount } * 1`).toFixed(4))
+      this.$set(this.allTableData.manageFee[1], "amount", math.evaluate(`${ this.topTableData.tableData[0].productionSummary } * (${ this.allTableData.manageFee[1].ratio } / 100)`).toFixed(2))
+      this.$set(this.allTableData.manageFee[1], "blockAmount", math.evaluate(`${ this.allTableData.manageFee[1].amount } * 1`).toFixed(2))
 
-      this.$set(this.allTableData.profit[1], "amount", math.evaluate(`${ this.topTableData.tableData[0].materialSummary } * (${ this.allTableData.profit[1].ratio } / 100)`).toFixed(4))
-      this.$set(this.allTableData.profit[1], "blockAmount", math.evaluate(`${ this.allTableData.profit[1].amount } * 1`).toFixed(4))
+      this.$set(this.allTableData.profit[1], "amount", math.evaluate(`${ this.topTableData.tableData[0].materialSummary } * (${ this.allTableData.profit[1].ratio } / 100)`).toFixed(2))
+      this.$set(this.allTableData.profit[1], "blockAmount", math.evaluate(`${ this.allTableData.profit[1].amount } * 1`).toFixed(2))
     
       const manageSummary = this.allTableData.manageFee.reduce((acc, cur) => {
         return math.add(acc, math.bignumber(cur.amount || 0))
       }, 0)
-      this.$set(this.topTableData.tableData[0], "manageSummary", manageSummary.toFixed(4))
+      this.$set(this.topTableData.tableData[0], "manageSummary", manageSummary.toFixed(2))
 
       const profitSummary = this.allTableData.profit.reduce((acc, cur) => {
         return math.add(acc, math.bignumber(cur.amount || 0))
       }, 0)
-      this.$set(this.topTableData.tableData[0], "profitSummary", profitSummary.toFixed(4))
+      this.$set(this.topTableData.tableData[0], "profitSummary", profitSummary.toFixed(2))
     },
 
     handleInputByManageFeeL3(value, row) {
-      this.$set(row, "amount", math.evaluate(`${ this.topTableData.tableData[0].productionSummary } * (${ row.ratio || 0 } / 100)`).toFixed(4))
-      this.$set(row, "blockAmount", math.evaluate(`${ row.amount || 0 } * 1`).toFixed(4))
+      this.$set(row, "amount", math.evaluate(`${ this.topTableData.tableData[0].productionSummary } * (${ row.ratio || 0 } / 100)`).toFixed(2))
+      this.$set(row, "blockAmount", math.evaluate(`${ row.amount || 0 } * 1`).toFixed(2))
 
       const manageSummary = this.allTableData.manageFee.reduce((acc, cur) => {
         return math.add(acc, math.bignumber(cur.amount || 0))
       }, 0)
-      this.$set(this.topTableData.tableData[0], "manageSummary", manageSummary.toFixed(4))
+      this.$set(this.topTableData.tableData[0], "manageSummary", manageSummary.toFixed(2))
     },
 
     handleInputByProfitL3(value, row) {
-      this.$set(row, "amount", math.evaluate(`${ this.topTableData.tableData[0].productionSummary } * (${ row.ratio || 0 } / 100)`).toFixed(4))
-      this.$set(row, "blockAmount", math.evaluate(`${ row.amount || 0 } * 1`).toFixed(4))
+      this.$set(row, "amount", math.evaluate(`${ this.topTableData.tableData[0].productionSummary } * (${ row.ratio || 0 } / 100)`).toFixed(2))
+      this.$set(row, "blockAmount", math.evaluate(`${ row.amount || 0 } * 1`).toFixed(2))
 
       const profitSummary = this.allTableData.profit.reduce((acc, cur) => {
         return math.add(acc, math.bignumber(cur.amount || 0))
       }, 0)
-      this.$set(this.topTableData.tableData[0], "profitSummary", profitSummary.toFixed(4))
+      this.$set(this.topTableData.tableData[0], "profitSummary", profitSummary.toFixed(2))
     },
 
     itemTypeFilter(value) {

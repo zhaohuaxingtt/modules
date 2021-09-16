@@ -29,10 +29,11 @@
 </template>
 
 <script>
-// import Sortable from 'sortablejs'
+import Sortable from 'sortablejs'
 import iButton from '../iButton/index.vue'
 import iDialog from '../iDialog/index.vue'
 import icon from '../icon/index.vue'
+import _ from "lodash";
 export default {
   components: {
     iButton,

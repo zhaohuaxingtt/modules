@@ -58,7 +58,7 @@
         slot="reference"
         :disabled="disabled"
         :readonly="true"
-        placeholder="请选择"
+        :placeholder="placeholder"
         :title="inputData"
         ref="selectInput"
       ></el-input>
@@ -67,6 +67,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 export default {
   props: {
     values: {
@@ -101,7 +102,7 @@ export default {
       }
     },
     data: {
-      type: Number,
+      type: Array,
       default: function() {
         return []
       },
@@ -131,7 +132,13 @@ export default {
         return false
       }
     },
-    searchMethod: Function
+    searchMethod: Function,
+    placeholder: {
+      type: String,
+      default: () => {
+        return '请选择'
+      }
+    }
   },
   model: {
     prop: 'values',
@@ -155,10 +162,10 @@ export default {
       this.originData = originData
       if (this.selectedData.length) {
         const codes = this.selectedData.map(sd => {
-          return sd[this.value]
+          return sd[this.value].toString()
         })
         originData = originData.filter(od => {
-          return !codes.includes(od[this.value])
+          return !codes.includes(od[this.value].toString())
         })
         this.originData = originData
       }
@@ -206,10 +213,10 @@ export default {
       })
       if (this.selectedData.length) {
         const codes = this.selectedData.map(sd => {
-          return sd[this.value]
+          return sd[this.value].toString()
         })
         data = data.filter(od => {
-          return !codes.includes(od[this.value])
+          return !codes.includes(od[this.value].toString())
         })
         this.originData = _.cloneDeep(data)
       }

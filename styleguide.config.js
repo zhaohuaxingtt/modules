@@ -1,7 +1,7 @@
 /*
  * @Author: yuszhou
  * @Date: 2021-04-07 13:52:03
- * @LastEditTime: 2021-04-25 16:31:24
+ * @LastEditTime: 2021-08-23 17:55:15
  * @LastEditors: Please set LastEditors
  * @Description:自动生成文档的配置文件，对那个目录需要生成文档，做了控制
  * @FilePath: \front-common\vuese.config.js

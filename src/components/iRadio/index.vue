@@ -7,14 +7,14 @@
 
 <script>
 	import {
-		radio
+		Radio
 	} from 'element-ui'
 	/**
  * @example ./README.me
 */
 	export default {
 		name:'iRadio',
-		extends: radio
+		extends: Radio
 	}
 </script>
 

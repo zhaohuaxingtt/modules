@@ -449,7 +449,7 @@ export default {
       row.totalPrice = math.multiply(
         math.bignumber(row.quantity || 0),
         math.bignumber(row.assetUnitPrice || 0),
-      ).toFixed(4)
+      ).toFixed(2)
     },
     handleInputByAssetUnitPrice(val, row) {
       row.assetUnitPrice = numberProcessor(val, 2)
@@ -457,7 +457,7 @@ export default {
       row.totalPrice = math.multiply(
         math.bignumber(row.quantity || 0),
         math.bignumber(row.assetUnitPrice || 0),
-      ).toFixed(4)
+      ).toFixed(2)
     },
     getFee(){},
   }
