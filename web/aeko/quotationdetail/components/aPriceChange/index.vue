@@ -36,7 +36,7 @@
               :label="`${ item.seq } ${ language(item.key, item.label) }`"
               :key="$index"
             ></el-option>
-          </iSelect> 
+          </iSelect>
         </div>
         <cbdSummary class="margin-top20" v-model="cbdSummaryTableData" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_BIANDONGZHICBDHUIZONG|变动值CBD汇总" @updateApriceChange="$emit('updateApriceChange', $event)" />
         <div v-if="!loading">
@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import { iCard, iButton, iInput, iText, iSelect, iMessage } from "rise"
+import { iCard, iButton, iInput, iText, iSelect, iMessage, iMessageBox } from "rise"
 import cbdSummary from "./components/cbdSummary"
 import rawMaterials from "./components/rawMaterials"
 import manufacturingCost from "./components/manufacturingCost"
@@ -84,6 +84,7 @@ import { validateChangeKeysByRawMaterials, validateChangeKeysByManufacturingCost
 import { getAekoCarDosage, getAekoQuotationSummary, saveAekoQuotationSummary, exportQuotation } from "@/api/aeko/quotationdetail"
 import { getDictByCode } from "@/api/dictionary"
 import { numberProcessor } from "@/utils"
+import { difference } from "lodash"
 
 export default {
   components: { iCard, iButton, iInput, iText, iSelect, cbdSummary, rawMaterials, manufacturingCost, scrapCost, manageCost, otherCost, profit },
@@ -131,7 +132,8 @@ export default {
       otherFee: 0,
       profitTableData: [],
       profitChange: 0,
-      materialTypeOptions: []
+      materialTypeOptions: [],
+      responseData: {}
     }
   },
   inject: ["getBasicInfo", "allSummaryData"],
@@ -246,6 +248,12 @@ export default {
         if (res.code == 200) {
           this.form = res.data
           this.hasManualInput = res.data.hasManualInput ? true : (res.data.hasManualInput === null ? true : false)
+          
+          this.responseData = {}
+          if (this.hasManualInput) res.data.cbdSummarySelected = ""
+          this.responseData.hasManualInput = res.data.hasManualInput
+          this.responseData.cbdSummarySelected = res.data.cbdSummarySelected
+
           this.apriceChange = res.data.apriceChange
           this.setCbdSummarySelected(res.data.cbdSummarySelected)
           this.rawMaterialsTableData = Array.isArray(res.data.rawMaterialList) ? res.data.rawMaterialList : []
@@ -316,6 +324,9 @@ export default {
         }
 
         this.handleChangeByModules(this.modules)
+      } else {
+        this.modules = []
+        this.handleChangeByModules([])
       }
     },
     setScrapCostTableData(data = []) {
@@ -470,7 +481,7 @@ export default {
         }
       })
     },
-    saveAekoQuotationSummary(beforeHook, afterHook) {
+    async saveAekoQuotationSummary(beforeHook, afterHook) {
       if (!this.hasManualInput && this.moduleMap.material) {
         if (!this.rawMaterialsTableData.length || !this.rawMaterialsTableData.every(item => validateChangeKeysByRawMaterials.every(key => item[key] || item[key] === 0 || item[key] === false))) {
           return iMessage.warn(this.language("QINGTIANXIEWANZHENGYUANCAILIAOSANJIANCHENGBEN", "请填写完整原材料/散件成本"))
@@ -481,6 +492,15 @@ export default {
         if (!this.manufacturingCostTableData.length || !this.manufacturingCostTableData.every(item => validateChangeKeysByManufacturingCost.every(key => item[key] || item[key] === 0))) {
           return iMessage.warn(this.language("QINGTIANXIEWANZHENGZHIZAOCHENGBEN", "请填写完整制造成本"))
         }
+      }
+
+      const responseDataCbdSummarySelectedArr = this.responseData.cbdSummarySelected ? this.responseData.cbdSummarySelected.split(",") : []
+      const cbdSummarySelectedArr = this.cbdSummarySelected ? this.cbdSummarySelected.split(",") : []
+      if ((!this.responseData.hasManualInput && this.hasManualInput) || difference(responseDataCbdSummarySelectedArr, cbdSummarySelectedArr).length) {
+        await iMessageBox(
+          this.language("CANCELCBDADJUSTTIPS", "存在已维护的CBD调整部分被取消的情况，是否继续保存？"),
+          { confirmButtonText: this.language("SHI", "是"), cancelButtonText: this.language("FOU", "否") }
+        )
       }
 
       if (typeof beforeHook === "function") beforeHook()
