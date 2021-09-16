@@ -17,11 +17,17 @@
     <template v-for="items in tableTitle">
       <!----------------------A价------------------------>
       <el-table-column :key="items.key" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-if='items.props == "totalPrice"' :prop="items.props" :label="items.key ? $t(items.key) : items.name">
-        <template slot-scope="row">{{ isSteel ? row.row.totalPrice : getAallPrice(Aprice,row.row)}}</template>
+        <template slot-scope="row">
+          <span v-if="isSteel">{{ row.row.totalPrice }}</span>
+          <span v-else>{{ isEmptyPriceCompute(Aprice,row.row) ? row.row.totalPrice : getAallPrice(Aprice,row.row) }}</span>
+        </template>
       </el-table-column>
       <!----------------------B价------------------------>
       <el-table-column :key="items.key" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-else-if='items.props == "totalPriceBprice"' :prop="items.props" :label="items.key ? $t(items.key) : items.name">
-       <template slot-scope="row">{{ isSteel ? row.row.totalPrice : getAallPrice(Bprice,row.row)}}</template>
+        <template slot-scope="row">
+          <span v-if="isSteel">{{ row.row.totalPrice }}</span>
+          <span v-else>{{ isEmptyPriceCompute(['packageCost','transportCost','operateCost'],row.row) ? row.row.totalPriceBprice : getAallPrice(Bprice,row.row) }}</span>
+        </template>
       </el-table-column>
       <!----------------------需要高亮的列并且带有打开详情事件------------------------>
       <el-table-column :key="items.key" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-else-if='items.props == activeItems' :prop="items.props" :label="items.key ? $t(items.key) : items.name">
@@ -147,6 +153,9 @@ export default{
     }
   },
   methods:{
+    isEmptyPriceCompute(keys, row) {
+      return !(keys.some(key => row[key] || row[key] === 0))
+    },
     /**
      * @description:组合表头翻译 
      * @param {*}
