@@ -11,7 +11,7 @@
     <div class="iSearch-content" :class="{hiden:hidens}">
       <div class="operation" v-if='!hiddenRight'>
         <slot name='button'>
-          <iButton @click="$emit('sure')" >{{ $t('rfq.RFQINQUIRE') }}</iButton>
+          <iButton @click.enter="$emit('sure')" >{{ $t('rfq.RFQINQUIRE') }}</iButton>
           <iButton @click="$emit('reset')" >{{ $t('rfq.RFQRESET') }}</iButton>
         </slot>
         <i @click="toggle" v-if='!icon' class="el-icon-arrow-up icon margin-left20 cursor"
@@ -20,7 +20,7 @@
       <div class="serch" :style="`margin-right:${stypeWidth}px;`">
         <slot>
         </slot>
-      </div>
+      </div> 
     </div>
   </iCard>
 </template>

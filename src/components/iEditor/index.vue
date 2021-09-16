@@ -190,6 +190,10 @@ export default {
     this.destroy();
   },
   methods: {
+    insertHTML(value){
+      this.editor.cmd.do('insertHTML','<span>'+value+'</span>')
+      if (value) this.$emit("change", this.html());
+    },
     // 获取/设置 html
     html(value) {
       const result = this.editor.txt.html(value);
