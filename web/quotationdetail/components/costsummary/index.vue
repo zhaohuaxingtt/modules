@@ -269,7 +269,8 @@ export default{
       materialSummaryL2ByFalse: 0,
       laborCostSummaryL2: 0,
       deviceCostSummaryL2: 0,
-      scrapSummaryL2: 0
+      scrapSummaryL2: 0,
+      sourceRequestData: {}
     }
   },
   watch:{
@@ -814,9 +815,11 @@ export default{
          getCostSummary({ ...allpagefrom, rfqId: undefined }).then(async res=>{
           if(res.data){
             r(res.data)
+            this.sourceRequestData = cloneDeep(res.data)
             const data = await this.getBzfreeAndYunshuFree();
             this.packAndShipFee = data
             this.allTableData = this.translateDataForRender(res.data)
+            console.log("data", data)
             this.topTableData = this.translateDataTopData(cloneDeep(this.allTableData), data)
             this.$refs.components.partsQuotationss(this.partInfo.rfqId,this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId,this.partInfo.round,this.allTableData.level)
             // this.allpagefrom.quotationId,
@@ -1114,6 +1117,14 @@ export default{
           const total = getAallPrice(this.Aprice,a)
           data['tableData'][0]['totalPrice'] = total
           data['persent'] = getPersent(total,this.Aprice,a)
+
+          if (!this.Aprice.some(key => data['tableData'][0][key] || data['tableData'][0][key] === 0)) {
+            this.$set(data['tableData'][0], "totalPrice", this.sourceRequestData.aprice)
+
+            if (['packageCost','transportCost','operateCost'].some(key => b[key] || b[key] === 0)) {
+              this.$set(data['tableData'][0], "totalPriceBprice", this.sourceRequestData.bprice)
+            }
+          }
         } else {
           data['persent'] = getPersent(data['tableData'][0]['totalPrice'],this.Aprice,a)
         }
