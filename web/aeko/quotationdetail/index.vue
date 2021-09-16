@@ -270,10 +270,9 @@ export default {
       if (typeof component.save === "function") {
         const res = await component.save()
 
-        console.log("res", res)
-
         if (res.code != 200) {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+          this.submitLoading = false
           return
         }
       }
