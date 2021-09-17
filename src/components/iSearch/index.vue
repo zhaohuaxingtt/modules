@@ -17,7 +17,7 @@
         <i @click="toggle" v-if='!icon' class="el-icon-arrow-up icon margin-left20 cursor"
            :class="{rotate:hidens}"></i>
       </div>
-      <div class="serch" :style="`margin-right:${stypeWidth}px;`" v-on:keyup.13.stop="$emit('click')">
+      <div class="serch" :style="`margin-right:${stypeWidth}px;`" v-on:keyup.13.stop="$emit('sure')">
         <slot>
         </slot>
       </div> 
