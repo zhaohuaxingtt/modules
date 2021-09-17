@@ -7,8 +7,8 @@
  * @FilePath: \rise\src\components\iSearch\index.vue
 -->
 <template>
-  <iCard :title="title" :tabCard="tabCard">
-    <div class="iSearch-content" :class="{hiden:hidens}">
+  <iCard  :title="title" :tabCard="tabCard" >
+    <div class="iSearch-content" :class="{hiden:hidens}" >
       <div class="operation" v-if='!hiddenRight'>
         <slot name='button'>
           <iButton @click="$emit('sure')" >{{ $t('rfq.RFQINQUIRE') }}</iButton>
@@ -17,10 +17,10 @@
         <i @click="toggle" v-if='!icon' class="el-icon-arrow-up icon margin-left20 cursor"
            :class="{rotate:hidens}"></i>
       </div>
-      <div class="serch" :style="`margin-right:${stypeWidth}px;`">
+      <div class="serch" :style="`margin-right:${stypeWidth}px;`" v-on:keyup.13.stop="$emit('sure')">
         <slot>
         </slot>
-      </div>
+      </div> 
     </div>
   </iCard>
 </template>

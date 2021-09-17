@@ -172,29 +172,44 @@ export default {
       this.$set(this.originMap, data.frontProductionId, data)
     },
     handleAddNewData() {
-      if (!this.multipleSelection.some(item => item.partCbdType == 0 || item.partCbdType == 1)) return iMessage.warn(this.language("QINGXUANZEZHISHAOYITIAOYUANLINGJIANSHUJUZUOWEITIANJIAYANGBAN", "请选择至少一条原零件数据作为添加样板"))
+      if (!this.multipleSelection.length) return
+
+      const originIdSet = new Set()
       
       this.multipleSelection.forEach(item => {
-        if (item.partCbdType != 0 && item.partCbdType != 1) return
+        if (item.partCbdType == 0) {
+          originIdSet.add(item.id)
+        }
 
-        const data = cloneDeep(item)
+        if (item.partCbdType == 1) {
+          originIdSet.add(item.frontProductionId)
+        }
+
+        if (item.partCbdType == 2) {
+          originIdSet.add(item.originProductionId || item.frontOriginProductionId)
+        }
+      })
+
+      originIdSet.forEach(id => {
+        if (!this.originMap[id]) return
+
+        const originData = this.originMap[id]
+        const data = cloneDeep(originData)
         data.id = ""
         data.index = ""
         data.partCbdType = 2
 
-        if (item.partCbdType == 0) {
-          data.originProductionId = item.id
+        if (originData.partCbdType == 0) {
+          data.originProductionId = originData.id
         }
 
-        if (item.partCbdType == 1) {
-          data.frontOriginProductionId = item.id ? item.id : item.frontProductionId
+        if (originData.partCbdType == 1) {
+          data.frontOriginProductionId = originData.id ? originData.id : originData.frontProductionId
         }
 
-        if (item.partCbdType == 0 || item.partCbdType == 1) {
-          if (!this.validateChangeKeys.every(key => item[key] || item[key] === 0)) throw iMessage.warn(this.language("QINGXUANZETIANXIEWANZHENGDEYUANLINGJIANSHUJUZUOWEITIANJIAYANGBAN", "请选择填写完整的原零件数据作为添加样板"))
-        }
+        if (!this.validateChangeKeys.every(key => originData[key] || originData[key] === 0 || originData[key] === false)) throw iMessage.warn(this.language("XUANZEDESHUJUZHONGCUNZAIWEITIANXIEWANZHENGDEYUANLINGJIANSHUJU", "选择的数据中存在未填写完整的原零件数据"))
 
-        this.tableListData.splice(this.tableListData.indexOf(item) + 1, 0, data)
+        this.tableListData.splice(this.tableListData.indexOf(originData) + 1, 0, data)
       })
 
       this.$refs.table.clearSelection()
