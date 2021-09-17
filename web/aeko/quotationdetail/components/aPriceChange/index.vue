@@ -340,7 +340,8 @@ export default {
             typeNameByLang: () => this.language("ZHENGTIBAOFEICHENGBENBIANDONG", "整体报废成本变动"),
             originRatio: data[0].originRatio ?? "0.00",
             ratio: data[0].ratio ?? "0.00",
-            changeAmount: data[0].changeAmount ?? "0.00"
+            changeAmount: data[0].changeAmount ?? "0.00",
+            originScrapId: data[0].originScrapId
           }
         )
       } else {
@@ -446,7 +447,8 @@ export default {
             typeNameByLang: () => this.language("LIRUNBUHANSVWZHIDINGSANJIAN", "利润(不含SVW指定散件)"),
             originRatio: data[0].originRatio ?? "0.00",
             ratio: data[0].ratio ?? "0.00",
-            changeAmount: data[0].changeAmount ?? "0.00"
+            changeAmount: data[0].changeAmount ?? "0.00",
+            originProfitId: data[0].originProfitId
           }
         )
       } else {
