@@ -14,7 +14,6 @@
 
 <script>
 import Editor from 'wangeditor'
-import { cloneDeep } from 'lodash'
 
 // 校验valueType
 const validateValueType = function (valueType) {

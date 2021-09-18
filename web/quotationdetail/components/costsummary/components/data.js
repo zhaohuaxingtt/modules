@@ -402,11 +402,11 @@ export const tableTitleDB = [
 ]
 
 export const tableDataDB = [
-  {name: '出厂价 Exwork', seaPrice: '10', airPrice: '10', remark: ''},
+  {name: '出厂价 Ex-work', seaPrice: '10', airPrice: '10', remark: ''},
   {name: '离岸价 FOB', seaPrice: '10', airPrice: '10', remark: '原供应商 Original Supplier'},
   {name: '到岸价 CIF(=1+6+7+8+9+10)', seaPrice: '10', airPrice: '10', remark: ''},
   {name: '未完税交货 DDU', seaPrice: '10', airPrice: '10', remark: ''},
-  {name: '未完税交货 DDP', seaPrice: '10', airPrice: '10', remark: ''},
+  {name: '完税交货 DDP', seaPrice: '10', airPrice: '10', remark: ''},
   {name: '管理费用 Management expenses', seaPrice: '10', airPrice: '10', remark: ''},
   {name: '包装费 Packing Cost', seaPrice: '10', airPrice: '10', remark: ''},
   {name: '运保费 Transport Cost and Ensurance', seaPrice: '10', airPrice: '10', remark: ''},
@@ -422,7 +422,7 @@ export const mockData = [
   {
     "id": "1410545871969640449",
     "quotationId": null,
-    "name": "出⼚价 Exwor",
+    "name": "出⼚价 Ex-work",
     "isRequire": false,
     "remark": null,
     "isReduce": null,
@@ -458,7 +458,7 @@ export const mockData = [
   {
     "id": "1410545871978029057",
     "quotationId": null,
-    "name": "岸价 CIF(=1+6+7+8+9+10)",
+    "name": "到岸价 CIF(=1+6+7+8+9+10)",
     "isRequire": false,
     "remark": null,
     "isReduce": null,
@@ -494,7 +494,7 @@ export const mockData = [
   {
     "id": "1410545871978029059",
     "quotationId": null,
-    "name": "未完税交货DDP",
+    "name": "完税交货DDP",
     "isRequire": false,
     "remark": null,
     "isReduce": null,
