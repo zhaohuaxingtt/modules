@@ -41,13 +41,9 @@
         }"
       >
         <div class="meunTopContent">
-          <span>{{
-            activeIndex == '0'
-              ? 'Personalized Modules'
-              : activeIndex == '1'
-              ? 'Workbench'
-              : 'Common Function'
-          }}</span>
+          <span>
+            {{ activeIndex == '0' ? 'Personalized Modules' : activeIndex == '1' ? 'Workbench' : 'Common Function' }}
+          </span>
           <icon
             symbol
             name="iconcaidanshouqi"
@@ -85,7 +81,10 @@ export default {
     return this
   },
   created() {
-    const rootIndex = this.getActiveIndex(this.menus)
+    const rootIndex =
+      process.env.NODE_ENV === 'sit' || process.env.NODE_ENV === 'production'
+        ? this.getActiveIndexInSVW(this.menus)
+        : this.getActiveIndex(this.menus)
     console.log('rootIndex', rootIndex)
     this.activeIndex = rootIndex
     this.$emit('toggle-active', rootIndex)
@@ -148,6 +147,35 @@ export default {
         process.env.VUE_APP_PUBLICPATH !== '/portal/contract' &&
         process.env.VUE_APP_PUBLICPATH !== '/portal/meeting'
       ) {
+        index = _.findIndex(menus, item => {
+          return item.permissionKey === 'RISE_WORKBENCH'
+        })
+      }
+      return index
+    },
+    getActiveIndexInSVW(menus) {
+      let index = -1
+      const host = window.location.host
+      const isHome = this.$route.path === '/index'
+      const isAdmin = this.$route.meta.perm === 'admin'
+      const isPortal = host.indexOf('portal') !== -1
+      const isMeetingHall = this.$route.path === '/meeting/hall'
+      const isMeetingType = this.$route.path === '/meeting/type'
+      const isMeetingHome = this.$route.path === '/meeting/home'
+      const isContract = this.$route.path === '/contract/contractTemplate'
+      const isCF = (isPortal && !isHome && !isAdmin) || isMeetingHall
+      const isAdminMenus = isAdmin || isMeetingHome || isMeetingType || isContract
+      if (isHome) {
+        index = _.findIndex(menus, item => {
+          return item.permissionKey === 'RISE_HOME'
+        })
+      } else if (isCF) {
+        index = _.findIndex(menus, item => {
+          return item.permissionKey === 'RISE_COMMON_FUNCTION'
+        })
+      } else if (isAdminMenus) {
+        index = -1
+      } else {
         index = _.findIndex(menus, item => {
           return item.permissionKey === 'RISE_WORKBENCH'
         })
