@@ -49,5 +49,8 @@ module.exports = {
                     }
                 }
             }
-        }
+        },
+        transpileDependencies: [
+            /[/\\]node_modules[/\\](.+?)?element-ui(.*)[/\\]packages/
+        ]
 }
