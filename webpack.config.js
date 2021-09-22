@@ -70,28 +70,39 @@ module.exports = {
                 ]
             },
             {
-                test: /\.vue$/,
-                loader: 'vue-loader',
-                exclude: /(node_modules|web)/,
-                options: {}
+              test: /\.vue$/,
+              loader: 'vue-loader',
+              exclude: [
+                /web/
+              ],
+              include: [
+                path.resolve('src'),
+                path.resolve('node_modules/element-ui/packages')
+              ]
             },
             {
-                test: /\.js$/,
-                loader: 'babel-loader',
-                exclude: /(node_modules|web|utils)/
+              test: /\.js$/,
+              loader: 'babel-loader',
+              exclude: [
+                /web/,
+              ],
+              include: [
+                path.resolve('src'),
+                path.resolve('node_modules/element-ui/packages')
+              ]
             },
             {
-                test: /\.(png|jpg|gif|svg)$/,
-                loader: 'file-loader',
-                options: {
-                    name: '[name].[ext]?[hash]'
-                }
+              test: /\.(png|jpg|gif|svg)$/,
+              loader: 'file-loader',
+              options: {
+                name: '[name].[ext]?[hash]'
+              }
             }
         ]
     },
     externals: {
-        'vue': 'Vue',
-        'element-ui': 'element-ui'
+      'vue': 'vue',
+      'element-ui': 'element-ui'
     },
     resolve: {
         extensions: ['*', '.js', '.vue', '.json']

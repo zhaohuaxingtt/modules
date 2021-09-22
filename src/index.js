@@ -36,6 +36,7 @@ import iDropdown from './components/iDropdown'
 import iLog from './components/iLog'
 import iSelectCustom from './components/iSelectCustom'
 import iTableHeaderSorter from './components/iTableHeaderSorter'
+import iTable from "./components/iTable"
 
 const components = [
   iMessage,
@@ -65,7 +66,8 @@ const components = [
   iDropdown,
   iLog,
   iSelectCustom,
-  iTableHeaderSorter
+  iTableHeaderSorter,
+  iTable
 ]
 const install = function(Vue) {
   components.map(component => {
@@ -105,5 +107,6 @@ export {
   iDropdown,
   iLog,
   iSelectCustom,
-  iTableHeaderSorter
+  iTableHeaderSorter,
+  iTable
 }

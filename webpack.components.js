@@ -74,13 +74,20 @@ module.exports = {
       {
         test: /\.vue$/,
         loader: 'vue-loader',
-        options: {
-        }
+        exclude: [
+          /web/
+        ]
       },
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        exclude: /node_modules/
+        exclude: [
+          /web/
+        ],
+        include: [
+          path.resolve('src'),
+          path.resolve('node_modules/element-ui/packages')
+        ]
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
@@ -92,7 +99,7 @@ module.exports = {
     ]
   },
   externals: {
-    'vue': 'Vue',
+    'vue': 'vue',
     'element-ui': 'element-ui',
   },
   resolve: {

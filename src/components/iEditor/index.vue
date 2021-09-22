@@ -144,7 +144,8 @@ export default {
 				this.$emit('focus', this[`${this.valueType.toLowerCase()}`]()),
 		}
 
-		this.editor.config = cloneDeep({
+		// eslint-disable-next-line
+		this.editor.config = _.cloneDeep({
 			...this.editor.config,
 			...this.config,
 			...config,
