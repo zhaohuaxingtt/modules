@@ -81,6 +81,7 @@ export default {
     return this
   },
   created() {
+    // 根据不同环境变量，在不同环境判断一级菜单选中状态
     const rootIndex =
       process.env.NODE_ENV === 'sit' || process.env.NODE_ENV === 'production'
         ? this.getActiveIndexInSVW(this.menus)
@@ -122,6 +123,7 @@ export default {
     hideSideMenu() {
       this.menuVisible = false
     },
+    // dev vmsit 内部环境
     getActiveIndex(menus) {
       let index = -1
       index = _.findIndex(menus, item => {
@@ -153,6 +155,7 @@ export default {
       }
       return index
     },
+    // SVW 上汽大众环境
     getActiveIndexInSVW(menus) {
       let index = -1
       const host = window.location.host

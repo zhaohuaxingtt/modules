@@ -156,19 +156,22 @@ export default {
     }
   },
   watch: {
-    data(newValue) {
-      this.loading = !(newValue instanceof Array)
-      let originData = _.cloneDeep(newValue)
-      this.originData = originData
-      if (this.selectedData.length) {
-        const codes = this.selectedData.map(sd => {
-          return sd[this.value].toString()
-        })
-        originData = originData.filter(od => {
-          return !codes.includes(od[this.value].toString())
-        })
+    data: {
+      handler(newValue) {
+        this.loading = !(newValue instanceof Array)
+        let originData = _.cloneDeep(newValue)
         this.originData = originData
-      }
+        if (this.selectedData.length) {
+          const codes = this.selectedData.map(sd => {
+            return sd[this.value].toString()
+          })
+          originData = originData.filter(od => {
+            return !codes.includes(od[this.value].toString())
+          })
+          this.originData = originData
+        }
+      },
+      immediate: true
     },
     values: {
       immediate: true,

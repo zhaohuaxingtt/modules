@@ -8,7 +8,9 @@
 -->
 <template>
   <div class="content">
+    <!-- header -->
     <topLayout :menus="menus_admin"></topLayout>
+    <!-- 左侧菜单栏，一级菜单-->
     <leftLayout
       ref="leftLayout"
       :menus="menus"
@@ -16,12 +18,15 @@
       @set-menu-modal-visible="setMenuModalVisible"
     >
       <template slot="menu" v-if="activeIndex != '0'">
+        <!-- 左侧菜单栏，点击icon弹出二级菜单 只有workbench common function -->
         <sideMenu :side-menus="sideMenus" :menu-map="menuMap" @hide-side-menu="hideSideMenu" />
       </template>
       <template slot="dashboard" v-else>
+        <!-- 左侧菜单栏，点击icon弹出我的模块 只有home -->
         <myModules :index="activeIndex" />
       </template>
     </leftLayout>
+    <!-- 主体route-view -->
     <div class="app-content" :class="{ keepAlive: $route.meta.keepAlive }">
       <keep-alive>
         <router-view v-if="$route.meta.keepAlive" :key="$route.fullPath" />
@@ -52,8 +57,9 @@ export default {
     return {
       activeIndex: 1,
       menuMap: {},
-      menus_admin: [],
+      menus_admin: [], //管理员菜单
       menu2IconMap: {
+        // 一级菜单 默认icon及active icon
         RISE_HOME: ['iconhomeweixuanzhong', 'iconhomexuanzhong'],
         RISE_WORKBENCH: ['iconworkbenchweixuanzhong', 'iconworkbenchxuanzhong'],
         RISE_COMMON_FUNCTION: ['iconcommonfunctionweixuanzhong', 'iconcommonfunctionxuanzhong'],
@@ -65,7 +71,7 @@ export default {
   computed: {
     // eslint-disable-next-line no-undef
     ...Vuex.mapState({
-      menuList: state => state.permission.menuList
+      menuList: state => state.permission.menuList // 各个工程permission.js登录之后获取的userPermission中的menuList，通过store存入
     }),
     sideMenus() {
       if (this.menus.length > 0) {
@@ -78,6 +84,7 @@ export default {
     }
   },
   created() {
+    // 如果iLayout组件出入menus参数且menus.length !== 0则使用props中的menus，否则使用store中的menuList
     this.menus && this.menus.length ? this.getMenus() : this.getMenuList()
   },
   methods: {

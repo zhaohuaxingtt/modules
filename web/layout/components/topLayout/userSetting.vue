@@ -115,7 +115,7 @@ export default {
     handleHide() {
       this.active = false
     },
-    //模拟退出登录方法
+    //模拟退出登录方法，后台没有提供api接口
     logout() {
       removeToken()
       window.location.href = '/login'
@@ -128,6 +128,7 @@ export default {
         iMessage.success('coming soon')
       }
     },
+    //各个模块分布在不同工程，所以menu url跳转会支持工程内路由跳转及window.open,location.href 跳转
     handleRedirect(menu) {
       if (!menu.url) {
         iMessage.success('coming soon')
