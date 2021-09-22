@@ -73,11 +73,17 @@ module.exports = {
       },    
       {
         test: /\.vue$/,
-        loader: 'vue-loader'
+        loader: 'vue-loader',
+        exclude: [
+          /web/
+        ]
       },
       {
         test: /\.js$/,
         loader: 'babel-loader',
+        exclude: [
+          /web/
+        ],
         include: [
           path.resolve('src'),
           path.resolve('node_modules/element-ui/packages')
@@ -93,7 +99,7 @@ module.exports = {
     ]
   },
   externals: {
-    'vue': { commonjs: 'vue', commonjs2: 'vue', root: 'Vue' },
+    'vue': 'vue',
     'element-ui': 'element-ui',
   },
   resolve: {
