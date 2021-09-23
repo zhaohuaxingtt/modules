@@ -1,8 +1,8 @@
 /*
  * @Author: ldh
  * @Date: 2021-04-23 09:16:55
- * @LastEditors: ldh
- * @LastEditTime: 2021-06-08 19:45:41
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-09-23 10:13:39
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\data.js
  */
@@ -40,7 +40,7 @@ export const assetTypeCodeOptions = [
 
 export const developmentCostInfos = [
   { props: "rfqDevFeeTotal", name: "RFQ开发费用总计", key: "LK_RFQKAIFAFEIYONGZONGJI" },
-  { props: "devFee", name: "开发费用", key: "LK_KAIFAFEIYONG" },
+  { props: "devFee", name: "开发费用", key: "LK_KAIFAFEIYONG",languageKey:'LK_AEKO_KAIFAFEIHEJI',languageName:'开发费合计' },
   { props: "shareDevFee", name: "分摊开发费用", key: "LK_FENTANKAIFAFEIYONG" },
   { props: "shareQuantity", name: "分摊数量", key: "LK_FENTANSHULIANG" },
   { props: "unitPrice", name: "单件开发成本", key: "LK_DANJIANKAIFACHENGBEN" }
