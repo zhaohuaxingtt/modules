@@ -330,7 +330,7 @@ export const titleCbzzByL3 = [
   {props:'perHourMachineCost',name:'设备费率（RMB/Hour）',key: 'LK_SHEBEIFEILV',tooltip:true,width:'180',type:'input', inputType: 'decimal'},
   {props:'perHourLaborCost',name:'直接人工费率（RMB/Hour）',key: 'LK_ZHIJIERENGONGFEILV',tooltip:true,width:'180',type:'input', inputType: 'decimal'},
   {props:'workerCount',name:'直接人工数量（0..n）',key: 'LK_ZHIJIERENGONGSHULIANG',tooltip:true,width:'150',type:'input', inputType: 'decimal'},
-  {props:'perProduceTime',name:'每件生产时间',key: 'LK_MEIJIANSHNEGCHANSHIJIAN',tooltip:true,width:'150',type:'input', inputType: 'decimal'},
+  {props:'perProduceTime',name:'每件生产时间（sec.）',key: 'LK_MEIJIANSHNEGCHANSHIJIAN',tooltip:true,width:'150',type:'input', inputType: 'decimal'},
   {props:'perCycleCount',name:'每模生产零件数',key: 'LK_MEIMUSHENGCHANLINGJIANSHU',tooltip:true,width:'150',type:'input', inputType: 'decimal'},
   {props:'directProduceCost',name:'直接制造成本（RMB/PC.）',key: 'LK_ZHIJIEZHIZAOCHENGBENRMBPC',tooltip:true,width:'150', inputType: 'decimal'},
   {props:'lossCostGroup',name:'废损',key: 'LK_FEISUN',tooltip:true,width:'' ,list:[

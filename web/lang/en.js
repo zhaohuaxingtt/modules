@@ -749,7 +749,7 @@ export default {
   'LK_YUANCRMBPCUP': 'Mat. Cost/ Component（RMB/PC.）', //原材料/散件成本（RMB/PC.）
   'LK_SHEBEIMINGCHENGXINGHAOOTHER': '设备名称/型号', // 设备名称/型号
   'LK_SHEBEITOUZIANZHUANGRMB': '设备投资+安装（RMB）', // 设备投资+安装（RMB）
-  'LK_MEIJIANSHNEGCHANSHIJIAN': '每件生产时间', // 每件生产时间
+  'LK_MEIJIANSHNEGCHANSHIJIAN': '每件生产时间（sec.）', // 每件生产时间（sec.）
   'LK_MEIMUSHENGCHANLINGJIANSHU': '每模生产零件数', // 每模生产零件数
   'LK_ZHIJIEZHIZAOCHENGBENRMBPC': '直接制造成本（RMB/PC.）', // 直接制造成本（RMB/PC.）
   'LK_SHENGCHANQIEHUANCHENGBEN': '生产切换成本（RMB/PC.）', // 生产切换成本（RMB/PC.）
