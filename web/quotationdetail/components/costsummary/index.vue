@@ -272,7 +272,8 @@ export default{
       scrapSummaryL2: 0,
       sourceResponseData: {},
       initData: true,
-      count: 0
+      count: 0,
+      summaryData: {}
     }
   },
   watch:{
@@ -1331,7 +1332,7 @@ export default{
       this.$set(row, "lossCost", math.evaluate(`${ row.directMaterialCost || 0 } / (1 - ${ row.lossCostRate || 0 } / 100) - ${ row.directMaterialCost || 0 }`).toFixed(2))
       this.$set(row, "indirectMaterialCost", math.evaluate(`${ row.indirectMaterialCostRatio || 0 } / 100 * (${ row.unitPrice || 0 } * ${ row.roughWeight || 0 } + ${ row.lossCost || 0 })`).toFixed(2))
       this.$set(row, "materialCost", math.evaluate(`${ row.directMaterialCost || 0 } + ${ row.lossCost || 0 } + ${ row.earlierLogisticsCost || 0 } + ${ row.indirectMaterialCost || 0 }`).toFixed(2))
-    
+
       let materialSummary = 0 // 头表原材料/散件
       let scrapSummary = 0 // 报废成本
 
@@ -1339,25 +1340,28 @@ export default{
         materialSummary = math.add(materialSummary, math.bignumber(item.materialCost || 0)) // 计算头表原材料/散件
         scrapSummary = math.add(scrapSummary, math.bignumber(item.lossCost || 0)) // 计算报废成本
       })
+
+      let materialScrapSummary = scrapSummary
       this.allTableData.makeCost.records.forEach(item => {
         scrapSummary = math.add(scrapSummary, math.bignumber(item.lossCost || 0)) // 计算报废成本
       })
 
-      this.$set(this.topTableData.tableData[0], "materialSummary", materialSummary.toFixed(2))
+      this.summaryData.materialSummary = materialSummary.toFixed(2)
+      this.$set(this.topTableData.tableData[0], "materialSummary", math.subtract(materialSummary, materialScrapSummary).toFixed(2))
       this.$set(this.allTableData.discardCost[0], "amount", scrapSummary.toFixed(2))
       this.$set(this.topTableData.tableData[0], "scrapSummary", scrapSummary.toFixed(2))
 
       // 计算报废率
-      if (math.evaluate(`${ this.topTableData.tableData[0].materialSummary || 0 } + ${ this.topTableData.tableData[0].productionSummary || 0 }`) === "0") {
+      if (math.evaluate(`${ this.summaryData.materialSummary || 0 } + ${ this.topTableData.tableData[0].productionSummary || 0 }`) === "0") {
         this.$set(this.allTableData.discardCost[0], "ratio", 0)
       } else {
-        this.$set(this.allTableData.discardCost[0], "ratio", math.evaluate(`${ this.allTableData.discardCost[0].amount } / (${ this.topTableData.tableData[0].materialSummary || 0 } + ${ this.topTableData.tableData[0].productionSummary || 0 })`).toFixed(2))
+        this.$set(this.allTableData.discardCost[0], "ratio", math.evaluate(`${ this.allTableData.discardCost[0].amount } / (${ this.summaryData.materialSummary || 0 } + ${ this.topTableData.tableData[0].productionSummary || 0 })`).toFixed(2))
       }
 
-      this.$set(this.allTableData.manageFee[0], "amount", math.evaluate(`${ this.topTableData.tableData[0].materialSummary } * (${ this.allTableData.manageFee[0].ratio } / 100)`).toFixed(2))
+      this.$set(this.allTableData.manageFee[0], "amount", math.evaluate(`${ this.summaryData.materialSummary } * (${ this.allTableData.manageFee[0].ratio } / 100)`).toFixed(2))
       this.$set(this.allTableData.manageFee[0], "blockAmount", math.evaluate(`${ this.allTableData.manageFee[0].amount } * 1`).toFixed(2))
 
-      this.$set(this.allTableData.profit[0], "amount", math.evaluate(`${ this.topTableData.tableData[0].materialSummary } * (${ this.allTableData.profit[0].ratio } / 100)`).toFixed(2))
+      this.$set(this.allTableData.profit[0], "amount", math.evaluate(`${ this.summaryData.materialSummary } * (${ this.allTableData.profit[0].ratio } / 100)`).toFixed(2))
       this.$set(this.allTableData.profit[0], "blockAmount", math.evaluate(`${ this.allTableData.profit[0].amount } * 1`).toFixed(2))
     
       const manageSummary = this.allTableData.manageFee.reduce((acc, cur) => {
@@ -1384,25 +1388,27 @@ export default{
         productionSummary = math.add(productionSummary, math.bignumber(item.totalCost || 0)) // 计算头表制造成本
         scrapSummary = math.add(scrapSummary, math.bignumber(item.lossCost || 0)) // 计算报废成本
       })
+      let productionScrapSummary = scrapSummary
       this.allTableData.rawMaterial.records.forEach(item => {
         scrapSummary = math.add(scrapSummary, math.bignumber(item.lossCost || 0)) // 计算报废成本
       })
 
-      this.$set(this.topTableData.tableData[0], "productionSummary", productionSummary.toFixed(2))
+      this.summaryData.productionSummary = productionSummary.toFixed(2)
+      this.$set(this.topTableData.tableData[0], "productionSummary", math.subtract(productionSummary, productionScrapSummary).toFixed(2))
       this.$set(this.allTableData.discardCost[0], "amount", scrapSummary.toFixed(2))
       this.$set(this.topTableData.tableData[0], "scrapSummary", scrapSummary.toFixed(2))
 
       // 计算报废率
-      if (math.evaluate(`${ this.topTableData.tableData[0].materialSummary || 0 } + ${ this.topTableData.tableData[0].productionSummary || 0 }`) === "0") {
+      if (math.evaluate(`${ this.summaryData.materialSummary || 0 } + ${ this.summaryData.productionSummary || 0 }`) === "0") {
         this.$set(this.allTableData.discardCost[0], "ratio", 0)
       } else {
-        this.$set(this.allTableData.discardCost[0], "ratio", math.evaluate(`${ this.allTableData.discardCost[0].amount } / (${ this.topTableData.tableData[0].materialSummary || 0 } + ${ this.topTableData.tableData[0].productionSummary || 0 })`).toFixed(2))
+        this.$set(this.allTableData.discardCost[0], "ratio", math.evaluate(`${ this.allTableData.discardCost[0].amount } / (${ this.summaryData.materialSummary || 0 } + ${ this.summaryData.productionSummary || 0 })`).toFixed(2))
       }
 
-      this.$set(this.allTableData.manageFee[1], "amount", math.evaluate(`${ this.topTableData.tableData[0].productionSummary } * (${ this.allTableData.manageFee[1].ratio } / 100)`).toFixed(2))
+      this.$set(this.allTableData.manageFee[1], "amount", math.evaluate(`${ this.summaryData.productionSummary } * (${ this.allTableData.manageFee[1].ratio } / 100)`).toFixed(2))
       this.$set(this.allTableData.manageFee[1], "blockAmount", math.evaluate(`${ this.allTableData.manageFee[1].amount } * 1`).toFixed(2))
 
-      this.$set(this.allTableData.profit[1], "amount", math.evaluate(`${ this.topTableData.tableData[0].materialSummary } * (${ this.allTableData.profit[1].ratio } / 100)`).toFixed(2))
+      this.$set(this.allTableData.profit[1], "amount", math.evaluate(`${ this.summaryData.materialSummary } * (${ this.allTableData.profit[1].ratio } / 100)`).toFixed(2))
       this.$set(this.allTableData.profit[1], "blockAmount", math.evaluate(`${ this.allTableData.profit[1].amount } * 1`).toFixed(2))
     
       const manageSummary = this.allTableData.manageFee.reduce((acc, cur) => {
@@ -1417,7 +1423,7 @@ export default{
     },
 
     handleInputByManageFeeL3(value, row) {
-      this.$set(row, "amount", math.evaluate(`${ this.topTableData.tableData[0].productionSummary } * (${ row.ratio || 0 } / 100)`).toFixed(2))
+      this.$set(row, "amount", math.evaluate(`${ this.summaryData.productionSummary } * (${ row.ratio || 0 } / 100)`).toFixed(2))
       this.$set(row, "blockAmount", math.evaluate(`${ row.amount || 0 } * 1`).toFixed(2))
 
       const manageSummary = this.allTableData.manageFee.reduce((acc, cur) => {
@@ -1427,7 +1433,7 @@ export default{
     },
 
     handleInputByProfitL3(value, row) {
-      this.$set(row, "amount", math.evaluate(`${ this.topTableData.tableData[0].productionSummary } * (${ row.ratio || 0 } / 100)`).toFixed(2))
+      this.$set(row, "amount", math.evaluate(`${ this.summaryData.productionSummary } * (${ row.ratio || 0 } / 100)`).toFixed(2))
       this.$set(row, "blockAmount", math.evaluate(`${ row.amount || 0 } * 1`).toFixed(2))
 
       const profitSummary = this.allTableData.profit.reduce((acc, cur) => {
