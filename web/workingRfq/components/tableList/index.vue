@@ -26,7 +26,7 @@
       <el-table-column :key="items.key" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-else-if='items.props == "totalPriceBprice"' :prop="items.props" :label="items.key ? $t(items.key) : items.name">
         <template slot-scope="row">
           <span v-if="isSteel">{{ row.row.totalPrice }}</span>
-          <span v-else>{{ isEmptyPriceCompute(['packageCost','transportCost','operateCost'],row.row) ? row.row.totalPriceBprice : getAallPrice(Bprice,row.row) }}</span>
+          <span v-else>{{ isEmptyPriceCompute(['packageCost','transportCost','operateCost'],row.row) ? row.row.totalPriceBprice : getBallPrice(Bprice,row.row) }}</span>
         </template>
       </el-table-column>
       <!----------------------需要高亮的列并且带有打开详情事件------------------------>
@@ -168,7 +168,11 @@ export default{
         return this.$t(items.key)
       }
     },
-    getAallPrice(a,b){
+    getBallPrice(a,b){
+      return getAallPrice(a,b)
+    },
+    getAallPrice(a, b) {
+      if (this.vm.initData) return b.totalPrice
       return getAallPrice(a,b)
     },
     hasList(list){

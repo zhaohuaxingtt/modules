@@ -270,18 +270,26 @@ export default{
       laborCostSummaryL2: 0,
       deviceCostSummaryL2: 0,
       scrapSummaryL2: 0,
-      sourceResponseData: {}
+      sourceResponseData: {},
+      initData: true,
+      count: 0
     }
   },
   watch:{
     'topTableData.tableData':{
       handler:function(val){
+        if (this.count >= 1) {
+          this.initData = false
+        }
+
         try {
           const total = getAallPrice(this.Aprice,val[0])
           this.topTableData.persent = getPersent(total,this.Aprice,val[0])
         } catch (error) {
           this.topTableData.persent = []
         }
+
+        this.count += 1
       },
       deep:true
     },
@@ -1115,7 +1123,7 @@ export default{
         data['tableData'].push(a)
         if (!this.isSteel) {
           const total = getAallPrice(this.Aprice,a)
-          data['tableData'][0]['totalPrice'] = total
+          // data['tableData'][0]['totalPrice'] = total
           data['persent'] = getPersent(total,this.Aprice,a)
 
           if (!this.Aprice.some(key => data['tableData'][0][key] || data['tableData'][0][key] === 0)) {
