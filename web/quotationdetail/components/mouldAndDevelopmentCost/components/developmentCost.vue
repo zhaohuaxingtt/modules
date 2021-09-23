@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 00:21:17
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-08-31 15:10:01
+ * @LastEditTime: 2021-09-23 10:18:48
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\developmentCost.vue
 -->
@@ -14,7 +14,7 @@
           <div>
             <span class="title">{{ $t('LK_KAIFAFEIYONG') }}</span>
             <span class="tip margin-left10">({{ $t('LK_DANWEI') }}：{{ $t('LK_YUAN') }})</span>
-            <iFormGroup class="total margin-left20" :row="1" inline>
+            <iFormGroup class="total margin-left20" :row="1" inline v-if="!isAeko">
               <iFormItem class="item" :label="`${ $t(developmentCostInfos[0].key) }`">
                 <iText>{{ dataGroup[developmentCostInfos[0].props] }}</iText>
               </iFormItem>
@@ -54,7 +54,7 @@
           </template>
         </tableList>
         <iFormGroup class="subCost margin-top30" :row="4" inline>
-          <iFormItem class="item" v-for="(info, $index) in subDevelopmentCostInfos" :key="$index" :label="$t(info.key)">
+          <iFormItem class="item" v-for="(info, $index) in subDevelopmentCostInfos" :key="$index" :label="isAeko&&info.languageKey ? language(info.languageKey,info.languageName) : $t(info.key)">
             <iInput v-if="info.props === 'shareQuantity' && !disabled" v-model="dataGroup[info.props]" @input="handleInputByShareQuantity" />
             <iText v-else>{{ dataGroup[info.props] }}</iText>
           </iFormItem>
@@ -175,7 +175,8 @@ export default {
       this.updateTotal()
     },
     handleInputByQuantity(val, row) {
-      row.quantity = numberProcessor(val, 2)
+      const {isAeko} = this;
+      row.quantity = numberProcessor(val, isAeko ? 0:2)
 
       row.total = math.multiply(
         math.bignumber(row.unitPrice || 0),
