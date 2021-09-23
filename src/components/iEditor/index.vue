@@ -293,7 +293,8 @@ export default {
 		}
 	}
 
-	.w-e-content-preview {
+	.w-e-content-preview
+	.w-e-text {
 		p {
 			word-break: break-all;
 		}
