@@ -25,7 +25,7 @@
       </iSelect> 
       <!-- <span v-else class="font18 font-weight">{{ partInfo && partInfo.label }}</span> -->
       <!-------------采购员界面跳转过来的时候，如果出现当前供应商还未接受报价情况----------------->
-      <div class="floatright" v-if='watingSupplier && !rfqRoundStateDisabled'>
+      <div class="floatright" v-if='watingSupplier && !rfqRoundStateDisabled && !roundDisabled'>
         <iButton @click="agreePrice">接受报价</iButton>
         <iButton @click="rejectPrice">拒绝报价</iButton>
       </div>
@@ -165,7 +165,8 @@ export default {
       refuseReason: "",
       statusObj: {},
       startProductionDateDialogVisible: false,
-      rfqRoundStateDisabled: false
+      rfqRoundStateDisabled: false,
+      roundDisabled: false
     }
   },
   provide: function () {
@@ -363,11 +364,11 @@ export default {
           let rfqStateDisabled = res.data.rfqStateCode != $enum("RFQ_STATE_ENUM.INQUIRY_ING") && res.data.rfqStateCode != $enum("RFQ_STATE_ENUM.NEGOTIATE_ING")
           let quotationStateDisabled = res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.NOT_QUOTED") || res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.REFUSE") || res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.DELEGATE_REFUSE")
           let rfqRoundStateDisabled = res.data.rfqRoundStateCode != $enum("RFQ_ROUNDS_STATE_ENUM.RUNNING")
-          let roundDisabled = +this.partInfo.round != +res.data.currentRounds
+          this.roundDisabled = +this.partInfo.round != +res.data.currentRounds
 
           this.rfqRoundStateDisabled = rfqRoundStateDisabled // 供代供应商报价判断
           
-          this.disabled = fsStateDisabled || rfqStateDisabled || quotationStateDisabled || rfqRoundStateDisabled || roundDisabled
+          this.disabled = fsStateDisabled || rfqStateDisabled || quotationStateDisabled || rfqRoundStateDisabled || this.roundDisabled
           if (this.fix) { //当存在这个状态的时候 整个界面是一个静态界面 不会存在其他状态
             this.disabled = true
             this.forceDisabled = true
