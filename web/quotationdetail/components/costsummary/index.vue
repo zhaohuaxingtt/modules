@@ -827,8 +827,9 @@ export default{
             this.sourceResponseData = cloneDeep(res.data)
             const data = await this.getBzfreeAndYunshuFree();
             this.packAndShipFee = data
+            this.initData = true
+            this.count = 0
             this.allTableData = this.translateDataForRender(res.data)
-            console.log("data", data)
             this.topTableData = this.translateDataTopData(cloneDeep(this.allTableData), data)
             this.$refs.components.partsQuotationss(this.partInfo.rfqId,this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId,this.partInfo.round,this.allTableData.level)
             // this.allpagefrom.quotationId,
