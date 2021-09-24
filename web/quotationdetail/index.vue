@@ -58,7 +58,9 @@
     <div id="tabList" v-loading="tabLoading">
       <iTabsList class="margin-top20" type="card" v-model="currentTab" :before-leave="tabLeaveBefore" @tab-click="tabChange">
         <el-tab-pane v-for="(tab, $tabIndex) in trueTabs" :key="$tabIndex" :label="$t(tab.key)" :name="tab.name">
-          <component :ref="tab.name" :is="component" :partInfo="partInfo" v-for="(component, $componentIndex) in tab.components" :class="$componentIndex !== 0 ? 'margin-top20' : ''" :key="$componentIndex" :disabled="disabled || partInfo.isOriginprice" :isSteel="isSteel" @changeReduceStatus="changeReduceStatus"/>
+          <template v-if="!partInfoLoading">
+            <component :ref="tab.name" :is="component" :partInfo="partInfo" v-for="(component, $componentIndex) in tab.components" :class="$componentIndex !== 0 ? 'margin-top20' : ''" :key="$componentIndex" :disabled="disabled || partInfo.isOriginprice" :isSteel="isSteel" :isDb="isDb" @changeReduceStatus="changeReduceStatus"/>
+          </template>
         </el-tab-pane>
       </iTabsList>
     </div>
@@ -165,7 +167,8 @@ export default {
       refuseReason: "",
       statusObj: {},
       startProductionDateDialogVisible: false,
-      rfqRoundStateDisabled: false
+      rfqRoundStateDisabled: false,
+      isDb:false
     }
   },
   provide: function () {
@@ -331,6 +334,11 @@ export default {
               if (typeof component.init === "function") component.init("redraw")
             })
           }
+          console.log('(this.partInfo.partProjectType',this.partInfo.partProjectType);
+          if(this.partInfo.partProjectType == '1000009'){
+            this.isDb = true
+            console.log( this.isDb);
+          }
         } else {
           r()
           iMessage.error(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
@@ -411,7 +419,7 @@ export default {
               this.$route.query.watingSupplier = false
             }
             this.getPartsQuotations("save");
-          }).catch(()=>{
+          }).catch(()=>{ 
             this.saveLoading = false
           })        
           // this.saveStatus = false

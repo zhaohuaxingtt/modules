@@ -9,7 +9,7 @@
 <template>
   <div class="sample" v-loading="loading">
     <iCard>
-      <tableList class="table" :selection="false" :tableData="tableListData" :tableTitle="tableTitle">
+      <tableList class="table" :selection="false" :tableData="tableListData" :tableTitle="isDb ? dbSampleTableTitle : tableTitle">
         <!-- <template #a="scope">
           <span>{{ $t(scope.row.a) }}</span>
         </template> -->
@@ -37,7 +37,7 @@
 <script>
 import { iCard, iInput,iMessage } from "rise"
 import tableList from "../tableList"
-import { sampleTableTitle as tableTitle } from "./data"
+import { sampleTableTitle ,dbSampleTableTitle } from "./data"
 import { getToolingSample, saveToolingSample } from "@/api/rfqManageMent/quotationdetail"
 import { numberProcessor } from '@/utils'
 
@@ -59,18 +59,34 @@ export default {
     isAeko:{
       type:Boolean,
       default:false,
+    },
+    isDb: {
+      type:Boolean,
+      default:false,
     }
   },
   data() {
     return {
       loading: false,
-      tableTitle,
-      tableListData: []
+      tableTitle:[],
+      tableListData: [],
+      dbSampleTableTitle
     }
   },
   created(){
-    if(this.isAeko){
-      this.tableTitle = this.tableTitle.filter((item)=>item.isAeko);
+    if(this.isDb){
+        if(this.isAeko) {
+          this.tableTitle = dbSampleTableTitle.filter((item)=>item.isAeko);
+        } else {
+          this.tableTitle = dbSampleTableTitle
+        }
+    } else {
+      if(this.isAeko)
+      {
+          this.tableTitle = sampleTableTitle.filter((item)=>item.isAeko);
+      } else {
+        this.tableTitle = sampleTableTitle
+      }
     }
   },
   methods: {
