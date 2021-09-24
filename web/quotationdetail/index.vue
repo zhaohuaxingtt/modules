@@ -30,7 +30,7 @@
         <iButton @click="rejectPrice">拒绝报价</iButton>
       </div>
       <div class="floatright" v-else>
-        <iButton v-if="!forceDisabled && disabled  && !isSteel" @click="handleAgentQutation">{{ $t("LK_DAIGONGYINGSHANGBAOJIA") }}</iButton>
+        <iButton v-if="!forceDisabled && disabled && !isSteel" @click="handleAgentQutation">{{ $t("LK_DAIGONGYINGSHANGBAOJIA") }}</iButton>
         <iButton v-if="!forceDisabled && !disabled" @click="handleCancelQutation">{{ $t("LK_QUXIAO") }}</iButton>
         <iButton v-if="!isQuoteBatchPrice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="quoteBatchPriceLoading" @click="handleQuoteBatchPrice">{{ $t("LK_YINYONGPILIANGJIAGE") }}</iButton>
         <iButton v-if="isQuoteBatchPrice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="cancelQuoteBatchPriceLoading" @click="handleCancelBatchPrice">{{ $t("LK_QUXIAOPILIANGJIAGE") }}</iButton>
@@ -58,7 +58,9 @@
     <div id="tabList" v-loading="tabLoading">
       <iTabsList class="margin-top20" type="card" v-model="currentTab" :before-leave="tabLeaveBefore" @tab-click="tabChange">
         <el-tab-pane v-for="(tab, $tabIndex) in trueTabs" :key="$tabIndex" :label="$t(tab.key)" :name="tab.name">
-          <component :ref="tab.name" :is="component" :partInfo="partInfo" v-for="(component, $componentIndex) in tab.components" :class="$componentIndex !== 0 ? 'margin-top20' : ''" :key="$componentIndex" :disabled="disabled || partInfo.isOriginprice" :isSteel="isSteel" @changeReduceStatus="changeReduceStatus"/>
+          <template v-if="!partInfoLoading">
+            <component :ref="tab.name" :is="component" :partInfo="partInfo" v-for="(component, $componentIndex) in tab.components" :class="$componentIndex !== 0 ? 'margin-top20' : ''" :key="$componentIndex" :disabled="disabled || partInfo.isOriginprice" :isSteel="isSteel" :isDb="isDb" @changeReduceStatus="changeReduceStatus"/>
+          </template>
         </el-tab-pane>
       </iTabsList>
     </div>
@@ -166,7 +168,8 @@ export default {
       statusObj: {},
       startProductionDateDialogVisible: false,
       rfqRoundStateDisabled: false,
-      roundDisabled: false
+      roundDisabled: false,
+      isDb:false,
     }
   },
   provide: function () {
@@ -332,6 +335,11 @@ export default {
               if (typeof component.init === "function") component.init("redraw")
             })
           }
+          console.log('(this.partInfo.partProjectType',this.partInfo.partProjectType);
+          if(this.partInfo.partProjectType == '1000009'){
+            this.isDb = true
+            console.log( this.isDb);
+          }
         } else {
           r()
           iMessage.error(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
@@ -369,6 +377,7 @@ export default {
           this.rfqRoundStateDisabled = rfqRoundStateDisabled // 供代供应商报价判断
           
           this.disabled = fsStateDisabled || rfqStateDisabled || quotationStateDisabled || rfqRoundStateDisabled || this.roundDisabled
+          this.forceDisabled = this.disabled
           if (this.fix) { //当存在这个状态的时候 整个界面是一个静态界面 不会存在其他状态
             this.disabled = true
             this.forceDisabled = true
@@ -412,7 +421,7 @@ export default {
               this.$route.query.watingSupplier = false
             }
             this.getPartsQuotations("save");
-          }).catch(()=>{
+          }).catch(()=>{ 
             this.saveLoading = false
           })        
           // this.saveStatus = false

@@ -671,7 +671,9 @@ export default {
   'LK_XUYAORIQIZHOU': '需要日期(周)', // 需要日期(周)
   'LK_XUYAOSHULIANGJIAN': '需要数量(件)', // 需要数量(件)
   'LK_GONGZHUANGYANGJIANDANJIANFEIYONGRMB': '工装样件单件费用(RMB)', // 工装样件单件费用(RMB)
+  'LK_GONGZHUANGYANGJIANDANJIANFEIYONG': '工装样件单件费用', // 工装样件单件费用
   'LK_FUJIAGONGZHUANGYANGJIANMUJUJIAGERMB': '附加工装样件模具价格(RMB)', // 附加工装样件模具价格(RMB)
+  'LK_FUJIAGONGZHUANGYANGJIANMUJUJIAGE': '附加工装样件模具价格', // 附加工装样件模具价格
   'LK_FUJIAGONGZHUANGYANGJIANMUJUSHOUMINGGESHU': '附加工装样件模具寿命(个数)', // 附加工装样件模具寿命(个数)
   'LK_GONGZHUANGYANGJIANBS1': '工装样件(BS1)', // 工装样件(BS1)
   'LK_GONGZHUANGYANGJIANBS2': '工装样件(BS2)', // 工装样件(BS2)
