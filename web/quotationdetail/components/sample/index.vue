@@ -78,10 +78,10 @@ export default {
     } else {
       if(this.isAeko)
       {
-         this.sampleTableTitle=sampleTableTitle().filter((item)=>item.isAeko);
+         this.sampleTableTitle=sampleTableTitle(true).filter((item)=>item.isAeko);
           console.log('isAeko');
       } else {
-        this.sampleTableTitle =sampleTableTitle()
+        this.sampleTableTitle =sampleTableTitle(true)
       }
       console.log('null');
     }
