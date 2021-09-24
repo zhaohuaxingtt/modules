@@ -30,7 +30,7 @@
         <iButton @click="rejectPrice">拒绝报价</iButton>
       </div>
       <div class="floatright" v-else>
-        <iButton v-if="!forceDisabled && disabled  && !isSteel" @click="handleAgentQutation">{{ $t("LK_DAIGONGYINGSHANGBAOJIA") }}</iButton>
+        <iButton v-if="!forceDisabled && disabled && !isSteel" @click="handleAgentQutation">{{ $t("LK_DAIGONGYINGSHANGBAOJIA") }}</iButton>
         <iButton v-if="!forceDisabled && !disabled" @click="handleCancelQutation">{{ $t("LK_QUXIAO") }}</iButton>
         <iButton v-if="!isQuoteBatchPrice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="quoteBatchPriceLoading" @click="handleQuoteBatchPrice">{{ $t("LK_YINYONGPILIANGJIAGE") }}</iButton>
         <iButton v-if="isQuoteBatchPrice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="cancelQuoteBatchPriceLoading" @click="handleCancelBatchPrice">{{ $t("LK_QUXIAOPILIANGJIAGE") }}</iButton>
@@ -369,6 +369,7 @@ export default {
           this.rfqRoundStateDisabled = rfqRoundStateDisabled // 供代供应商报价判断
           
           this.disabled = fsStateDisabled || rfqStateDisabled || quotationStateDisabled || rfqRoundStateDisabled || this.roundDisabled
+          this.forceDisabled = this.disabled
           if (this.fix) { //当存在这个状态的时候 整个界面是一个静态界面 不会存在其他状态
             this.disabled = true
             this.forceDisabled = true
