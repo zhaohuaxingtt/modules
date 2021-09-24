@@ -74,16 +74,19 @@ export default {
   },
   created(){
     if(this.isDb){
-      this.sampleTableTitle =sampleTableTitle(false)
+       if(this.isAeko)
+      {
+         this.sampleTableTitle=sampleTableTitle(false).filter((item)=>item.isAeko);
+      } else {
+        this.sampleTableTitle =sampleTableTitle(false)
+      }
     } else {
       if(this.isAeko)
       {
          this.sampleTableTitle=sampleTableTitle(true).filter((item)=>item.isAeko);
-          console.log('isAeko');
       } else {
         this.sampleTableTitle =sampleTableTitle(true)
       }
-      console.log('null');
     }
   },
   methods: {
