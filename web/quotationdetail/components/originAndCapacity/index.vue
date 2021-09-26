@@ -20,6 +20,7 @@ import origin from "./components/origin";
 import capacity from "./components/capacity";
 import capacityExpan from "./components/capacityExpan";
 import {partProjTypes} from '@/config'
+import { iMessage } from "rise"
 
 export default {
   components: {
@@ -47,7 +48,7 @@ export default {
     init() {
       this.$refs.origin.getSupplierPartLocation();
       this.$refs.capacity.getSupplierPlantCaps();
-      this.$refs.capacityExpan.getFetchData()
+      this.$refs.capacityExpan && this.$refs.capacityExpan.getFetchData()
     },
     async save(type) {
       // 扩产能提交&&校验
@@ -55,10 +56,32 @@ export default {
         const state = await this.$refs.capacityExpan.save()
         if (!state) return
       }
-      return Promise.all([
-        this.$refs.origin.saveSupplierPartAddLocation(type),
-        this.$refs.capacity.saveSupplierPlantCap(type),
-      ]);
+
+      return await Promise.all([
+        this.$refs.origin.saveSupplierPartAddLocation(),
+        this.$refs.capacity.saveSupplierPlantCap(),
+      ]).then(([saveOriginRes, saveCapacityRes]) => {
+        let flag = true
+        if (saveOriginRes.code == 200) {
+          this.$refs.origin.getSupplierPartLocation()
+        } else {
+          flag = false
+          iMessage.error(this.$i18n.locale === "zh" ? saveOriginRes.desZh : saveOriginRes.desEn)
+        }
+
+        if (saveCapacityRes.code == 200) {
+          this.$refs.capacity.getSupplierPlantCaps()
+        } else {
+          flag = false
+          iMessage.error(this.$i18n.locale === "zh" ? saveCapacityRes.desZh : saveCapacityRes.desEn)
+        }
+
+        if (flag) {
+          if (type !== "submit") {
+            iMessage.success(this.$i18n.locale === "zh" ? saveOriginRes.desZh : saveOriginRes.desEn) 
+          }
+        } else throw [saveOriginRes, saveCapacityRes]
+      });
     },
   },
 };

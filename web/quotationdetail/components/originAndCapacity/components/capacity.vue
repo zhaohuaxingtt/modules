@@ -217,12 +217,12 @@ export default {
           }))
         })
         
-        if (res.code == 200) {
-          if (type !== "submit") iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
-          this.getSupplierPlantCaps()
-        } else {
-          iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
-        }
+        // if (res.code == 200) {
+        //   if (type !== "submit") iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+        //   this.getSupplierPlantCaps()
+        // } else {
+        //   iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+        // }
 
         return res
       } catch(e) {

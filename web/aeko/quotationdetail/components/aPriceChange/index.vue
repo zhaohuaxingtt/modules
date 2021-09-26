@@ -271,10 +271,8 @@ export default {
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
         }
-
-        this.loading = false
       })
-      .catch(() => this.loading = false)
+      .finally(() => this.loading = false)
     },
     handleInputByApriceChange(value) {
       this.apriceChange = numberProcessor(value, 2, true)

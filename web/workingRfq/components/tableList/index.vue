@@ -169,11 +169,15 @@ export default{
       }
     },
     getBallPrice(a,b){
-      return getAallPrice(a,b)
+      const result = getAallPrice(a,b)
+      this.$set(b, "totalPriceBprice", result)
+      return result
     },
     getAallPrice(a, b) {
       if (this.vm.initData) return b.totalPrice
-      return getAallPrice(a,b)
+      const result = getAallPrice(a,b)
+      this.$set(b, "totalPrice", result)
+      return result
     },
     hasList(list){
       if(list && list.length>0 && list[0].list){

@@ -100,15 +100,15 @@ export default {
         supplierPlantId: this.tableListData[0].id,
         userId: this.userInfo.id
       })
-        .then(res => {
-          if (res.code == 200) {
-            if (type !== "submit") iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
-            this.getSupplierPartLocation()
-          } else {
-            iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
-          }
-        })
-        .catch(() => {})
+      // .then(res => {
+      //   if (res.code == 200) {
+      //     if (type !== "submit") iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+      //     this.getSupplierPartLocation()
+      //   } else {
+      //     iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+      //   }
+      // })
+      .catch(() => {})
     }
   }
 }
