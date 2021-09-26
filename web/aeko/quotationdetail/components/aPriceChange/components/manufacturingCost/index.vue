@@ -140,6 +140,8 @@ export default {
         newLaborCostSum: 0,
         originDeviceCostSum: 0,
         newDeviceCostSum: 0,
+        originIndirectManufacturingAmountSum: 0,
+        newIndirectManufacturingAmountSum: 0,
         makeCostChange: 0
       },
     }
@@ -395,6 +397,7 @@ export default {
       }, 0).toFixed(2)
 
       this.updateSumData()
+      this.computeMakeCost()
     },
     computeDeviceCostSum(originValue, originKey, row) {
       const originTableListData = []
@@ -430,10 +433,11 @@ export default {
       }, 0).toFixed(2)
 
       this.updateSumData()
+      this.computeMakeCost()
     },
-    computeMakeCost(originValue, originKey, row) {
-      let originIndirectManufacturingAmount = 0
-      let newIndirectManufacturingAmount = 0
+    computeIndirectManufacturingAmountSum(originValue, originKey, row) {
+      const originTableListData = []
+      const newTableListData = []
       
       const changeList = []
       this.tableListData.forEach(item => {
@@ -448,18 +452,29 @@ export default {
 
       changeList.forEach(item => {
         if (item.partCbdType == 0 || item.partCbdType == 1) {
-          originIndirectManufacturingAmount = math.add(originIndirectManufacturingAmount, math.bignumber(item.indirectManufacturingAmount || 0))
+          originTableListData.push(item)
         }
 
         if (item.partCbdType == 2) {
-          newIndirectManufacturingAmount = math.add(newIndirectManufacturingAmount, math.bignumber(item.indirectManufacturingAmount || 0))
+          newTableListData.push(item)
         }
       })
 
-      originIndirectManufacturingAmount = originIndirectManufacturingAmount.toFixed(2)
-      newIndirectManufacturingAmount = newIndirectManufacturingAmount.toFixed(2)
+      this.sumDataReal.originIndirectManufacturingAmountSum = originTableListData.reduce((acc, cur) => {
+        return math.bignumber(math.add(acc, cur.indirectManufacturingAmount || 0))
+      }, 0).toFixed(2)
+      this.sumDataReal.newIndirectManufacturingAmountSum = newTableListData.reduce((acc, cur) => {
+        return math.bignumber(math.add(acc, cur.indirectManufacturingAmount || 0))
+      }, 0).toFixed(2)
 
-      this.sumDataReal.makeCostChange = math.subtract(math.bignumber(newIndirectManufacturingAmount), math.bignumber(originIndirectManufacturingAmount)).toFixed(2)
+      this.updateSumData()
+    },
+    computeMakeCost(originValue, originKey, row) {
+      this.sumDataReal.makeCostChange = math.add(
+        math.subtract(math.bignumber(this.sumDataReal.newLaborCostSum), math.bignumber(this.sumDataReal.originLaborCostSum)),
+        math.subtract(math.bignumber(this.sumDataReal.newDeviceCostSum), math.bignumber(this.sumDataReal.originDeviceCostSum))
+      ).toFixed(2)
+      
       this.updateSumData()
     },
     updateSumData(data) {
