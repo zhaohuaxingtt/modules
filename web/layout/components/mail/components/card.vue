@@ -226,7 +226,6 @@ export default {
 			div.innerText = this.item.content || ''
 			document.body.append(div)
 			const divRows = div.clientHeight / 16
-			console.log(div.clientHeight, divRows)
 			this.rows = divRows
 			document.body.removeChild(div)
 		},
