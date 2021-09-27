@@ -1,8 +1,8 @@
 <!--
  * @Author: haojiang
  * @Date: 2021-02-25 16:34:49
- * @LastEditTime: 2021-08-26 10:50:06
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-09-27 10:49:04
+ * @LastEditors: Hao,Jiang
  * @Description: 通过selectDictByKeyss字典接口查询的下拉值。
  * @FilePath: \rise\src\components\iDicoptions\index.vue
 -->
@@ -10,7 +10,8 @@
   <iSelect
     v-model="data"
     :placeholder="language('LK_QINGXUANZE','请选择')"
-    clearable
+    v-bind="$attrs"
+    v-on="$listeners"
   >
     <el-option
       v-if="optionAll"
