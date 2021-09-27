@@ -198,7 +198,7 @@ export default {
       try {
         await this.validateForm()
 
-        const res = await saveSupplierPlantCap({
+        return saveSupplierPlantCap({
           partNum: this.partInfo.partNum,
           partPrjCode: this.partInfo.fsNum,
           rfqId: this.partInfo.rfqId,
@@ -216,15 +216,6 @@ export default {
             userId: this.userInfo.id
           }))
         })
-        
-        // if (res.code == 200) {
-        //   if (type !== "submit") iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
-        //   this.getSupplierPlantCaps()
-        // } else {
-        //   iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
-        // }
-
-        return res
       } catch(e) {
         return iMessage.error(e)
       }

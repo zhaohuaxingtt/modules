@@ -57,31 +57,38 @@ export default {
         if (!state) return
       }
 
-      return await Promise.all([
+      return Promise.all([
         this.$refs.origin.saveSupplierPartAddLocation(),
-        this.$refs.capacity.saveSupplierPlantCap(),
-      ]).then(([saveOriginRes, saveCapacityRes]) => {
+        this.$refs.capacity.saveSupplierPlantCap()
+      ])
+      .then(([saveOriginRes, saveCapacityRes]) => {
         let flag = true
-        if (saveOriginRes.code == 200) {
-          this.$refs.origin.getSupplierPartLocation()
-        } else {
-          flag = false
-          iMessage.error(this.$i18n.locale === "zh" ? saveOriginRes.desZh : saveOriginRes.desEn)
+        if (saveOriginRes) {
+          if (saveOriginRes.code == 200) {
+            flag = true
+            this.$refs.origin.getSupplierPartLocation()
+          } else {
+            flag = false
+            iMessage.error(this.$i18n.locale === "zh" ? saveOriginRes.desZh : saveOriginRes.desEn)
+          }
         }
 
-        if (saveCapacityRes.code == 200) {
-          this.$refs.capacity.getSupplierPlantCaps()
-        } else {
-          flag = false
-          iMessage.error(this.$i18n.locale === "zh" ? saveCapacityRes.desZh : saveCapacityRes.desEn)
+        if (saveOriginRes) { 
+          if (saveCapacityRes.code == 200) {
+            flag = true
+            this.$refs.capacity.getSupplierPlantCaps()
+          } else {
+            flag = false
+            iMessage.error(this.$i18n.locale === "zh" ? saveCapacityRes.desZh : saveCapacityRes.desEn)
+          }
         }
 
         if (flag) {
           if (type !== "submit") {
-            iMessage.success(this.$i18n.locale === "zh" ? saveOriginRes.desZh : saveOriginRes.desEn) 
+            iMessage.success(this.$i18n.locale === "zh" ? (saveOriginRes ? saveOriginRes.desZh : saveCapacityRes.desZh) : (saveOriginRes ? saveOriginRes.desEn : saveCapacityRes.desEn)) 
           }
         } else throw [saveOriginRes, saveCapacityRes]
-      });
+      })
     },
   },
 };
