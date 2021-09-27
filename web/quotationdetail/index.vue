@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-07-19 21:29:51
+ * @LastEditTime: 2021-09-27 15:57:51
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -394,6 +394,7 @@ export default {
               this.disabled = true
             }
           }
+          //如果当前的报价单是已拒绝或者带拒绝状态，则当前界面处理为不可操作状态。
           if (res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.REFUSE") || res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.DELEGATE_REFUSE")) {
             if(this.$route.query.watingSupplier){
               this.fix = true
@@ -401,6 +402,11 @@ export default {
               this.forceDisabled = true
             } 
           } 
+          //如果当前报价单是待供应商提交状态。则将界面还原为代供应商报价状态.
+          if(res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.DELEGATE_SUBMITTED")){
+              this.disabled = true
+              this.forceDisabled = false
+          }
           this.statusObj = res.data
           r()
           } catch(e) {
