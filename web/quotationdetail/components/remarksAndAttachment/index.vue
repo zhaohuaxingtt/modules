@@ -264,7 +264,7 @@ export default {
     },
     save(type) {
       return Promise.all([
-        this.saveComments(type), 
+        this.saveComments(type)
       ])
     }
   }

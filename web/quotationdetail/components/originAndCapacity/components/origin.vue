@@ -108,7 +108,7 @@ export default {
       //     iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
       //   }
       // })
-      .catch(() => {})
+      // .catch(() => {})
     }
   }
 }
