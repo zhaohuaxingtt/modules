@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-09-27 16:12:28
+ * @LastEditTime: 2021-09-27 17:39:57
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -25,19 +25,23 @@
       </iSelect> 
       <!-- <span v-else class="font18 font-weight">{{ partInfo && partInfo.label }}</span> -->
       <!-------------采购员界面跳转过来的时候，如果出现当前供应商还未接受报价情况----------------->
-      <div class="floatright" v-if='watingSupplier'>
-        <div v-if='!rfqRoundStateDisabled && !roundDisabled'>
+      <div class="floatright" v-if='acceptQuotation'>
+        <div v-if='!acceptQuotationDisabled'>
           <iButton @click="agreePrice">接受报价</iButton>
           <iButton @click="rejectPrice">拒绝报价</iButton>
         </div>
       </div>
       <div class="floatright" v-else>
-        <iButton v-if="!forceDisabled && disabled && !isSteel" @click="handleAgentQutation">{{ $t("LK_DAIGONGYINGSHANGBAOJIA") }}</iButton>
-        <iButton v-if="!forceDisabled && !disabled" @click="handleCancelQutation">{{ $t("LK_QUXIAO") }}</iButton>
-        <iButton v-if="!isQuoteBatchPrice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="quoteBatchPriceLoading" @click="handleQuoteBatchPrice">{{ $t("LK_YINYONGPILIANGJIAGE") }}</iButton>
-        <iButton v-if="isQuoteBatchPrice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="cancelQuoteBatchPriceLoading" @click="handleCancelBatchPrice">{{ $t("LK_QUXIAOPILIANGJIAGE") }}</iButton>
-        <iButton @click="handleSave" v-if="currentTab != 'infoAndReq' && !disabled" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
-        <iButton @click="handleSubmit" v-if="!disabled && !partInfo.isOriginprice" :loading="submitLoading">{{ $t('LK_TIJIAO') }}</iButton>
+        <span v-if="agentQutation" class="margin-right10">
+          <iButton v-if="!disabled && !isSteel && agentQutationDisabled" @click="handleAgentQutation">{{ $t("LK_DAIGONGYINGSHANGBAOJIA") }}</iButton>
+          <iButton v-if="!disabled && !agentQutationDisabled" @click="handleCancelQutation">{{ $t("LK_QUXIAO") }}</iButton>
+        </span>
+        <span v-if="!agentQutationDisabled">
+          <iButton v-if="!partInfo.isOriginprice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="quoteBatchPriceLoading" @click="handleQuoteBatchPrice">{{ $t("LK_YINYONGPILIANGJIAGE") }}</iButton>
+          <iButton v-if="partInfo.isOriginprice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="cancelQuoteBatchPriceLoading" @click="handleCancelBatchPrice">{{ $t("LK_QUXIAOPILIANGJIAGE") }}</iButton>
+          <iButton @click="handleSave" v-if="currentTab != 'infoAndReq' && !disabled && !partInfo.isOriginprice" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
+          <iButton @click="handleSubmit" v-if="!disabled" :loading="submitLoading">{{ $t('LK_TIJIAO') }}</iButton>
+        </span>
         <logButton class="margin-left20" @click="log" />
         <span class="margin-left20">
 					<icon symbol name="icondatabaseweixuanzhong" class="font18"></icon>
@@ -60,7 +64,7 @@
     <div id="tabList" v-loading="tabLoading">
       <iTabsList class="margin-top20" type="card" v-model="currentTab" :before-leave="tabLeaveBefore" @tab-click="tabChange">
         <el-tab-pane v-for="(tab, $tabIndex) in trueTabs" :key="$tabIndex" :label="$t(tab.key)" :name="tab.name">
-          <component :ref="tab.name" :is="component" :partInfo="partInfo" v-for="(component, $componentIndex) in tab.components" :class="$componentIndex !== 0 ? 'margin-top20' : ''" :key="$componentIndex" :disabled="disabled || partInfo.isOriginprice" :isSteel="isSteel" :isDb="isDb" @changeReduceStatus="changeReduceStatus"/>
+          <component :ref="tab.name" :is="component" :partInfo="partInfo" v-for="(component, $componentIndex) in tab.components" :class="$componentIndex !== 0 ? 'margin-top20' : ''" :key="$componentIndex" :disabled="disabled || agentQutationDisabled || partInfo.isOriginprice" :isSteel="isSteel" :isDb="isDb" @changeReduceStatus="changeReduceStatus"/>
         </el-tab-pane>
       </iTabsList>
     </div>
@@ -155,9 +159,7 @@ export default {
       submitLoading: false,
       tabLoading: false,
       disabled: true,
-      forceDisabled: true,
       saveStatus: false,
-      isQuoteBatchPrice: false,
       quoteBatchPriceLoading: false,
       cancelQuoteBatchPriceLoading: false,
       fix: false,
@@ -170,6 +172,13 @@ export default {
       rfqRoundStateDisabled: false,
       roundDisabled: false,
       isDb:false,
+      isOriginprice: false,
+
+
+      acceptQuotation: false, // 等待接收报价
+      acceptQuotationDisabled: true, // 是否禁用等待接收报价
+      agentQutation: false, // 代报价
+      agentQutationDisabled: true, // 是否禁用代报价
     }
   },
   provide: function () {
@@ -236,10 +245,10 @@ export default {
     this.partInfo.fsNum = this.$route.query.fsNum || ''
     this.partInfo.quotationId = this.$route.query.quotationId || ''
     //保证初始化状态不被重写 当前方法中 会重写disabel状态
-    this.getPartsQuotations().then(()=>{ if (this.$route.query.agentQutation) {
-      this.disabled = true
-      this.forceDisabled = false
-    }});
+    this.getPartsQuotations()
+    // .then(()=>{ if (this.$route.query.agentQutation) {
+    //   this.disabled = true
+    // }});
   },
   methods: {
     rejectPrice(){
@@ -370,49 +379,43 @@ export default {
           this.tabLoading = false
           let fsStateDisabled = res.data.fsStateCode != $enum("PURCHASE_PROJECT_STATE_ENUM.HAS_RFQ") && res.data.fsStateCode != $enum("PURCHASE_PROJECT_STATE_ENUM.APPLICATION_DESIGNAT")
           let rfqStateDisabled = res.data.rfqStateCode != $enum("RFQ_STATE_ENUM.INQUIRY_ING") && res.data.rfqStateCode != $enum("RFQ_STATE_ENUM.NEGOTIATE_ING")
-          let quotationStateDisabled = res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.NOT_QUOTED") || res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.REFUSE") || res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.DELEGATE_REFUSE")
+          let quotationStateDisabled = res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.NOT_QUOTED") || res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.REFUSE")
           let rfqRoundStateDisabled = res.data.rfqRoundStateCode != $enum("RFQ_ROUNDS_STATE_ENUM.RUNNING")
           let roundDisabled = +this.partInfo.round != +res.data.currentRounds
 
-          this.rfqRoundStateDisabled = rfqRoundStateDisabled // 供代供应商报价判断
+          this.fsStateDisabled = fsStateDisabled // 供代供应商报价判断
+          this.rfqStateDisabled = rfqStateDisabled
+          this.rfqRoundStateDisabled = rfqRoundStateDisabled
           this.roundDisabled = roundDisabled
-          
           this.disabled = fsStateDisabled || rfqStateDisabled || quotationStateDisabled || rfqRoundStateDisabled || roundDisabled
-          this.forceDisabled = this.disabled
-          if (this.fix) { //当存在这个状态的时候 整个界面是一个静态界面 不会存在其他状态
-            this.disabled = true
-            this.forceDisabled = true
-          }
-          if(res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.NOT_QUOTED")){ //如果采购员是点击横岗过来的 则要看当前报价单的状态
-            // if(this.$route.query.watingSupplier){
-              this.watingSupplier = true
-            // }
-          }else{
-            if(this.$route.query.watingSupplier){
-              this.watingSupplier = false
-              this.forceDisabled = false
-              this.disabled = true
+          this.acceptQuotationDisabled = fsStateDisabled || rfqStateDisabled || rfqRoundStateDisabled || roundDisabled // 是否禁用接受报价
+          this.agentQutation = false
+          if (this.$route.query.watingSupplier) { // 代报价
+            this.acceptQuotation = res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.NOT_QUOTED") // 待接收判断
+            this.agentQutation = true
+            //当前操作如果是已经提交了报价，（采购员替供应商，则需要主动将按钮自动重置为 '代供应商报价' 按钮状态）
+            if(res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.DELEGATE_SUBMITTED")){
+              this.agentQutationDisabled = true
             }
+          } else {
+            this.agentQutationDisabled = false
           }
-          //如果当前的报价单是已拒绝或者带拒绝状态，则当前界面处理为不可操作状态。
-          if (res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.REFUSE") || res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.DELEGATE_REFUSE")) {
-            if(this.$route.query.watingSupplier){
-              this.fix = true
-              this.disabled = true
-              this.forceDisabled = true
-            } 
-          } 
-          //如果当前报价单是待供应商提交状态。则将界面还原为代供应商报价状态.
-          if(res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.DELEGATE_SUBMITTED")){
-              this.disabled = true
-              this.forceDisabled = false
-          }
+
+
           this.statusObj = res.data
+
+          if (this.fix) { //当存在这个状态的时候 整个界面是一个静态界面 不会存在其他状态
+            this.acceptQuotation = false
+            this.agentQutation = false
+            this.acceptQuotationDisabled = true
+            this.agentQutationDisabled = true
+            this.disabled = true
+          }
+          
           r()
           } catch(e) {
             console.log(e)
           }
-          
         } else {
           r()
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
@@ -427,13 +430,28 @@ export default {
       if (typeof component.save !== "function") throw ""
 
       this.saveLoading = true
-      return component.save(type).then(()=>{
-        if (this.$route.query.watingSupplier) {
-          this.$route.query.watingSupplier = false
-        }
-        // this.saveStatus = false
-        this.getPartsQuotations("save");
-      }).finally(() => this.saveLoading = false)
+
+      try {
+        await component.save(type)
+        this.getPartsQuotations("save")
+      } finally {
+        this.saveLoading = false
+      }
+      
+      // try {
+      //   const res = await component.save(type)
+      //   this.getPartsQuotations("save")
+      //   if (this.$route.query.watingSupplier) {
+      //     // this.$route.query.watingSupplier = false
+      //   }
+      //   // this.saveStatus = false
+
+      //   return res
+      // } catch(e) {
+      //   throw e
+      // } finally {
+      //   this.saveLoading = false
+      // }
     },
     handlePartChange(partNum) {
       const part = this.parts.filter(item => item.value === partNum)[0]
@@ -458,7 +476,7 @@ export default {
 
       try {
         await this.handleSave("submit")
-          submitPartsQuotation({
+        submitPartsQuotation({
           quotationId: this.partInfo.quotationId,
           rfqId: this.partInfo.rfqId,
           cbdLevel: this.partInfo.currentCbdLevel || this.partInfo.cbdLevel
@@ -500,14 +518,11 @@ export default {
     },
     // 代供应商报价
     handleAgentQutation() {
-      if (this.forceDisabled) return
-      this.disabled = false
-      this.fix = false
+      this.agentQutationDisabled = false
     },
     // 取消代供应商报价
     handleCancelQutation() {
-      if (this.forceDisabled) return
-      this.disabled = true
+      this.agentQutationDisabled = true 
       this.$nextTick(() => {
         const component = this.$refs[this.currentTab][0]
         if (typeof component.init === "function") component.init()
@@ -531,7 +546,6 @@ export default {
 
         if (res.code == 200) {
           iMessage.success(message)
-          this.isQuoteBatchPrice = true
           this.getPartsQuotations()
         } else {
           iMessage.error(message)
@@ -553,15 +567,12 @@ export default {
 
         if (res.code == 200) {
           iMessage.success(message)
-          this.isQuoteBatchPrice = false
           this.getPartsQuotations()
         } else {
           iMessage.error(message)
         }
-
-        this.cancelQuoteBatchPriceLoading = false
       })
-      .catch(() => this.cancelQuoteBatchPriceLoading = false)
+      .finally(() => this.cancelQuoteBatchPriceLoading = false)
     }
   }
 };

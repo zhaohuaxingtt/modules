@@ -42,12 +42,12 @@ export default {
     save(type) {
       if (this.$refs.mould.tableListData.some(item => item.isShared == 1)) {
         if (!this.$refs.mould.dataGroup.shareQuantity || this.$refs.mould.dataGroup.shareQuantity == 0)
-          return iMessage.warn("模具费用存在分摊数据，请填写一个大于0的分摊数量")
+          throw iMessage.warn("模具费用存在分摊数据，请填写一个大于0的分摊数量")
       }
 
       if (this.$refs.developmentCost.tableListData.some(item => item.isShared == 1)) {
         if (!this.$refs.developmentCost.dataGroup.shareQuantity || this.$refs.developmentCost.dataGroup.shareQuantity == 0)
-          return iMessage.warn("开发费用存在分摊数据，请填写一个大于0的分摊数量")
+          throw iMessage.warn("开发费用存在分摊数据，请填写一个大于0的分摊数量")
       }
       
       return new Promise((r,j)=>{

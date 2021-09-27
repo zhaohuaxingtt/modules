@@ -714,86 +714,72 @@ export default{
      * @param {*}
      * @return {*}
      */    
-    postCostSummary(type){
-      return new Promise((r,j)=>{
-        // const sendData = JSON.parse(JSON.stringify(this.allTableData))
-        const sendData = this.topTableData.tableData[0]
+    postCostSummary(){
+      // const sendData = JSON.parse(JSON.stringify(this.allTableData))
+      const sendData = this.topTableData.tableData[0]
 
-        const baseSumDTO = {
-          cbdBlockId: sendData.cbdBlockId,
-          cbdHdrId: sendData.cbdHdrId,
-          cbdId: sendData.cbdId,
-          cbdPlantCapId: sendData.cbdPlantCapId,
-          ckdManageRate: sendData.ckdManageRate,
-          id: sendData.id,
-          kentSummary: sendData.kentSummary,
-          lcManageRate: sendData.lcManageRate,
-          manageSummary: sendData.manageSummary,
-          materialSummary: sendData.materialSummary,
-          mouldCbdId: sendData.mouldCbdId,
-          otherSummary: sendData.otherSummary,
-          productionSummary: sendData.productionSummary,
-          profitSummary: sendData.profitSummary,
-          scrapSummary: sendData.scrapSummary,
-          totalPrice: sendData.totalPrice
-        }
+      const baseSumDTO = {
+        cbdBlockId: sendData.cbdBlockId,
+        cbdHdrId: sendData.cbdHdrId,
+        cbdId: sendData.cbdId,
+        cbdPlantCapId: sendData.cbdPlantCapId,
+        ckdManageRate: sendData.ckdManageRate,
+        id: sendData.id,
+        kentSummary: sendData.kentSummary,
+        lcManageRate: sendData.lcManageRate,
+        manageSummary: sendData.manageSummary,
+        materialSummary: sendData.materialSummary,
+        mouldCbdId: sendData.mouldCbdId,
+        otherSummary: sendData.otherSummary,
+        productionSummary: sendData.productionSummary,
+        profitSummary: sendData.profitSummary,
+        scrapSummary: sendData.scrapSummary,
+        totalPrice: sendData.totalPrice
+      }
 
-        const form = {
-          cbdLevel: this.allTableData.level,
-          editFlag: this.allTableData.editFlag,
-          levelOneSumDTO: this.allTableData.level === 1 ? baseSumDTO : undefined,
-          levelTwoSumDTO: this.allTableData.level === 2 ? {
-            ...baseSumDTO,
-            discardCost: this.allTableData.discardCost,
-            makeCost: this.allTableData.makeCost.records,
-            manageFee: this.allTableData.manageFee,
-            otherFee: this.allTableData.otherFee,
-            profit: this.allTableData.profit,
-            rawMaterial: this.allTableData.rawMaterial.records,
-          } : undefined,
-          levelThreeSumDTO: this.allTableData.level === 3 ? {
-            ...baseSumDTO,
-            discardCost: this.allTableData.discardCost,
-            makeCost: this.allTableData.makeCost.records,
-            manageFee: this.allTableData.manageFee,
-            otherFee: this.allTableData.otherFee,
-            profit: this.allTableData.profit,
-            rawMaterial: this.allTableData.rawMaterial.records,
-          } : undefined,
-          partType: this.partInfo.partType,
-          quotationId: this.partInfo.quotationId,
-          startProductDate: this.allTableData.startProductDate,
-        }
-        
-        if (form.cbdLevel == 2) {
-          if (!this.validateByL2(form)) return
-        }
+      const form = {
+        cbdLevel: this.allTableData.level,
+        editFlag: this.allTableData.editFlag,
+        levelOneSumDTO: this.allTableData.level === 1 ? baseSumDTO : undefined,
+        levelTwoSumDTO: this.allTableData.level === 2 ? {
+          ...baseSumDTO,
+          discardCost: this.allTableData.discardCost,
+          makeCost: this.allTableData.makeCost.records,
+          manageFee: this.allTableData.manageFee,
+          otherFee: this.allTableData.otherFee,
+          profit: this.allTableData.profit,
+          rawMaterial: this.allTableData.rawMaterial.records,
+        } : undefined,
+        levelThreeSumDTO: this.allTableData.level === 3 ? {
+          ...baseSumDTO,
+          discardCost: this.allTableData.discardCost,
+          makeCost: this.allTableData.makeCost.records,
+          manageFee: this.allTableData.manageFee,
+          otherFee: this.allTableData.otherFee,
+          profit: this.allTableData.profit,
+          rawMaterial: this.allTableData.rawMaterial.records,
+        } : undefined,
+        partType: this.partInfo.partType,
+        quotationId: this.partInfo.quotationId,
+        startProductDate: this.allTableData.startProductDate,
+      }
+      
+      if (form.cbdLevel == 2) {
+        if (!this.validateByL2(form)) throw ""
+      }
 
-        if (form.cbdLevel == 3) {
-          if (!this.validateByL3(form)) return
-        }
-        postCostSummary(form).then(res=>{
-          if(res.code == 200){
-            r()
-            if (type !== "submit") iMessage.success('操作成功')
-            this.updateCbdLevel(this.allTableData.level)
-            this.init()
-          }else{
-            j(res.desZh)
-            iMessage.error(res.desZh)
-          }
-        }).catch(err=>{
-          j(err.desZh)
-          iMessage.error(err.desZh)
-        })
-      })
+      if (form.cbdLevel == 3) {
+        if (!this.validateByL3(form)) throw ""
+      }
+
+      return postCostSummary(form)
     },
     /**
      * @description: 初始化界面方法,父界面会在存在参数的情况下来调用
      * @param {*}
      * @return {*}
      */    
-    init(type){
+    init(type) {
       if (this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || this.partInfo.partProjectType === partProjTypes.DBLINGJIAN) {
         this.getCostSummaryDB()
       } else {
@@ -878,27 +864,14 @@ export default{
      * @return {*}
      */    
     saveBzfreeAndYunshuFree() {
-      return new Promise((r,j)=>{
-        const params = {
-          ...this.packAndShipFee,
-          packageCost: this.topTableData.tableData[0]?.packageCost,
-          transportCost: this.topTableData.tableData[0]?.transportCost,
-          operateCost: this.topTableData.tableData[0]?.operateCost,
-        }
-        savePackageTransport(params).then(res => {
-          if (res && res.result) {
-            r()
-            iMessage.success(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
-          } else {
-            j(res.desZh)
-            iMessage.error(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
-          }
-        }).catch(err=>{
-          j(err.desZh)
-          iMessage.error(err.desZh)
-        })
-      })
-      
+      const params = {
+        ...this.packAndShipFee,
+        packageCost: this.topTableData.tableData[0]?.packageCost,
+        transportCost: this.topTableData.tableData[0]?.transportCost,
+        operateCost: this.topTableData.tableData[0]?.operateCost,
+      }
+
+      return savePackageTransport(params)
     },
     /**
      * @description: 转换后台数据新增字段 其中根据itemType来判断其他费用类型 如果是1 为分摊模具费，如果是0 则为 分摊的开发费
@@ -1176,13 +1149,57 @@ export default{
      * @param {*}
      * @return {*}
      */    
-    save(type){
+    save(type) {
       if (this.partInfo.partProjectType === partProjTypes.PEIJIAN || this.partInfo.partProjectType === partProjTypes.FUJIAN) {
-        return Promise.all(this.postCostSummary(), this.saveBzfreeAndYunshuFree())
+        return Promise.all([this.postCostSummary(), this.saveBzfreeAndYunshuFree()])
+          .then(([res1, res2]) => {
+            let flag = true
+            if (res1.code == 200) {
+              flag = true
+              this.updateCbdLevel(this.allTableData.level)
+              this.init()
+            } else {
+              iMessage.error(this.$i18n.locale === "zh" ? res1.desZh : res1.desEn)
+            }
+
+            if (res2.code == 200) {
+              flag = true
+              if (res1.code != 200) this.init()
+            } else {
+              iMessage.error(this.$i18n.locale === "zh" ? res1.desZh : res1.desEn)
+            }
+
+            if (flag) {
+              if (type !== "submit") {
+                iMessage.success(this.$i18n.locale === "zh" ? (res1 ? res1.desZh : res2.desZh) : (res1 ? res1.desEn : res2.desEn)) 
+              }
+            } else throw [res1, res2]
+          })
       } else if (this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || this.partInfo.partProjectType === partProjTypes.DBLINGJIAN){
-        return this.updateCostSummaryDB()
+        return this.updateCostSummaryDB().then(res => {
+          if (res?.result) {
+            if (type !== "submit") {
+              iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn) 
+            }
+            this.init()
+          } else {
+            iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+          }
+        }).catch(err=>{
+          iMessage.error(err.desZh)
+        })
       } else {
-        return this.postCostSummary(type)
+        return this.postCostSummary().then(res => {
+          if (res.code == 200) {
+            this.updateCbdLevel(this.allTableData.level)
+            this.init()
+            if (type !== "submit") {
+              iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn) 
+            }
+          } else {
+            iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+          }
+        })
       }
     },
     getCostSummaryDB() {
@@ -1207,30 +1224,17 @@ export default{
       })
     },
     updateCostSummaryDB() {
-      return new Promise((r,j)=>{
-        const params = this.dbDetailList.map(item => {
-          return {
-            ...item,
-            capacity: item.sortOrder == 14 ? item.seaPrice : item.capacity,
-            sopDate: item.sortOrder == 13 ? item.seaPrice : item.sopDate,
-            isReduce: item.sortOrder == 11 ? item.seaPrice : item.isReduce,
-            seaPrice: item.sortOrder == 14 || item.sortOrder == 13 || item.sortOrder == 11 ? null : item.seaPrice
-          }
-        })
-        return updateCostSummaryDB(params).then(res => {
-          if (res?.result) {
-            r()
-            iMessage.success(this.$i18n.locale === 'zh' ? res?.desZh : res?.desEn)
-          } else {
-            j(res.desZh)
-            iMessage.error(this.$i18n.locale === 'zh' ? res?.desZh : res?.desEn)
-          }
-        }).catch(err=>{
-          j(err.desZh)
-          iMessage.error(err.desZh)
-        })
+      const params = this.dbDetailList.map(item => {
+        return {
+          ...item,
+          capacity: item.sortOrder == 14 ? item.seaPrice : item.capacity,
+          sopDate: item.sortOrder == 13 ? item.seaPrice : item.sopDate,
+          isReduce: item.sortOrder == 11 ? item.seaPrice : item.isReduce,
+          seaPrice: item.sortOrder == 14 || item.sortOrder == 13 || item.sortOrder == 11 ? null : item.seaPrice
+        }
       })
-      
+
+      return updateCostSummaryDB(params)
     },
 
     handleSelectionChangeByRawMaterial(list) {

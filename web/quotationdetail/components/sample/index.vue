@@ -120,23 +120,23 @@ export default {
     save(type) {
       return new Promise((r,j)=>{
         saveToolingSample({
-        quotationId: this.partInfo.quotationId,
-        toolingSampleDTOList: this.tableListData
-      })
-      .then(res => {
-        if (res.code == 200) {
-          if (type !== "submit") {
-            iMessage.success(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
+          quotationId: this.partInfo.quotationId,
+          toolingSampleDTOList: this.tableListData
+        })
+        .then(res => {
+          if (res.code == 200) {
+            if (type !== "submit") {
+              iMessage.success(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
+            }
+            this.init()
+            r(res)
+          } else {
+            iMessage.error(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
+            j(res)
           }
-          this.init()
-          r(res)
-        } else {
-          iMessage.error(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
-          j(res)
-        }
-      }).catch(rej=>{
-        j(rej)
-      })
+        }).catch(rej=>{
+          j(rej)
+        })
       })
     }
   }
