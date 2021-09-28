@@ -2,7 +2,7 @@
 export const getNominateDisabled = function(data) {
     const isPriceConsistent = data.isPriceConsistent // 一次性校验
     const applicationStatus = data.applicationStatus // 定点申请状态
-    if (!applicationStatus) return true
+    if (!applicationStatus) return false
 
     switch(data.designateType) {
     case "MEETING": // 上会
