@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-07-19 21:29:51
+ * @LastEditTime: 2021-09-27 17:39:57
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -380,7 +380,7 @@ export default {
           this.tabLoading = false
           let fsStateDisabled = res.data.fsStateCode != $enum("PURCHASE_PROJECT_STATE_ENUM.HAS_RFQ") && res.data.fsStateCode != $enum("PURCHASE_PROJECT_STATE_ENUM.APPLICATION_DESIGNAT")
           let rfqStateDisabled = res.data.rfqStateCode != $enum("RFQ_STATE_ENUM.INQUIRY_ING") && res.data.rfqStateCode != $enum("RFQ_STATE_ENUM.NEGOTIATE_ING")
-          let quotationStateDisabled = res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.NOT_QUOTED") || res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.REFUSE") || res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.DELEGATE_REFUSE")
+          let quotationStateDisabled = res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.NOT_QUOTED") || res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.REFUSE")
           let rfqRoundStateDisabled = res.data.rfqRoundStateCode != $enum("RFQ_ROUNDS_STATE_ENUM.RUNNING")
           let roundDisabled = +this.partInfo.round != +res.data.currentRounds
 
@@ -388,31 +388,21 @@ export default {
           this.rfqStateDisabled = rfqStateDisabled
           this.rfqRoundStateDisabled = rfqRoundStateDisabled
           this.roundDisabled = roundDisabled
-
-          // console.log("fsStateDisabled", fsStateDisabled)
-          // console.log("rfqStateDisabled", rfqStateDisabled)
-          // console.log("quotationStateDisabled", quotationStateDisabled)
-          // console.log("rfqRoundStateDisabled", rfqRoundStateDisabled)
-          // console.log("roundDisabled", roundDisabled)
-          
           this.disabled = fsStateDisabled || rfqStateDisabled || quotationStateDisabled || rfqRoundStateDisabled || roundDisabled
           this.acceptQuotationDisabled = fsStateDisabled || rfqStateDisabled || rfqRoundStateDisabled || roundDisabled // 是否禁用接受报价
-
           this.agentQutation = false
-
           if (this.$route.query.watingSupplier) { // 代报价
             this.acceptQuotation = res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.NOT_QUOTED") // 待接收判断
             this.agentQutation = true
+            //当前操作如果是已经提交了报价，（采购员替供应商，则需要主动将按钮自动重置为 '代供应商报价' 按钮状态）
+            if(res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.DELEGATE_SUBMITTED")){
+              this.agentQutationDisabled = true
+            }
           } else {
             this.agentQutationDisabled = false
           }
 
-          // if (res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.REFUSE") || res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.DELEGATE_REFUSE")) {
-          //   if (this.$route.query.watingSupplier) {
-          //     this.fix = true
-          //     this.disabled = true
-          //   } 
-          // } 
+
           this.statusObj = res.data
 
           if (this.fix) { //当存在这个状态的时候 整个界面是一个静态界面 不会存在其他状态
@@ -423,7 +413,6 @@ export default {
             this.disabled = true
           }
 
-          console.log(getNominateDisabled({ applicationStatus: this.partInfo.applicationStatus, designateType: this.partInfo.nominateProcessType, isPriceConsistent: this.partInfo.isPriceConsistent }))
           if (getNominateDisabled({ applicationStatus: this.partInfo.applicationStatus, designateType: this.partInfo.nominateProcessType, isPriceConsistent: this.partInfo.isPriceConsistent })) {
             this.acceptQuotation = false
             this.agentQutation = false
