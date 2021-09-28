@@ -391,6 +391,12 @@ export default {
           this.disabled = fsStateDisabled || rfqStateDisabled || quotationStateDisabled || rfqRoundStateDisabled || roundDisabled
           this.acceptQuotationDisabled = fsStateDisabled || rfqStateDisabled || rfqRoundStateDisabled || roundDisabled // 是否禁用接受报价
           this.agentQutation = false
+
+          console.log("this.fsStateDisabled", this.fsStateDisabled)
+          console.log("this.rfqStateDisabled", this.rfqStateDisabled)
+          console.log("this.rfqRoundStateDisabled", this.rfqRoundStateDisabled)
+          console.log("this.roundDisabled", this.roundDisabled)
+
           if (this.$route.query.watingSupplier) { // 代报价
             this.acceptQuotation = res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.NOT_QUOTED") // 待接收判断
             this.agentQutation = true
@@ -401,7 +407,6 @@ export default {
           } else {
             this.agentQutationDisabled = false
           }
-
 
           this.statusObj = res.data
 
