@@ -104,6 +104,7 @@ import { getPartsQuotations, getStates, submitPartsQuotation, quoteBatchPrice, c
 import { cloneDeep } from "lodash"
 import {partProjTypes} from '@/config'
 import { getEnumValue as $enum } from "rise/web/config"
+import { getNominateDisabled } from "rise/web/common"
 
 export default {
   components: { 
@@ -415,6 +416,15 @@ export default {
           this.statusObj = res.data
 
           if (this.fix) { //当存在这个状态的时候 整个界面是一个静态界面 不会存在其他状态
+            this.acceptQuotation = false
+            this.agentQutation = false
+            this.acceptQuotationDisabled = true
+            this.agentQutationDisabled = true
+            this.disabled = true
+          }
+
+          console.log(getNominateDisabled({ applicationStatus: this.partInfo.applicationStatus, designateType: this.partInfo.nominateProcessType, isPriceConsistent: this.partInfo.isPriceConsistent }))
+          if (getNominateDisabled({ applicationStatus: this.partInfo.applicationStatus, designateType: this.partInfo.nominateProcessType, isPriceConsistent: this.partInfo.isPriceConsistent })) {
             this.acceptQuotation = false
             this.agentQutation = false
             this.acceptQuotationDisabled = true

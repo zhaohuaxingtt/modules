@@ -17,7 +17,7 @@
       <!---------弹窗按钮--------->
       <div class="head-btn">
         <iButton @click="handleEditCancel">{{ $t('LK_QUXIAO') }}</iButton>
-        <iButton @click="handleEditSave">{{ $t('LK_BAOCUN') }}</iButton>
+        <iButton v-if="!disabled" @click="handleEditSave">{{ $t('LK_BAOCUN') }}</iButton>
       </div>
     </div>
     <!-------------------------------------------------->
