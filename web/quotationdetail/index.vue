@@ -104,6 +104,7 @@ import { getPartsQuotations, getStates, submitPartsQuotation, quoteBatchPrice, c
 import { cloneDeep } from "lodash"
 import {partProjTypes} from '@/config'
 import { getEnumValue as $enum } from "rise/web/config"
+import { getNominateDisabled } from "rise/web/common"
 
 export default {
   components: { 
@@ -411,7 +412,14 @@ export default {
             this.agentQutationDisabled = true
             this.disabled = true
           }
-          
+
+          if (getNominateDisabled({ applicationStatus: this.partInfo.applicationStatus, designateType: this.partInfo.nominateProcessType, isPriceConsistent: this.partInfo.isPriceConsistent })) {
+            this.acceptQuotation = false
+            this.agentQutation = false
+            this.acceptQuotationDisabled = true
+            this.agentQutationDisabled = true
+            this.disabled = true
+          }
           r()
           } catch(e) {
             console.log(e)
