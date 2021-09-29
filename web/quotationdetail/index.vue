@@ -597,7 +597,7 @@ export default {
 <style lang="scss" scoped>
 .quotation {
   .part {
-    width: 507px;
+    width: 527px;
     height: 30px;
 
     ::v-deep input {

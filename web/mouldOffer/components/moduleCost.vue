@@ -65,7 +65,7 @@
             </template>
             <!-- <iButton>提交</iButton> -->
             <template v-else>
-              <iButton @click="dgysBj=true" v-if='hastateSupplierBj'>代供应商报价</iButton>
+              <iButton @click="dgysBj=true" v-if='hastateSupplierBj && !disabled'>代供应商报价</iButton>
             </template>
           </div>
         </div>
