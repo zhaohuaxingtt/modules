@@ -319,7 +319,7 @@ export default {
             res.data.map(item => {
               const result = {
                 ...item,
-                label: `${ item.partNum }_${ item.fsNum }_${ item.procureFactoryName }`,
+                label: `${ item.partNum }_${ item.fsNum }_${ item.procureFactoryName }_${ item.partProjectStatusDesc }`,
                 value: item.fsNum,
                 key: item.fsNum
               }
@@ -392,10 +392,10 @@ export default {
           this.acceptQuotationDisabled = fsStateDisabled || rfqStateDisabled || rfqRoundStateDisabled || roundDisabled // 是否禁用接受报价
           this.agentQutation = false
 
-          console.log("this.fsStateDisabled", this.fsStateDisabled)
-          console.log("this.rfqStateDisabled", this.rfqStateDisabled)
-          console.log("this.rfqRoundStateDisabled", this.rfqRoundStateDisabled)
-          console.log("this.roundDisabled", this.roundDisabled)
+          // console.log("this.fsStateDisabled", this.fsStateDisabled)
+          // console.log("this.rfqStateDisabled", this.rfqStateDisabled)
+          // console.log("this.rfqRoundStateDisabled", this.rfqRoundStateDisabled)
+          // console.log("this.roundDisabled", this.roundDisabled)
 
           if (this.$route.query.watingSupplier) { // 代报价
             this.acceptQuotation = res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.NOT_QUOTED") // 待接收判断
@@ -488,7 +488,10 @@ export default {
       this.submitLoading = true
 
       try {
-        await this.handleSave("submit")
+        if (this.$refs[this.currentTab][0] && typeof this.$refs[this.currentTab][0].save === "function") {
+          await this.handleSave("submit")
+        }
+        
         submitPartsQuotation({
           quotationId: this.partInfo.quotationId,
           rfqId: this.partInfo.rfqId,
@@ -594,7 +597,7 @@ export default {
 <style lang="scss" scoped>
 .quotation {
   .part {
-    width: 407px;
+    width: 507px;
     height: 30px;
 
     ::v-deep input {
