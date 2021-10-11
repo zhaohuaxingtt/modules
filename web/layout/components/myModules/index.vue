@@ -2,7 +2,12 @@
   <div class="my-modules-container">
     <div class="title flex-align-center">
       <div class="margin-right10">My Modules</div>
-      <el-tooltip class="item" effect="dark" content="模块卡片可以拖动至主页" placement="top">
+      <el-tooltip
+        class="item"
+        effect="dark"
+        content="模块卡片可以拖动至主页"
+        placement="top"
+      >
         <!-- <el-button type="text"> -->
         <i class="el-icon-warning-outline"></i>
         <!-- </el-button> -->
@@ -18,27 +23,24 @@
         border: start,
         'empty-container': !filterList.length
       }"
+      id="sideModules"
     >
       <template v-if="!filterList.length">
         <div>当前我的模块均已在列表中</div>
       </template>
       <template v-else>
         <el-col :span="12" v-for="card in filterList" :key="card.id">
-          <div
-            class="module-card"
-            draggable="true"
-            @dragstart="handleDragStart"
-            @dragend="handleDragEnd"
-            :id="card.id"
-            :data-id="card.id"
-          >
+          <div class="module-card" :id="card.id" :data-id="card.id">
             <!-- <div class="title">
               <div class="move">
                 <icon symbol class="icon" name="iconshunxubiaoqian" />
               </div>
             </div> -->
             <div class="avatar">
-              <img :src="card.avatar" v-if="card.avatar" />
+              <img
+                :src="component2Avatar[card.component]"
+                v-if="component2Avatar[card.component]"
+              />
               <i class="el-icon-picture-outline" v-else></i>
             </div>
           </div>
@@ -50,40 +52,40 @@
 </template>
 
 <script>
-import { iInput, Icon } from 'rise'
-import { updateModules } from '../../api/index'
+import { iInput } from 'rise'
+import Sortable from 'sortablejs'
+import { updateBatchModules } from '../../api/index'
 export default {
-  components: { iInput, Icon },
+  components: { iInput },
   data() {
     return {
       start: false,
       keyword: '',
-      component2Avatar: [
-        {
-          component: 'Task',
-          avatar: ''
-        },
-        {
-          component: 'Approve',
-          avatar: ''
-        },
-        {
-          component: 'Volume',
-          avatar: require('../../assets/images/volume.png')
-        },
-        {
-          component: 'Sponser',
-          avatar: require('../../assets/images/sponsor.png')
-        },
-        {
-          component: 'Sourcing',
-          avatar: require('../../assets/images/sourcing.png')
-        }
-      ]
+      component2Avatar: {
+        Task: require('../../assets/images/task.png'),
+        Approve: require('../../assets/images/approval.png'),
+        Volume: require('../../assets/images/volume.png'),
+        Sponser: require('../../assets/images/sponsor.png'),
+        Sourcing: require('../../assets/images/sourcing.png'),
+        EKL: require('../../assets/images/ekl.png'),
+        Delivery: require('../../assets/images/delivery.png')
+      }
     }
   },
-  async mounted() {
-    // this.getList()
+  mounted() {
+    this.$nextTick(() => {
+      new Sortable(document.getElementById('sideModules'), {
+        group: {
+          name: 'myModules',
+          put: false // Do not allow items to be put into this list
+        },
+        animation: 150,
+        ghostClass:
+          'my-modules-drop-ghost,el-col-24,el-col-xs-24,el-col-sm-12,el-col-md-8,el-col-lg-6,el-col-xl-6',
+        onStart: event => this.handleDragStart(event),
+        onRemove: event => this.handleDragEnd(event)
+      })
+    })
   },
   computed: {
     // eslint-disable-next-line no-undef
@@ -91,36 +93,49 @@ export default {
       list: state => state.permission.cardList
     }),
     filterList: function() {
-      const list = _.cloneDeep(this.list)
-      const component2Avatar = _.cloneDeep(this.component2Avatar)
-      for (let i = 0; i < list.length; i++) {
-        for (let j = 0; j < component2Avatar.length; j++) {
-          if (list[i].component === this.component2Avatar[j].component) {
-            list[i].avatar = component2Avatar[j].avatar
-          }
-        }
-      }
-      const arrList = list.filter(li => {
+      const arrList = this.list.filter(li => {
         return li.value
       })
       const filterList = this.keyword
         ? arrList.filter(card => {
             return card.name.includes(this.keyword)
           })
-        : _.cloneDeep(arrList)
-      return _.cloneDeep(filterList)
+        : arrList
+      return filterList
     }
   },
+
   methods: {
     getList() {
       this.$store.dispatch('getModules')
     },
-    handleDragStart() {
-      this.start = true
+    handleDragStart(event) {
+      console.log('onStart', event)
+
+      // this.start = true
     },
-    async handleDragEnd(e) {
-      this.start = false
-      const obj = document.getElementsByClassName('card-container')[0].getBoundingClientRect()
+    async handleDragEnd(event) {
+      console.log('onEnd', event)
+      const item = this.filterList[event.oldIndex]
+      item.value = false
+      const cards = _.cloneDeep(this.list)
+      const index = cards.findIndex(e => e.id === item.id)
+      cards.splice(index, 1)
+      cards.splice(event.newIndex, 0, item)
+      const newCards = cards.map((e, i) => {
+        e.orderNum = i
+        return e
+      })
+      const res = await updateBatchModules(newCards)
+      // const res = await updateModules(item)
+      if (res.result) {
+        this.getList()
+      }
+
+      /* this.start = false
+      const obj = document
+        .getElementsByClassName('card-container')[0]
+        .getBoundingClientRect()
       const xt = obj.x
       const xb = obj.x + obj.width
       const yt = obj.y
@@ -129,13 +144,18 @@ export default {
         return li.id == (e.target.id || e.target.offsetParent.id)
       })
       console.log('item', item)
-      if (e.clientY < yt || e.clientY > yb || e.clientX < xt || e.clientX > xb) {
+      if (
+        e.clientY < yt ||
+        e.clientY > yb ||
+        e.clientX < xt ||
+        e.clientX > xb
+      ) {
         item.value = false
         const res = await updateModules(item)
         if (res.code === '200' && res.data) {
           this.getList()
         }
-      }
+      } */
     },
     handleInput() {
       const list = _.cloneDeep(this.list)
@@ -183,6 +203,11 @@ export default {
     padding: 15px 0;
     margin: 10px 0 0 0;
     min-height: 300px;
+    height: 600px;
+    overflow: auto;
+    > div {
+      height: 235px;
+    }
     &.empty-container {
       // text-align: center;
       display: flex;
@@ -196,6 +221,7 @@ export default {
       border: 1px dashed #909090;
     }
     .module-card {
+      cursor: move;
       border-radius: 10px;
       background: #ffffff;
       margin-bottom: 5px;
@@ -230,6 +256,21 @@ export default {
       margin-bottom: 10px;
       font-size: 14px;
     }
+  }
+}
+</style>
+
+<style lang="scss">
+#myModules {
+  .my-modules-drop-ghost {
+    width: 25% !important;
+    img {
+      max-width: 100%;
+    }
+    /* box-shadow: 0 0.125rem 0.75rem 0 rgb(0 0 0 / 10%);
+  background: #fff;
+  border-radius: 10px;
+  height: 630px; */
   }
 }
 </style>

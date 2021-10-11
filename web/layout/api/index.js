@@ -9,3 +9,11 @@ export function updateModules(params) {
     data: params
   })
 }
+
+export function updateBatchModules(data) {
+  return requestUSER({
+    url: '/home/module/updateBatch',
+    method: 'POST',
+    data
+  })
+}
