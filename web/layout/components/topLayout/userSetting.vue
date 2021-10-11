@@ -41,7 +41,7 @@
             :class="{
               'flex-between-center-center': true,
               menu: true,
-              active: menu.url.includes($route.path),
+              active: checkActive(menu),
               disabled: !menu.url
             }"
           >
@@ -108,6 +108,14 @@ export default {
     }
   },
   methods: {
+    checkActive(menu) {
+      const matched = this.$route.matched
+      for (let key in matched) {
+        if (matched[key].path && menu.url.includes(matched[key].path)) {
+          return true
+        }
+      }
+    },
     handleShow() {
       this.active = true
       this.menus_admin = this.menus
@@ -115,7 +123,7 @@ export default {
     handleHide() {
       this.active = false
     },
-    //模拟退出登录方法，后台没有提供api接口
+    //模拟退出登录方法
     logout() {
       removeToken()
       window.location.href = '/login'
@@ -128,12 +136,16 @@ export default {
         iMessage.success('coming soon')
       }
     },
-    //各个模块分布在不同工程，所以menu url跳转会支持工程内路由跳转及window.open,location.href 跳转
     handleRedirect(menu) {
       if (!menu.url) {
         iMessage.success('coming soon')
-      } else if (menu?.url.indexOf('http') !== -1 || menu?.url.indexOf('https') !== -1) {
-        menu.target === '_blank' ? window.open(menu.url) : (location.href = menu.url)
+      } else if (
+        menu?.url.indexOf('http') !== -1 ||
+        menu?.url.indexOf('https') !== -1
+      ) {
+        menu.target === '_blank'
+          ? window.open(menu.url)
+          : (location.href = menu.url)
       } else {
         if (this.$route.path !== menu.url) {
           this.$router.push(menu.url)

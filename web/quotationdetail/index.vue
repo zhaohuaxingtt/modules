@@ -495,7 +495,8 @@ export default {
         submitPartsQuotation({
           quotationId: this.partInfo.quotationId,
           rfqId: this.partInfo.rfqId,
-          cbdLevel: this.partInfo.currentCbdLevel || this.partInfo.cbdLevel
+          cbdLevel: this.partInfo.currentCbdLevel || this.partInfo.cbdLevel,
+          isOriginprice: this.partInfo.isOriginprice
         })
         .then(res => {
           if (res.code == 200) {

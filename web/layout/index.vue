@@ -8,31 +8,34 @@
 -->
 <template>
   <div class="content">
-    <!-- header -->
     <topLayout :menus="menus_admin"></topLayout>
-    <!-- 左侧菜单栏，一级菜单-->
     <leftLayout
       ref="leftLayout"
       :menus="menus"
       @toggle-active="toggleActive"
       @set-menu-modal-visible="setMenuModalVisible"
     >
-      <template slot="menu" v-if="activeIndex != '0'">
-        <!-- 左侧菜单栏，点击icon弹出二级菜单 只有workbench common function -->
-        <sideMenu :side-menus="sideMenus" :menu-map="menuMap" @hide-side-menu="hideSideMenu" />
+      <template slot="menu" v-if="activeIndex != 'RISE_HOME'">
+        <sideMenu
+          :side-menus="sideMenus"
+          :menu-map="menuMap"
+          @hide-side-menu="hideSideMenu"
+        />
       </template>
       <template slot="dashboard" v-else>
-        <!-- 左侧菜单栏，点击icon弹出我的模块 只有home -->
         <myModules :index="activeIndex" />
       </template>
     </leftLayout>
-    <!-- 主体route-view -->
     <div class="app-content" :class="{ keepAlive: $route.meta.keepAlive }">
       <keep-alive>
         <router-view v-if="$route.meta.keepAlive" :key="$route.fullPath" />
       </keep-alive>
       <router-view v-if="!$route.meta.keepAlive" :key="$route.fullPath" />
-      <div v-if="menuModelVisible" class="app-menu-model" @click="hideSideMenu"></div>
+      <div
+        v-if="menuModelVisible"
+        class="app-menu-model"
+        @click="hideSideMenu"
+      ></div>
     </div>
   </div>
 </template>
@@ -42,7 +45,7 @@ import LeftLayout from './components/leftLayout'
 import sideMenu from './components/sideMenu'
 import myModules from './components/myModules'
 import { arrayToTree, treeToArray } from '@/utils'
-import _ from 'lodash'
+
 export default {
   components: { topLayout, LeftLayout, sideMenu, myModules },
   props: {
@@ -55,14 +58,16 @@ export default {
   },
   data() {
     return {
-      activeIndex: 1,
+      activeIndex: '',
       menuMap: {},
-      menus_admin: [], //管理员菜单
+      menus_admin: [],
       menu2IconMap: {
-        // 一级菜单 默认icon及active icon
         RISE_HOME: ['iconhomeweixuanzhong', 'iconhomexuanzhong'],
         RISE_WORKBENCH: ['iconworkbenchweixuanzhong', 'iconworkbenchxuanzhong'],
-        RISE_COMMON_FUNCTION: ['iconcommonfunctionweixuanzhong', 'iconcommonfunctionxuanzhong'],
+        RISE_COMMON_FUNCTION: [
+          'iconcommonfunctionweixuanzhong',
+          'iconcommonfunctionxuanzhong'
+        ],
         RISE_ADMIN: ['', '']
       },
       menuModelVisible: false
@@ -71,11 +76,14 @@ export default {
   computed: {
     // eslint-disable-next-line no-undef
     ...Vuex.mapState({
-      menuList: state => state.permission.menuList // 各个工程permission.js登录之后获取的userPermission中的menuList，通过store存入
+      menuList: state => state.permission.menuList
     }),
     sideMenus() {
       if (this.menus.length > 0) {
-        const activeMenu = this.menus[this.activeIndex]
+        // const activeMenu = this.menus[this.activeIndex]
+        const activeMenu = this.menus.find(item => {
+          return item.permissionKey === this.activeIndex
+        })
         if (activeMenu && activeMenu.subMenus) {
           return activeMenu.subMenus
         }
@@ -84,7 +92,6 @@ export default {
     }
   },
   created() {
-    // 如果iLayout组件出入menus参数且menus.length !== 0则使用props中的menus，否则使用store中的menuList
     this.menus && this.menus.length ? this.getMenus() : this.getMenuList()
   },
   methods: {
@@ -102,15 +109,26 @@ export default {
           ? // item.url.slice(9)//
             (item.url = item.url = process.env.VUE_APP_HOST + item.url)
           : ''
-        if (item.parentId && item.url && item.url.indexOf('http') === -1 && item.url.indexOf('https') === -1) {
+        if (
+          item.parentId &&
+          item.url &&
+          item.url.indexOf('http') === -1 &&
+          item.url.indexOf('https') === -1
+        ) {
           item.url = process.env.VUE_APP_HOST + item.url //item.url.slice(9)//
         } else {
           item.url = item.url || ''
         }
 
         if (!item.parentId) {
-          item.icon = (this.menu2IconMap[item.permissionKey] && this.menu2IconMap[item.permissionKey][0]) || ''
-          item.activeIcon = (this.menu2IconMap[item.permissionKey] && this.menu2IconMap[item.permissionKey][1]) || ''
+          item.icon =
+            (this.menu2IconMap[item.permissionKey] &&
+              this.menu2IconMap[item.permissionKey][0]) ||
+            ''
+          item.activeIcon =
+            (this.menu2IconMap[item.permissionKey] &&
+              this.menu2IconMap[item.permissionKey][1]) ||
+            ''
         }
       })
       const menus_tree_all = arrayToTree(list, 'id', 'parentId', 'subMenus')

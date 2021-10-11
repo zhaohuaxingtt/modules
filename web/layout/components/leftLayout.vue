@@ -12,13 +12,24 @@
       <div class="content">
         <img class="logo" src="~@/assets/images/rise.png" alt="" />
         <div :class="iconChangeClass" class="centerBtn">
-          <span
+          <!-- <span
             v-for="(item, index) in menus"
             :key="index"
             :class="{ transparent: activeIndex === index }"
             @click="toggleActive(index)"
+          > -->
+          <span
+            v-for="item in menus"
+            :key="item.id"
+            :class="{ transparent: activeIndex === item.permissionKey }"
+            @click="toggleSubMenu(item)"
           >
-            <icon symbol :name="activeIndex === index ? item.activeIcon : item.icon" />
+            <icon
+              symbol
+              :name="
+                activeIndex === item.permissionKey ? item.activeIcon : item.icon
+              "
+            />
           </span>
         </div>
         <div class="btn-button">
@@ -32,6 +43,13 @@
         name="iconcaidanzhankai"
         :class="{ menu: true, hiddenMenu: menuVisible, delay: !menuVisible }"
         @click.native="menuVisible = !menuVisible"
+        v-if="
+          menus
+            .map(item => {
+              return item.permissionKey
+            })
+            .includes(activeIndex)
+        "
       />
       <div
         :class="{
@@ -41,9 +59,13 @@
         }"
       >
         <div class="meunTopContent">
-          <span>
-            {{ activeIndex == '0' ? 'Personalized Modules' : activeIndex == '1' ? 'Workbench' : 'Common Function' }}
-          </span>
+          <span>{{
+            activeIndex === 'RISE_HOME'
+              ? 'Personalized Modules'
+              : activeIndex === 'RISE_WORKBENCH'
+              ? 'Workbench'
+              : 'Common Function'
+          }}</span>
           <icon
             symbol
             name="iconcaidanshouqi"
@@ -59,7 +81,6 @@
 </template>
 <script>
 import { icon } from 'rise'
-import _ from 'lodash'
 export default {
   components: { icon },
   props: {
@@ -74,28 +95,75 @@ export default {
     return {
       iconChangeClass: '',
       menuVisible: false,
-      activeIndex: 1
+      activeIndex: '',
+      mapMenu: {
+        cf: 'RISE_COMMON_FUNCTION',
+        wb: 'RISE_WORKBENCH',
+        home: 'RISE_HOME',
+        admin: 'RISE_ADMIN'
+      }
     }
   },
   provide() {
     return this
   },
   created() {
-    // 根据不同环境变量，在不同环境判断一级菜单选中状态
-    const rootIndex =
-      process.env.NODE_ENV === 'sit' || process.env.NODE_ENV === 'production'
-        ? this.getActiveIndexInSVW(this.menus)
-        : this.getActiveIndex(this.menus)
-    console.log('rootIndex', rootIndex)
+    const rootIndex = this.getFirstMenuActive()
+
     this.activeIndex = rootIndex
+    console.log('rootInex', rootIndex)
     this.$emit('toggle-active', rootIndex)
   },
+  mounted() {
+    document.addEventListener('click', e => {
+      this.clickListener(e)
+    })
+  },
+  beforeDestroy() {
+    document.removeEventListener('click', e => {
+      this.clickListener(e)
+    })
+  },
+  watch: {
+    $route: {
+      handler: function(route) {
+        console.log('route', route)
+        if (route.path === '/index') {
+          this.showSideMenu()
+        }
+      },
+      immediate: true
+    }
+  },
   methods: {
-    toggleActive(index) {
-      const activeMenu = this.menus[index]
+    getFirstMenuActive() {
+      return this.$route.meta.top || 'RISE_WORKBENCH'
+    },
+    clickListener(e) {
+      const leftLayoutRect = document
+        .getElementsByClassName('leftLayout')[0]
+        .getBoundingClientRect()
+      const sideRect = document
+        .getElementsByClassName('meunContent')[0]
+        .getBoundingClientRect()
+      const xt = 0
+      const xb = leftLayoutRect.width + sideRect.width
+      const yt = 0
+      const yb = leftLayoutRect.height
+      if (
+        e.clientY < yt ||
+        e.clientY > yb ||
+        e.clientX < xt ||
+        e.clientX > xb
+      ) {
+        this.menuVisible = false
+      }
+    },
+    toggleSubMenu(item) {
+      const activeMenu = item
       if (this.menus.length > 0) {
         if (activeMenu.subMenus) {
-          if (this.activeIndex === index) {
+          if (this.activeIndex === item.permissionKey) {
             if (this.menuVisible) {
               this.hideSideMenu()
             } else {
@@ -105,16 +173,21 @@ export default {
             this.showSideMenu()
           }
         } else if (activeMenu.url) {
-          if (activeMenu.url.indexOf('http') !== -1 || activeMenu.url.indexOf('https') !== -1) {
-            activeMenu.target ? window.open(activeMenu.url) : (location.href = activeMenu.url)
+          if (
+            activeMenu.url.indexOf('http') !== -1 ||
+            activeMenu.url.indexOf('https') !== -1
+          ) {
+            activeMenu.target
+              ? window.open(activeMenu.url)
+              : (location.href = activeMenu.url)
           }
           // if (this.$route.path !== activeMenu.url) {
           //   this.$router.push({ path: activeMenu.url })
           // }
           this.hideSideMenu()
         }
-        this.activeIndex = index
-        this.$emit('toggle-active', index)
+        this.activeIndex = item.permissionKey
+        this.$emit('toggle-active', item.permissionKey)
       }
     },
     showSideMenu() {
@@ -122,68 +195,6 @@ export default {
     },
     hideSideMenu() {
       this.menuVisible = false
-    },
-    // dev vmsit 内部环境
-    getActiveIndex(menus) {
-      let index = -1
-      index = _.findIndex(menus, item => {
-        const url =
-          item.url?.match(/((?<=#).*(?=\?))|((?<=#).*)/g) && item.url?.match(/((?<=#).*(?=\?))|((?<=#).*)/g)[0]
-        if (url === this.$route.path) {
-          return item
-        }
-      })
-
-      if (
-        process.env.VUE_APP_PUBLICPATH === '/portal' &&
-        this.$route.path !== '/index' &&
-        this.$route.meta.perm !== 'admin'
-      ) {
-        index = _.findIndex(menus, item => {
-          return item.permissionKey === 'RISE_COMMON_FUNCTION'
-        })
-      }
-
-      if (
-        process.env.VUE_APP_PUBLICPATH !== '/portal' &&
-        process.env.VUE_APP_PUBLICPATH !== '/portal/contract' &&
-        process.env.VUE_APP_PUBLICPATH !== '/portal/meeting'
-      ) {
-        index = _.findIndex(menus, item => {
-          return item.permissionKey === 'RISE_WORKBENCH'
-        })
-      }
-      return index
-    },
-    // SVW 上汽大众环境
-    getActiveIndexInSVW(menus) {
-      let index = -1
-      const host = window.location.host
-      const isHome = this.$route.path === '/index'
-      const isAdmin = this.$route.meta.perm === 'admin'
-      const isPortal = host.indexOf('portal') !== -1
-      const isMeetingHall = this.$route.path === '/meeting/hall'
-      const isMeetingType = this.$route.path === '/meeting/type'
-      const isMeetingHome = this.$route.path === '/meeting/home'
-      const isContract = this.$route.path === '/contract/contractTemplate'
-      const isCF = (isPortal && !isHome && !isAdmin) || isMeetingHall
-      const isAdminMenus = isAdmin || isMeetingHome || isMeetingType || isContract
-      if (isHome) {
-        index = _.findIndex(menus, item => {
-          return item.permissionKey === 'RISE_HOME'
-        })
-      } else if (isCF) {
-        index = _.findIndex(menus, item => {
-          return item.permissionKey === 'RISE_COMMON_FUNCTION'
-        })
-      } else if (isAdminMenus) {
-        index = -1
-      } else {
-        index = _.findIndex(menus, item => {
-          return item.permissionKey === 'RISE_WORKBENCH'
-        })
-      }
-      return index
     }
   }
 }

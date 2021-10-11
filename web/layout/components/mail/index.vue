@@ -1,6 +1,10 @@
 <template>
   <div class="mail">
-    <i-drawer class="messageDrawer1" :visible.sync="visible" v-loading="loading">
+    <i-drawer
+      class="messageDrawer1"
+      :visible.sync="visible"
+      v-loading="loading"
+    >
       <el-tabs :stretch="true" v-model="activeTab" @tab-click="handleClick">
         <el-tab-pane v-for="item in tabs" :key="item.name" :name="item.name">
           <span slot="label">
@@ -27,7 +31,6 @@
 import { iDrawer } from 'rise'
 import { list } from './components'
 import { getHomeSocketMessage } from '@/api/mail'
-import _ from 'lodash'
 export default {
   components: { iDrawer },
   props: {
@@ -55,12 +58,14 @@ export default {
       this.$emit('triggerCallback')
       if (tab === '4') {
         this.$refs.list[1].getUnreadCount()
-        this.$refs.list[1].query.type === '' || this.$refs.list[1].query.type === type
+        this.$refs.list[1].query.type === '' ||
+        this.$refs.list[1].query.type === type
           ? this.$refs.list[1].list.unshift(messages.msgTxt)
           : ''
       } else if (tab === '5') {
         this.$refs.list[0].getUnreadCount()
-        this.$refs.list[0].query.type === '' || this.$refs.list[0].query.type === type
+        this.$refs.list[0].query.type === '' ||
+        this.$refs.list[0].query.type === type
           ? this.$refs.list[0].list.unshift(messages.msgTxt)
           : ''
       }
