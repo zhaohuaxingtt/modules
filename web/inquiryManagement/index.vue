@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-10-12 19:55:39
- * @LastEditTime: 2021-10-12 19:59:08
+ * @LastEditTime: 2021-10-12 20:16:46
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\inquiryManagement\index.vue
@@ -12,7 +12,7 @@
 </iCard>
 </template>
 <script>
-import iCard from 'rise'
+import {iCard} from 'rise'
 export default{
   components:{iCard}
 }
