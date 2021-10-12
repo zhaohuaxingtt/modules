@@ -64,6 +64,7 @@ export default {
       }
     }
   },
+  
   // mounted() {
   //   this.$nextTick(() => {
   //     new Sortable(document.getElementById('sideModules'), {
