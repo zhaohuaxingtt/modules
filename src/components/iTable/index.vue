@@ -10,10 +10,12 @@ TableBody.methods.handleClick = function(event, row) {
   //   column = getColumnByCell(this.table, cell)
   // }
 
-  // if (!this.table.columns.some(column => column.type === 'selection')) return
-  // if (typeof this.table.selectRowDisabeld === "function" && this.table.selectRowDisabeld(row, column)) return
-  this.table.toggleRowSelection(row)
-  this.table.$emit("select", (this.store.states.selection || []).slice(), row)
+  const selectionColumn = this.table.columns.find(column => column.type === 'selection')
+  if (selectionColumn && selectionColumn.selectable(row, this.store.states.data.indexOf(row))) {
+    this.table.toggleRowSelection(row)
+    this.table.$emit("select", (this.store.states.selection || []).slice(), row)
+  }
+
   this.store.commit("setCurrentRow", row)
   this.handleEvent(event, row, "click")
 }
@@ -21,9 +23,6 @@ TableBody.methods.handleClick = function(event, row) {
 export default {
   extends: Table,
   name: 'ElTable',
-  components: { TableBody },
-  // props: {
-  //   selectRowDisabeld: Function
-  // }
+  components: { TableBody }
 }
 </script>
