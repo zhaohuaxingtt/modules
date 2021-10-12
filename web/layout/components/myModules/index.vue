@@ -2,12 +2,7 @@
   <div class="my-modules-container">
     <div class="title flex-align-center">
       <div class="margin-right10">My Modules</div>
-      <el-tooltip
-        class="item"
-        effect="dark"
-        content="模块卡片可以拖动至主页"
-        placement="top"
-      >
+      <el-tooltip class="item" effect="dark" content="模块卡片可以拖动至主页" placement="top">
         <!-- <el-button type="text"> -->
         <i class="el-icon-warning-outline"></i>
         <!-- </el-button> -->
@@ -37,10 +32,7 @@
               </div>
             </div> -->
             <div class="avatar">
-              <img
-                :src="component2Avatar[card.component]"
-                v-if="component2Avatar[card.component]"
-              />
+              <img :src="component2Avatar[card.component]" v-if="component2Avatar[card.component]" />
               <i class="el-icon-picture-outline" v-else></i>
             </div>
           </div>
@@ -53,7 +45,7 @@
 
 <script>
 import { iInput } from 'rise'
-import Sortable from 'sortablejs'
+// import Sortable from 'sortablejs'
 import { updateBatchModules } from '../../api/index'
 export default {
   components: { iInput },
@@ -72,21 +64,21 @@ export default {
       }
     }
   },
-  mounted() {
-    this.$nextTick(() => {
-      new Sortable(document.getElementById('sideModules'), {
-        group: {
-          name: 'myModules',
-          put: false // Do not allow items to be put into this list
-        },
-        animation: 150,
-        ghostClass:
-          'my-modules-drop-ghost,el-col-24,el-col-xs-24,el-col-sm-12,el-col-md-8,el-col-lg-6,el-col-xl-6',
-        onStart: event => this.handleDragStart(event),
-        onRemove: event => this.handleDragEnd(event)
-      })
-    })
-  },
+  // mounted() {
+  //   this.$nextTick(() => {
+  //     new Sortable(document.getElementById('sideModules'), {
+  //       group: {
+  //         name: 'myModules',
+  //         put: false // Do not allow items to be put into this list
+  //       },
+  //       animation: 150,
+  //       ghostClass:
+  //         'my-modules-drop-ghost,el-col-24,el-col-xs-24,el-col-sm-12,el-col-md-8,el-col-lg-6,el-col-xl-6',
+  //       onStart: event => this.handleDragStart(event),
+  //       onRemove: event => this.handleDragEnd(event)
+  //     })
+  //   })
+  // },
   computed: {
     // eslint-disable-next-line no-undef
     ...Vuex.mapState({
