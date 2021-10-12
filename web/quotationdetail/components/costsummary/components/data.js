@@ -256,12 +256,17 @@ export const allpagefrom = {
  * @param {*} //Bprice B价 Aprice A价  
  * @return {*}
  */
-export function getAallPrice(needAddPirce,data){
+export function getAallPrice(needAddPirce,data, type, aprice){
   try {
     let allPriceString = ''
     needAddPirce.forEach((items,index)=>{
       allPriceString += (data[items] || 0) + (index == (needAddPirce.length-1)?'':'+')
     })
+
+    if (type === "B" && aprice) {
+      allPriceString += "+" + aprice
+    }
+    
     return _getMathNumber(allPriceString)
   } catch (error) {
     console.warn(error)
