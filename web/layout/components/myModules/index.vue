@@ -63,23 +63,21 @@ export default {
       }
     }
   },
-  mounted() {
-    this.$nextTick(() => {
-      if (process.env.VUE_APP_PUBLICPATH === '/portal' || window.location.host.includes('portal')) {
-        require('@/utils/iSortable').default.create(document.getElementById('sideModules'), {
-          group: {
-            name: 'myModules',
-            put: false // Do not allow items to be put into this list
-          },
-          animation: 150,
-          ghostClass: 'my-modules-drop-ghost,el-col-24,el-col-xs-24,el-col-sm-12,el-col-md-8,el-col-lg-6,el-col-xl-6',
-          onStart: event => this.handleDragStart(event),
-          onRemove: event => this.handleDragEnd(event)
-        })
-      }
-      
-    })
-  },
+  // mounted() {
+  //   this.$nextTick(() => {
+  //     new Sortable(document.getElementById('sideModules'), {
+  //       group: {
+  //         name: 'myModules',
+  //         put: false // Do not allow items to be put into this list
+  //       },
+  //       animation: 150,
+  //       ghostClass:
+  //         'my-modules-drop-ghost,el-col-24,el-col-xs-24,el-col-sm-12,el-col-md-8,el-col-lg-6,el-col-xl-6',
+  //       onStart: event => this.handleDragStart(event),
+  //       onRemove: event => this.handleDragEnd(event)
+  //     })
+  //   })
+  // },
   computed: {
     // eslint-disable-next-line no-undef
     ...Vuex.mapState({
