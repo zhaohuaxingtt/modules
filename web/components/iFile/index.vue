@@ -2,7 +2,7 @@
  * @Autor: Hao,Jiang
  * @Date: 2021-09-02 08:53:54
  * @LastEditors: Hao,Jiang
- * @LastEditTime: 2021-10-13 17:16:30
+ * @LastEditTime: 2021-10-13 17:28:05
  * @Description: 附件管理标准表格 卡片模式
 -->
 <template>
@@ -40,8 +40,8 @@
       </div>
     </div>
     <tablelist
-      :index="tableTitleCol.includes('index')"
-      :selection="!readOnly && tableTitleCol.includes('selection')"
+      :index="tableTitleCol.includes('index') && tableIndex"
+      :selection="!readOnly && tableTitleCol.includes('selection') && tableSelection"
       :tableData="fileDataList"
       :tableTitle="fileTableTitle"
       :fileTableLoading="fileTableLoading"
@@ -163,6 +163,18 @@ export default {
      * @return {*}
      */    
     readOnly: {type: Boolean, default: false},
+    /**
+     * @description: 是否支持选择
+     * @param {*}
+     * @return {*}
+     */    
+    tableSelection: {type: Boolean, default: true},
+    /**
+     * @description: 是否显示表头编号
+     * @param {*}
+     * @return {*}
+     */    
+    tableIndex: {type: Boolean, default: true},
     /**
      * @description: 是否初始化加载数据
      * @param {*}
