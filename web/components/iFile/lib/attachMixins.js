@@ -1,7 +1,7 @@
 /*
  * @Author: haojiang
  * @Date: 2021-02-24 14:28:34
- * @LastEditTime: 2021-09-03 09:08:33
+ * @LastEditTime: 2021-10-12 15:35:42
  * @LastEditors: Hao,Jiang
  * @Description: 针对所有的分页插件，实行方法混入。
  * @FilePath: \rise\src\utils\attachMixins.js
@@ -121,6 +121,16 @@ export const attachMixins = {
       } catch (e) {
         console.log(e)
       }
+    },
+    /**
+     * @description: 链接方式单个文件下载
+     * @param {*} item
+     * @return {*}
+     */    
+    downloadSingleFile(item) {
+      if (!(item && item.uploadId)) return iMessage.error(this.language('WENJIANBUCUNZAI','文件不存在'))
+      const params = [item.uploadId]
+      this.downloadFile(params)
     },
     /**
      * @description: 
