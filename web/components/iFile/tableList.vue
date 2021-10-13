@@ -1,7 +1,7 @@
 <!--
  * @Author: haojiang
  * @Date: 2021-02-24 09:42:07
- * @LastEditTime: 2021-09-02 09:27:40
+ * @LastEditTime: 2021-10-13 09:31:46
  * @LastEditors: Hao,Jiang
  * @Description: table组件
 -->
@@ -35,10 +35,17 @@
     <template v-for="(items,index) in tableTitle">
       <!----------------------需要高亮的列并且带有打开详情事件------------------------>
       <el-table-column :key="index" align='center' :width="items.width" :min-width="items.minWidth ? items.minWidth.toString():''" :show-overflow-tooltip='items.tooltip' v-if='items.props == activeItems' :prop="items.props" :label="lang ? language(items.key, items.name) : $t(items.key)">
+        <!-- slot header -->
+        <template slot="header">
+          <div class="slotHeader" :class="{headerRequiredLeft: items._headerRequiredLeft, headerRequiredRight:items._headerRequiredRight }">
+            {{lang ? language(items.key, items.name) : $t(items.key)}}
+          </div>
+        </template>
+        <!-- slot content -->
         <template slot-scope="row">
            <span class="flexRow">
-            <span class="openLinkText cursor "  @click="openPage(row.row)"> {{ row.row[activeItems]}}</span>
-            <span class="icon-gray  cursor " v-if="row.row[activeItems]"  @click="openPage(row.row)">
+            <span :class="`openLinkText cursor ${activeItemsLink}`"  @click="openPage(row.row)"> {{ row.row[activeItems]}}</span>
+            <span class="icon-gray  cursor " v-if="row.row[activeItems] && !activeItemsLink"  @click="openPage(row.row)">
                 <icon symbol class="show" name="icontiaozhuananniu" />
                 <icon symbol class="active" name="icontiaozhuanxuanzhongzhuangtai" />
             </span>
@@ -56,6 +63,13 @@
         :label="lang ? language(items.key, items.name) : $t(items.key)"
         :prop="items.props"
         :class-name="items.tree ? 'tree' : ''">
+        <!-- slot header -->
+        <template slot="header">
+          <div class="slotHeader" :class="{headerRequiredLeft: items._headerRequiredLeft, headerRequiredRight:items._headerRequiredRight }">
+            {{lang ? language(items.key, items.name) : $t(items.key)}}
+          </div>
+        </template>
+        <!-- slot content -->
         <template slot-scope="scope">
           <span :class="{normal: true, child: scope.row.children}">
             <slot :name="items.props" :row="scope.row" :$index="scope.$index">
@@ -120,10 +134,16 @@ export default{
      */    
     activeItems:{type:String,default:'b'},
     /**
+     * @description: 用于高亮带链接的列的样式是否带箭头
+     * @param {*} false 标识带箭头
+     * @return {*}
+     */
+    activeItemsLink:{type:String||Boolean,default: false},
+    /**
      * @description: 是否单选
      * @param {*}
      * @return {*}
-     */    
+     */  
     radio:{type:Boolean,default:false},
     /**
      * @description: 是否支持树形展示
@@ -213,6 +233,9 @@ export default{
 <style lang='scss' scoped>
   .openLinkText{
     color:$color-blue;
+    &.underline {
+      text-decoration: underline;
+    }
   }
   .radio {
     ::v-deep thead .el-table-column--selection .cell {
@@ -268,6 +291,23 @@ export default{
     }
     .active{
       display: block;
+    }
+  }
+  .slotHeader {
+    text-align: center;
+    &:after, &:before {
+      // display: inline-block;
+      content: '*';
+      color: #f56c6c;
+      display: none;
+    }
+    &.headerRequiredLeft:before {
+      display: inline-block;
+      margin-right: 2px;
+    }
+    &.headerRequiredRight:after {
+      display: inline-block;
+      margin-left: 2px;
     }
   }
 </style>
