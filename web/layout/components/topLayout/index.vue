@@ -163,7 +163,8 @@ export default {
     },
     handleChangeLang() {
       this.lang = this.lang === 'zh' ? 'en' : 'zh'
-      localStorage.setItem('lang', this.lang)
+      this.$store.commit('SET_LANGUAGE', this.lang)
+      // localStorage.setItem('lang', this.lang)
       this.$i18n.locale = this.lang
       if (this.lang == 'en') {
         // eslint-disable-next-line no-undef
