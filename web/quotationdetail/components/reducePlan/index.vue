@@ -4,27 +4,35 @@
  * @Description: 降价计划
 -->
 <template>
-    <iCard class="reducePlan" v-loading="loading">
-        <div class="header margin-bottom20">
-            <span class="title">{{ $t('LK_JIANGJIAJIHUA') }}</span>
-            <span v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU">
-                降价计划以{{basic}}为准
-            </span>
-            <!-----------配件报价的降价计划可以选择基于A价或B价，---------------------------------------------->
-            <span v-else-if="partInfo.partProjectType === partProjTypes.PEIJIAN"  class="tip margin-left15">
-                <span class="margin-right15">计算基准：</span>
-                <el-radio-group v-model="computedBasic" @change="handleABChange">
-                    <el-radio label="01">A价</el-radio>
-                    <el-radio label="02">B价</el-radio>
-                </el-radio-group>
-            </span>
-            <!-----------附件的降价计划只能基于B价，---------------------------------------------->
-            <span v-else-if="partInfo.partProjectType === partProjTypes.FUJIAN" class="tip margin-left10">降价计算以B价为准</span>
-            <!-------------正常流程FS零件只基于A价------------------------------------------>
-            <span v-else class="tip margin-left10">降价计算以A价为准</span>
-        </div>
-        <tableList :tableTitle="tableTitle" :tableData="tableData" :reducePlanedit="!disable" @rateChange="handleRateChange" />
-    </iCard>
+	<iCard class="reducePlan" v-loading="loading">
+		<div class="header margin-bottom20">
+			<span class="title">{{ $t('LK_JIANGJIAJIHUA') }}</span>
+			<!-- <span v-if="isSkd">
+				<span class="tip margin-left10">{{ language("JIANGJIAJISUANYIJINGWAICHUCHANGJIAWEIZHUN", "降价计算以境外出厂价为准") }}</span>
+			</span>
+            <span v-else-if="isSkdLc">
+				<span class="tip margin-left10">{{ language("SKDBUFENYIJINGWAICHUCHANGJIAWEIZHUN", "SKD部分以境外出厂价为准") }}，{{ language("LCBUFENYIAJIAWEIZHUN", "LC部分以A价为准") }}</span>
+			</span> -->
+			<span>
+				<span v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU">
+					降价计划以{{basic}}为准
+				</span>
+				<!-----------配件报价的降价计划可以选择基于A价或B价，---------------------------------------------->
+				<span v-else-if="partInfo.partProjectType === partProjTypes.PEIJIAN"  class="tip margin-left15">
+					<span class="margin-right15">计算基准：</span>
+					<el-radio-group v-model="computedBasic" @change="handleABChange">
+						<el-radio label="01">A价</el-radio>
+						<el-radio label="02">B价</el-radio>
+					</el-radio-group>
+				</span>
+				<!-----------附件的降价计划只能基于B价，---------------------------------------------->
+				<span v-else-if="partInfo.partProjectType === partProjTypes.FUJIAN" class="tip margin-left10">降价计算以B价为准</span>
+				<!-------------正常流程FS零件只基于A价------------------------------------------>
+				<span v-else class="tip margin-left10">降价计算以A价为准</span>
+			</span>
+		</div>
+		<tableList :tableTitle="tableTitle" :tableData="tableData" :reducePlanedit="!disabled && !isOriginprice" @rateChange="handleRateChange" />
+	</iCard>
 </template>
 
 <script>
@@ -58,7 +66,11 @@ export default {
         },
         disabled: {type: Boolean},
         aprice: { type: Number || String, default: 0 },
-        bprice: { type: Number || String, default: 0 }
+        bprice: { type: Number || String, default: 0 },
+        isOriginprice: {
+            type: Boolean,
+            default: false
+        }
     },
     data(){
         return{
