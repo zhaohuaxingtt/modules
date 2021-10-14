@@ -8,8 +8,8 @@
 -->
 <template>
   <div class="mouldAndDevelopmentCost">
-    <mould ref="mould" :partInfo="partInfo" :disabled="disabled" />
-    <developmentCost ref="developmentCost" class="margin-top20" :partInfo="partInfo" :disabled="disabled" />
+    <mould ref="mould" :partInfo="partInfo" :disabled="disabled || isOriginprice" />
+    <developmentCost ref="developmentCost" class="margin-top20" :partInfo="partInfo" :disabled="disabled || isOriginprice" />
   </div>
 </template>
 
@@ -32,7 +32,11 @@ export default {
     disabled: {
       type: Boolean,
       default: false
-    }
+    },
+    isOriginprice: {
+      type: Boolean,
+      default: false
+    },
   },
   methods: {
     init() {
