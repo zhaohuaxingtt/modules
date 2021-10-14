@@ -330,7 +330,6 @@ export default {
             []
 
           this.partInfo = cloneDeep(currentPart)
-          this.partInfo.priceStatus = "SKD"
 
           this.getStates().then(()=>{r()})
 
