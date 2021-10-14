@@ -151,8 +151,8 @@ export default {
 
   ::v-deep .table {
     .el-table__body-wrapper {
-      height: 100px;  
-      overflow: auto;
+      // height: 100px;  
+      // overflow: auto;
     }
   }
 
