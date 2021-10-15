@@ -184,11 +184,10 @@ export default {
 					this.handleChangeByIsChange()
 					this.tableListData = Array.isArray(data.priceList) ? data.priceList : []
 
-					this.tableListData.forEach(item => {
-						this.$set(item, "changeValue", math.subtract(math.bignumber(item.newTotalPrice || 0), math.bignumber(item.originTotalPrice || 0)).toFixed(4))
-					})
-
-					this.total = this.tableListData.reduce((acc, cur) => math.add(math.bignumber(math.bignumber(acc || 0)), math.bignumber(cur.changeValue || 0)).toFixed(4), 0)
+					this.total = this.tableListData.reduce((acc, cur) => {
+						this.$set(cur, "changeValue", math.subtract(math.bignumber(cur.newTotalPrice || 0), math.bignumber(cur.originTotalPrice || 0)).toFixed(4))
+						return math.add(math.bignumber(math.bignumber(acc || 0)), math.bignumber(cur.changeValue || 0)).toFixed(4)
+					}, 0)
 				} else {
 					iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
 				}
