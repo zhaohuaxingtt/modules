@@ -15,7 +15,7 @@
         <span class="tip">{{language('LK_YISHANGSONGYANGZHOUQIYIDINGDINASHIJIANWEIQISHIRI','备注：以上送样周期，均以定点时间为起始日')}}</span>
         <el-radio-group class="margin-left20" v-model="priceType" @change="tableData = tableDataCache[$event]">
           <el-radio label="LC">LC</el-radio>
-          <el-radio label="SKD">SKD</el-radio>
+          <el-radio label="SKD">SKD{{ isSkd || isSkdLc ? `（${ language("BITIAN", "必填") }）` : "" }}</el-radio>
         </el-radio-group>
       </span>
     </div>
@@ -53,10 +53,11 @@ import { pageMixins } from "@/utils/pageMixins"
 import { getSampleProgress, saveSampleProgress } from "@/api/rfqManageMent/quotationdetail"
 import { cloneDeep } from "lodash"
 import { numberProcessor } from "@/utils"
+import { priceTypeMixin } from "../mixins/mixins"
 
 export default {
   components: { iCard, iInput, tableList },
-  mixins: [pageMixins],
+  mixins: [pageMixins, priceTypeMixin],
   props: {
     partInfo: {
       type: Object,

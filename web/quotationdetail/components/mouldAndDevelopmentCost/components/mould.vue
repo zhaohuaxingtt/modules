@@ -12,7 +12,7 @@
       <template #header>
         <div class="header">
           <div>
-            <span class="title">{{ $t('LK_MUJUFEIYONG') }}</span>
+            <span class="title">{{ (isSkd ? "SKD" : "") + $t('LK_MUJUFEIYONG') }}</span>
             <span class="tip margin-left10">({{ $t('LK_DANWEI') }}：{{ $t('LK_YUAN') }})</span>
             <iFormGroup class="total margin-left20" :row="1" inline>
               <iFormItem class="item" :label="`${ $t(mouldCostInfos[0].key) }`">
@@ -107,6 +107,7 @@ import { cloneDeep } from "lodash"
 import relatingParts from '../../relatingParts'
 import { cbdDownloadFile, uploadModuleCbd, getMouldFee } from "@/api/rfqManageMent/quotationdetail"
 import { numberProcessor } from "@/utils"
+import { priceTypeMixin } from "../../mixins/mixins"
 
 export default {
   components: {
@@ -120,6 +121,7 @@ export default {
     tableList,
     relatingParts
 	},
+  mixins: [ priceTypeMixin ],
   props: {
     partInfo: {
       type: Object,

@@ -12,7 +12,7 @@
       <template #header>
         <div class="header">
           <div>
-            <span class="title">{{ $t('LK_KAIFAFEIYONG') }}</span>
+            <span class="title">{{ (isSkd ? "SKD" : "") + $t('LK_KAIFAFEIYONG') }}</span>
             <span class="tip margin-left10">({{ $t('LK_DANWEI') }}：{{ $t('LK_YUAN') }})</span>
             <iFormGroup class="total margin-left20" :row="1" inline v-if="!isAeko">
               <iFormItem class="item" :label="`${ $t(developmentCostInfos[0].key) }`">
@@ -72,6 +72,7 @@ import { developmentCostInfos, developmentCostTableTitle as tableTitle, statesFi
 import { cloneDeep } from "lodash"
 import { getDevFee } from "@/api/rfqManageMent/quotationdetail"
 import { numberProcessor } from "@/utils"
+import { priceTypeMixin } from "../../mixins/mixins"
 
 export default {
   components: {
@@ -84,6 +85,7 @@ export default {
     iText,
     tableList
 	},
+  mixins: [ priceTypeMixin ],
   props: {
     partInfo: {
       type: Object,
