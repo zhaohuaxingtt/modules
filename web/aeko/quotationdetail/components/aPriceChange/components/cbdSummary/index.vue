@@ -1,8 +1,5 @@
 <template>
   <div class="cbdSummary">
-    <div class="header">
-      <div class="tip">{{ language("DANWEI", "单位") }}：RMB/Pc.</div>
-    </div>
     <div class="content margin-top20">
       <tableList
         lang

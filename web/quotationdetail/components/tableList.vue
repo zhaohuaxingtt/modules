@@ -17,13 +17,13 @@
           <!-- :\$index="scope.$index" :row="scope.row" -->
         </template>
         <template #header="scope">
-        <el-popover
+          <el-popover
             placement="top"
             trigger="hover"
             popper-class="tableTitleTip"
             :visible-arrow="false"
             :disabled="!item.tipsKey">
-            <p v-html="$t(item.tipsKey)"></p>
+            <p v-html="item.tipsLang ? language(item.tipsKey, item.tips) : $t(item.tipsKey)"></p>
             <p slot="reference">
               <span>{{ scope.column.label }}</span>
               <icon v-if="item.tipsKey" class="require margin-left4" symbol name="iconxinxitishi" />

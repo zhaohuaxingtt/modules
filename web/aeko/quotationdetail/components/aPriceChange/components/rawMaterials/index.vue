@@ -113,7 +113,6 @@ import { iButton, iInput, iSelect, iMessage, iMessageBox } from "rise"
 import iconFont from "../iconFont"
 import { uuidv4, originRowClass, validateChangeKeysByRawMaterials as validateChangeKeys } from "../data"
 import { numberProcessor } from "@/utils"
-import { cloneDeep } from "lodash"
 
 export default {
   components: { iButton, iInput, iSelect, iconFont },
@@ -217,7 +216,7 @@ export default {
         if (!this.originMap[id]) return
 
         const originData = this.originMap[id]
-        const data = cloneDeep(originData)
+        const data = _.cloneDeep(originData)
         data.id = ""
         data.index = ""
         data.partCbdType = 2
