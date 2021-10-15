@@ -180,9 +180,15 @@ export default {
 			.then(res => {
 				if (res.code == 200) {
 					const data = res.data ? res.data : {}
-					this.isChange = !!data.isChange
+					this.isChange = !data.isChange
 					this.handleChangeByIsChange()
 					this.tableListData = Array.isArray(data.priceList) ? data.priceList : []
+
+					this.tableListData.forEach(item => {
+						this.$set(item, "changeValue", math.subtract(math.bignumber(item.newTotalPrice || 0), math.bignumber(item.originTotalPrice || 0)).toFixed(4))
+					})
+
+					this.total = this.tableListData.reduce((acc, cur) => math.add(math.bignumber(math.bignumber(acc || 0)), math.bignumber(cur.changeValue || 0)).toFixed(4), 0)
 				} else {
 					iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
 				}
