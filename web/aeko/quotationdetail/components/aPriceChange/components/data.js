@@ -1,3 +1,5 @@
+import { numberProcessor } from "@/utils"
+
 export const cbdSummaryTableTitle = [
   { props: "materialChange", seq: "2.1", key: "YUANCAILIAOSANJIANCHENGBENBIANDONG", name: "原材料/散件成本变动" },
   { props: "makeCostChange", seq: "2.2", key: "ZHIZAOCHENGBENBIANDONG", name: "制造成本变动" }, 
@@ -75,3 +77,11 @@ export const validateChangeKeysByManufacturingCost = [
   "deviceRate",
   "indirectManufacturingRate"
 ]
+
+export const handleInputByNumber = function (value, key, row, precision, cb) {
+  this.$set(row, key, numberProcessor(value, precision))
+  
+  if (typeof cb === "function") {
+    cb(value, key, row)
+  }
+}
