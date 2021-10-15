@@ -222,15 +222,13 @@ export default {
       this.computeShareTotalSum()
 		},
     handleQuote() {
-      const route = this.$router.resolve({
+      this.$router.push({
         path: "/aeko/relatingParts",
         query: {
           disabled: this.disabled,
           quotationId: this.partInfo.quotationId
         }
       })
-
-      window.open(route.href, "_blank")
     },
     indexProcess(value) {
       return value >= 10 ? value + "" : "0" + value

@@ -181,7 +181,6 @@ export default {
 				if (res.code == 200) {
 					const data = res.data ? res.data : {}
 					this.isChange = !data.isChange
-					this.handleChangeByIsChange()
 					this.tableListData = Array.isArray(data.priceList) ? data.priceList : []
 
 					this.total = this.tableListData.reduce((acc, cur) => {
@@ -226,8 +225,6 @@ export default {
       })
 		},
 		async saveAekoCbdPriceSum(beforeHook, afterHook) {
-			if (!this.tableListData.length) return
-
 			if (!this.tableListData.every(item => this.validateKeys.every(key => item[key] || item[key] === 0))) {
 				return iMessage.error(this.language("QINGWEIHUHAOBIANTIANXIANGHOUZAIBAOCUN", "请维护好必填项后，再保存。"))
 			}

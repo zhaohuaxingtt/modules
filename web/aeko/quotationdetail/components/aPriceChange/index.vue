@@ -15,7 +15,7 @@
         </div>
       </div>
     </iCard>
-    <changeSummary ref="changeSummary" class="margin-top20" :partInfo="partInfo" :moduleOptions="allModuleOptions" :disabled="disabled" @updateTotal="updateTotal" />
+    <changeSummary ref="changeSummary" class="margin-top20" :partInfo="partInfo" :moduleOptions="allModuleOptions" :disabled="disabled" @updateTotal="updateTotal" @updateIsChange="updateIsChange" />
     <iCard v-permission.auto="AEKO_QUOTATION_CBD_TAB_BIANDONGZHICBD|变动值CBD" class="margin-top20">
       <template #header>
         <div class="title">
@@ -60,7 +60,7 @@
               ></el-option>
             </iSelect>
           </div>
-          <cbdSummary class="margin-top20" v-model="cbdSummaryTableData" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_BIANDONGZHICBDHUIZONG|变动值CBD汇总" @updateApriceChange="updateApriceChange" @updateIsChange="updateIsChange" />
+          <cbdSummary class="margin-top20" v-model="cbdSummaryTableData" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_BIANDONGZHICBDHUIZONG|变动值CBD汇总" @updateApriceChange="updateApriceChange" />
           <!-- $emit('updateApriceChange', $event) -->
           <div v-if="!loading">
             <rawMaterials 

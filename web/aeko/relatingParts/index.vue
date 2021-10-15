@@ -40,12 +40,12 @@ import { getMoulds, getMouldParts, saveMouldParts } from "@/api/aeko/quotationde
 
 export default {
   components: { iPage, iButton, iCard, iInput, icon, tableList },
-  props: {
-    disabled: {
-      type: Boolean,
-      default: false
-    }
-  },
+  // props: {
+  //   disabled: {
+  //     type: Boolean,
+  //     default: false
+  //   }
+  // },
   data() {
     return {
       disabled: false,
@@ -58,7 +58,7 @@ export default {
     }
   },
   created() {
-    this.disabled = this.$route.query.disabled
+    this.disabled = this.$route.query.disabled ? (this.$route.query.disabled === "false" ? false : true) : true
 
     if (this.$route.query.quotationId) {
       this.getMoulds()
@@ -117,7 +117,7 @@ export default {
       .finally(() => this.loading = false)
     },
     handleBack() {
-      this.$route.go(-1)
+      this.$router.go(-1)
     },
     handleAdd() {
       this.tableListData.push({
