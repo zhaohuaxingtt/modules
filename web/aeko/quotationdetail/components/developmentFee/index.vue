@@ -14,7 +14,7 @@ import {
   iMessage,
 } from 'rise';
 import developmentCost from 'rise/web/quotationdetail/components/mouldAndDevelopmentCost/components/developmentCost';
-import { saveModuleDevFee } from "@/api/rfqManageMent/quotationdetail"
+import { saveModuleDevFee } from "@/api/aeko/detail"
 export default {
   components:{
     developmentCost,
