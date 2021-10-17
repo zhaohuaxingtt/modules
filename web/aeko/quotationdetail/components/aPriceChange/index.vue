@@ -544,14 +544,14 @@ export default {
       }
 
       if (!this.isChange && !this.cbdCanEdit) {
-        if (+this.apriceChange > +this.total) return iMessage.warn("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。")
+        if (+this.apriceChange > +this.$refs.changeSummary.total) return iMessage.warn("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。")
       }
 
       if (!this.isChange && this.cbdCanEdit) {
-        if (+this.total > +this.cbdTotal) {
+        if (+this.$refs.changeSummary.total > +this.cbdTotal) {
           if (+this.apriceChange > +this.cbdTotal) return iMessage.warn("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。")
         } else {
-          if (+this.apriceChange > +this.total) return iMessage.warn("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。")
+          if (+this.apriceChange > +this.$refs.changeSummary.total) return iMessage.warn("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。")
         }
       }
 
@@ -604,10 +604,11 @@ export default {
     handleChangeByCbdCanEdit() {
       this.cbdDisabled = !this.cbdCanEdit
 
+      this.setApriceChange()
       this.saveChange()
     },
     updateTotal(total) {
-      this.total = total
+      // this.total = total // this.$refs.changeSummary.total
 
       this.setApriceChange()
     },
@@ -624,9 +625,9 @@ export default {
       this.setApriceChange()
     },
     setApriceChange() {
-      if (!this.isChange && !this.cbdCanEdit) this.apriceChange = this.total
+      if (!this.isChange && !this.cbdCanEdit) this.apriceChange = this.$refs.changeSummary.total
 
-      if (!this.isChange && this.cbdCanEdit) this.apriceChange = +this.total > +this.cbdTotal ? this.cbdTotal : this.total
+      if (!this.isChange && this.cbdCanEdit) this.apriceChange = +this.$refs.changeSummary.total > +this.cbdTotal ? this.cbdTotal : this.$refs.changeSummary.total
 
       if (this.isChange && !this.cbdCanEdit) this.apriceChange = "0"
 
@@ -648,7 +649,15 @@ export default {
           this.getAekoQuotationSummary()
         } else {
           iMessage.error(this.language("CAOZUOSHIBAI", "操作失败"))
+          this.cbdCanEdit = !this.cbdCanEdit
+          this.cbdDisabled = !this.cbdCanEdit
+          this.setApriceChange()
         }
+      })
+      .catch(err => {
+        this.cbdCanEdit = !this.cbdCanEdit
+        this.cbdDisabled = !this.cbdCanEdit
+        this.setApriceChange()
       })
       .finally(() => {
         this.saveChangeLoading = false
