@@ -1,7 +1,7 @@
 <!--
  * @Author: haojiang
  * @Date: 2021-02-25 16:34:49
- * @LastEditTime: 2021-09-27 10:49:04
+ * @LastEditTime: 2021-10-18 18:06:11
  * @LastEditors: Hao,Jiang
  * @Description: 通过selectDictByKeyss字典接口查询的下拉值。
  * @FilePath: \rise\src\components\iDicoptions\index.vue
@@ -16,7 +16,7 @@
     <el-option
       v-if="optionAll"
       value=""
-      :label="language('all','全部') | capitalizeFilter"
+      :label="optionAllText || language('all','全部')"
     ></el-option>
     <el-option
       :value="items.code"
@@ -37,6 +37,11 @@ export default {
   name:'iDicoptions',
   components: {iSelect},
   props: {
+    // 默认全部文案
+    optionAllText: {
+      type: String,
+      default: ''
+    },
     value: {
       type: String,
       default: ''
