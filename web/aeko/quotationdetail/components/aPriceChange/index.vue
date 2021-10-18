@@ -59,7 +59,6 @@
           </iSelect>
         </div>
         <cbdSummary class="margin-top20" v-model="cbdSummaryTableData" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_BIANDONGZHICBDHUIZONG|变动值CBD汇总" @updateApriceChange="updateApriceChange" />
-        <!-- $emit('updateApriceChange', $event) -->
         <div v-if="!loading">
           <rawMaterials 
             topCutLine 
