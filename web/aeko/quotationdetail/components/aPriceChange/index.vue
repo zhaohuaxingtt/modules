@@ -1,44 +1,64 @@
 <template>
-  <iCard class="aPriceChange" v-permission.auto="AEKO_QUOTATION_CBD_TAB_BIANDONGZHICBD|变动值CBD" :title="language('BIANDONGZHICBD', '变动值CBD')">
-    <template #header-control>
-      <iButton v-permission.auto="AEKO_QUOTATION_CBD_BUTTON_BAOCUN|保存" v-if="!disabled" :loading="saveLoading" @click="handleSave">{{ language("BAOCUN", "保存") }}</iButton>
-      <iButton v-permission.auto="AEKO_QUOTATION_CBD_BUTTON_XIAZAI|下载" :loading="downloadLoading" @click="handleDownload">{{ language("XIAZAI", "下载") }}</iButton>
-    </template>
-    <div class="body" v-loading="loading">
+  <div class="aPriceChange">
+    <iCard :title="language('BIANDONGZHI', '变动值')">
+      <template #header-control>
+        <iButton v-if="sourceApriceChange != apriceChange && !disabled" :loading="saveChangeLoading" @click="saveChange">{{ language("BAOCUN", "保存") }}</iButton>
+      </template>
       <div class="aPriceChangeMode">
-        <el-checkbox v-model="hasManualInput" v-permission.auto="AEKO_QUOTATION_CBD_RADIO_SHOUDONGSHURU|手动输入" :disabled="disabled">{{ language("SHOUDONGSHURU", "手动输入") }}</el-checkbox>
-        <div>
+        <div class="margin-top20">
           <div class="input" v-permission.auto="AEKO_QUOTATION_CBD_INPUT_AJIABIANDONGHANFENTAN|A价变动_含分摊">
             <span class="label">{{ language("AJIABIANDONGHANFENTAN", "A价变动(含分摊)") }}:</span>
-            <iInput v-if="hasManualInput" v-model="apriceChange" @input="handleInputByApriceChange" :disabled="disabled"/>
-            <iText v-else />
+            <iInput v-if="!apriceChangeDisabled" v-model="apriceChange" @input="handleInputByApriceChange" />
+            <iText v-else>{{ apriceChange }}</iText>
           </div>
         </div>
       </div>
-      <div v-if="!hasManualInput">
-        <i class="topCutLine"></i>
+    </iCard>
+    <changeSummary ref="changeSummary" class="margin-top20" :partInfo="partInfo" :moduleOptions="allModuleOptions" :disabled="disabled" @updateTotal="updateTotal" @updateIsChange="updateIsChange" />
+    <iCard v-permission.auto="AEKO_QUOTATION_CBD_TAB_BIANDONGZHICBD|变动值CBD" class="margin-top20">
+      <template #header>
+        <div class="title">
+          <span>{{ `${ language("BIANDONGZHI", "变动值") } - CBD` }}</span>
+          <span class="tip margin-left12">{{ language("DANWEI", "单位") }}：RMB/Pc.</span>
+        </div>
+        <div class="header-control">
+          <el-switch
+            class="switch"
+            :disabled="disabled"
+            :class="{ switchSpace: !cbdDisabled }"
+            v-model="cbdCanEdit"
+            :active-text="language('YOUXIAO', '有效')"
+            :active-value="true"
+            :inactive-value="false"
+            @change="handleChangeByCbdCanEdit">
+          </el-switch>
+          <iButton v-permission.auto="AEKO_QUOTATION_CBD_BUTTON_BAOCUN|保存" v-if="!disabled && !cbdDisabled" :loading="saveLoading" @click="handleSave">{{ language("BAOCUN", "保存") }}</iButton>
+          <iButton v-permission.auto="AEKO_QUOTATION_CBD_BUTTON_XIAZAI|下载" v-if="!disabled && !cbdDisabled" :loading="downloadLoading" @click="handleDownload">{{ language("XIAZAI", "下载") }}</iButton>
+        </div>
+      </template>
+      <div class="body" v-loading="loading">
         <div class="aPriceChangeModule" v-permission.auto="AEKO_QUOTATION_CBD_SELECT_CBDXUTIAOZHENGBUFEN|CBD需调整部分">
           <span class="label">{{ language("CBDXUTIAOZHENGBUFEN", "CBD需调整部分") }}:</span>
           <iSelect 
             multiple
             v-model="modules"
             :placeholder="language('QINGXUANZE','请选择')"
-            :disabled="disabled"
+            :disabled="disabled || cbdDisabled"
             @change="handleChangeByModules">
             <el-option
               value=""
               :label="language('ALL', '全部') | capitalizeFilter"
             ></el-option>
             <el-option
-              v-for="(item, $index) in moduleOptions"
+              v-for="item in moduleOptions"
               v-permission.dynamic.auto="item.permissionKey"
-              :value="item.value"
+              :key="item.value"
               :label="`${ item.seq } ${ language(item.key, item.label) }`"
-              :key="$index"
+              :value="item.value"
             ></el-option>
           </iSelect>
         </div>
-        <cbdSummary class="margin-top20" v-model="cbdSummaryTableData" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_BIANDONGZHICBDHUIZONG|变动值CBD汇总" @updateApriceChange="$emit('updateApriceChange', $event)" />
+        <cbdSummary class="margin-top20" v-model="cbdSummaryTableData" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_BIANDONGZHICBDHUIZONG|变动值CBD汇总" @updateApriceChange="updateApriceChange" />
         <div v-if="!loading">
           <rawMaterials 
             topCutLine 
@@ -46,7 +66,7 @@
             ref="rawMaterials"
             v-if="moduleMap.material" 
             v-model="rawMaterialsTableData" 
-            :disabled="disabled"
+            :disabled="disabled || cbdDisabled"
             :materialTypeOptions="materialTypeOptions"
             :sumData.sync="rawMaterialsSumData"
             v-permission.auto="AEKO_QUOTATION_CBD_VIEW_YUANCAILIAOSANJIAN|原材料/散件" />
@@ -56,23 +76,24 @@
             ref="manufacturingCost"
             v-if="moduleMap.production" 
             v-model="manufacturingCostTableData" 
-            :disabled="disabled"
+            :disabled="disabled || cbdDisabled"
             :sumData.sync="manufacturingCostSumData"
             v-permission.auto="AEKO_QUOTATION_CBD_VIEW_ZHIZAOCHENGBEN|制造成本" />
           <div class="flexBox">
-            <scrapCost v-if="moduleMap.scrap" class="margin-top30" topCutLine v-model="scrapCostTableData" :disabled="disabled" :sumData="sumData" :discardCostChange.sync="discardCostChange" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_BAOFEICHENGBEN|报废成本" />
-            <manageCost v-if="moduleMap.manage" class="margin-top30" topCutLine v-model="manageTableData" :disabled="disabled" :sumData="sumData" :manageFeeChange.sync="manageFeeChange" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_GUANLIFEI|管理费" />
+            <scrapCost v-if="moduleMap.scrap" class="margin-top30" topCutLine v-model="scrapCostTableData" :disabled="disabled || cbdDisabled" :sumData="sumData" :discardCostChange.sync="discardCostChange" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_BAOFEICHENGBEN|报废成本" />
+            <manageCost v-if="moduleMap.manage" class="margin-top30" topCutLine v-model="manageTableData" :disabled="disabled || cbdDisabled" :sumData="sumData" :manageFeeChange.sync="manageFeeChange" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_GUANLIFEI|管理费" />
             <otherCost v-if="Array.isArray(otherCostTableData) && otherCostTableData.length > 0" class="margin-top30" :tableListData="otherCostTableData" topCutLine :otherFee.sync="otherFee" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_QITAFEIYONG|其他费用" />
-            <profit v-if="moduleMap.profit" class="margin-top30" topCutLine v-model="profitTableData" :disabled="disabled" :sumData="sumData" :profitChange.sync="profitChange" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_LIRUN|利润" />
+            <profit v-if="moduleMap.profit" class="margin-top30" topCutLine v-model="profitTableData" :disabled="disabled || cbdDisabled" :sumData="sumData" :profitChange.sync="profitChange" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_LIRUN|利润" />
           </div>
         </div>
       </div>
-    </div>
-  </iCard>
+    </iCard>
+  </div>
 </template>
 
 <script>
 import { iCard, iButton, iInput, iText, iSelect, iMessage, iMessageBox } from "rise"
+import changeSummary from "./components/changeSummary"
 import cbdSummary from "./components/cbdSummary"
 import rawMaterials from "./components/rawMaterials"
 import manufacturingCost from "./components/manufacturingCost"
@@ -87,7 +108,7 @@ import { numberProcessor } from "@/utils"
 import { difference } from "lodash"
 
 export default {
-  components: { iCard, iButton, iInput, iText, iSelect, cbdSummary, rawMaterials, manufacturingCost, scrapCost, manageCost, otherCost, profit },
+  components: { iCard, iButton, iInput, iText, iSelect, changeSummary, cbdSummary, rawMaterials, manufacturingCost, scrapCost, manageCost, otherCost, profit },
   props: {
     partInfo: {
       type: Object,
@@ -105,9 +126,12 @@ export default {
       saveLoading: false,
       downloadLoading: false,
       form: {},
-      hasManualInput: false,
+      cbdCanEdit: false,
       apriceChange: "",
+      apriceChangeDisabled: true,
+      cbdDisabled: true,
       moduleOptions: [],
+      allModuleOptions: [],
       modules: [],
       moduleMap: {},
       rawMaterialsTableData: [],
@@ -133,7 +157,11 @@ export default {
       profitTableData: [],
       profitChange: 0,
       materialTypeOptions: [],
-      responseData: {}
+      responseData: {},
+      saveChangeLoading: false,
+      isChange: false,
+      total: 0, // 汇总表
+      cbdTotal: 0, // CBD
     }
   },
   inject: ["getBasicInfo", "allSummaryData"],
@@ -167,26 +195,12 @@ export default {
       }]
     },
   },
-  watch: {
-    moduleMap: {
-      handler(nv, ov) {
-
-      },
-      deep: true
-    },
-    hasManualInput(value) {
-      if (value) {
-        this.$emit("updateApriceChange", this.apriceChange)
-      } else {
-        this.$emit("updateApriceChange", this.cbdSummaryTableData[0].apriceChange)
-      }
-    }
-  },
   created() {
     this.getMaterialTypeOptions()
   },
   methods: {
     init() {
+      this.$refs.changeSummary.getAekoCbdPriceSum()
       this.getAekoCarDosage()
       this.getAekoQuotationSummary()
     },
@@ -194,7 +208,7 @@ export default {
       getAekoCarDosage()
       .then(res => {
         if (res.code == 200) {
-          this.moduleOptions = 
+          this.allModuleOptions = 
             Array.isArray(res.data) ?
             res.data.map(item => {
               switch(item.code) {
@@ -208,11 +222,15 @@ export default {
                   return { code: item.code, seq: "2.4", key: "GUANLIFEI", label: "管理费", value: "manage", permissionKey: "AEKO_QUOTATION_CBD_VIEW_GUANLIFEI|管理费" }
                 case "5":
                   return { code: item.code, seq: "2.6", key: "LIRUN", label: "利润", value: "profit", permissionKey: "AEKO_QUOTATION_CBD_VIEW_LIRUN|利润" }
+                case "6":
+                  return { code: item.code, seq: "2.5", key: "QITAFEIYONG", label: "其他费用", value: "other" }
                 default:
                   return {}
               }
             }) :
             []
+
+          this.moduleOptions = this.allModuleOptions.filter(item => item.code != 6)
 
           // this.handleChangeByModules([""])
         } else {
@@ -247,14 +265,14 @@ export default {
       .then(res => {
         if (res.code == 200) {
           this.form = res.data
-          this.hasManualInput = res.data.hasManualInput ? true : (res.data.hasManualInput === null ? true : false)
+          this.cbdCanEdit = res.data.cbdCanEdit
+          this.cbdDisabled = !this.cbdCanEdit
           
           this.responseData = {}
-          if (this.hasManualInput) res.data.cbdSummarySelected = ""
-          this.responseData.hasManualInput = res.data.hasManualInput
           this.responseData.cbdSummarySelected = res.data.cbdSummarySelected
 
-          this.apriceChange = res.data.apriceChange
+          this.apriceChange = res.data.apriceChange || "0"
+          this.sourceApriceChange = this.apriceChange
           this.setCbdSummarySelected(res.data.cbdSummarySelected)
           this.rawMaterialsTableData = Array.isArray(res.data.rawMaterialList) ? res.data.rawMaterialList : []
           this.manufacturingCostTableData = Array.isArray(res.data.makeCostList) ? res.data.makeCostList : []
@@ -275,11 +293,7 @@ export default {
       .finally(() => this.loading = false)
     },
     handleInputByApriceChange(value) {
-      this.apriceChange = numberProcessor(value, 2, true)
-
-      if (this.hasManualInput) {
-        this.$emit("updateApriceChange", this.apriceChange)
-      }
+      this.apriceChange = numberProcessor(value, 4, true)
     },
     handleChangeByModules(modules) {
       this.moduleMap = {}
@@ -482,13 +496,13 @@ export default {
       })
     },
     async saveAekoQuotationSummary(beforeHook, afterHook) {
-      if (!this.hasManualInput && this.moduleMap.material) {
+      if (this.moduleMap.material) {
         if (!this.rawMaterialsTableData.length || !this.rawMaterialsTableData.every(item => validateChangeKeysByRawMaterials.every(key => item[key] || item[key] === 0 || item[key] === false))) {
           return iMessage.warn(this.language("QINGTIANXIEWANZHENGYUANCAILIAOSANJIANCHENGBEN", "请填写完整原材料/散件成本"))
         }
       }
 
-      if (!this.hasManualInput && this.moduleMap.production) {
+      if (this.moduleMap.production) {
         if (!this.manufacturingCostTableData.length || !this.manufacturingCostTableData.every(item => validateChangeKeysByManufacturingCost.every(key => item[key] || item[key] === 0))) {
           return iMessage.warn(this.language("QINGTIANXIEWANZHENGZHIZAOCHENGBEN", "请填写完整制造成本"))
         }
@@ -496,43 +510,46 @@ export default {
 
       const responseDataCbdSummarySelectedArr = this.responseData.cbdSummarySelected ? this.responseData.cbdSummarySelected.split(",") : []
       const cbdSummarySelectedArr = this.cbdSummarySelected ? this.cbdSummarySelected.split(",") : []
-      if ((!this.responseData.hasManualInput && this.hasManualInput) || difference(responseDataCbdSummarySelectedArr, cbdSummarySelectedArr).length) {
+      if (difference(responseDataCbdSummarySelectedArr, cbdSummarySelectedArr).length) {
         await iMessageBox(
           this.language("CANCELCBDADJUSTTIPS", "存在已维护的CBD调整部分被取消的情况，是否继续保存？"),
           { confirmButtonText: this.language("SHI", "是"), cancelButtonText: this.language("FOU", "否") }
         )
       }
 
+      if (!this.isChange && !this.cbdCanEdit) {
+        if (+this.apriceChange > +this.$refs.changeSummary.total) return iMessage.warn("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。")
+      }
+
+      if (!this.isChange && this.cbdCanEdit) {
+        if (+this.$refs.changeSummary.total > +this.cbdTotal) {
+          if (+this.apriceChange > +this.cbdTotal) return iMessage.warn("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。")
+        } else {
+          if (+this.apriceChange > +this.$refs.changeSummary.total) return iMessage.warn("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。")
+        }
+      }
+
       if (typeof beforeHook === "function") beforeHook()
 
       return saveAekoQuotationSummary({
-        ...(this.hasManualInput ? 
-          {
-            hasManualInput: this.hasManualInput || false,
-            apriceChange: this.apriceChange,
-            quotationId: this.partInfo.quotationId,
-            aprice: this.allSummaryData()[0].aprice || "0.00",
-          } : 
-          {
-          ...this.form,
-          aprice: this.allSummaryData()[0].aprice || "0.00",
-          hasManualInput: this.hasManualInput || false,
-          quotationId: this.partInfo.quotationId,
-          rawMaterialList: this.moduleMap.material ? this.rawMaterialsTableData : undefined,
-          makeCostList: this.moduleMap.production ? this.manufacturingCostTableData : undefined,
-          scrapVO: this.moduleMap.scrap ? this.scrapCostTableData[0] : undefined,
-          manageFeeList: this.moduleMap.manage ? this.manageTableData : undefined,
-          otherFeeList: this.otherCostTableData.length ? this.otherCostTableData : undefined,
-          profitVO: this.moduleMap.profit ? this.profitTableData[0] : undefined,
-          apriceChange: this.cbdSummaryTableData[0].apriceChange,
-          cbdSummarySelected: this.hasManualInput ? "" : this.cbdSummarySelected,
-          materialChange: this.cbdSummaryTableData[0].materialChange,
-          makeCostChange: this.cbdSummaryTableData[0].makeCostChange,
-          discardCostChange: this.cbdSummaryTableData[0].discardCostChange,
-          manageFeeChange: this.cbdSummaryTableData[0].manageFeeChange,
-          otherFee: this.cbdSummaryTableData[0].otherFee,
-          profitChange: this.cbdSummaryTableData[0].profitChange
-        })
+        ...this.form,
+        cbdCanEdit: this.cbdCanEdit,
+        aprice: this.allSummaryData()[0].aprice || "0.00",
+        quotationId: this.partInfo.quotationId,
+        rawMaterialList: this.moduleMap.material ? this.rawMaterialsTableData : undefined,
+        makeCostList: this.moduleMap.production ? this.manufacturingCostTableData : undefined,
+        scrapVO: this.moduleMap.scrap ? this.scrapCostTableData[0] : undefined,
+        manageFeeList: this.moduleMap.manage ? this.manageTableData : undefined,
+        otherFeeList: this.otherCostTableData.length ? this.otherCostTableData : undefined,
+        profitVO: this.moduleMap.profit ? this.profitTableData[0] : undefined,
+        apriceChange: this.cbdSummaryTableData[0].apriceChange,
+        cbdSummarySelected: this.cbdSummarySelected,
+        materialChange: this.cbdSummaryTableData[0].materialChange,
+        makeCostChange: this.cbdSummaryTableData[0].makeCostChange,
+        discardCostChange: this.cbdSummaryTableData[0].discardCostChange,
+        manageFeeChange: this.cbdSummaryTableData[0].manageFeeChange,
+        otherFee: this.cbdSummaryTableData[0].otherFee,
+        profitChange: this.cbdSummaryTableData[0].profitChange
       })
       .finally(() => {
         if (typeof afterHook === "function") afterHook()
@@ -547,6 +564,68 @@ export default {
 
       this.downloadLoading = false
     },
+    handleChangeByCbdCanEdit() {
+      this.cbdDisabled = !this.cbdCanEdit
+
+      this.setApriceChange()
+      this.saveChange()
+    },
+    updateTotal(total) {
+      // this.total = total // this.$refs.changeSummary.total
+
+      this.setApriceChange()
+    },
+    updateIsChange(isChange) {
+      this.isChange = isChange
+      this.cbdCanEdit = !this.isChange
+
+      this.setApriceChange()
+      this.saveChange()
+    },
+    updateApriceChange(cbdTotal) {
+      this.cbdTotal = cbdTotal
+
+      this.setApriceChange()
+    },
+    setApriceChange() {
+      if (!this.isChange && !this.cbdCanEdit) this.apriceChange = this.$refs.changeSummary.total
+
+      if (!this.isChange && this.cbdCanEdit) this.apriceChange = +this.$refs.changeSummary.total > +this.cbdTotal ? this.cbdTotal : this.$refs.changeSummary.total
+
+      if (this.isChange && !this.cbdCanEdit) this.apriceChange = "0"
+
+      this.apriceChangeDisabled = !+this.apriceChange
+      this.$emit("updateApriceChange", this.apriceChange)
+    },
+    saveChange() {
+      this.saveChangeLoading = true
+
+      Promise.all([
+        this.$refs.changeSummary.save(),
+        this.save()
+      ])
+      .then(([res1, res2]) => {
+        if (res1 && res1.code == 200 && res2 && res2.code == 200) {
+          iMessage.success(this.$i18n.locale === "zh" ? res1.desZh : res1.desEn)
+
+          this.$refs.changeSummary.getAekoCbdPriceSum()
+          this.getAekoQuotationSummary()
+        } else {
+          iMessage.error(this.language("CAOZUOSHIBAI", "操作失败"))
+          this.cbdCanEdit = !this.cbdCanEdit
+          this.cbdDisabled = !this.cbdCanEdit
+          this.setApriceChange()
+        }
+      })
+      .catch(err => {
+        this.cbdCanEdit = !this.cbdCanEdit
+        this.cbdDisabled = !this.cbdCanEdit
+        this.setApriceChange()
+      })
+      .finally(() => {
+        this.saveChangeLoading = false
+      })
+    },
   }
 }
 </script>
@@ -558,7 +637,7 @@ export default {
     align-items: center;
     
     .input {
-      margin-left: 50px;
+      // margin-left: 50px;
       width: 366px;
       display: flex;
       align-items: center;
@@ -576,6 +655,43 @@ export default {
     }
   }
 
+  ::v-deep .cardHeader {
+    padding-bottom: 0;
+  }
+
+  ::v-deep .title {
+		.tip {
+			font-size: 14px;
+			font-weight: 400;
+			line-height: 16px;
+			color: #485465;
+			opacity: 0.7;
+		}
+  }
+
+	.header-control {
+		.btn {
+			display: inline-block;
+		}
+
+    .switch {
+      ::v-deep .el-switch__label--right {
+        order: -1;
+        margin-left: 0;
+        margin-right: 10px;
+      }
+
+      ::v-deep .is-active {
+        background: transparent;
+        box-shadow: none;
+      }
+    }
+
+    .switchSpace {
+      margin-right: 30px;
+    }
+	}
+
   .topCutLine {
     margin-top: 22px;
     display: block;
@@ -585,7 +701,7 @@ export default {
   }
 
   .aPriceChangeModule {
-    margin-top: 30px;
+    margin-top: 20px;
     display: flex;
     align-items: center;
     width: 509px;
