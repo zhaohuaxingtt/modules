@@ -45,6 +45,18 @@ export default {
       )
     },
     handleSave() {
+      // 校验下维护的数据 若一行中只维护了部分数据 无法保存 
+      const tableListData = this.$refs.devcost.tableListData;
+      let flag = false;
+      tableListData.map((item)=>{
+        let arr = Object.keys(item);
+        let newArr = [];
+        arr.map((arrItem)=>{
+          if(item[arrItem]) newArr.push(arrItem);
+        })
+        if(newArr.length > 0 && (!item.item || !item.itemDescription || !item.unitPrice || !item.quantity || item.isShared==null)) flag = true;
+      })
+      if (flag) return iMessage.warn(this.language('LK_AEKO_QINGWEIHUZHENGHANGSHUJUHOUZAIBAOCUN','请维护整行数据后，再保存'));
       this.save()
       .then(res => {
         if (res.code == 200) {
