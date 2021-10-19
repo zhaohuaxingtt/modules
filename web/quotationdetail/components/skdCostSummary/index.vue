@@ -174,22 +174,28 @@ export default {
 			})
     },
     updateOverseasFactoryPrice(value, key, row) {
-      this.computeSalesPrice(value, key, row)
+      this.computeTotalPrice(value, key, row)
     },
     updateOverseasBnkPrice(value, key, row) {
-      this.computeSalesPrice(value, key, row)
+      this.computeTotalPrice(value, key, row)
     },
     updateTariff(value, key, row) {
-      this.computeSalesPrice(value, key, row)
+      this.computeTotalPrice(value, key, row)
+    },
+    computeTotalPrice(originValue, originKey, row) {
+      const totalPrice = math.chain(math.bignumber(row.overseasFactoryPrice || 0))
+      .add(math.bignumber(row.overseasBnkPrice || 0))
+      .multiply(math.bignumber(this.exchangeRate || 0))
+      .add(math.bignumber(row.tariff || 0))
     },
     computeSalesPrice(originValue, originKey, row) {
-      const salesPrice = math.add(
-        math.bignumber(row.overseasFactoryPrice || 0),
-        math.bignumber(row.overseasBnkPrice || 0),
-        math.bignumber(row.tariff || 0)
-      ).toFixed(2)
+      // const salesPrice = math.add(
+      //   math.bignumber(row.overseasFactoryPrice || 0),
+      //   math.bignumber(row.overseasBnkPrice || 0),
+      //   math.bignumber(row.tariff || 0)
+      // ).toFixed(2)
 
-      this.$set(row, "salesPrice", salesPrice)
+      // this.$set(row, "salesPrice", salesPrice)
     }
   }
 }

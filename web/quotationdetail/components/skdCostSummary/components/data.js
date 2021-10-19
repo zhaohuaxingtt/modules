@@ -1,5 +1,5 @@
 export const tableTitle = [
-  { props: "overseasFactoryPrice", name: "境外出厂价", key: "JINGWAICHUCHANGJIA", minWidth: "140" },
+  { props: "overseasFactoryPrice", name: "境外出厂价", key: "JINGWAICHUCHANGJIAFIX", minWidth: "140" },
   { props: "overseasBnkPrice", name: "境外包装费、运输费、保险费", key: "JINGWAIBAOZHUANGFEIYUNSHUFEIBAOXIANFEI", minWidth: "200" },
   { props: "tariff", name: "关税", key: "GUANSHUI", minWidth: "140" },
   { props: "domesticFreight", name: "境内运费（RMB）", key: "JINGNEIYUNFEIRMB", minWidth: "140" },
@@ -17,7 +17,7 @@ export const skdPercentageTemplate = [
   {
     props: "overseasFactoryPrice",
     name: "境外出厂价",
-    key: "JINGWAICHUCHANGJIA",
+    key: "JINGWAICHUCHANGJIAFIX",
     persent: "0%(0)",
     width: "calc(100% / 6)",
     color: "rgba(23, 99, 247, 1)",

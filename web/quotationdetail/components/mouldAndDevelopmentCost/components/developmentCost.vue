@@ -72,7 +72,6 @@ import { developmentCostInfos, developmentCostTableTitle as tableTitle, statesFi
 import { cloneDeep } from "lodash"
 import { getDevFee } from "@/api/rfqManageMent/quotationdetail"
 import { numberProcessor } from "@/utils"
-import { priceStatusMixin } from "../../mixins"
 
 export default {
   components: {
@@ -85,7 +84,6 @@ export default {
     iText,
     tableList
 	},
-  mixins: [ priceStatusMixin ],
   props: {
     partInfo: {
       type: Object,
@@ -98,6 +96,10 @@ export default {
     isAeko:{
       type:Boolean,
       default:false
+    },
+    isSkd: {
+      type: Boolean,
+      default: false
     }
   },
   filters: {

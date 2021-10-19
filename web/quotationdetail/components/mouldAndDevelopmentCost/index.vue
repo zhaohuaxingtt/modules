@@ -8,8 +8,14 @@
 -->
 <template>
   <div class="mouldAndDevelopmentCost">
-    <mould ref="mould" :partInfo="partInfo" :disabled="disabled || isOriginprice" />
-    <developmentCost ref="developmentCost" class="margin-top20" :partInfo="partInfo" :disabled="disabled || isOriginprice" />
+    <div v-if="isSkd">
+      <mould ref="mould" :partInfo="partInfo" :disabled="disabled || isOriginprice" :isSkd="isSkd" />
+      <developmentCost ref="developmentCost" class="margin-top20" :partInfo="partInfo" :isSkd="isSkd" :disabled="disabled || isOriginprice" />
+    </div>
+    <div v-else>
+      <mould ref="mould" :partInfo="partInfo" :disabled="disabled || isOriginprice" />
+      <developmentCost ref="developmentCost" class="margin-top20" :partInfo="partInfo" :disabled="disabled || isOriginprice" />
+    </div>
   </div>
 </template>
 
@@ -18,12 +24,14 @@ import { iMessage } from "rise"
 import mould from "./components/mould"
 import developmentCost from "./components/developmentCost"
 import { saveModuleDevFee } from "@/api/rfqManageMent/quotationdetail"
+import { priceStatusMixin } from "../mixins"
 
 export default {
   components: {
     mould,
     developmentCost
   },
+  mixins: [ priceStatusMixin ],
   props: {
     partInfo: {
       type: Object,
