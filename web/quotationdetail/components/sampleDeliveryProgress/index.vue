@@ -53,11 +53,11 @@ import { pageMixins } from "@/utils/pageMixins"
 import { getSampleProgress, saveSampleProgress } from "@/api/rfqManageMent/quotationdetail"
 import { cloneDeep } from "lodash"
 import { numberProcessor } from "@/utils"
-import { priceTypeMixin } from "../mixins/mixins"
+import { priceStatusMixin } from "../mixins"
 
 export default {
   components: { iCard, iInput, tableList },
-  mixins: [pageMixins, priceTypeMixin],
+  mixins: [pageMixins, priceStatusMixin],
   props: {
     partInfo: {
       type: Object,

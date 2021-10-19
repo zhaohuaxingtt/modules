@@ -15,17 +15,17 @@
         <iDatePicker v-model="skdStartProductDate" type="date" />
       </iFormItem>
       <iFormItem :label="language('HUOBI', '货币')">
-        <iSelect v-model="currency">
+        <iSelect v-model="currency" @change="handleChangeByCurrency">
           <el-option 
-            v-for="item in []" 
+            v-for="item in currencyOptions" 
             :key="item.key" 
             :label="item.label" 
             :value="item.value">
           </el-option>
         </iSelect>
       </iFormItem>
-      <iFormItem :label="language('HUILV', '汇率')">
-        <span>5.11 EUR=1.12 RMB</span>
+      <iFormItem v-if="exchangeRate" :label="language('HUILV', '汇率')">
+        <span>{{ exchangeRate }} {{ currency }}=1.00 RMB</span>
       </iFormItem>
     </iFormGroup>
     <tableList
@@ -62,7 +62,7 @@ import { iCard, iFormGroup, iFormItem, iSelect, iDatePicker, iInput, iMessage } 
 import tableList from "rise/web/quotationdetail/components/tableList"
 import percentage from "./components/percentage"
 import { tableTitle } from "./components/data"
-import { getSkdCostSummary, saveSkdCostSummary } from "@/api/rfqManageMent/quotationdetail"
+import { getCurrency, getExchangeRate, getSkdCostSummary, saveSkdCostSummary } from "@/api/rfqManageMent/quotationdetail"
 
 export default {
   components: { iCard, iFormGroup, iFormItem, iSelect, iDatePicker, iInput, tableList, percentage },
@@ -81,6 +81,8 @@ export default {
       loading: false,
       skdStartProductDate: "",
       currency: "",
+      currencyOptions: [],
+      exchangeRate: "",
       tableTitle,
       tableListData: [{}]
     }
@@ -99,7 +101,24 @@ export default {
     },
   },
   methods: {
-    init() {
+    getCurrency() {
+      getCurrency()
+      .then(res => {
+        if (res.code == 200) {
+          this.currencyOptions =
+            Array.isArray(res.data) ?
+            res.data.map(item => ({
+              key: item.code,
+              label: item.name,
+              value: item.code
+            })) :
+            []
+        } else {
+          iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+        }
+      })
+    },
+    getSkdCostSummary() {
       this.loading = true
 
       getSkdCostSummary({
@@ -115,6 +134,22 @@ export default {
         }
       })
       .finally(() => this.loading = false)
+    },
+    init() {
+      this.getCurrency()
+      this.getSkdCostSummary()      
+    },
+    handleChangeByCurrency() {
+      getExchangeRate({
+        currency: this.currency
+      })
+      .then(res => {
+        if (res.code == 200) {
+          this.exchangeRate = res.data
+        } else {
+          iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+        }
+      })
     },
     save() {
 

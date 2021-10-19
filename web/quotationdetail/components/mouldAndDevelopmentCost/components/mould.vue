@@ -107,7 +107,7 @@ import { cloneDeep } from "lodash"
 import relatingParts from '../../relatingParts'
 import { cbdDownloadFile, uploadModuleCbd, getMouldFee } from "@/api/rfqManageMent/quotationdetail"
 import { numberProcessor } from "@/utils"
-import { priceTypeMixin } from "../../mixins/mixins"
+import { priceStatusMixin } from "../../mixins"
 
 export default {
   components: {
@@ -121,7 +121,7 @@ export default {
     tableList,
     relatingParts
 	},
-  mixins: [ priceTypeMixin ],
+  mixins: [ priceStatusMixin ],
   props: {
     partInfo: {
       type: Object,

@@ -13,10 +13,10 @@
 -->
 
 <template>
-  <!-- <div v-if="isSkd">
-    <skdCostSummary />
-  </div> -->
-  <div>
+  <div v-if="isSkd">
+    <skdCostSummary ref="skdCostSummary" />
+  </div>
+  <div v-else>
     <!---partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU----->
     <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU">
       <quotationAnalysis :disabled="disabled || isOriginprice" :dbDetailList="dbDetailList" />
@@ -188,9 +188,12 @@ import {selectDictByKeyss} from '@/api/dictionary'
 import quotationAnalysis from './components/quotationAnalysis'
 import {partProjTypes} from '@/config'
 import {cloneDeep} from 'lodash'
+import skdCostSummary from "../skdCostSummary"
+import { priceStatusMixin } from "../mixins"
 
 export default{
-  components:{persentComponents,tableTemlate,iButton,quotationAnalysis},
+  components:{persentComponents,tableTemlate,iButton,quotationAnalysis, skdCostSummary},
+  mixins: [ priceStatusMixin ],
   props:{
     //父组件中的值
     partInfo:{
@@ -789,6 +792,11 @@ export default{
      * @return {*}
      */    
     init(type) {
+      if (this.isSkd) {
+        this.$refs.skdCostSummary.init()
+        return
+      }
+      
       if (this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || this.partInfo.partProjectType === partProjTypes.DBLINGJIAN) {
         this.getCostSummaryDB()
       } else {
@@ -826,7 +834,7 @@ export default{
             this.count = 0
             this.allTableData = this.translateDataForRender(res.data)
             this.topTableData = this.translateDataTopData(cloneDeep(this.allTableData), data)
-            this.$refs.components.partsQuotationss(this.partInfo.rfqId,this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId,this.partInfo.round,this.allTableData.level)
+            this.$refs.components && typeof this.$refs.components.partsQuotationss == "function" && this.$refs.components.partsQuotationss(this.partInfo.rfqId,this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId,this.partInfo.round,this.allTableData.level)
             // this.allpagefrom.quotationId,
             this.findFiles()
           }

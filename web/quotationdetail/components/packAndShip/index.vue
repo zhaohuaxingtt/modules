@@ -79,7 +79,7 @@ import { iCard, iFormGroup, iFormItem, iMessage, iInput, iText, iSelect } from "
 import { savePackageTransport, getPackageTransport } from '@/api/rfqManageMent/quotationdetail'
 import { getDictByCode } from '@/api/dictionary'
 import {partProjTypes} from '@/config'
-import { priceTypeMixin } from "../mixins/mixins"
+import { priceStatusMixin } from "../mixins"
 
 export default {
   components: {
@@ -90,7 +90,7 @@ export default {
     iText,
     iSelect
   },
-  mixins: [ priceTypeMixin ],
+  mixins: [ priceStatusMixin ],
   props: {
     partInfo:{
       type:Object,
