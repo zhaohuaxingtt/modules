@@ -345,7 +345,8 @@ export default {
       .then(res => {
         if (res.code == 200) {
           iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
-          this.getMoulds()
+          // this.getMoulds()
+          this.$emit("getBasicInfo")
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
         }
