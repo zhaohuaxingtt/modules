@@ -498,13 +498,13 @@ export default {
     async saveAekoQuotationSummary(beforeHook, afterHook) {
       if (this.moduleMap.material) {
         if (!this.rawMaterialsTableData.length || !this.rawMaterialsTableData.every(item => validateChangeKeysByRawMaterials.every(key => item[key] || item[key] === 0 || item[key] === false))) {
-          return iMessage.warn(this.language("QINGTIANXIEWANZHENGYUANCAILIAOSANJIANCHENGBEN", "请填写完整原材料/散件成本"))
+          throw iMessage.warn(this.language("QINGTIANXIEWANZHENGYUANCAILIAOSANJIANCHENGBEN", "请填写完整原材料/散件成本"))
         }
       }
 
       if (this.moduleMap.production) {
         if (!this.manufacturingCostTableData.length || !this.manufacturingCostTableData.every(item => validateChangeKeysByManufacturingCost.every(key => item[key] || item[key] === 0))) {
-          return iMessage.warn(this.language("QINGTIANXIEWANZHENGZHIZAOCHENGBEN", "请填写完整制造成本"))
+          throw iMessage.warn(this.language("QINGTIANXIEWANZHENGZHIZAOCHENGBEN", "请填写完整制造成本"))
         }
       }
 
@@ -518,14 +518,14 @@ export default {
       }
 
       if (!this.isChange && !this.cbdCanEdit) {
-        if (+this.apriceChange > +this.$refs.changeSummary.total) return iMessage.warn("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。")
+        if (+this.apriceChange > +this.$refs.changeSummary.total) throw iMessage.warn(this.language("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。"))
       }
 
       if (!this.isChange && this.cbdCanEdit) {
         if (+this.$refs.changeSummary.total > +this.cbdTotal) {
-          if (+this.apriceChange > +this.cbdTotal) return iMessage.warn("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。")
+          if (+this.apriceChange > +this.cbdTotal) throw iMessage.warn(this.language("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。"))
         } else {
-          if (+this.apriceChange > +this.$refs.changeSummary.total) return iMessage.warn("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。")
+          if (+this.apriceChange > +this.$refs.changeSummary.total) throw iMessage.warn(this.language("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。"))
         }
       }
 
@@ -568,7 +568,7 @@ export default {
       this.cbdDisabled = !this.cbdCanEdit
 
       this.setApriceChange()
-      this.saveChange()
+      this.saveChange("changeValidity")
     },
     updateTotal(total) {
       // this.total = total // this.$refs.changeSummary.total
@@ -580,7 +580,7 @@ export default {
       this.cbdCanEdit = !this.isChange
 
       this.setApriceChange()
-      this.saveChange()
+      this.saveChange("changeValidity")
     },
     updateApriceChange(cbdTotal) {
       this.cbdTotal = cbdTotal
@@ -597,7 +597,7 @@ export default {
       this.apriceChangeDisabled = !+this.apriceChange
       this.$emit("updateApriceChange", this.apriceChange)
     },
-    saveChange() {
+    saveChange(type) {
       this.saveChangeLoading = true
 
       Promise.all([
@@ -612,15 +612,20 @@ export default {
           this.getAekoQuotationSummary()
         } else {
           iMessage.error(this.language("CAOZUOSHIBAI", "操作失败"))
+
+          if (type === "changeValidity") {
+            this.cbdCanEdit = !this.cbdCanEdit
+            this.cbdDisabled = !this.cbdCanEdit
+            this.setApriceChange()
+          }
+        }
+      })
+      .catch(err => {
+        if (type === "changeValidity") {
           this.cbdCanEdit = !this.cbdCanEdit
           this.cbdDisabled = !this.cbdCanEdit
           this.setApriceChange()
         }
-      })
-      .catch(err => {
-        this.cbdCanEdit = !this.cbdCanEdit
-        this.cbdDisabled = !this.cbdCanEdit
-        this.setApriceChange()
       })
       .finally(() => {
         this.saveChangeLoading = false

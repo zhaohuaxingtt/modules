@@ -116,6 +116,18 @@ export default {
       mouldCostInfos,
       indexSet: new Set(),
       saveLoading: false, 
+      validateKeys: [
+				"isShared",
+				"changeType",
+				"stuffType",
+				"mouldType",
+				"assetTypeCode",
+				"assembledPartPrjCode",
+				"supplierPartNameList",
+				"supplierPartCodeList",
+				"quantity",
+				"changeUnitPrice"
+			]
     }
   },
   filters: {
@@ -316,6 +328,10 @@ export default {
       this.$set(this.dataGroup, "shareAmount", math.divide(shareTotal, shareQuantity).toFixed(2))
     },
     handleSave() {
+      if (!this.tableListData.every(item => this.validateKeys.every(key => item[key] || item[key] === 0))) {
+				return iMessage.error(this.language("QINGWEIHUHAOBIANTIANXIANGHOUZAIBAOCUN", "请维护好必填项后，再保存。"))
+			}
+
       this.saveLoading = true
 
       saveMoulds({
@@ -329,7 +345,7 @@ export default {
       .then(res => {
         if (res.code == 200) {
           iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
-          this.getMouldFee()
+          this.getMoulds()
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
         }
