@@ -35,22 +35,22 @@
       :tableTitle="tableTitle"
       :tableData="tableListData">
       <template #overseasFactoryPrice="scope">
-        <iInput class="a" v-model="scope.row.overseasFactoryPrice"></iInput>
+        <iInput class="input" v-model="scope.row.overseasFactoryPrice" @input="handleInputByNumber($event, 'overseasFactoryPrice', scope.row, 2, updateOverseasFactoryPrice)"></iInput>
       </template>
       <template #overseasBnkPrice="scope">
-        <iInput class="a" v-model="scope.row.overseasBnkPrice"></iInput>
+        <iInput class="input" v-model="scope.row.overseasBnkPrice" @input="handleInputByNumber($event, 'overseasBnkPrice', scope.row, 2, updateOverseasBnkPrice)"></iInput>
       </template>
       <template #tariff="scope">
-        <iInput class="a" v-model="scope.row.tariff"></iInput>
+        <iInput class="input" v-model="scope.row.tariff" @input="handleInputByNumber($event, 'tariff', scope.row, 2, updateTariff)"></iInput>
       </template>
       <template #domesticFreight="scope">
-        <iInput class="a" v-model="scope.row.domesticFreight"></iInput>
+        <iInput class="input" v-model="scope.row.domesticFreight" @input="handleInputByNumber($event, 'domesticFreight', scope.row, 2)"></iInput>
       </template>
       <template #manageSummary="scope">
-        <iInput class="a" v-model="scope.row.manageSummary"></iInput>
+        <iInput class="input" v-model="scope.row.manageSummary" @input="handleInputByNumber($event, 'manageSummary', scope.row, 2)"></iInput>
       </template>
       <template #profitSummary="scope">
-        <iInput class="a" v-model="scope.row.profitSummary"></iInput>
+        <iInput class="input" v-model="scope.row.profitSummary" @input="handleInputByNumber($event, 'profitSummary', scope.row, 2)"></iInput>
       </template>
     </tableList>
     <percentage lang :data="percentageData" />
@@ -58,11 +58,14 @@
 </template>
 
 <script>
+/* eslint-disable no-undef */
+
 import { iCard, iFormGroup, iFormItem, iSelect, iDatePicker, iInput, iMessage } from "rise"
 import tableList from "rise/web/quotationdetail/components/tableList"
 import percentage from "./components/percentage"
 import { tableTitle } from "./components/data"
 import { getCurrency, getExchangeRate, getSkdCostSummary, saveSkdCostSummary } from "@/api/rfqManageMent/quotationdetail"
+import { handleInputByNumber } from "../data"
 
 export default {
   components: { iCard, iFormGroup, iFormItem, iSelect, iDatePicker, iInput, tableList, percentage },
@@ -92,7 +95,7 @@ export default {
       const data = this.tableListData[0]
       return {
         overseasFactoryPrice: data.overseasFactoryPrice,
-        overseasBnkPrice: data.overseasBnkPrice,
+        overseasPrice: math.add(math.bignumber(data.overseasBnkPrice || 0), math.bignumber(data.tariff || 0)).toFixed(2),
         domesticFreight: data.domesticFreight,
         manageSummary: data.manageSummary,
         otherSummary: data.otherSummary,
@@ -101,6 +104,7 @@ export default {
     },
   },
   methods: {
+    handleInputByNumber,
     getCurrency() {
       getCurrency()
       .then(res => {
@@ -127,6 +131,7 @@ export default {
       .then(res => {
         if (res.code == 200) {
           this.tableListData = [res.data]
+          this.computeSalesPrice("", "", this.tableListData[0])
           this.skdStartProductDate = res.data.skdStartProductDate
           this.currency = res.data.currency
         } else {
@@ -140,28 +145,52 @@ export default {
       this.getSkdCostSummary()      
     },
     handleChangeByCurrency() {
+      this.exchangeRate = "0.00"
+      
       getExchangeRate({
         currency: this.currency
       })
       .then(res => {
         if (res.code == 200) {
-          this.exchangeRate = res.data
+          this.exchangeRate = res.data || (this.currency === "RMB" ? "1.00" : "0.00")
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
         }
       })
     },
-    save() {
+    save(beforeHook, afterHook) {
+      if (!this.skdStartProductDate) throw iMessage.warn(this.language("QINGXUANZESKDQIBUSHENGCHANRIQI", "请选择SKD起步生产日期"))
 
-    },
-    saveSkdCostSummary() {
+      if (typeof beforeHook === "function") beforeHook()
+
       return saveSkdCostSummary({
         ...this.tableListData[0],
         skdStartProductDate: this.skdStartProductDate,
         currency: this.currency,
         quotationId: this.partInfo.quotationId
       })
+      .finally(() => {
+				if (typeof afterHook === "function") afterHook()
+			})
     },
+    updateOverseasFactoryPrice(value, key, row) {
+      this.computeSalesPrice(value, key, row)
+    },
+    updateOverseasBnkPrice(value, key, row) {
+      this.computeSalesPrice(value, key, row)
+    },
+    updateTariff(value, key, row) {
+      this.computeSalesPrice(value, key, row)
+    },
+    computeSalesPrice(originValue, originKey, row) {
+      const salesPrice = math.add(
+        math.bignumber(row.overseasFactoryPrice || 0),
+        math.bignumber(row.overseasBnkPrice || 0),
+        math.bignumber(row.tariff || 0)
+      ).toFixed(2)
+
+      this.$set(row, "salesPrice", salesPrice)
+    }
   }
 }
 </script>
@@ -209,7 +238,7 @@ export default {
       height: 0;
     }
 
-    .a {
+    .input {
       max-width: 120px !important;
     }
   }

@@ -14,7 +14,7 @@
 
 <template>
   <div v-if="isSkd">
-    <skdCostSummary ref="skdCostSummary" />
+    <skdCostSummary ref="skdCostSummary" :partInfo="partInfo" />
   </div>
   <div v-else>
     <!---partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU----->
@@ -1167,6 +1167,20 @@ export default{
      * @return {*}
      */    
     save(type) {
+      if (this.isSkd) {
+        return this.$refs.skdCostSummary.save()
+        .then(res => {
+          if (res.code == 200) {
+            if (type !== "submit") {
+              iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+              this.init()
+            }
+          } else {
+            iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+          }
+        })
+      }
+
       if (this.partInfo.partProjectType === partProjTypes.PEIJIAN || this.partInfo.partProjectType === partProjTypes.FUJIAN) {
         return Promise.all([this.postCostSummary(), this.saveBzfreeAndYunshuFree()])
           .then(([res1, res2]) => {

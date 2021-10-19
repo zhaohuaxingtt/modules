@@ -149,28 +149,51 @@ export default {
         //   iMessage.error(this.language('LK_BITIANXIANGBUNENGWEIKONG','请输入必填项'))
         // } else {
 
-          sampleProgressDTOS.forEach(item => {
-            if (item.priceType === this.priceType) {
-              switch(item.sampleDeliverType) {
+          if (this.isSkd) {
+            sampleProgressDTOS.forEach(item => {
+              switch(item.sampleDeliverType) { 
                 case "1st Tryout送样周期":
                   if (!item.supplierTime) {
                     j()
-                    throw iMessage.warn(`1st Tryout送样周期 ${ this.language("LK_GONGYINGSHANGZHOUQIZHOU", "供应商周期(周)") }${ this.language("BUNENGWEIKONG", "不能为空") }`)
+                    throw iMessage.warn(`${ item.priceType }: 1st Tryout送样周期 ${ this.language("LK_GONGYINGSHANGZHOUQIZHOU", "供应商周期(周)") }${ this.language("BUNENGWEIKONG", "不能为空") }`)
                   }
                 case "EM送样周期":
                   if (!item.supplierTime) {
                     j()
-                    throw iMessage.warn(`EM送样周期 ${ this.language("LK_GONGYINGSHANGZHOUQIZHOU", "供应商周期(周)") }${ this.language("BUNENGWEIKONG", "不能为空") }`)
+                    throw iMessage.warn(`${ item.priceType }: EM送样周期 ${ this.language("LK_GONGYINGSHANGZHOUQIZHOU", "供应商周期(周)") }${ this.language("BUNENGWEIKONG", "不能为空") }`)
                   }
                 case "OTS送样周期":
                   if (this.isBmgpart && !item.supplierTime) {
                     j()
-                    throw iMessage.warn(`OTS送样周期 ${ this.language("LK_GONGYINGSHANGZHOUQIZHOU", "供应商周期(周)") }${ this.language("BUNENGWEIKONG", "不能为空") }`)
+                    throw iMessage.warn(`${ item.priceType }: OTS送样周期 ${ this.language("LK_GONGYINGSHANGZHOUQIZHOU", "供应商周期(周)") }${ this.language("BUNENGWEIKONG", "不能为空") }`)
                   }
                 default:
               }
-            }
-          })
+            })
+          } else {
+            sampleProgressDTOS.forEach(item => {
+              if (item.priceType === this.priceType) {
+                switch(item.sampleDeliverType) { 
+                  case "1st Tryout送样周期":
+                    if (!item.supplierTime) {
+                      j()
+                      throw iMessage.warn(`1st Tryout送样周期 ${ this.language("LK_GONGYINGSHANGZHOUQIZHOU", "供应商周期(周)") }${ this.language("BUNENGWEIKONG", "不能为空") }`)
+                    }
+                  case "EM送样周期":
+                    if (!item.supplierTime) {
+                      j()
+                      throw iMessage.warn(`EM送样周期 ${ this.language("LK_GONGYINGSHANGZHOUQIZHOU", "供应商周期(周)") }${ this.language("BUNENGWEIKONG", "不能为空") }`)
+                    }
+                  case "OTS送样周期":
+                    if (this.isBmgpart && !item.supplierTime) {
+                      j()
+                      throw iMessage.warn(`OTS送样周期 ${ this.language("LK_GONGYINGSHANGZHOUQIZHOU", "供应商周期(周)") }${ this.language("BUNENGWEIKONG", "不能为空") }`)
+                    }
+                  default:
+                }
+              }
+            })
+          }
 
           saveSampleProgress({
             quotationId: this.partInfo.quotationId,

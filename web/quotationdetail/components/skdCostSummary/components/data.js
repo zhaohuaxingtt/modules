@@ -7,10 +7,10 @@ export const tableTitle = [
   { props: "otherSummary", name: "其他费用", key: "QITAFEIYONG", minWidth: "140" },
   { props: "profitSummary", name: "利润", key: "LIRUN" },
   { props: "totalPrice", name: "出厂价", key: "CHUCHANGJIA" },
-  { props: "i", name: "包装费", key: "BAOZHUANGFEI" },
-  { props: "j", name: "运输费", key: "YUNSHUFEI" },
-  { props: "k", name: "操作费", key: "CAOZUOFEI" },
-  { props: "l", name: "销售价", key: "XIAOSHOUJIA" }
+  { props: "packageCost", name: "包装费", key: "BAOZHUANGFEI" },
+  { props: "transportCost", name: "运输费", key: "YUNSHUFEI" },
+  { props: "operateCost", name: "操作费", key: "CAOZUOFEI" },
+  { props: "salesPrice", name: "销售价", key: "XIAOSHOUJIA" }
 ]
 
 export const skdPercentageTemplate = [
@@ -23,7 +23,7 @@ export const skdPercentageTemplate = [
     color: "rgba(23, 99, 247, 1)",
   },
   {
-    props: "overseasBnkPrice",
+    props: "overseasPrice",
     name: "境外包装费、运输费、保险费、关税",
     key: "JINGWAIBAOZHUANGFEIYUNSHUFEIBAOXIANFEIGUANSHUI",
     persent: "0%(0)",
@@ -80,11 +80,13 @@ export const percentageBalance = function(data, precision = 4) {
   let max = sortData.find(item => dataMap[item] === 1)
   max = max ? max : sortData[0]
 
-  const sum = _data.reduce((acc, cur) => math.add(acc, math.bignumber(cur)), 0)
-  const percentage = _data.map(item => math.round(math.divide(math.bignumber(item), !+sum ? 1 : sum), precision).toString())
-  const errorValue = math.subtract(1, percentage.reduce((acc, cur) => math.add(acc, math.bignumber(cur)), 0))
+  const sum = _data.reduce((acc, cur) => math.add(acc, math.bignumber(cur || 0)), 0)
+  const percentage = _data.map(item => math.round(math.divide(math.bignumber(item || 0), !+sum ? 1 : sum), precision).toString())
+  const errorValue = math.subtract(1, percentage.reduce((acc, cur) => math.add(acc, math.bignumber(cur || 0)), 0))
 
-  percentage[_data.indexOf(max)] = math.add(percentage[_data.indexOf(max)], errorValue).toString()
+  if (percentage.length) {
+    percentage[_data.indexOf(max)] = math.add(percentage[_data.indexOf(max)], errorValue).toString()
+  }
 
   return { data: _data, percentage }
 }
@@ -97,7 +99,7 @@ export const getPercentage = function(data, template) {
     const percentage = percentageBalance(result.map(item => data[item.props]), 2).percentage
 
     result.forEach((item, index) => {
-      item.width = `${ math.multiply(percentage[index], 100) }%`
+      item.width = `${ math.multiply(math.bignumber(percentage[index]), 100) }%`
       item.persent = `${ item.width }(${ data[item.props] || 0 })`
     })
 
