@@ -31,7 +31,7 @@
             <span v-else>{{ scope.row.isShared | statesFilter }}</span>
           </template>
           <template #changeType="scope">
-            <iSelect v-if="scope.row.isShared == 1 && !disabled" v-model="scope.row.changeType">
+            <iSelect v-if="scope.row.isShared == 1 && !disabled" v-model="scope.row.changeType" @change="handleChangeByChangeType($event, scope.row)">
               <el-option :label="language('XINZENG', '新增')" value="新增"></el-option>
               <el-option :label="language('XIUMU', '修模')" value="修模"></el-option>
               <el-option :label="language('JIANZHI', '减值')" value="减值"></el-option>
@@ -68,7 +68,7 @@
             <iInput v-model="scope.row.quantity" @input="handleInputByNumber($event, 'quantity', scope.row, 0, updateQuantity)"></iInput>
           </template>
           <template #changeUnitPrice="scope">
-            <iInput v-model="scope.row.changeUnitPrice" @input="handleInputByNumber($event, 'changeUnitPrice', scope.row, 2, updateChangeUnitPrice)"></iInput>
+            <iInput v-model="scope.row.changeUnitPrice" @input="handleInputByNumber($event, 'changeUnitPrice', scope.row, 2, updateChangeUnitPrice, scope.row.changeType === '减值')"></iInput>
           </template>
       </tableList>
       <iFormGroup class="subCost margin-top30" :row="4" inline>
@@ -116,6 +116,18 @@ export default {
       mouldCostInfos,
       indexSet: new Set(),
       saveLoading: false, 
+      validateKeys: [
+				"isShared",
+				"changeType",
+				"stuffType",
+				"mouldType",
+				"assetTypeCode",
+				"assembledPartPrjCode",
+				"supplierPartNameList",
+				"supplierPartCodeList",
+				"quantity",
+				"changeUnitPrice"
+			]
     }
   },
   filters: {
@@ -241,6 +253,14 @@ export default {
 
       this.computeShareTotalSum()
     },
+    handleChangeByChangeType(value, row) {
+      if (row.changeType === "减值") {
+        const value = row.changeUnitPrice.replace(/^(-?)(.*)$/, "$2")
+        this.$set(row, "changeUnitPrice", `${ value ? "-" : "" }${ value }`)
+      }
+
+      this.computeChangeTotalPrice(value, "changeUnitPrice", row)
+    },
     handleInputByShareQuantity(val) {
       this.dataGroup.shareQuantity = numberProcessor(val, 0)
 
@@ -264,6 +284,11 @@ export default {
       this.computeChangeTotalPrice(value, key, row)
     },
     updateChangeUnitPrice(value, key, row) {
+      if (row.changeType === "减值") {
+        const value = row.changeUnitPrice.replace(/^(-?)(.*)$/, "$2")
+        this.$set(row, "changeUnitPrice", `${ value ? "-" : "" }${ value }`)
+      }
+
       this.computeChangeTotalPrice(value, key, row)
     },
     computeChangeTotalPrice(originValue, originKey, row) {
@@ -303,6 +328,10 @@ export default {
       this.$set(this.dataGroup, "shareAmount", math.divide(shareTotal, shareQuantity).toFixed(2))
     },
     handleSave() {
+      if (!this.tableListData.every(item => this.validateKeys.every(key => item[key] || item[key] === 0))) {
+				return iMessage.error(this.language("QINGWEIHUHAOBIANTIANXIANGHOUZAIBAOCUN", "请维护好必填项后，再保存。"))
+			}
+
       this.saveLoading = true
 
       saveMoulds({
@@ -316,7 +345,7 @@ export default {
       .then(res => {
         if (res.code == 200) {
           iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
-          this.getMouldFee()
+          this.getMoulds()
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
         }

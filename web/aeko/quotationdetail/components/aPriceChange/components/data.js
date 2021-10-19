@@ -78,8 +78,8 @@ export const validateChangeKeysByManufacturingCost = [
   "indirectManufacturingRate"
 ]
 
-export const handleInputByNumber = function (value, key, row, precision, cb) {
-  this.$set(row, key, numberProcessor(value, precision))
+export const handleInputByNumber = function (value, key, row, precision, cb, negative) {
+  this.$set(row, key, numberProcessor(value, precision, negative))
   
   if (typeof cb === "function") {
     cb(value, key, row)
