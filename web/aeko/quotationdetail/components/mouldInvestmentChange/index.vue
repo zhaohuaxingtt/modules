@@ -1,6 +1,6 @@
 <template>
   <div>
-    <module ref="module" :partInfo="partInfo" :disabled="disabled" />
+    <module ref="module" :partInfo="partInfo" :disabled="disabled" @getBasicInfo="getBasicInfo" />
     <sourcePartCBD ref="sourcePartCBD" class="margin-top20" :partInfo="partInfo" @quote="handleQuote" :disabled="disabled" />
   </div>
 </template>
@@ -11,6 +11,7 @@ import sourcePartCBD from "./components/sourcePartCBD"
 
 export default {
   components: { module, sourcePartCBD },
+  inject: ["getBasicInfo"],
   props: {
     partInfo: {
       type: Object,

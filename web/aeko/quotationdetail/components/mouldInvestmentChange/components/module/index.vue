@@ -234,13 +234,21 @@ export default {
       this.computeShareTotalSum()
 		},
     handleQuote() {
-      this.$router.push({
-        path: "/aeko/relatingParts",
-        query: {
-          disabled: this.disabled,
+      const routeData = this.$router.resolve({
+          path: '/aeko/relatingParts',
+          query: {
+            disabled: this.disabled,
           quotationId: this.partInfo.quotationId
-        }
-      })
+          },
+        })
+        window.open(routeData.href, '_blank')
+      // this.$router.push({
+      //   path: "/aeko/relatingParts",
+      //   query: {
+      //     disabled: this.disabled,
+      //     quotationId: this.partInfo.quotationId
+      //   }
+      // })
     },
     indexProcess(value) {
       return value >= 10 ? value + "" : "0" + value
@@ -345,7 +353,8 @@ export default {
       .then(res => {
         if (res.code == 200) {
           iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
-          this.getMoulds()
+          // this.getMoulds()
+          this.$emit("getBasicInfo")
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
         }
