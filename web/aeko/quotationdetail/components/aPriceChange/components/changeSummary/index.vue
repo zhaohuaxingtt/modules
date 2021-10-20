@@ -33,14 +33,14 @@
 				</el-table-column>
         <el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('NEIRONG', '内容') }<span class='require'>*</span>` }})" align="center">
           <template v-slot="scope">
-            <iInput v-if="!changeSummaryDisabled && !disabled" v-model="scope.row.newContent" class="input-center" />
 						<el-popover
-							v-else
 							placement="top"
 							width="200"
 							trigger="hover"
-							:content="scope.row.newContent">
-							<span slot="reference">{{ scope.row.newContent | contentFilter }}</span>
+							:content="scope.row.newContent"
+							:disabled="newContentFoucus || !scope.row.newContent">
+							<iInput v-if="!changeSummaryDisabled && !disabled" v-model="scope.row.newContent" slot="reference" class="input-center" @focus="newContentFoucus = true" @blur="newContentFoucus = false" />
+							<span v-else slot="reference">{{ scope.row.newContent | contentFilter }}</span>
 						</el-popover>
           </template>
         </el-table-column>
@@ -155,7 +155,8 @@ export default {
 				"newUnitPrice",
 				"newUnit",
 				"newUseage"
-			]
+			],
+			newContentFoucus: false
 		}
 	},
 	filters: {

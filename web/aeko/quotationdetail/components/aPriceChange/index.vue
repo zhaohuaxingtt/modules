@@ -24,7 +24,7 @@
         <div class="header-control">
           <el-switch
             class="switch"
-            :disabled="disabled"
+            :disabled="cbdDisabled || disabled"
             :class="{ switchSpace: !cbdDisabled }"
             v-model="cbdCanEdit"
             :active-text="language('YOUXIAO', '有效')"
