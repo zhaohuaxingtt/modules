@@ -209,7 +209,7 @@ export default {
         originPartNums: item.partsShareNum
       }))
 
-      this.tableListData.concat(quoteList)
+      this.tableListData = this.tableListData.concat(quoteList)
     },
     isQuote(row) {
       return !!row.originPartNums
