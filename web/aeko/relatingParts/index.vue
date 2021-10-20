@@ -3,7 +3,7 @@
     <div class="header clearFloat">
       <div class="title">{{ language("CHAKANGUANLIANLINGJIAN", "查看关联零件") }}</div>
       <div class="control">
-        <iButton @click="handleBack">{{ language("FANHUI", "返回") }}</iButton>
+        <!-- <iButton @click="handleBack">{{ language("FANHUI", "返回") }}</iButton> -->
         <iButton v-if="!disabled" @click="handleAdd">{{ language("XINZENGLINGJIAN", "新增零件") }}</iButton>
         <iButton v-if="!disabled" @click="handleDelete">{{ language("SHANCHULINGJIAN", "删除零件") }}</iButton>
         <iButton v-if="!disabled" :loading="saveLoading" @click="handleSave">{{ language("BAOCUN", "保存") }}</iButton>
