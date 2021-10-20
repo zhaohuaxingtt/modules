@@ -86,7 +86,7 @@ export default {
       currency: "",
       currencyOptions: [],
       exchangeRate: "",
-      tableTitle,
+      tableTitle: _.cloneDeep(tableTitle),
       tableListData: [{}]
     }
   },
@@ -133,7 +133,7 @@ export default {
           this.tableListData = [res.data]
           this.computeSalesPrice("", "", this.tableListData[0])
           this.skdStartProductDate = res.data.skdStartProductDate
-          this.currency = res.data.currency
+          this.currency = res.data.currency || "RMB"
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
         }
@@ -223,7 +223,7 @@ export default {
 
       &:nth-of-type(3),
       &:last-of-type {
-        width: 210px!important;
+        width: 280px!important;
 
         label {
           width: 55px;
