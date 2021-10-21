@@ -135,6 +135,9 @@ export default {
       this.tableListData = this.tableListData.filter(item => !this.multipleSelection.includes(item))
     },
     handleSave() {
+      // 为空时弹出提示
+      const {tableListData=[]} = this;
+      if(!tableListData.length) return iMessage.warn(this.language('LK_AEKO_WEIGUANLIANLINGJIANWUFABAOCUN','未关联零件，无法保存'));
       const list = this.tableListData.map(item => ({
         partNum: item.partNum,
         mouldInfoList: item.selected.map(mouldId => {
