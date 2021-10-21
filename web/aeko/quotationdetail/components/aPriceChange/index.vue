@@ -535,6 +535,7 @@ export default {
         ...this.form,
         cbdCanEdit: this.cbdCanEdit,
         aprice: this.allSummaryData()[0].aprice || "0.00",
+        aPriceCbdChange:this.apriceChange,
         quotationId: this.partInfo.quotationId,
         rawMaterialList: this.moduleMap.material ? this.rawMaterialsTableData : undefined,
         makeCostList: this.moduleMap.production ? this.manufacturingCostTableData : undefined,
