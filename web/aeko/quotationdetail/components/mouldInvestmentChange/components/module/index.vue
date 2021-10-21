@@ -192,7 +192,13 @@ export default {
       this.indexSet.add(index)
     },
     addQuote(list) {
+
+       // 如果用户勾选的原零件模具CBD已经被引入过，则不对此行做任何操作
+      const arrId = this.tableListData.map((item)=>item.id) || [];
+      list = list.filter((item)=>!arrId.includes(item.id));
+
       const quoteList = list.map(item => ({
+        id:item.id,
         mouldId: item.moldId,
         bmNum: item.bmNum,
         bmSerialNum: item.bmSerial,
