@@ -84,7 +84,7 @@ export default {
             Array.isArray(res.data) ? 
             res.data.map(item => ({
               ...item,
-              isShared: 1
+              isShared: 0
             })) : 
             []
         } else {

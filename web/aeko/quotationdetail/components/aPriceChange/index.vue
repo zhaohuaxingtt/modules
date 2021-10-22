@@ -533,9 +533,11 @@ export default {
 
       return saveAekoQuotationSummary({
         ...this.form,
+        apriceCbdChange:this.cbdSummaryTableData[0].apriceChange,
+        apriceChange:this.apriceChange,
+        isChange:this.isChange,
         cbdCanEdit: this.cbdCanEdit,
         aprice: this.allSummaryData()[0].aprice || "0.00",
-        aPriceCbdChange:this.apriceChange,
         quotationId: this.partInfo.quotationId,
         rawMaterialList: this.moduleMap.material ? this.rawMaterialsTableData : undefined,
         makeCostList: this.moduleMap.production ? this.manufacturingCostTableData : undefined,
@@ -543,7 +545,7 @@ export default {
         manageFeeList: this.moduleMap.manage ? this.manageTableData : undefined,
         otherFeeList: this.otherCostTableData.length ? this.otherCostTableData : undefined,
         profitVO: this.moduleMap.profit ? this.profitTableData[0] : undefined,
-        apriceChange: this.cbdSummaryTableData[0].apriceChange,
+        // apriceChange: this.cbdSummaryTableData[0].apriceChange,
         cbdSummarySelected: this.cbdSummarySelected,
         materialChange: this.cbdSummaryTableData[0].materialChange,
         makeCostChange: this.cbdSummaryTableData[0].makeCostChange,
