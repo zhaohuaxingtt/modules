@@ -204,7 +204,7 @@ export default {
         }
 
         if (item.partCbdType == 1) {
-          originIdSet.add(item.frontMaterialId)
+          originIdSet.add(item.id || item.frontMaterialId)
         }
 
         if (item.partCbdType == 2) {
