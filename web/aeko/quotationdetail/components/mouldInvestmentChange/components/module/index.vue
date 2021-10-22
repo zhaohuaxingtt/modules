@@ -261,7 +261,7 @@ export default {
     },
     handleInputByNumber,
     handleChangeByIsShared(value, row) {
-      if (row.isShared == 1) {
+      if (row.isShared == 0) {
         this.$set(row, "changeType", "新增")
       }
 
