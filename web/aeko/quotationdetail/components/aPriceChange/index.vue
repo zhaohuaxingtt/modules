@@ -102,7 +102,7 @@ import manageCost from "./components/manageCost"
 import otherCost from "./components/otherCost"
 import profit from "./components/profit"
 import { validateChangeKeysByRawMaterials, validateChangeKeysByManufacturingCost } from "./components/data"
-import { getAekoCarDosage, getAekoQuotationSummary, saveAekoQuotationSummary, exportQuotation } from "@/api/aeko/quotationdetail"
+import { getAekoCarDosage, getAekoQuotationSummary, saveAekoQuotationSummary, exportQuotation,updateCbdCanEdit } from "@/api/aeko/quotationdetail"
 import { getDictByCode } from "@/api/dictionary"
 import { numberProcessor } from "@/utils"
 import { difference } from "lodash"
@@ -266,7 +266,7 @@ export default {
         if (res.code == 200) {
           this.form = res.data
           this.cbdCanEdit = res.data.cbdCanEdit
-          this.cbdDisabled = !this.cbdCanEdit
+          this.cbdDisabled = !res.data.isChange
           
           this.responseData = {}
           this.responseData.cbdSummarySelected = res.data.cbdSummarySelected
@@ -567,11 +567,31 @@ export default {
 
       this.downloadLoading = false
     },
-    handleChangeByCbdCanEdit() {
-      this.cbdDisabled = !this.cbdCanEdit
+    async handleChangeByCbdCanEdit() {
+      this.saveChangeLoading = true
+      this.saveLoading = true
+      this.downloadLoading = true
+      await updateCbdCanEdit({
+        cbdCanEdit:this.cbdCanEdit,
+        quotationId:this.partInfo.quotationId
+      }).then((res)=>{
+        if(res.code == 200){
+          iMessage.success(this.language('LK_CAOZUOCHENGGONG', '操作成功'));
+        }else{
+          iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+        }
+        this.getAekoQuotationSummary();
+      }).catch(()=>{
+        this.getAekoQuotationSummary();
+      }).finally(()=>{
+        this.saveChangeLoading = false;
+        this.saveLoading = false
+        this.downloadLoading = false
+      });
 
-      this.setApriceChange()
-      this.saveChange("changeValidity")
+
+      // this.setApriceChange()
+      // this.saveChange("changeValidity")
     },
     updateTotal(total) {
       // this.total = total // this.$refs.changeSummary.total
