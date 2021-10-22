@@ -535,7 +535,7 @@ export default {
         ...this.form,
         apriceCbdChange:this.cbdSummaryTableData[0].apriceChange,
         apriceChange:this.apriceChange,
-        isChange:this.isChange,
+        isChange:!this.isChange,
         cbdCanEdit: this.cbdCanEdit,
         aprice: this.allSummaryData()[0].aprice || "0.00",
         quotationId: this.partInfo.quotationId,
