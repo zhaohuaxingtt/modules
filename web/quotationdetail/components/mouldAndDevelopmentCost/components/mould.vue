@@ -12,7 +12,7 @@
       <template #header>
         <div class="header">
           <div>
-            <span class="title">{{ (isSkd ? "SKD" : "") + $t('LK_MUJUFEIYONG') }}</span>
+            <span class="title">{{ `${ (showMode ? (isSkd ? "SKD" : "LC") : "") + " " }${ $t('LK_MUJUFEIYONG') }` }}</span>
             <span class="tip margin-left10">({{ $t('LK_DANWEI') }}：{{ $t('LK_YUAN') }})</span>
             <iFormGroup class="total margin-left20" :row="1" inline>
               <iFormItem class="item" :label="`${ $t(mouldCostInfos[0].key) }`">
@@ -24,9 +24,9 @@
             <iButton @click="jump" v-if='whenCourcerLogin && !disabled'>{{ $t('LK_TIAOZHUANZHIRFQMUJUBAOJIA') }}</iButton>
             <iButton @click="changeRelatingPartsVisible(true)" v-if="!disabled">{{ $t('LK_GUANLIANLINGJIAN') }}</iButton>
             <!--------------在任何状态下，下载按钮可以被看见，供用户下载---------------->
-            <iButton @click="handleDownload">{{ $t('LK_XIAZAIMUJUCBD') }}</iButton>
+            <iButton v-if="!isSkd" @click="handleDownload">{{ $t('LK_XIAZAIMUJUCBD') }}</iButton>
             <el-upload 
-              v-if="!disabled"
+              v-if="!disabled && !isSkd"
               class="uploadBtn" 
               multiple
               ref="upload"
@@ -93,7 +93,7 @@
           </iFormItem>
         </iFormGroup>
       </div>
-      <relatingParts :dialogVisible="relatingPartsVisible" @changeVisible="changeRelatingPartsVisible" :partInfo="partInfo" :disabled="disabled" />
+      <relatingParts :dialogVisible="relatingPartsVisible" @changeVisible="changeRelatingPartsVisible" :partInfo="partInfo" :disabled="disabled" :isSkd="isSkd" />
     </iCard>
   </div>
 </template>
@@ -105,7 +105,7 @@ import tableList from "../../tableList"
 import { mouldCostInfos, mouldTableTitle as tableTitle, assetTypeCodeOptions, statesFilter } from "./data"
 import { cloneDeep } from "lodash"
 import relatingParts from '../../relatingParts'
-import { cbdDownloadFile, uploadModuleCbd, getMouldFee } from "@/api/rfqManageMent/quotationdetail"
+import { cbdDownloadFile, uploadModuleCbd, getMouldFee, getMouldFeeSKD } from "@/api/rfqManageMent/quotationdetail"
 import { numberProcessor } from "@/utils"
 
 export default {
@@ -130,6 +130,10 @@ export default {
       default: false
     },
     isSkd: {
+      type: Boolean,
+      default: false
+    },
+    showMode: {
       type: Boolean,
       default: false
     }
@@ -195,7 +199,12 @@ export default {
       this.uploadLoading = false
       if (res.code == 200) {
         iMessage.success(this.$t("LK_SHANGCHUANCHENGGONG"))
-        this.getMouldFee()
+
+        if (this.isSkd) {
+          this.getMouldFeeSKD()
+        } else {
+          this.getMouldFee()
+        }
       } else {
         iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
       }
@@ -240,6 +249,29 @@ export default {
         this.loading = false
       })
       .catch(() => this.loading = false)
+    },
+    getMouldFeeSKD() {
+      this.loading = true
+
+      getMouldFeeSKD({
+        fsNum: this.partInfo.fsNum,
+        rfqId: this.partInfo.rfqId,
+        quotationId: this.partInfo.quotationId,
+        cbdLevel: this.partInfo.currentCbdLevel || this.partInfo.cbdLevel
+      })
+      .then(res => {
+        if (res.code == 200) {
+          this.tableListData = Array.isArray(res.data.mouldCbdEntityList) ? res.data.mouldCbdEntityList : []
+          this.$set(this.dataGroup, "rfqMouldFeeTotal", res.data.rfqMouldFeeTotal)
+          this.$set(this.dataGroup, "shareInvestmentFee", res.data.shareInvestmentFee)
+          this.$set(this.dataGroup, "shareQuantity", res.data.shareQuantity)
+          this.$set(this.dataGroup, "totalInvestmentCost", res.data.totalInvestmentCost)
+          this.$set(this.dataGroup, "unitInvestmentCost", res.data.unitInvestmentCost)
+        } else {
+          iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+        }
+      })
+      .finally(() => this.loading = false)
     },
     handleSelectionChange(list) {
       this.multipleSelection = list

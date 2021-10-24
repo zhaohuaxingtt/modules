@@ -1,11 +1,13 @@
+import { uuidv4 } from "rise/web/aeko/quotationdetail/components/aPriceChange/components/data"
+
 export const tableTitle = [
-  { props: "overseasFactoryPrice", name: "境外出厂价", key: "JINGWAICHUCHANGJIAFIX", minWidth: "140" },
-  { props: "overseasBnkPrice", name: "境外包装费、运输费、保险费", key: "JINGWAIBAOZHUANGFEIYUNSHUFEIBAOXIANFEI", minWidth: "200" },
+  { props: "overseasFactoryPrice", name: "境外出厂价", key: "JINGWAICHUCHANGJIAFIX", minWidth: "140", updateKey: uuidv4() },
+  { props: "overseasBnkPrice", name: "境外包装费、运输费、保险费", key: "JINGWAIBAOZHUANGFEIYUNSHUFEIBAOXIANFEI", minWidth: "200", updateKey: uuidv4() },
   { props: "tariff", name: "关税", key: "GUANSHUI", minWidth: "140" },
   { props: "domesticFreight", name: "境内运费（RMB）", key: "JINGNEIYUNFEIRMB", minWidth: "140" },
   { props: "manageSummary", name: "管理费", key: "GUANLIFEI" },
-  { props: "otherSummary", name: "其他费用", key: "QITAFEIYONG", minWidth: "140" },
   { props: "profitSummary", name: "利润", key: "LIRUN" },
+  { props: "otherSummary", name: "其他费用", key: "QITAFEIYONG", minWidth: "140" },
   { props: "totalPrice", name: "出厂价", key: "CHUCHANGJIA" },
   { props: "packageCost", name: "包装费", key: "BAOZHUANGFEI" },
   { props: "transportCost", name: "运输费", key: "YUNSHUFEI" },

@@ -17,6 +17,9 @@
     <skdCostSummary ref="skdCostSummary" :partInfo="partInfo" />
   </div>
   <div v-else>
+    <div v-if="isSkdLc" class="margin-bottom20">
+      <skdCostSummary ref="skdCostSummary" :partInfo="partInfo" showTitle />
+    </div>
     <!---partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU----->
     <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU">
       <quotationAnalysis :disabled="disabled || isOriginprice" :dbDetailList="dbDetailList" />
@@ -25,7 +28,7 @@
       <!--------------------------------------------------------->
       <!----------------------百分比模块-------------------------->
       <!--------------------------------------------------------->
-      <persentComponents ref='components' :cbdlist='cbdlist' :isSteel="isSteel" :quotationId='partInfo.quotationId' :tableData='topTableData' :disabled='disabled || isOriginprice' :allTableData='allTableData' :partType="partInfo.partType" :partProjectType="partInfo.partProjectType"></persentComponents>
+      <persentComponents ref='components' :cbdlist='cbdlist' :isSteel="isSteel" :quotationId='partInfo.quotationId' :tableData='topTableData' :disabled='disabled || isOriginprice' :allTableData='allTableData' :partType="partInfo.partType" :partProjectType="partInfo.partProjectType" :showTitle="isSkdLc"></persentComponents>
       <!--------------------------------------------------------->
       <!----------------------2.1 原材料/散件--------------------->
       <!--------------------------------------------------------->
@@ -792,11 +795,11 @@ export default{
      * @return {*}
      */    
     init(type) {
-      if (this.isSkd) {
+      if (this.isSkd || this.isSkdLc) {
         this.$refs.skdCostSummary.init()
-        return
+        if (this.isSkd) return
       }
-      
+
       if (this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || this.partInfo.partProjectType === partProjTypes.DBLINGJIAN) {
         this.getCostSummaryDB()
       } else {
@@ -1220,6 +1223,27 @@ export default{
           iMessage.error(err.desZh)
         })
       } else {
+        if (this.isSkdLc) {
+          if (+moment(this.$refs.skdCostSummary.skdStartProductDate) > +moment(this.allTableData.startProductDate)) throw iMessage.warn(this.language("LCQIBUSHENGCHANRIQIBUNENGXIAOYUSKDQIBUSHENGCHANRIQI", "LC起步生产日期不能小于SKD起步生产日期"))
+
+          return Promise.all([
+            this.$refs.skdCostSummary.save(),
+            this.postCostSummary()
+          ])
+          .then(([res1, res2]) => {
+            if (res1 && res1.code == 200 && res2 && res2.code == 200) {
+              if (type !== "submit") {
+                iMessage.success(this.$i18n.locale === "zh" ? res1.desZh : res1.desEn)
+                this.init()
+              }
+
+              this.updateCbdLevel(this.allTableData.level)
+            } else {
+              iMessage.error(this.language("CAOZUOSHIBAI", "操作失败"))
+            }
+          })
+        }
+
         return this.postCostSummary().then(res => {
           if (res.code == 200) {
             this.updateCbdLevel(this.allTableData.level)
