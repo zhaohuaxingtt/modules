@@ -14,7 +14,7 @@
         </div>
       </div>
     </iCard>
-    <changeSummary ref="changeSummary" class="margin-top20" :partInfo="partInfo" :moduleOptions="allModuleOptions" :disabled="disabled" @updateTotal="updateTotal" @updateIsChange="updateIsChange" @getBasicInfo="getBasicInfo" />
+    <changeSummary ref="changeSummary" class="margin-top20" :partInfo="partInfo" :moduleOptions="allModuleOptions" :disabled="disabled" @updateTotal="updateTotal" @updateIsChange="updateIsChange" @getBasicInfo="getBasicInfo"/>
     <iCard v-permission.auto="AEKO_QUOTATION_CBD_TAB_BIANDONGZHICBD|变动值CBD" class="margin-top20">
       <template #header>
         <div class="title">
@@ -58,7 +58,7 @@
             ></el-option>
           </iSelect>
         </div>
-        <cbdSummary class="margin-top20" v-model="cbdSummaryTableData" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_BIANDONGZHICBDHUIZONG|变动值CBD汇总" @updateApriceChange="updateApriceChange" />
+        <cbdSummary class="margin-top20" v-model="cbdSummaryTableData" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_BIANDONGZHICBDHUIZONG|变动值CBD汇总" @updateApriceChange="updateApriceChange" :isFetch="isFetch" @updateIsFetch="isFetch=$event" />
         <div v-if="!loading">
           <rawMaterials 
             topCutLine 
@@ -162,6 +162,7 @@ export default {
       isChange: false,
       total: 0, // 汇总表
       cbdTotal: 0, // CBD
+      isFetch: false
     }
   },
   inject: ["getBasicInfo", "allSummaryData"],
@@ -272,6 +273,7 @@ export default {
           this.responseData.cbdSummarySelected = res.data.cbdSummarySelected
 
           this.apriceChange = res.data.apriceChange || "0"
+          this.apriceChangeDisabled = !+this.apriceChange
           this.sourceApriceChange = this.apriceChange
           this.setCbdSummarySelected(res.data.cbdSummarySelected)
           this.rawMaterialsTableData = Array.isArray(res.data.rawMaterialList) ? res.data.rawMaterialList : []
@@ -286,6 +288,8 @@ export default {
           this.manageFeeChange = res.data.manageFeeChange
           this.otherFee = res.data.otherFee
           this.profitChange = res.data.profitChange
+
+          this.isFetch = true
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
         }
@@ -522,10 +526,10 @@ export default {
       }
 
       if (!this.isChange && this.cbdCanEdit) {
-        if (+this.$refs.changeSummary.total > +this.cbdTotal) {
-          if (+this.apriceChange > +this.cbdTotal) throw iMessage.warn(this.language("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。"))
-        } else {
+        if (this.$refs.changeSummary.tableListData.length && +this.$refs.changeSummary.total < +this.cbdTotal) {
           if (+this.apriceChange > +this.$refs.changeSummary.total) throw iMessage.warn(this.language("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。"))
+        } else {
+          if (+this.apriceChange > +this.cbdTotal) throw iMessage.warn(this.language("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。"))
         }
       }
 
@@ -613,7 +617,13 @@ export default {
     setApriceChange() {
       if (!this.isChange && !this.cbdCanEdit) this.apriceChange = this.$refs.changeSummary.total
 
-      if (!this.isChange && this.cbdCanEdit) this.apriceChange = +this.$refs.changeSummary.total > +this.cbdTotal ? this.cbdTotal : this.$refs.changeSummary.total
+      if (!this.isChange && this.cbdCanEdit) {
+        if (this.$refs.changeSummary.tableListData.length) {
+          this.apriceChange = +this.$refs.changeSummary.total > +this.cbdTotal ? this.cbdTotal : this.$refs.changeSummary.total
+        } else {
+          this.apriceChange = this.cbdTotal
+        }
+      }
 
       if (this.isChange && !this.cbdCanEdit) this.apriceChange = "0"
 
