@@ -114,7 +114,7 @@
 /* eslint-disable no-undef */
 
 import { iCard, iButton, iInput, iSelect, iMessage, iMessageBox } from "rise"
-import { handleInputByNumber } from "../data"
+import { handleInputByNumber } from "rise/web/quotationdetail/components/data"
 import { getAekoCbdPriceSum, saveAekoCbdPriceSum } from "@/api/aeko/quotationdetail"
 
 export default {
@@ -259,7 +259,7 @@ export default {
       }
 
 			this.tableListData = this.tableListData.filter(item => !this.multipleSelection.includes(item))
-      this.computTotal()
+      this.computeTotal()
 		},
     updateOriginUnitPrice(value, key, row) {
       this.computeOriginTotalPrice(value, key, row)
@@ -270,7 +270,7 @@ export default {
     computeOriginTotalPrice(originValue, originKey, row) {
       this.$set(row, "originTotalPrice", math.multiply(math.bignumber(row.originUnitPrice || 0), math.bignumber(row.originUseage || 0)).toFixed(4))
 
-      this.computChangeValue(originValue, originKey, row)
+      this.computeChangeValue(originValue, originKey, row)
     },
     updateNewUnitPrice(value, key, row) {
       this.computeNewTotalPrice(value, key, row)
@@ -281,18 +281,18 @@ export default {
     computeNewTotalPrice(originValue, originKey, row) {
       this.$set(row, "newTotalPrice", math.multiply(math.bignumber(row.newUnitPrice || 0), math.bignumber(row.newUseage || 0)).toFixed(4))
 
-      this.computChangeValue(originValue, originKey, row)
+      this.computeChangeValue(originValue, originKey, row)
     },
-    computChangeValue(originValue, originKey, row) {
+    computeChangeValue(originValue, originKey, row) {
       if (row.newUnitPrice && row.newUseage) {
         this.$set(row, "changeValue", math.subtract(math.bignumber(row.newTotalPrice || 0), math.bignumber(row.originTotalPrice || 0)).toFixed(4))
       } else {
         this.$set(row, "changeValue", "0.0000")
       }
 
-      this.computTotal(originValue, originKey)
+      this.computeTotal(originValue, originKey)
     },
-    computTotal(originValue, originKey) {
+    computeTotal(originValue, originKey) {
       this.total = this.tableListData.reduce((acc, cur) => math.add(math.bignumber(math.bignumber(acc || 0)), math.bignumber(cur.changeValue || 0)).toFixed(4), 0)
 
 			this.$emit("updateTotal", this.total)

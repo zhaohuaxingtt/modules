@@ -12,7 +12,7 @@
       <template #header>
         <div class="header">
           <div>
-            <span class="title">{{ $t('LK_KAIFAFEIYONG') }}</span>
+            <span class="title">{{ `${ (showMode ? (isSkd ? "SKD" : "LC") : "") + " " }${ $t('LK_KAIFAFEIYONG') }` }}</span>
             <span class="tip margin-left10">({{ $t('LK_DANWEI') }}：{{ $t('LK_YUAN') }})</span>
             <iFormGroup class="total margin-left20" :row="1" inline v-if="!isAeko">
               <iFormItem class="item" :label="`${ $t(developmentCostInfos[0].key) }`">
@@ -70,7 +70,7 @@ import { iCard, iButton, iFormGroup, iFormItem, iInput, iSelect, iText, iMessage
 import tableList from "../../tableList"
 import { developmentCostInfos, developmentCostTableTitle as tableTitle, statesFilter } from "./data"
 import { cloneDeep } from "lodash"
-import { getDevFee } from "@/api/rfqManageMent/quotationdetail"
+import { getDevFee, getDevFeeSKD } from "@/api/rfqManageMent/quotationdetail"
 import { numberProcessor } from "@/utils"
 
 export default {
@@ -96,6 +96,14 @@ export default {
     isAeko:{
       type:Boolean,
       default:false
+    },
+    isSkd: {
+      type: Boolean,
+      default: false
+    },
+    showMode: {
+      type: Boolean,
+      default: false
     }
   },
   filters: {
@@ -137,6 +145,28 @@ export default {
         this.loading = false
       })
       .catch(() => this.loading = false)
+    },
+    getDevFeeSKD() {
+      this.loading = true
+
+      getDevFeeSKD({
+        rfqId: this.partInfo.rfqId,
+        quotationId: this.partInfo.quotationId,
+        cbdLevel: this.partInfo.currentCbdLevel || this.partInfo.cbdLevel
+      })
+      .then(res => {
+        if (res.code == 200) {
+          this.tableListData = Array.isArray(res.data.devFeeInfoList) ? res.data.devFeeInfoList : []
+          this.$set(this.dataGroup, "devFee", res.data.devFee)
+          this.$set(this.dataGroup, "rfqDevFeeTotal", res.data.rfqDevFeeTotal)
+          this.$set(this.dataGroup, "shareDevFee", res.data.shareDevFee)
+          this.$set(this.dataGroup, "shareQuantity", res.data.shareQuantity)
+          this.$set(this.dataGroup, "unitPrice", res.data.unitPrice)
+        } else {
+          iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+        }
+      })
+      .finally(() => this.loading = false)
     },
     handleSelectionChange(list) {
       this.multipleSelection = list

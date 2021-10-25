@@ -102,6 +102,7 @@ import iconFont from "../iconFont"
 import { uuidv4, originRowClass, validateChangeKeysByManufacturingCost as validateChangeKeys } from "../data"
 import { numberProcessor } from "@/utils"
 import { cloneDeep } from "lodash"
+import { handleInputByNumber } from "rise/web/quotationdetail/components/data"
 
 export default {
   components: { iButton, iInput, iconFont },
@@ -269,13 +270,7 @@ export default {
     updateOriginDataIndex() {
       this.originTableListData.forEach((item, index) => this.$set(item, "index", `P${ ++index }`))
     },
-    handleInputByNumber(value, key, row, precision, cb) {
-      this.$set(row, key, numberProcessor(value, precision))
-
-      if (typeof cb === "function") {
-        cb(value, key, row)
-      }
-    },
+    handleInputByNumber,
     updateTaktTime(value, key, row) {
       this.computeIndirectManufacturingAmount(value, key, row)
       this.computeLaborCost(value, key, row)

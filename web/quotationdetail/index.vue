@@ -105,6 +105,7 @@ import { cloneDeep } from "lodash"
 import {partProjTypes} from '@/config'
 import { getEnumValue as $enum } from "rise/web/config"
 import { getNominateDisabled } from "rise/web/common"
+import { priceStatusMixin } from "./components/mixins"
 
 export default {
   components: { 
@@ -131,7 +132,7 @@ export default {
     iDialog,
     startProductionDateDialog
   },
-  mixins: [ filters ],
+  mixins: [ filters, priceStatusMixin ],
   data() {
     return {
       // 零件项目类型
