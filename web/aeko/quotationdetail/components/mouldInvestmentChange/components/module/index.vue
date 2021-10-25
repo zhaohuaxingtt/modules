@@ -15,7 +15,7 @@
       </div>
     </template>
     <div class="body margin-top18">
-      <div class="mainTip margin-top10">{{ language("AEKOQUOTATIONMODULETIP", "当模具行项目不分摊进单价，”修模”或”减值”必须先引用原零件模具CBD; 当以下模具行项目将分摊进单价，”修模”或”减值”无需引用原零件模具CBD。") }}</div>
+      <div class="mainTip margin-top10">{{ language("AEKOQUOTATIONMODULETIP_1", "当模具行项目不分摊进单价，”修模”或”减值”必须先引用原零件模具CBD; 当模具行项目将分摊进单价，”修模”或”减值”无需引用原零件模具CBD。") }}</div>
       <tableList 
         lang
         class="table"

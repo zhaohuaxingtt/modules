@@ -27,6 +27,10 @@ export default {
       type: Array,
       required: true,
       default: () => ([{ materialChange: "0.00", makeCostChange: "0.00", discardCostChange: "0.00", manageFeeChange: "0.00", otherFee: "0.00", profitChange: "0.00", apriceChange: "0.00" }])
+    },
+    isFetch: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -47,6 +51,12 @@ export default {
         ).toFixed(2)
         
         this.$set(list[0], "apriceChange", apriceChange)
+
+        if (this.isFetch) {
+          this.$emit("updateIsFetch", false)
+          return
+        }
+        
         this.$emit("updateApriceChange", apriceChange)
       }, 
       deep: true

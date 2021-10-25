@@ -7,7 +7,7 @@
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\costsummary\components\timeAndlevTabel.vue
 -->
 <template>
-  <iCard class="topcontent" v-loading='copeData'>
+  <iCard class="topcontent" v-loading='copeData' :title="showTitle ? language('LCBAOJIA', 'LC报价') : ''">
     <!--------------------------------------------------------->
     <!----------------------搜索区域  -------------------------->
     <!--------------------------------------------------------->        
@@ -17,7 +17,7 @@
           <el-option v-for="items in selectList" :key='items.fsNum' :value='items.fsNum' :label="`${ items.partNum }_${ items.fsNum }`"></el-option>
         </iSelect>
       </i-form-item>
-      <i-form-item :label="$t('LK_STARTTIME')">
+      <i-form-item :label="showTitle ? language('LCQIBUSHENGCHANRIQI', 'LC起步生产日期') : $t('LK_STARTTIME')">
         <iText v-if='disabled'>{{allTableData.startProductDate}}</iText> 
         <iDatePicker v-else v-model="allTableData.startProductDate"></iDatePicker>
       </i-form-item>
@@ -97,6 +97,10 @@ export default{
     isSteel: {
       type: Boolean,
       default: false,
+    },
+    showTitle: {
+      type: Boolean,
+      default: false
     }
   },
   inject:['vm'],

@@ -79,6 +79,8 @@ import { iCard, iFormGroup, iFormItem, iMessage, iInput, iText, iSelect } from "
 import { savePackageTransport, getPackageTransport } from '@/api/rfqManageMent/quotationdetail'
 import { getDictByCode } from '@/api/dictionary'
 import {partProjTypes} from '@/config'
+import { priceStatusMixin } from "../mixins"
+
 export default {
   components: {
     iCard,
@@ -88,6 +90,7 @@ export default {
     iText,
     iSelect
   },
+  mixins: [ priceStatusMixin ],
   props: {
     partInfo:{
       type:Object,
@@ -99,11 +102,21 @@ export default {
     },
     disabled: {type: Boolean}
   },
+  computed: {
+    inputs() {
+      if (this.isSkd || this.isSkdLc) {
+        this.params.logisticsQuotationStatus = undefined
+        return this.sourceInputs.filter(item => item.props !== "logisticsQuotationStatus")
+      } else {
+        return this.sourceInputs
+      }
+    }
+  },
   data() {
     return {
       // 零件项目类型
       partProjTypes,
-      inputs: [
+      sourceInputs: [
         { props: "packageCost", name: "包装费", i18n: 'LK_BAOZHUANGFEI', editable: true },
         { props: "transportCost", name: "运输费", i18n: 'LK_YUNSHUFEI', editable: true },
         { props: "operateCost", name: "操作费", i18n: 'LK_CAOZUOFEI', editable: true },
