@@ -194,7 +194,7 @@ export default {
       this.$set(this.originMap, data.frontMaterialId, data)
     },
     handleAddNewData() {
-      if (!this.multipleSelection.length) return
+      if (!this.multipleSelection.length) return iMessage.warn(this.language('LK_HANDLEADDNEWDATA_TIPS','请先添加一行原零件CBD行项目'));
 
       const originIdSet = new Set()
       
