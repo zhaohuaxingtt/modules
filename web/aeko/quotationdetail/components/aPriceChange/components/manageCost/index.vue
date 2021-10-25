@@ -36,6 +36,7 @@ import { iButton, iInput } from "rise"
 import tableList from "rise/web/quotationdetail/components/tableList"
 import { manageCostTableTitle as tableTitle } from "../data"
 import { numberProcessor } from "@/utils"
+import { handleInputByNumber } from "rise/web/quotationdetail/components/data"
 
 export default {
   components: { iButton, iInput, tableList },
@@ -81,13 +82,7 @@ export default {
     }
   },
   methods: {
-    handleInputByNumber(value, key, row, precision, cb) {
-      this.$set(row, key, numberProcessor(value, precision))
-
-      if (typeof cb === "function") {
-        cb(value, key, row)
-      }
-    },
+    handleInputByNumber,
     computeChangeAmount() {
       const rawMaterialManageChangeAmount = math.subtract(
         math.multiply(
@@ -151,8 +146,8 @@ export default {
 
   ::v-deep .table {
     .el-table__body-wrapper {
-      height: 100px;  
-      overflow: auto;
+      // height: 100px;  
+      // overflow: auto;
     }
   }
 

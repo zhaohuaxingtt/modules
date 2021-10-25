@@ -2,7 +2,7 @@
  * @Autor: Hao,Jiang
  * @Date: 2021-09-02 17:11:44
  * @LastEditors: Hao,Jiang
- * @LastEditTime: 2021-09-03 10:00:33
+ * @LastEditTime: 2021-10-13 17:37:45
  * @Description: 
 -->
 <template>
@@ -21,8 +21,8 @@
         <!-- 删除 -->
         <iButton
           class="margin-right10"
-          @click="del($event, getFetchFileList)"
-          v-if="!readOnly && editControl.includes('download')">
+          @click="delFile($event, getFile)"
+          v-if="!readOnly && editControl.includes('delete')">
           {{ language("LK_SHANCHU",'删除') }}
         </iButton>
         <!-- 上传文件 -->
@@ -32,22 +32,25 @@
           :accept="accept"
           :fileType="fileType"
           :hostId="hostId"
-          :sourcingCallback="true"
+          :sourcingCallback="!isOnSuccessCallBack"
           :buttonText="uploadButtonText || language('UPLOADFILE','上传文件')"
-          @on-success="getFetchFileList"
+          @on-success="isOnSuccessCallBack? onSuccess($event, getFile) : getFile"
           v-if="!readOnly && editControl.includes('upload')"
         />
       </div>
     </div>
     <div class="body">
       <tablelist
-        :index="tableTitleCol.includes('index')"
-        :selection="!readOnly && tableTitleCol.includes('selection')"
+        :index="tableTitleCol.includes('index') && tableIndex"
+        :selection="!readOnly && tableTitleCol.includes('selection') && tableSelection"
         :tableData="fileDataList"
         :tableTitle="fileTableTitle"
         :fileTableLoading="fileTableLoading"
         :tableLoading="fileTableLoading"
+        :activeItems="activeItems"
+        :activeItemsLink="'underline'"
         @handleSelectionChange="handleSelectionChange"
+        @openPage="downloadSingleFile"
       >
       <template #uploadDate="scope">
         {{scope.row.uploadDate | dateFilter('YYYY-MM-DD')}}
@@ -72,9 +75,10 @@
       </template>
       </tablelist>
       <iPagination
+        v-if="pagination"
         v-update
-        @size-change="handleSizeChange($event, getFetchFileList)"
-        @current-change="handleCurrentChange($event, getFetchFileList)"
+        @size-change="handleSizeChange($event, getFile)"
+        @current-change="handleCurrentChange($event, getFile)"
         background
         :current-page="page.currPage"
         :page-sizes="page.pageSizes"
@@ -137,6 +141,14 @@ export default{
       type: Array, 
       default: () => (['index', 'selection', 'fileName', 'uploadDate', 'uploadBy'])},
     /**
+     * @description: 自定义表头，参数格式参考tabList
+     * @param {*}
+     * @return {*}
+     */    
+    customizeTableTitle: {
+      type: Array, 
+      default: () => ([])},
+    /**
      * @description: 是否显示英文表头
      * @param {*}
      * @return {*}
@@ -158,11 +170,29 @@ export default{
      */    
     readOnly: {type: Boolean, default: false},
     /**
+     * @description: 是否支持选择
+     * @param {*}
+     * @return {*}
+     */    
+    tableSelection: {type: Boolean, default: true},
+    /**
+     * @description: 是否显示表头编号
+     * @param {*}
+     * @return {*}
+     */    
+    tableIndex: {type: Boolean, default: true},
+    /**
      * @description: 是否初始化加载数据
      * @param {*}
      * @return {*}
      */    
     init: {type: Boolean, default: true},
+    /**
+     * @description: 是否支持分页
+     * @param {*}
+     * @return {*}
+     */    
+    pagination: {type: Boolean, default: true},
     /**
      * @description: hostId
      * @param {*}
@@ -185,9 +215,17 @@ export default{
      * @description: 上传按钮文本
      * @param {*}
      * @return {*}
-     */    
+     */
     uploadButtonText: {type: String},
-    callback: Function
+    activeItems: {type: String,default:'b'},
+    callback: Function,
+    // 自定义获取文件列表回调
+    getFileCallBack: Function,
+    // 自定义上传成功后回调
+    onSuccessCallBack: Function,
+    // 自定义删除回调
+    deleteFileCallBack: Function
+
   },
   computed: {
     fileTableTitle() {
@@ -196,7 +234,17 @@ export default{
         f.name = f.nameEN || ''
         return f
       }))
-      return this.tableTitle.filter(f => this.tableTitleCol.includes(f.props))
+      const tableTitle = this.tableTitle.filter(f => this.tableTitleCol.includes(f.props))
+      return this.customizeTableTitle.length ? this.customizeTableTitle : tableTitle
+    },
+    isGetFileCallBack() {
+      return (this.getFileCallBack && typeof this.getFileCallBack === 'function')
+    },
+    isOnSuccessCallBack() {
+      return (this.onSuccessCallBack && typeof this.onSuccessCallBack === 'function')
+    },
+    isDelFileCallBack() {
+      return (this.deleteFileCallBack && typeof this.deleteFileCallBack === 'function')
     }
   },
   mixins: [ attachMixins, pageMixins ],
@@ -205,12 +253,34 @@ export default{
       tableTitle,
     }
   },
+  methods: {
+    getFile() {
+      return this.isGetFileCallBack ? this.getFileCallBack(this.updateData) : this.getFetchFileList()
+    },
+    onSuccess($event, cb) {
+      return this.isOnSuccessCallBack ? this.onSuccessCallBack($event, cb) : this.getFetchFileList()
+    },
+    delFile($event, cb) {
+      return this.isDelFileCallBack ? this.deleteFileCallBack(this.multipleSelection, cb) : this.del($event, cb)
+    },
+    updateData(data={}) {
+      if (data.fileTableLoading !== undefined) {
+        this.fileTableLoading = data.fileTableLoading
+      }
+      if (data.fileDataList !== undefined && data.fileDataList instanceof Array) {
+        this.fileDataList = data.fileDataList
+      }
+      if (data.totalCount !== undefined) {
+        this.page.totalCount = data.totalCount
+      }
+    }
+  },
   watch: {
     visible: {
       handler() {
         this.$nextTick(() => { 
           if (this.visible) {
-            this.getFetchFileList()
+            this.getFile()
           } else{
             this.clear()
             // 刷新父列表

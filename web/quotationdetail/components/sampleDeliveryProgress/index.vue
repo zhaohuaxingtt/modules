@@ -15,7 +15,7 @@
         <span class="tip">{{language('LK_YISHANGSONGYANGZHOUQIYIDINGDINASHIJIANWEIQISHIRI','备注：以上送样周期，均以定点时间为起始日')}}</span>
         <el-radio-group class="margin-left20" v-model="priceType" @change="tableData = tableDataCache[$event]">
           <el-radio label="LC">LC</el-radio>
-          <el-radio label="SKD">SKD</el-radio>
+          <el-radio label="SKD">SKD{{ isSkd || isSkdLc ? `（${ language("BITIAN", "必填") }）` : "" }}</el-radio>
         </el-radio-group>
       </span>
     </div>
@@ -53,10 +53,11 @@ import { pageMixins } from "@/utils/pageMixins"
 import { getSampleProgress, saveSampleProgress } from "@/api/rfqManageMent/quotationdetail"
 import { cloneDeep } from "lodash"
 import { numberProcessor } from "@/utils"
+import { priceStatusMixin } from "../mixins"
 
 export default {
   components: { iCard, iInput, tableList },
-  mixins: [pageMixins],
+  mixins: [pageMixins, priceStatusMixin],
   props: {
     partInfo: {
       type: Object,
@@ -148,28 +149,51 @@ export default {
         //   iMessage.error(this.language('LK_BITIANXIANGBUNENGWEIKONG','请输入必填项'))
         // } else {
 
-          sampleProgressDTOS.forEach(item => {
-            if (item.priceType === this.priceType) {
-              switch(item.sampleDeliverType) {
+          if (this.isSkd) {
+            sampleProgressDTOS.forEach(item => {
+              switch(item.sampleDeliverType) { 
                 case "1st Tryout送样周期":
                   if (!item.supplierTime) {
                     j()
-                    throw iMessage.warn(`1st Tryout送样周期 ${ this.language("LK_GONGYINGSHANGZHOUQIZHOU", "供应商周期(周)") }${ this.language("BUNENGWEIKONG", "不能为空") }`)
+                    throw iMessage.warn(`${ item.priceType }: 1st Tryout送样周期 ${ this.language("LK_GONGYINGSHANGZHOUQIZHOU", "供应商周期(周)") }${ this.language("BUNENGWEIKONG", "不能为空") }`)
                   }
                 case "EM送样周期":
                   if (!item.supplierTime) {
                     j()
-                    throw iMessage.warn(`EM送样周期 ${ this.language("LK_GONGYINGSHANGZHOUQIZHOU", "供应商周期(周)") }${ this.language("BUNENGWEIKONG", "不能为空") }`)
+                    throw iMessage.warn(`${ item.priceType }: EM送样周期 ${ this.language("LK_GONGYINGSHANGZHOUQIZHOU", "供应商周期(周)") }${ this.language("BUNENGWEIKONG", "不能为空") }`)
                   }
                 case "OTS送样周期":
                   if (this.isBmgpart && !item.supplierTime) {
                     j()
-                    throw iMessage.warn(`OTS送样周期 ${ this.language("LK_GONGYINGSHANGZHOUQIZHOU", "供应商周期(周)") }${ this.language("BUNENGWEIKONG", "不能为空") }`)
+                    throw iMessage.warn(`${ item.priceType }: OTS送样周期 ${ this.language("LK_GONGYINGSHANGZHOUQIZHOU", "供应商周期(周)") }${ this.language("BUNENGWEIKONG", "不能为空") }`)
                   }
                 default:
               }
-            }
-          })
+            })
+          } else {
+            sampleProgressDTOS.forEach(item => {
+              if (item.priceType === this.priceType) {
+                switch(item.sampleDeliverType) { 
+                  case "1st Tryout送样周期":
+                    if (!item.supplierTime) {
+                      j()
+                      throw iMessage.warn(`1st Tryout送样周期 ${ this.language("LK_GONGYINGSHANGZHOUQIZHOU", "供应商周期(周)") }${ this.language("BUNENGWEIKONG", "不能为空") }`)
+                    }
+                  case "EM送样周期":
+                    if (!item.supplierTime) {
+                      j()
+                      throw iMessage.warn(`EM送样周期 ${ this.language("LK_GONGYINGSHANGZHOUQIZHOU", "供应商周期(周)") }${ this.language("BUNENGWEIKONG", "不能为空") }`)
+                    }
+                  case "OTS送样周期":
+                    if (this.isBmgpart && !item.supplierTime) {
+                      j()
+                      throw iMessage.warn(`OTS送样周期 ${ this.language("LK_GONGYINGSHANGZHOUQIZHOU", "供应商周期(周)") }${ this.language("BUNENGWEIKONG", "不能为空") }`)
+                    }
+                  default:
+                }
+              }
+            })
+          }
 
           saveSampleProgress({
             quotationId: this.partInfo.quotationId,

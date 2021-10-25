@@ -2,12 +2,7 @@
   <div class="my-modules-container">
     <div class="title flex-align-center">
       <div class="margin-right10">My Modules</div>
-      <el-tooltip
-        class="item"
-        effect="dark"
-        content="模块卡片可以拖动至主页"
-        placement="top"
-      >
+      <el-tooltip class="item" effect="dark" content="模块卡片可以拖动至主页" placement="top">
         <!-- <el-button type="text"> -->
         <i class="el-icon-warning-outline"></i>
         <!-- </el-button> -->
@@ -28,32 +23,28 @@
       <template v-if="!filterList.length">
         <div>当前我的模块均已在列表中</div>
       </template>
-      <template v-else>
-        <el-col :span="12" v-for="card in filterList" :key="card.id">
-          <div class="module-card" :id="card.id" :data-id="card.id">
-            <!-- <div class="title">
+      <!-- <template v-else> -->
+      <el-col :span="12" v-for="card in filterList" :key="card.id" v-show="filterList.length">
+        <div class="module-card" :id="card.id" :data-id="card.id">
+          <!-- <div class="title">
               <div class="move">
                 <icon symbol class="icon" name="iconshunxubiaoqian" />
               </div>
             </div> -->
-            <div class="avatar">
-              <img
-                :src="component2Avatar[card.component]"
-                v-if="component2Avatar[card.component]"
-              />
-              <i class="el-icon-picture-outline" v-else></i>
-            </div>
+          <div class="avatar">
+            <img :src="component2Avatar[card.component]" v-if="component2Avatar[card.component]" />
+            <i class="el-icon-picture-outline" v-else></i>
           </div>
-          <div class="module-name">{{ card.name }}</div>
-        </el-col>
-      </template>
+        </div>
+        <div class="module-name">{{ card.name }}</div>
+      </el-col>
+      <!-- </template> -->
     </el-row>
   </div>
 </template>
 
 <script>
 import { iInput } from 'rise'
-import Sortable from 'sortablejs'
 import { updateBatchModules } from '../../api/index'
 export default {
   components: { iInput },
@@ -72,21 +63,21 @@ export default {
       }
     }
   },
-  mounted() {
-    this.$nextTick(() => {
-      new Sortable(document.getElementById('sideModules'), {
-        group: {
-          name: 'myModules',
-          put: false // Do not allow items to be put into this list
-        },
-        animation: 150,
-        ghostClass:
-          'my-modules-drop-ghost,el-col-24,el-col-xs-24,el-col-sm-12,el-col-md-8,el-col-lg-6,el-col-xl-6',
-        onStart: event => this.handleDragStart(event),
-        onRemove: event => this.handleDragEnd(event)
-      })
-    })
-  },
+  // mounted() {
+  //   this.$nextTick(() => {
+  //     new Sortable(document.getElementById('sideModules'), {
+  //       group: {
+  //         name: 'myModules',
+  //         put: false // Do not allow items to be put into this list
+  //       },
+  //       animation: 150,
+  //       ghostClass:
+  //         'my-modules-drop-ghost,el-col-24,el-col-xs-24,el-col-sm-12,el-col-md-8,el-col-lg-6,el-col-xl-6',
+  //       onStart: event => this.handleDragStart(event),
+  //       onRemove: event => this.handleDragEnd(event)
+  //     })
+  //   })
+  // },
   computed: {
     // eslint-disable-next-line no-undef
     ...Vuex.mapState({
@@ -159,13 +150,6 @@ export default {
     },
     handleInput() {
       const list = _.cloneDeep(this.list)
-      console.log(
-        'keyword',
-        this.keyword,
-        list.filter(card => {
-          return card.name.includes(this.keyword)
-        })
-      )
       const filterList = this.keyword
         ? list.filter(card => {
             return card.name.includes(this.keyword)

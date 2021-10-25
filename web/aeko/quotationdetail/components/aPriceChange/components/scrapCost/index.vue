@@ -36,7 +36,7 @@
 import { iButton, iInput } from "rise"
 import tableList from "rise/web/quotationdetail/components/tableList"
 import { scrapCostTableTitle as tableTitle } from "../data"
-import { numberProcessor } from "@/utils"
+import { handleInputByNumber } from "rise/web/quotationdetail/components/data"
 import sInput from "rise/web/aeko/quotationdetail/components/sInput"
 
 export default {
@@ -83,13 +83,7 @@ export default {
     }
   },
   methods: {
-    handleInputByNumber(value, key, row, precision, cb) {
-      this.$set(row, key, numberProcessor(value, precision))
-
-      if (typeof cb === "function") {
-        cb(value, key, row)
-      }
-    },
+    handleInputByNumber,
     computeChangeAmount() {
       const originSum = math.add(
         math.bignumber(this.sumData.originMaterialCostSum || 0),

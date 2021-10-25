@@ -169,7 +169,8 @@ export default{
       }
     },
     getBallPrice(a,b){
-      const result = getAallPrice(a,b)
+      const result = (Aprice.every(key => b[key] === null || b[key] === undefined)) ? getAallPrice(a,b, "B", b.totalPrice) : getAallPrice(a,b)
+      
       this.$set(b, "totalPriceBprice", result)
       return result
     },

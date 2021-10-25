@@ -13,160 +13,168 @@
 -->
 
 <template>
-  <!---partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU----->
-  <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU">
-    <quotationAnalysis :disabled="disabled" :dbDetailList="dbDetailList" />
+  <div v-if="isSkd">
+    <skdCostSummary ref="skdCostSummary" :partInfo="partInfo" />
   </div>
-  <div class="cost" v-else>
-    <!--------------------------------------------------------->
-    <!----------------------百分比模块-------------------------->
-    <!--------------------------------------------------------->
-    <persentComponents ref='components' :cbdlist='cbdlist' :isSteel="isSteel" :quotationId='partInfo.quotationId' :tableData='topTableData' :disabled='disabled' :allTableData='allTableData' :partType="partInfo.partType" :partProjectType="partInfo.partProjectType"></persentComponents>
-    <!--------------------------------------------------------->
-    <!----------------------2.1 原材料/散件--------------------->
-    <!--------------------------------------------------------->
-    <tableTemlate 
-      v-show='allTableData.level == 2' 
-      :selection="!disabled" 
-      :index='true' 
-      pageNationReq='queryRawMaterialDTO' 
-      pageNationRes='rawMaterial' 
-      :notEdit='disabled' 
-      :tableData='allTableData.rawMaterial.records' 
-      class="margin-top20" 
-      :title="`${allTableData.level}.1 ${$t('LK_YUANCLSJ')}`" 
-      :tableTile='titleYcl' 
-      :iPagination='disabled' 
-      tableIndexString='C'
-      @handleSelectionChange="handleSelectionChangeByRawMaterial"
-      @handleInput="handleInputByRawMaterialL2">
-      <template #header-control>
-        <div v-if="!disabled">
-          <iButton @click="handleAddByRawMaterial">{{ $t("LK_TIANJIAHANG") }}</iButton>
-          <iButton @click="handleDelByRawMaterial">{{ $t("LK_SHANCHUHANG") }}</iButton>
-        </div>
-      </template>
-    </tableTemlate>
-    <!--------------------------------------------------------->
-    <!----------------------3.1 原材料/散件--------------------->
-    <!--------------------------------------------------------->
-    <tableTemlate 
-      v-if='allTableData.level == 3'
-      :selection="!disabled" 
-      :index='true'
-      pageNationReq='queryRawMaterialDTO' 
-      pageNationRes='rawMaterial' 
-      :notEdit='disabled'
-      :title="`${ allTableData.level }.1 ${$t('LK_YUANCLSJ')}`" 
-      class="margin-top20"
-      :tableTile='titleYclByL3'
-      :tableData='allTableData.rawMaterial.records'
-      tableIndexString='C'
-      @handleSelectionChange="handleSelectionChangeByRawMaterial"
-      @handleInput="handleInputByRawMaterialL3">
-      <template #header-control>
-        <div v-if="!disabled">
-          <iButton @click="handleAddByRawMaterial">{{ $t("LK_TIANJIAHANG") }}</iButton>
-          <iButton @click="handleDelByRawMaterial">{{ $t("LK_SHANCHUHANG") }}</iButton>
-        </div>
-      </template>
-    </tableTemlate>
-    <!--------------------------------------------------------->
-    <!----------------------2.2 制造成本--------------------->
-    <!--------------------------------------------------------->
-    <tableTemlate
-      v-show='allTableData.level == 2'
-      :selection="!disabled"
-      :index='true' 
-      pageNationReq='queryMakeCostDTO' 
-      pageNationRes='makeCost' 
-      :notEdit='disabled' 
-      :tableData='allTableData.makeCost.records' 
-      class="margin-top20"
-      :title="`${allTableData.level}.2 ${$t('LK_ZHIZHAOCB')}`" 
-      :tableTile='titleCbzz' 
-      :iPagination='disabled' 
-      tableIndexString='P'
-      @handleSelectionChange="handleSelectionChangeByMakeCost"
-      @handleInput="handleInputByMakeCostL2">
-      <template #header-control>
-        <div v-if="!disabled">
-          <iButton @click="handleAddByMakeCost">{{ $t("LK_TIANJIAHANG") }}</iButton>
-          <iButton @click="handleDelByMakeCost">{{ $t("LK_SHANCHUHANG") }}</iButton>
-        </div>
-      </template>
-    </tableTemlate>
-    <!--------------------------------------------------------->
-    <!----------------------3.2 制造成本--------------------->
-    <!--------------------------------------------------------->
-    <tableTemlate 
-      v-if='allTableData.level == 3'
-      :selection="!disabled" 
-      :index='true'
-      pageNationReq='queryMakeCostDTO' 
-      pageNationRes='makeCost'
-      :notEdit='disabled'
-      :title="`${ allTableData.level }.2 ${$t('LK_ZHIZHAOCB')}`" 
-      class="margin-top20"
-      :tableTile='titleCbzzByL3'
-      :tableData='allTableData.makeCost.records'
-      tableIndexString='P'
-      @handleSelectionChange="handleSelectionChangeByMakeCost"
-      @handleInput="handleInputByMakeCostL3">
-      <template #header-control>
-        <div v-if="!disabled">
-          <iButton @click="handleAddByMakeCost">{{ $t("LK_TIANJIAHANG") }}</iButton>
-          <iButton @click="handleDelByMakeCost">{{ $t("LK_SHANCHUHANG") }}</iButton>
-        </div>
-      </template>
-    </tableTemlate>
-    <!--------------------------------------------------------->
-    <!-------2.2 报废成本 管理费 其他费用 利润--------------------->
-    <!--------------------------------------------------------->
-    <el-row class="row" v-show='allTableData.level == 2'>
-      <el-col class="col" :span='12'>
-        <tableTemlate :notEdit='disabled' :tableData='allTableData.discardCost' class="margin-top20" :index='true' :title="`${allTableData.level}.3 ${$t('LK_BAOFEICHENGBEN')}`" :tableTile='titlebfcb' tableIndexString='S' @handleInput="handleInputByDiscardCostL2"></tableTemlate>
-      </el-col>
-      <el-col class="col" :span='12'>
-        <tableTemlate :notEdit='disabled' :tableData='allTableData.manageFee' class="margin-top20" :index='true' :title="`${allTableData.level}.4 ${$t('LK_GUANLIFEI')}`" :tableTile='titleglf' tableIndexString='O' @handleInput="handleInputByManageFeeL2"></tableTemlate>
-      </el-col>
-    </el-row>
-    <el-row class="row" v-show='allTableData.level == 2'>
-      <el-col class="col" :span='12'>
-        <tableTemlate :notEdit='disabled' :tableData='allTableData.otherFee' class="margin-top20" :index='true' :title="`${allTableData.level}.5 ${$t('LK_QITAFEIYONG')}`" :tableTile='titleqtfy' tableIndexString='A'></tableTemlate>
-      </el-col>
-      <el-col class="col" :span='12'>
-        <tableTemlate :notEdit='disabled' :tableData='allTableData.profit' class="margin-top20" :index='true' :title="`${allTableData.level}.6 ${$t('LK_LIRUN')}`" :tableTile='titlelr' tableIndexString='P' @handleInput="handleInputByProfitL2"></tableTemlate>
-      </el-col>
-    </el-row>
-    <!--------------------------------------------------------->
-    <!-------3.3 报废成本 管理费 其他费用 利润--------------------->
-    <!--------------------------------------------------------->
-    <el-row class="row" v-show='allTableData.level == 3'>
-      <el-col class="col" :span='12'>
-        <tableTemlate :notEdit='disabled' :tableData='allTableData.discardCost' class="margin-top20" :index='true' :title="`${allTableData.level}.3 ${$t('LK_BAOFEICHENGBEN')}`" :tableTile='titlebfcbByL3' tableIndexString='S'></tableTemlate>
-      </el-col>
-      <el-col class="col" :span='12'>
-        <tableTemlate :notEdit='disabled' :tableData='allTableData.manageFee' class="margin-top20" :index='true' :title="`${allTableData.level}.4 ${$t('LK_GUANLIFEI')}`" :tableTile='titleglfByL3' tableIndexString='O' @handleInput="handleInputByManageFeeL3"></tableTemlate>
-      </el-col>
-    </el-row>
-    <el-row class="row" v-show='allTableData.level == 3'>
-      <el-col class="col" :span='12'>
-        <tableTemlate :notEdit='disabled' :tableData='allTableData.otherFee' class="margin-top20" :index='true' :title="`${allTableData.level}.5 ${$t('LK_QITAFEIYONG')}`" :tableTile='titleqtfyByL3' :filterProps="{ itemType: itemTypeFilter }" tableIndexString='A'></tableTemlate>
-      </el-col>
-      <el-col class="col" :span='12'>
-        <tableTemlate :notEdit='disabled' :tableData='allTableData.profit' class="margin-top20" :index='true' :title="`${allTableData.level}.6 ${$t('LK_LIRUN')}`" :tableTile='titlelrByL3' tableIndexString='P' @handleInput="handleInputByProfitL3"></tableTemlate>
-      </el-col>
-    </el-row>
-    <!--------------------------------------------------------->
-    <!----------------------2.2 制造成本------------------------>
-    <!--------------------------------------------------------->
-    <tableTemlate class="margin-top20" :cbdSelect='cbdSelect' pageNationReq='cbd' pageNationRes='cbd' title="CBD" selection :tableData='tableDataCbd' :tableTile='titleCBD' iPagination>
-      <template #header-control>
-        <iButton @click="downLoadFile">{{$t('LK_XIAZAI')}}</iButton>
-        <iButton v-if='!disabled' @click="disabel">{{$t('delete')}}</iButton>
-      </template>
-    </tableTemlate>
+  <div v-else>
+    <div v-if="isSkdLc" class="margin-bottom20">
+      <skdCostSummary ref="skdCostSummary" :partInfo="partInfo" showTitle />
+    </div>
+    <!---partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU----->
+    <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU">
+      <quotationAnalysis :disabled="disabled || isOriginprice" :dbDetailList="dbDetailList" />
+    </div>
+    <div class="cost" v-else>
+      <!--------------------------------------------------------->
+      <!----------------------百分比模块-------------------------->
+      <!--------------------------------------------------------->
+      <persentComponents ref='components' :cbdlist='cbdlist' :isSteel="isSteel" :quotationId='partInfo.quotationId' :tableData='topTableData' :disabled='disabled || isOriginprice' :allTableData='allTableData' :partType="partInfo.partType" :partProjectType="partInfo.partProjectType" :showTitle="isSkdLc"></persentComponents>
+      <!--------------------------------------------------------->
+      <!----------------------2.1 原材料/散件--------------------->
+      <!--------------------------------------------------------->
+      <tableTemlate 
+        v-show='allTableData.level == 2' 
+        :selection="!disabled && !isOriginprice" 
+        :index='true' 
+        pageNationReq='queryRawMaterialDTO' 
+        pageNationRes='rawMaterial' 
+        :notEdit='disabled || isOriginprice' 
+        :tableData='allTableData.rawMaterial.records' 
+        class="margin-top20" 
+        :title="`${allTableData.level}.1 ${$t('LK_YUANCLSJ')}`" 
+        :tableTile='titleYcl' 
+        :iPagination='disabled || isOriginprice' 
+        tableIndexString='C'
+        @handleSelectionChange="handleSelectionChangeByRawMaterial"
+        @handleInput="handleInputByRawMaterialL2">
+        <template #header-control>
+          <div v-if="!disabled && !isOriginprice">
+            <iButton @click="handleAddByRawMaterial">{{ $t("LK_TIANJIAHANG") }}</iButton>
+            <iButton @click="handleDelByRawMaterial">{{ $t("LK_SHANCHUHANG") }}</iButton>
+          </div>
+        </template>
+      </tableTemlate>
+      <!--------------------------------------------------------->
+      <!----------------------3.1 原材料/散件--------------------->
+      <!--------------------------------------------------------->
+      <tableTemlate 
+        v-if='allTableData.level == 3'
+        :selection="!disabled && !isOriginprice" 
+        :index='true'
+        pageNationReq='queryRawMaterialDTO' 
+        pageNationRes='rawMaterial' 
+        :notEdit='disabled || isOriginprice'
+        :title="`${ allTableData.level }.1 ${$t('LK_YUANCLSJ')}`" 
+        class="margin-top20"
+        :tableTile='titleYclByL3'
+        :tableData='allTableData.rawMaterial.records'
+        tableIndexString='C'
+        @handleSelectionChange="handleSelectionChangeByRawMaterial"
+        @handleInput="handleInputByRawMaterialL3">
+        <template #header-control>
+          <div v-if="!disabled && !isOriginprice">
+            <iButton @click="handleAddByRawMaterial">{{ $t("LK_TIANJIAHANG") }}</iButton>
+            <iButton @click="handleDelByRawMaterial">{{ $t("LK_SHANCHUHANG") }}</iButton>
+          </div>
+        </template>
+      </tableTemlate>
+      <!--------------------------------------------------------->
+      <!----------------------2.2 制造成本--------------------->
+      <!--------------------------------------------------------->
+      <tableTemlate
+        v-show='allTableData.level == 2'
+        :selection="!disabled && !isOriginprice"
+        :index='true' 
+        pageNationReq='queryMakeCostDTO' 
+        pageNationRes='makeCost' 
+        :notEdit='disabled || isOriginprice' 
+        :tableData='allTableData.makeCost.records' 
+        class="margin-top20"
+        :title="`${allTableData.level}.2 ${$t('LK_ZHIZHAOCB')}`" 
+        :tableTile='titleCbzz' 
+        :iPagination='disabled || isOriginprice' 
+        tableIndexString='P'
+        @handleSelectionChange="handleSelectionChangeByMakeCost"
+        @handleInput="handleInputByMakeCostL2">
+        <template #header-control>
+          <div v-if="!disabled && !isOriginprice">
+            <iButton @click="handleAddByMakeCost">{{ $t("LK_TIANJIAHANG") }}</iButton>
+            <iButton @click="handleDelByMakeCost">{{ $t("LK_SHANCHUHANG") }}</iButton>
+          </div>
+        </template>
+      </tableTemlate>
+      <!--------------------------------------------------------->
+      <!----------------------3.2 制造成本--------------------->
+      <!--------------------------------------------------------->
+      <tableTemlate 
+        v-if='allTableData.level == 3'
+        :selection="!disabled && !isOriginprice" 
+        :index='true'
+        pageNationReq='queryMakeCostDTO' 
+        pageNationRes='makeCost'
+        :notEdit='disabled || isOriginprice'
+        :title="`${ allTableData.level }.2 ${$t('LK_ZHIZHAOCB')}`" 
+        class="margin-top20"
+        :tableTile='titleCbzzByL3'
+        :tableData='allTableData.makeCost.records'
+        tableIndexString='P'
+        @handleSelectionChange="handleSelectionChangeByMakeCost"
+        @handleInput="handleInputByMakeCostL3">
+        <template #header-control>
+          <div v-if="!disabled && !isOriginprice">
+            <iButton @click="handleAddByMakeCost">{{ $t("LK_TIANJIAHANG") }}</iButton>
+            <iButton @click="handleDelByMakeCost">{{ $t("LK_SHANCHUHANG") }}</iButton>
+          </div>
+        </template>
+      </tableTemlate>
+      <!--------------------------------------------------------->
+      <!-------2.2 报废成本 管理费 其他费用 利润--------------------->
+      <!--------------------------------------------------------->
+      <el-row class="row" v-show='allTableData.level == 2'>
+        <el-col class="col" :span='12'>
+          <tableTemlate :notEdit='disabled || isOriginprice' :tableData='allTableData.discardCost' class="margin-top20" :index='true' :title="`${allTableData.level}.3 ${$t('LK_BAOFEICHENGBEN')}`" :tableTile='titlebfcb' tableIndexString='S' @handleInput="handleInputByDiscardCostL2"></tableTemlate>
+        </el-col>
+        <el-col class="col" :span='12'>
+          <tableTemlate :notEdit='disabled || isOriginprice' :tableData='allTableData.manageFee' class="margin-top20" :index='true' :title="`${allTableData.level}.4 ${$t('LK_GUANLIFEI')}`" :tableTile='titleglf' tableIndexString='O' @handleInput="handleInputByManageFeeL2"></tableTemlate>
+        </el-col>
+      </el-row>
+      <el-row class="row" v-show='allTableData.level == 2'>
+        <el-col class="col" :span='12'>
+          <tableTemlate :notEdit='disabled || isOriginprice' :tableData='allTableData.otherFee' class="margin-top20" :index='true' :title="`${allTableData.level}.5 ${$t('LK_QITAFEIYONG')}`" :tableTile='titleqtfy' tableIndexString='A'></tableTemlate>
+        </el-col>
+        <el-col class="col" :span='12'>
+          <tableTemlate :notEdit='disabled || isOriginprice' :tableData='allTableData.profit' class="margin-top20" :index='true' :title="`${allTableData.level}.6 ${$t('LK_LIRUN')}`" :tableTile='titlelr' tableIndexString='P' @handleInput="handleInputByProfitL2"></tableTemlate>
+        </el-col>
+      </el-row>
+      <!--------------------------------------------------------->
+      <!-------3.3 报废成本 管理费 其他费用 利润--------------------->
+      <!--------------------------------------------------------->
+      <el-row class="row" v-show='allTableData.level == 3'>
+        <el-col class="col" :span='12'>
+          <tableTemlate :notEdit='disabled || isOriginprice' :tableData='allTableData.discardCost' class="margin-top20" :index='true' :title="`${allTableData.level}.3 ${$t('LK_BAOFEICHENGBEN')}`" :tableTile='titlebfcbByL3' tableIndexString='S'></tableTemlate>
+        </el-col>
+        <el-col class="col" :span='12'>
+          <tableTemlate :notEdit='disabled || isOriginprice' :tableData='allTableData.manageFee' class="margin-top20" :index='true' :title="`${allTableData.level}.4 ${$t('LK_GUANLIFEI')}`" :tableTile='titleglfByL3' tableIndexString='O' @handleInput="handleInputByManageFeeL3"></tableTemlate>
+        </el-col>
+      </el-row>
+      <el-row class="row" v-show='allTableData.level == 3'>
+        <el-col class="col" :span='12'>
+          <tableTemlate :notEdit='disabled || isOriginprice' :tableData='allTableData.otherFee' class="margin-top20" :index='true' :title="`${allTableData.level}.5 ${$t('LK_QITAFEIYONG')}`" :tableTile='titleqtfyByL3' :filterProps="{ itemType: itemTypeFilter }" tableIndexString='A'></tableTemlate>
+        </el-col>
+        <el-col class="col" :span='12'>
+          <tableTemlate :notEdit='disabled || isOriginprice' :tableData='allTableData.profit' class="margin-top20" :index='true' :title="`${allTableData.level}.6 ${$t('LK_LIRUN')}`" :tableTile='titlelrByL3' tableIndexString='P' @handleInput="handleInputByProfitL3"></tableTemlate>
+        </el-col>
+      </el-row>
+      <!--------------------------------------------------------->
+      <!----------------------2.2 制造成本------------------------>
+      <!--------------------------------------------------------->
+      <tableTemlate class="margin-top20" :cbdSelect='cbdSelect' pageNationReq='cbd' pageNationRes='cbd' title="CBD" selection :tableData='tableDataCbd' :tableTile='titleCBD' iPagination>
+        <template #header-control>
+          <iButton @click="downLoadFile">{{$t('LK_XIAZAI')}}</iButton>
+          <iButton v-if='!disabled && !isOriginprice' @click="disabel">{{$t('delete')}}</iButton>
+        </template>
+      </tableTemlate>
+    </div>
   </div>
 </template>
 <script>
@@ -183,9 +191,12 @@ import {selectDictByKeyss} from '@/api/dictionary'
 import quotationAnalysis from './components/quotationAnalysis'
 import {partProjTypes} from '@/config'
 import {cloneDeep} from 'lodash'
+import skdCostSummary from "../skdCostSummary"
+import { priceStatusMixin } from "../mixins"
 
 export default{
-  components:{persentComponents,tableTemlate,iButton,quotationAnalysis},
+  components:{persentComponents,tableTemlate,iButton,quotationAnalysis, skdCostSummary},
+  mixins: [ priceStatusMixin ],
   props:{
     //父组件中的值
     partInfo:{
@@ -207,6 +218,10 @@ export default{
     isSteel: {
       type: Boolean,
       default: false
+    },
+    isOriginprice: {
+      type:Boolean,
+      default:false
     }
   },
   data(){
@@ -780,6 +795,11 @@ export default{
      * @return {*}
      */    
     init(type) {
+      if (this.isSkd || this.isSkdLc) {
+        this.$refs.skdCostSummary.init()
+        if (this.isSkd) return
+      }
+
       if (this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || this.partInfo.partProjectType === partProjTypes.DBLINGJIAN) {
         this.getCostSummaryDB()
       } else {
@@ -817,7 +837,7 @@ export default{
             this.count = 0
             this.allTableData = this.translateDataForRender(res.data)
             this.topTableData = this.translateDataTopData(cloneDeep(this.allTableData), data)
-            this.$refs.components.partsQuotationss(this.partInfo.rfqId,this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId,this.partInfo.round,this.allTableData.level)
+            this.$refs.components && typeof this.$refs.components.partsQuotationss == "function" && this.$refs.components.partsQuotationss(this.partInfo.rfqId,this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId,this.partInfo.round,this.allTableData.level)
             // this.allpagefrom.quotationId,
             this.findFiles()
           }
@@ -1150,6 +1170,20 @@ export default{
      * @return {*}
      */    
     save(type) {
+      if (this.isSkd) {
+        return this.$refs.skdCostSummary.save()
+        .then(res => {
+          if (res.code == 200) {
+            if (type !== "submit") {
+              iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+              this.init()
+            }
+          } else {
+            iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+          }
+        })
+      }
+
       if (this.partInfo.partProjectType === partProjTypes.PEIJIAN || this.partInfo.partProjectType === partProjTypes.FUJIAN) {
         return Promise.all([this.postCostSummary(), this.saveBzfreeAndYunshuFree()])
           .then(([res1, res2]) => {
@@ -1189,6 +1223,27 @@ export default{
           iMessage.error(err.desZh)
         })
       } else {
+        if (this.isSkdLc) {
+          if (+moment(this.$refs.skdCostSummary.skdStartProductDate) > +moment(this.allTableData.startProductDate)) throw iMessage.warn(this.language("LCQIBUSHENGCHANRIQIBUNENGXIAOYUSKDQIBUSHENGCHANRIQI", "LC起步生产日期不能小于SKD起步生产日期"))
+
+          return Promise.all([
+            this.$refs.skdCostSummary.save(),
+            this.postCostSummary()
+          ])
+          .then(([res1, res2]) => {
+            if (res1 && res1.code == 200 && res2 && res2.code == 200) {
+              if (type !== "submit") {
+                iMessage.success(this.$i18n.locale === "zh" ? res1.desZh : res1.desEn)
+                this.init()
+              }
+
+              this.updateCbdLevel(this.allTableData.level)
+            } else {
+              iMessage.error(this.language("CAOZUOSHIBAI", "操作失败"))
+            }
+          })
+        }
+
         return this.postCostSummary().then(res => {
           if (res.code == 200) {
             this.updateCbdLevel(this.allTableData.level)

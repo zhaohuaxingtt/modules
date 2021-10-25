@@ -39,7 +39,7 @@
         <span v-if="!agentQutationDisabled">
           <iButton v-if="!partInfo.isOriginprice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="quoteBatchPriceLoading" @click="handleQuoteBatchPrice">{{ $t("LK_YINYONGPILIANGJIAGE") }}</iButton>
           <iButton v-if="partInfo.isOriginprice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="cancelQuoteBatchPriceLoading" @click="handleCancelBatchPrice">{{ $t("LK_QUXIAOPILIANGJIAGE") }}</iButton>
-          <iButton @click="handleSave" v-if="currentTab != 'infoAndReq' && !disabled && !partInfo.isOriginprice" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
+          <iButton @click="handleSave" v-if="currentTab != 'infoAndReq' && !disabled" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
           <iButton @click="handleSubmit" v-if="!disabled" :loading="submitLoading">{{ $t('LK_TIJIAO') }}</iButton>
         </span>
         <logButton class="margin-left20" @click="log" />
@@ -64,7 +64,7 @@
     <div id="tabList" v-loading="tabLoading">
       <iTabsList class="margin-top20" type="card" v-model="currentTab" :before-leave="tabLeaveBefore" @tab-click="tabChange">
         <el-tab-pane v-for="(tab, $tabIndex) in trueTabs" :key="$tabIndex" :label="$t(tab.key)" :name="tab.name">
-          <component :ref="tab.name" :is="component" :partInfo="partInfo" v-for="(component, $componentIndex) in tab.components" :class="$componentIndex !== 0 ? 'margin-top20' : ''" :key="$componentIndex" :disabled="disabled || agentQutationDisabled || partInfo.isOriginprice" :isSteel="isSteel" :isDb="isDb" @changeReduceStatus="changeReduceStatus"/>
+          <component :ref="tab.name" :is="component" :partInfo="partInfo" v-for="(component, $componentIndex) in tab.components" :class="$componentIndex !== 0 ? 'margin-top20' : ''" :key="$componentIndex" :disabled="disabled || agentQutationDisabled" :isOriginprice="partInfo.isOriginprice" :isSteel="isSteel" :isDb="isDb" @changeReduceStatus="changeReduceStatus"/>
         </el-tab-pane>
       </iTabsList>
     </div>
@@ -105,6 +105,7 @@ import { cloneDeep } from "lodash"
 import {partProjTypes} from '@/config'
 import { getEnumValue as $enum } from "rise/web/config"
 import { getNominateDisabled } from "rise/web/common"
+import { priceStatusMixin } from "./components/mixins"
 
 export default {
   components: { 
@@ -131,7 +132,7 @@ export default {
     iDialog,
     startProductionDateDialog
   },
-  mixins: [ filters ],
+  mixins: [ filters, priceStatusMixin ],
   data() {
     return {
       // 零件项目类型
@@ -174,7 +175,6 @@ export default {
       roundDisabled: false,
       isDb:false,
       isOriginprice: false,
-
 
       acceptQuotation: false, // 等待接收报价
       acceptQuotationDisabled: true, // 是否禁用等待接收报价

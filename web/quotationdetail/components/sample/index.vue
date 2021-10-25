@@ -14,19 +14,19 @@
           <span>{{ $t(scope.row.a) }}</span>
         </template> -->
         <template #sampleUnitPrice="scope">
-          <iInput v-if="!disabled" v-model="scope.row.sampleUnitPrice" @input="handleInputBySampleUnitPrice($event, scope.row)" />
+          <iInput v-if="!disabled && !isOriginprice" v-model="scope.row.sampleUnitPrice" @input="handleInputBySampleUnitPrice($event, scope.row)" />
           <span v-else>{{ scope.row.sampleUnitPrice }}</span>
         </template>
         <template #addionalMouldCost="scope">
-          <iInput v-if="!disabled" v-model="scope.row.addionalMouldCost" @input="handleInputByAddionalMouldCost($event, scope.row)" />
+          <iInput v-if="!disabled && !isOriginprice" v-model="scope.row.addionalMouldCost" @input="handleInputByAddionalMouldCost($event, scope.row)" />
           <span v-else>{{ scope.row.addionalMouldCost }}</span>
         </template>
         <template #addionalMouldLife="scope">
-          <iInput v-if="!disabled" v-model="scope.row.addionalMouldLife" @input="handleInputByAddionalMouldLife($event, scope.row)" />
+          <iInput v-if="!disabled && !isOriginprice" v-model="scope.row.addionalMouldLife" @input="handleInputByAddionalMouldLife($event, scope.row)" />
           <span v-else>{{ scope.row.addionalMouldLife }}</span>
         </template>
         <template #remark="scope">
-          <iInput v-if="!disabled" v-model="scope.row.remark" />
+          <iInput v-if="!disabled && !isOriginprice" v-model="scope.row.remark" />
           <span v-else>{{ scope.row.remark }}</span>
         </template>
       </tableList>
@@ -58,11 +58,15 @@ export default {
     },
     isAeko:{
       type:Boolean,
-      default:false,
+      default: false,
     },
     isDb: {
       type:Boolean,
-      default:false,
+      default: false,
+    },
+    isOriginprice: {
+      type:Boolean,
+      default: false,
     }
   },
   data() {
