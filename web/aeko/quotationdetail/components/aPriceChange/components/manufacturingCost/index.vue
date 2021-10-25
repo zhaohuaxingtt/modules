@@ -175,7 +175,14 @@ export default {
       this.$set(this.originMap, data.frontProductionId, data)
     },
     handleAddNewData() {
-      if (!this.multipleSelection.length) return iMessage.warn(this.language('LK_HANDLEADDNEWDATA_TIPS','请先添加一行原零件CBD行项目'));
+      if (!this.multipleSelection.length){
+        // 当列表有原零件数据时 提示用户勾选
+        if(this.tableListData.length){
+          return iMessage.warn(this.language('LK_HANDLEADDNEWDATA_TIPS_CHECK','请先勾选一条原零件CBD行项目'));
+        }else{ // 当列表无数据时提示条件行
+          return iMessage.warn(this.language('LK_HANDLEADDNEWDATA_TIPS','请先添加一行原零件CBD行项目'));
+        }
+      } 
 
       const originIdSet = new Set()
       
