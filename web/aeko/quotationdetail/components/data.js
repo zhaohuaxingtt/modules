@@ -30,8 +30,9 @@ export const tableTitle = [
 
 // 保留位数
 export function floatNum(num, minFixed = 2, maxFixed = 4) {
-  if ((num??'') === '') return null;
-  let floatNum = Number(Number(num).toFixed(maxFixed));
+  const _num = num ? num : ''
+  if ((_num??'') === '') return null;
+  let floatNum = Number(Number(_num).toFixed(maxFixed));
   let float = floatNum.toString().split(".")[1];
   floatNum =
     (float?.length || 0) < minFixed
