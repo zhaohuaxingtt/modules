@@ -27,3 +27,32 @@ export const tableTitle = [
   { props: "currency", key: "HUOBI", name: "货币", tooltip: true },
   { props: "measureUnit", key: "JILIANGDANWEI", name: "计量单位", tooltip: true }
 ]
+
+// 保留位数
+export function floatNum(num, minFixed = 2, maxFixed = 4) {
+  if ((num??'') === '') return null;
+  let floatNum = Number(Number(num).toFixed(maxFixed));
+  let float = floatNum.toString().split(".")[1];
+  floatNum =
+    (float?.length || 0) < minFixed
+      ? floatNum.toFixed(minFixed)
+      : floatNum;
+  return floatNum;
+}
+
+// 费用千分位处理
+export function fixNumber(str, precision = 2) {
+  if (!str) return null;
+  var re = /(?=(?!(\b))(\d{3})+$)/g;
+  var fixstr = (str || 0).toString().split(".");
+  fixstr[0] = fixstr[0].replace(re, ",");
+  if (precision == 0) {
+    // 若小数点后两位是 .00 去除小数点后两位
+    if (fixstr[1] && fixstr[1] == "00") return fixstr[0];
+  }
+
+  return fixstr.join(".");
+}
+export function floatFixNum(num, minFixed = 2, maxFixed = 4){
+  return fixNumber(floatNum(num, minFixed, maxFixed), minFixed)
+}

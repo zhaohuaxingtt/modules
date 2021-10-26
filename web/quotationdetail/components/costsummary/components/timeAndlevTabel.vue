@@ -20,13 +20,13 @@
       <i-form-item :label="showTitle ? language('LCQIBUSHENGCHANRIQI', 'LC起步生产日期') : $t('LK_STARTTIME')">
         <iText v-if='disabled'>{{allTableData.startProductDate}}</iText>
         <div v-else class="startProductDate">
-          <iDatePicker v-model="allTableData.startProductDate"></iDatePicker>
+          <iDatePicker v-model="allTableData.startProductDate" :disabled="isAutoCal"></iDatePicker>
           <el-popover
             placement="top"
             width="200"
             trigger="hover"
-            :content="language('HUOQUZIDONGJISUANQIBUSHENGCHANRIQI', '获取自动计算起步生产日期')">
-            <i class="el-icon-refresh refresh" :class="{ updateStartProductDateLoading }" slot="reference" @click="updateStartProductDate"></i>
+            :content="language('SHIFOUZIDONGJISUAN', '是否自动计算')">
+              <el-checkbox class="isAutoCal" slot="reference" v-model="isAutoCal" @change="handleChangeIsAutoCal"></el-checkbox>
           </el-popover>
         </div>
       </i-form-item>
@@ -110,6 +110,10 @@ export default{
     showTitle: {
       type: Boolean,
       default: false
+    },
+    isAutoCal: {
+      type: Boolean,
+      default: false
     }
   },
   inject:['vm'],
@@ -122,7 +126,6 @@ export default{
       downLoadLoding:false,
       uploadLoading:false,
       copeData:false,
-      updateStartProductDateLoading: false
     }
   },
   computed: {
@@ -238,9 +241,14 @@ export default{
       }
     },
     getToken,
-    updateStartProductDate() {
-      this.updateStartProductDateLoading = true
-
+    handleChangeIsAutoCal() {
+      if (this.isAutoCal) {
+        this.getIsAutoCal()
+      } else {
+        this.$emit("update:isAutoCal", false)
+      }
+    },
+    getIsAutoCal() {
       getIsAutoCal({
         isAutoCal: true,
         quotationId: this.vm.partInfo.quotationId,
@@ -249,12 +257,12 @@ export default{
       .then(res => {
         if (res.code == 200) {
           this.allTableData.startProductDate = res.data.startProductDate
-          iMessage.success(this.language("HUOQUCHENGGONG", "获取成功"))
+          this.$emit("update:isAutoCal", true)
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+          this.$emit("update:isAutoCal", false)
         }
       })
-      .finally(() => this.updateStartProductDateLoading = false)
     }
   }
 }
@@ -287,22 +295,8 @@ export default{
   display: flex;
   align-items: center;
 
-  .refresh {
+  .isAutoCal {
     margin-left: 8px;
-    font-size: 21px;
-    cursor: pointer;
-    vertical-align: middle;
-    color: #1660F1;
-  }
-
-  .updateStartProductDateLoading {
-    animation: loading 1.7s infinite;
-    animation-timing-function: linear;
-  }
-
-  @keyframes loading {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
   }
 }
 </style>

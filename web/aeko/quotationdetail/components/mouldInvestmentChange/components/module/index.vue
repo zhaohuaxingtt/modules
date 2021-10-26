@@ -70,11 +70,14 @@
           <template #changeUnitPrice="scope">
             <iInput v-model="scope.row.changeUnitPrice" @input="handleInputByNumber($event, 'changeUnitPrice', scope.row, 2, updateChangeUnitPrice, scope.row.changeType === '减值')"></iInput>
           </template>
+          <template #changeTotalPrice="scope">{{ floatFixNum(scope.row.changeTotalPrice) }}</template>
+          <template #originTotalPrice="scope">{{ floatFixNum(scope.row.originTotalPrice) }}</template>
+          <template #totalPrice="scope">{{ floatFixNum(scope.row.totalPrice) }}</template>
       </tableList>
       <iFormGroup class="subCost margin-top30" :row="4" inline>
         <iFormItem class="item" v-for="(info, $index) in mouldCostInfos" :key="$index" :label="`${ language(info.key, info.name) }`">
           <iInput v-if="info.props === 'shareQuantity' && !disabled" v-model="dataGroup[info.props]" @input="handleInputByShareQuantity" />
-          <iText v-else>{{ dataGroup[info.props] }}</iText>
+          <iText v-else>{{ floatFixNum(dataGroup[info.props]) }}</iText>
         </iFormItem>
       </iFormGroup>
     </div>
@@ -87,6 +90,7 @@
 import { iCard, iButton, icon, iFormGroup, iFormItem, iSelect, iInput, iText, iMessageBox, iMessage } from "rise"
 import tableList from "rise/web/quotationdetail/components/tableList"
 import { moduleTableTitle as tableTitle, assetTypeCodeOptions, mouldCostInfos } from "../data"
+import { floatFixNum } from "../../../data"
 import { statesFilter } from "rise/web/quotationdetail/components/mouldAndDevelopmentCost/components/data"
 import { handleInputByNumber } from "rise/web/aeko/quotationdetail/components/aPriceChange/components/data"
 import { numberProcessor } from "@/utils"
@@ -140,6 +144,7 @@ export default {
     })
   },
   methods: {
+    floatFixNum,
     getMoulds() {
       this.loading = true
 

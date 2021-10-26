@@ -28,7 +28,7 @@
       <!--------------------------------------------------------->
       <!----------------------百分比模块-------------------------->
       <!--------------------------------------------------------->
-      <persentComponents ref='components' :cbdlist='cbdlist' :isSteel="isSteel" :quotationId='partInfo.quotationId' :tableData='topTableData' :disabled='disabled || isOriginprice' :allTableData='allTableData' :partType="partInfo.partType" :partProjectType="partInfo.partProjectType" :showTitle="isSkdLc"></persentComponents>
+      <persentComponents ref='components' :cbdlist='cbdlist' :isSteel="isSteel" :quotationId='partInfo.quotationId' :tableData='topTableData' :disabled='disabled || isOriginprice' :allTableData='allTableData' :partType="partInfo.partType" :partProjectType="partInfo.partProjectType" :showTitle="isSkdLc" :isAutoCal.sync="isAutoCal"></persentComponents>
       <!--------------------------------------------------------->
       <!----------------------2.1 原材料/散件--------------------->
       <!--------------------------------------------------------->
@@ -288,7 +288,8 @@ export default{
       sourceResponseData: {},
       initData: true,
       count: 0,
-      summaryData: {}
+      summaryData: {},
+      isAutoCal: false
     }
   },
   watch:{
@@ -755,6 +756,7 @@ export default{
       const form = {
         cbdLevel: this.allTableData.level,
         editFlag: this.allTableData.editFlag,
+        isAutoCal: this.isAutoCal,
         levelOneSumDTO: this.allTableData.level === 1 ? baseSumDTO : undefined,
         levelTwoSumDTO: this.allTableData.level === 2 ? {
           ...baseSumDTO,
@@ -835,6 +837,7 @@ export default{
             this.packAndShipFee = data
             this.initData = true
             this.count = 0
+            this.isAutoCal = res.data.allTableData
             this.allTableData = this.translateDataForRender(res.data)
             this.topTableData = this.translateDataTopData(cloneDeep(this.allTableData), data)
             this.$refs.components && typeof this.$refs.components.partsQuotationss == "function" && this.$refs.components.partsQuotationss(this.partInfo.rfqId,this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId,this.partInfo.round,this.allTableData.level)

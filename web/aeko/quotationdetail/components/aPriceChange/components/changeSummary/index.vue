@@ -69,7 +69,11 @@
 							<span v-else>{{ scope.row.originUseage }}</span>
 						</template>
 					</el-table-column>
-					<el-table-column :label="language('XIAOJI', '小计')" align="center" prop="originTotalPrice"></el-table-column>
+					<el-table-column :label="language('XIAOJI', '小计')" align="center" prop="originTotalPrice">
+						<template slot-scope="scope">
+							{{ floatFixNum(scope.row.originTotalPrice) }}
+						</template>
+					</el-table-column>
 				</el-table-column>
 				<el-table-column :label="language('XINLINGJIAN', '新零件')" align="center">
 					<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('XINLINGJIANHAO', '新零件号') }<span class='require'>*</span>` }})" align="center">
@@ -96,13 +100,21 @@
 							<span v-else>{{ scope.row.newUseage }}</span>
 						</template>
 					</el-table-column>
-					<el-table-column :label="language('XIAOJI', '小计')" align="center" prop="newTotalPrice"></el-table-column>
+					<el-table-column :label="language('XIAOJI', '小计')" align="center" prop="newTotalPrice">
+						<template slot-scope="scope">
+							{{ floatFixNum(scope.row.newTotalPrice) }}
+						</template>
+					</el-table-column>
 				</el-table-column>
-				<el-table-column :label="language('BIANDONGZHI', '变动值')" align="center" prop="changeValue"></el-table-column>
+				<el-table-column :label="language('BIANDONGZHI', '变动值')" align="center" prop="changeValue">
+					<template slot-scope="scope">
+						{{ floatFixNum(scope.row.changeValue) }}
+					</template>
+				</el-table-column>
 				<template #append>
 					<div class="summary">
 						<span>TOTAL</span>
-						<span>RMB {{ total }}</span>
+						<span>RMB {{ floatFixNum(total) }}</span>
 					</div>
 				</template>
 			</el-table>
@@ -116,6 +128,7 @@
 import { iCard, iButton, iInput, iSelect, iMessage, iMessageBox } from "rise"
 import { handleInputByNumber } from "rise/web/quotationdetail/components/data"
 import { getAekoCbdPriceSum, saveAekoCbdPriceSum } from "@/api/aeko/quotationdetail"
+import { floatFixNum } from "../../../data"
 
 export default {
 	components: { iCard, iButton, iInput, iSelect, iMessage },
@@ -167,6 +180,7 @@ export default {
 		}
 	},
 	methods: {
+		floatFixNum,
 		getTypeName(value) {
 			const current = this.moduleOptions.find(item => item.code == value)
 
