@@ -211,7 +211,7 @@ import iInput from '../iInput/index.vue'
 import iRadio from '../iRadio/index.vue'
 import Icon from '../icon/index.vue'
 import iTableColumn from './iTableColumn'
-import iTableHeaderSorter from './iTableHeaderSort'
+import iTableHeaderSorter from '../iTableHeaderSorter'
 export default {
 	// eslint-disable-next-line vue/no-unused-components
 	components: {
