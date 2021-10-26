@@ -15,13 +15,13 @@
         <iText v-if="disabled">{{ skdStartProductDate }}</iText>
         <div class="startProductDate" v-else>
           <iDatePicker v-model="skdStartProductDate" type="date" />
-          <el-popover
+          <!-- <el-popover
             placement="top"
             width="200"
             trigger="hover"
             :content="language('HUOQUZIDONGJISUANQIBUSHENGCHANRIQI', '获取自动计算起步生产日期')">
             <i class="el-icon-refresh refresh" :class="{ updateStartProductDateLoading }" slot="reference" @click="updateStartProductDate"></i>
-          </el-popover>
+          </el-popover> -->
         </div>
       </iFormItem>
       <iFormItem :label="language('HUOBI', '货币')">
@@ -125,7 +125,7 @@ export default {
       parts: [],
       copyParts: [],
       copyLoading: false,
-      updateStartProductDateLoading: false
+      // updateStartProductDateLoading: false
     }
   },
   computed: {
@@ -298,24 +298,24 @@ export default {
       })
       .finally(() => this.copyLoading = false)
     },
-    updateStartProductDate() {
-      this.updateStartProductDateLoading = true
+    // updateStartProductDate() {
+    //   this.updateStartProductDateLoading = true
 
-      getIsAutoCal({
-        isAutoCal: true,
-        quotationId: this.partInfo.quotationId,
-        supplierId: this.supplierId
-      })
-      .then(res => {
-        if (res.code == 200) {
-          this.skdStartProductDate = res.data.startProductDate
-          iMessage.success(this.language("HUOQUCHENGGONG", "获取成功"))
-        } else {
-          iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
-        }
-      })
-      .finally(() => this.updateStartProductDateLoading = false)
-    }
+    //   getIsAutoCal({
+    //     isAutoCal: true,
+    //     quotationId: this.partInfo.quotationId,
+    //     supplierId: this.supplierId
+    //   })
+    //   .then(res => {
+    //     if (res.code == 200) {
+    //       this.skdStartProductDate = res.data.startProductDate
+    //       iMessage.success(this.language("HUOQUCHENGGONG", "获取成功"))
+    //     } else {
+    //       iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+    //     }
+    //   })
+    //   .finally(() => this.updateStartProductDateLoading = false)
+    // }
   }
 }
 </script>
@@ -362,23 +362,23 @@ export default {
     display: flex;
     align-items: center;
 
-    .refresh {
-      margin-left: 8px;
-      font-size: 21px;
-      cursor: pointer;
-      vertical-align: middle;
-      color: #1660F1;
-    }
+    // .refresh {
+    //   margin-left: 8px;
+    //   font-size: 21px;
+    //   cursor: pointer;
+    //   vertical-align: middle;
+    //   color: #1660F1;
+    // }
 
-    .updateStartProductDateLoading {
-      animation: loading 1.7s infinite;
-      animation-timing-function: linear;
-    }
+    // .updateStartProductDateLoading {
+    //   animation: loading 1.7s infinite;
+    //   animation-timing-function: linear;
+    // }
 
-    @keyframes loading {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
+    // @keyframes loading {
+    //   from { transform: rotate(0deg); }
+    //   to { transform: rotate(360deg); }
+    // }
   }
 
   .table {
