@@ -23,6 +23,7 @@
             <span v-if="disabled" :class="{ changeClass: scope.row.ratio !== scope.row.originRatio }">{{ scope.row.ratio }}</span>
             <iInput class="input-center" v-else v-model="scope.row.ratio" :class="{ changeClass: scope.row.ratio !== scope.row.originRatio }" @input="handleInputByNumber($event, 'ratio', scope.row, 2, computeChangeAmount)"></iInput>
           </template>
+          <template #changeAmount="scope">{{ floatFixNum(scope.row.changeAmount) }}</template>
         </tableList>
       </div>
     </div>
@@ -35,6 +36,7 @@
 import { iButton, iInput } from "rise"
 import tableList from "rise/web/quotationdetail/components/tableList"
 import { profitTableTitle as tableTitle } from "../data"
+import { floatFixNum } from "../../../data"
 import { handleInputByNumber } from "rise/web/quotationdetail/components/data"
 
 export default {
@@ -81,6 +83,7 @@ export default {
     }
   },
   methods: {
+    floatFixNum,
     handleInputByNumber,
     computeChangeAmount() {
       const profitChange = math.subtract(

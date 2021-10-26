@@ -1,3 +1,10 @@
+<!--
+ * @Author: YoHo
+ * @Date: 2021-10-25 16:28:45
+ * @LastEditTime: 2021-10-26 17:08:26
+ * @LastEditors: YoHo
+ * @Description: 
+-->
 <template>
   <div class="cbdSummary">
     <div class="content margin-top20">
@@ -6,7 +13,16 @@
         class="table"
         :selection="false"
         :tableTitle="tableTitle"
-        :tableData="tableListData" />
+        :tableData="tableListData"
+        >
+        <template #materialChange="scope">{{floatFixNum(scope.row.materialChange)}}</template>
+        <template #makeCostChange="scope">{{floatFixNum(scope.row.makeCostChange)}}</template>
+        <template #discardCostChange="scope">{{floatFixNum(scope.row.discardCostChange)}}</template>
+        <template #manageFeeChange="scope">{{floatFixNum(scope.row.manageFeeChange)}}</template>
+        <template #otherFee="scope">{{floatFixNum(scope.row.otherFee)}}</template>
+        <template #profitChange="scope">{{floatFixNum(scope.row.profitChange)}}</template>
+        <template #apriceChange="scope">{{floatFixNum(scope.row.apriceChange)}}</template>
+        </tableList>
     </div>
   </div>  
 </template>
@@ -16,6 +32,7 @@
 
 import tableList from "rise/web/quotationdetail/components/tableList"
 import { cbdSummaryTableTitle as tableTitle } from "../data"
+import { floatFixNum } from "../../../data"
 
 export default {
   components: { tableList },
@@ -61,6 +78,9 @@ export default {
       }, 
       deep: true
     }
+  },
+  methods:{
+    floatFixNum
   }
 }
 </script>

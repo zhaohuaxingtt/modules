@@ -35,10 +35,17 @@
               <p style="text-align:center">{{ scope.row.source }}</p>
             </template>
             <template #reference>
-              <span>{{ scope.row.originalAPrice }}</span>
+              <span>{{ floatFixNum(scope.row.originalAPrice) }}</span>
             </template>
           </el-popover>
         </template>
+        <template #apriceChange="scope">{{floatFixNum(scope.row.apriceChange)}}</template>
+        <template #aprice="scope">{{floatFixNum(scope.row.aprice)}}</template>
+        <template #originBnkFee="scope">{{floatFixNum(scope.row.originBnkFee)}}</template>
+        <template #toolingCost="scope">{{floatFixNum(scope.row.toolingCost)}}</template>
+        <template #developmentCost="scope">{{floatFixNum(scope.row.developmentCost)}}</template>
+        <template #terminationPrice="scope">{{floatFixNum(scope.row.terminationPrice)}}</template>
+        <template #sampleCost="scope">{{floatFixNum(scope.row.sampleCost)}}</template>
         <template #bnkFee="scope">
           <el-popover
             placement="top"
@@ -51,7 +58,7 @@
             <template #reference>
               <!-- 针对供应商报价可跳转 -->
               <div>
-                <span :class="`margin-right5 ${userInfo &&userInfo.userType&&userInfo.userType == 2 ? 'link-underline' : ''}`" @click="goToBNK">{{ scope.row.bnkFee }}</span>
+                <span :class="`margin-right5 ${userInfo &&userInfo.userType&&userInfo.userType == 2 ? 'link-underline' : ''}`" @click="goToBNK">{{ floatFixNum(scope.row.bnkFee) }}</span>
                 <icon v-if="scope.row.bnkFee != scope.row.originBnkFee" symbol name="iconzengjiacailiaochengben_lan" class="font15 rotate180" />
               </div>
             </template>
@@ -80,7 +87,7 @@ import mouldInvestmentChange from "./components/mouldInvestmentChange"
 import developmentFee from "./components/developmentFee"
 import damages from "./components/damages"
 import sampleFee from "./components/sampleFee"
-import { infoItems, tableTitle } from "./components/data"
+import { infoItems, tableTitle, floatFixNum } from "./components/data"
 import { 
   bnkSupplierToken,
   getQuotationInfo,
@@ -130,6 +137,8 @@ export default {
     }
   },
   methods: {
+    // 保留千分位
+    floatFixNum,
     // 日志
     log() {},
     tabLeaveBefore(active) {

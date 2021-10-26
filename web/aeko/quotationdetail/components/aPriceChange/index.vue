@@ -9,7 +9,7 @@
           <div class="input" v-permission.auto="AEKO_QUOTATION_CBD_INPUT_AJIABIANDONGHANFENTAN|A价变动_含分摊">
             <span class="label">{{ language("AJIABIANDONGHANFENTAN", "A价变动(含分摊)") }}:</span>
             <iInput v-if="!apriceChangeDisabled" v-model="apriceChange" @input="handleInputByApriceChange" />
-            <iText v-else>{{ apriceChange }}</iText>
+            <iText v-else>{{ floatFixNum(apriceChange) }}</iText>
           </div>
         </div>
       </div>
@@ -100,6 +100,7 @@ import manufacturingCost from "./components/manufacturingCost"
 import scrapCost from "./components/scrapCost"
 import manageCost from "./components/manageCost"
 import otherCost from "./components/otherCost"
+import { floatFixNum } from "../data"
 import profit from "./components/profit"
 import { validateChangeKeysByRawMaterials, validateChangeKeysByManufacturingCost } from "./components/data"
 import { getAekoCarDosage, getAekoQuotationSummary, saveAekoQuotationSummary, exportQuotation,updateCbdCanEdit } from "@/api/aeko/quotationdetail"
@@ -200,6 +201,7 @@ export default {
     this.getMaterialTypeOptions()
   },
   methods: {
+    floatFixNum,
     init() {
       this.$refs.changeSummary.getAekoCbdPriceSum()
       this.getAekoCarDosage()

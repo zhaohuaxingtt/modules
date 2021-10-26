@@ -85,10 +85,16 @@
               <span v-else :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.indirectManufacturingRate !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].indirectManufacturingRate) : false }">{{ scope.row.indirectManufacturingRate }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="(RMB/Pc.)" align="center" width="93" prop="indirectManufacturingAmount"></el-table-column>
+          <el-table-column label="(RMB/Pc.)" align="center" width="93" prop="indirectManufacturingAmount">
+            <template slot-scope="scope">{{ floatFixNum(scope.row.indirectManufacturingAmount) }}</template>
+          </el-table-column>
         </el-table-column>
-        <el-table-column align="center" width="100" prop="laborCost" :render-header="h => h('span', { domProps: { innerHTML: `${ language('RENGONGCHENGBEN', '人工成本') }<br/>（RMB/Pc.）` }})"></el-table-column>
-        <el-table-column align="center" min-width="102" prop="deviceCost" :render-header="h => h('span', { domProps: { innerHTML: `${ language('SHEBEICHENGBEN', '设备成本') }<br/>（RMB/Pc.）` }})"></el-table-column>
+        <el-table-column align="center" width="100" prop="laborCost" :render-header="h => h('span', { domProps: { innerHTML: `${ language('RENGONGCHENGBEN', '人工成本') }<br/>（RMB/Pc.）` }})">
+          <template slot-scope="scope">{{ floatFixNum(scope.row.laborCost) }}</template>
+        </el-table-column>
+        <el-table-column align="center" min-width="102" prop="deviceCost" :render-header="h => h('span', { domProps: { innerHTML: `${ language('SHEBEICHENGBEN', '设备成本') }<br/>（RMB/Pc.）` }})">
+          <template slot-scope="scope">{{ floatFixNum(scope.row.deviceCost) }}</template>
+        </el-table-column>
       </el-table>
     </div>
   </div>  
@@ -100,6 +106,7 @@
 import { iButton, iInput, iMessage, iMessageBox } from "rise"
 import iconFont from "../iconFont"
 import { uuidv4, originRowClass, validateChangeKeysByManufacturingCost as validateChangeKeys } from "../data"
+import { floatFixNum } from "../../../data"
 import { numberProcessor } from "@/utils"
 import { cloneDeep } from "lodash"
 import { handleInputByNumber } from "rise/web/quotationdetail/components/data"
@@ -159,6 +166,7 @@ export default {
     })
   },
   methods: {
+    floatFixNum,
     originRowClass,
     selectionChange(list) {
       this.multipleSelection = list
