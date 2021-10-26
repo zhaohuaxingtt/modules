@@ -102,6 +102,7 @@ import iconFont from "../iconFont"
 import { uuidv4, originRowClass, validateChangeKeysByManufacturingCost as validateChangeKeys } from "../data"
 import { numberProcessor } from "@/utils"
 import { cloneDeep } from "lodash"
+import { handleInputByNumber } from "rise/web/quotationdetail/components/data"
 
 export default {
   components: { iButton, iInput, iconFont },
@@ -174,7 +175,14 @@ export default {
       this.$set(this.originMap, data.frontProductionId, data)
     },
     handleAddNewData() {
-      if (!this.multipleSelection.length) return
+      if (!this.multipleSelection.length){
+        // 当列表有原零件数据时 提示用户勾选
+        if(this.tableListData.length){
+          return iMessage.warn(this.language('LK_HANDLEADDNEWDATA_TIPS_CHECK','请先勾选一条原零件CBD行项目'));
+        }else{ // 当列表无数据时提示条件行
+          return iMessage.warn(this.language('LK_HANDLEADDNEWDATA_TIPS','请先添加一行原零件CBD行项目'));
+        }
+      } 
 
       const originIdSet = new Set()
       
@@ -269,13 +277,7 @@ export default {
     updateOriginDataIndex() {
       this.originTableListData.forEach((item, index) => this.$set(item, "index", `P${ ++index }`))
     },
-    handleInputByNumber(value, key, row, precision, cb) {
-      this.$set(row, key, numberProcessor(value, precision))
-
-      if (typeof cb === "function") {
-        cb(value, key, row)
-      }
-    },
+    handleInputByNumber,
     updateTaktTime(value, key, row) {
       this.computeIndirectManufacturingAmount(value, key, row)
       this.computeLaborCost(value, key, row)

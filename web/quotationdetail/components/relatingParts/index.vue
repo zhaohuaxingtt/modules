@@ -47,7 +47,7 @@ import { iDialog, iPagination, iButton, iMessage } from 'rise'
 import { relatingPartsTableTitle } from './data'
 import tableList from './tableList'
 import { pageMixins } from "@/utils/pageMixins"
-import { getMouldPartList, saveMouldPartList } from '@/api/rfqManageMent/quotationdetail'
+import { getMouldPartList, saveMouldPartList, getMouldPartSkdList, saveMouldPartSkdList } from '@/api/rfqManageMent/quotationdetail'
 
 export default {
   components: {
@@ -61,7 +61,8 @@ export default {
     dialogVisible: {type: Boolean, default: false},
     partInfo: {type: Object},
     disabled: {type: Boolean},
-    supplierId:{type: String, default:''}
+    supplierId:{type: String, default:''},
+    isSkd: {type: Boolean, default: false},
   },
   data() {
     return {
@@ -107,7 +108,10 @@ export default {
         supplierId:this.supplierId
       }
       this.tableLoading = true
-      getMouldPartList(params).then(res => {
+
+      const getRequest = this.isSkd ? getMouldPartSkdList : getMouldPartList
+
+      getRequest(params).then(res => {
         if (res && res.result) {
           this.tableData = res.data.records
           this.tableTitle = [
@@ -142,7 +146,10 @@ export default {
         mouldPartList: this.tableData
       }
       this.tableLoading = true
-      saveMouldPartList(params).then(res => {
+
+      const saveRequest = this.isSkd ? saveMouldPartSkdList : saveMouldPartList
+
+      saveRequest(params).then(res => {
         if (res && res.result) {
           iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
           // this.getTableList()

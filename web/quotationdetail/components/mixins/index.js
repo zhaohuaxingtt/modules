@@ -1,4 +1,4 @@
-export const priceTypeMixin = {
+export const priceStatusMixin = {
   computed: {
     isSkd() {
       return this.partInfo && this.partInfo.priceStatus == "SKD"

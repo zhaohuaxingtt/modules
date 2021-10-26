@@ -7,16 +7,15 @@
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\costsummary\components\persent.vue
 -->
 <template>
-<ul class="urlli">
-  <template v-for='(items,index) in persentTitel(persentList,realDataList)'>
+  <ul class="urlli">
+    <template v-for='(items,index) in persentTitel(persentList,realDataList)'>
       <li :key='index' :style='{width:parseInt(items.width)<5?"100px":items.width}' v-if="items.width">
         <p class="a" :style="{backgroundColor:items.color}"></p>
-        <p class="b" :title='items.name'>{{$t(items.key)}}</p>
+        <p class="b" :title='items.name'>{{ lang ? language(items.key, items.name) : $t(items.key)}}</p>
         <p class="c" :title='items.persent'>{{items.persent}}</p>
       </li>
-  </template>
-
-</ul>
+    </template>
+  </ul>
 </template>
 <script>
 import {persentTitel} from './data'
@@ -29,6 +28,10 @@ export default{
     realDataList:{
       type:Array,
       default:()=>[]
+    },
+    lang: {
+      type: Boolean,
+      default: false
     }
   },
   methods:{
@@ -43,7 +46,7 @@ export default{
     width: 100%;
     overflow: hidden;
     margin-top: 20px;
-    max-height: 68px;
+    max-height: 70px;
     display: flex;
     li{
       padding-right: 5px;
