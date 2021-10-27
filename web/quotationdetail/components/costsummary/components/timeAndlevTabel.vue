@@ -18,15 +18,15 @@
         </iSelect>
       </i-form-item>
       <i-form-item :label="showTitle ? language('LCQIBUSHENGCHANRIQI', 'LC起步生产日期') : $t('LK_STARTTIME')">
-        <iText v-if='disabled'>{{allTableData.startProductDate}}</iText>
-        <div v-else class="startProductDate">
-          <iDatePicker v-model="allTableData.startProductDate" :disabled="isAutoCal"></iDatePicker>
+        <div class="startProductDate">
+          <iText v-if='disabled'>{{allTableData.startProductDate}}</iText>
+          <iDatePicker v-else v-model="allTableData.startProductDate" :disabled="isAutoCal"></iDatePicker>
           <el-popover
             placement="top"
             width="200"
             trigger="hover"
             :content="language('SHIFOUZIDONGJISUAN', '是否自动计算')">
-              <el-checkbox class="isAutoCal" slot="reference" v-model="isAutoCal" @change="handleChangeIsAutoCal"></el-checkbox>
+              <el-checkbox class="isAutoCal" slot="reference" :disabled="disabled" v-model="isAutoCal" @change="handleChangeIsAutoCal"></el-checkbox>
           </el-popover>
         </div>
       </i-form-item>

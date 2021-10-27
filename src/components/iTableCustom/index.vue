@@ -205,10 +205,6 @@
 </template>
 
 <script>
-import iButton from '../iButton/index.vue'
-import iSelect from '../iSelect/index.vue'
-import iInput from '../iInput/index.vue'
-import iRadio from '../iRadio/index.vue'
 import Icon from '../icon/index.vue'
 import iTableColumn from './iTableColumn'
 import iTableHeaderSorter from '../iTableHeaderSorter'
@@ -216,10 +212,6 @@ export default {
 	// eslint-disable-next-line vue/no-unused-components
 	components: {
 		iTableColumn,
-		iButton,
-		iSelect,
-		iInput,
-		iRadio,
 		Icon,
 		iTableHeaderSorter,
 	},
