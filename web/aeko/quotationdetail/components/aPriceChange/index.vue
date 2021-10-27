@@ -103,7 +103,7 @@ import otherCost from "./components/otherCost"
 import { floatFixNum } from "../data"
 import profit from "./components/profit"
 import { validateChangeKeysByRawMaterials, validateChangeKeysByManufacturingCost } from "./components/data"
-import { getAekoCarDosage, getAekoQuotationSummary, saveAekoQuotationSummary, exportQuotation,updateCbdCanEdit } from "@/api/aeko/quotationdetail"
+import { getAekoCarDosage, getAekoQuotationSummary, saveAekoQuotationSummary, exportQuotation,updateCbdCanEdit, saveAPirce } from "@/api/aeko/quotationdetail"
 import { getDictByCode } from "@/api/dictionary"
 import { numberProcessor } from "@/utils"
 import { difference } from "lodash"
@@ -632,39 +632,85 @@ export default {
       this.apriceChangeDisabled = !+this.apriceChange
       this.$emit("updateApriceChange", this.apriceChange)
     },
-    saveChange(type) {
-      this.saveChangeLoading = true
+    async saveChange(type) {
+      if (!this.isChange && !this.cbdCanEdit) {
+        if (+this.apriceChange > +this.$refs.changeSummary.total) throw iMessage.warn(this.language("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。"))
+      }
 
-      Promise.all([
-        this.$refs.changeSummary.save(),
-        this.save()
-      ])
-      .then(([res1, res2]) => {
-        if (res1 && res1.code == 200 && res2 && res2.code == 200) {
-          iMessage.success(this.$i18n.locale === "zh" ? res1.desZh : res1.desEn)
-
-          this.$refs.changeSummary.getAekoCbdPriceSum()
-          this.getAekoQuotationSummary()
+      if (!this.isChange && this.cbdCanEdit) {
+        if (this.$refs.changeSummary.tableListData.length && +this.$refs.changeSummary.total < +this.cbdTotal) {
+          if (+this.apriceChange > +this.$refs.changeSummary.total) throw iMessage.warn(this.language("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。"))
         } else {
-          iMessage.error(this.language("CAOZUOSHIBAI", "操作失败"))
-
-          if (type === "changeValidity") {
-            this.cbdCanEdit = !this.cbdCanEdit
-            this.cbdDisabled = !this.cbdCanEdit
-            this.setApriceChange()
-          }
+          if (+this.apriceChange > +this.cbdTotal) throw iMessage.warn(this.language("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。"))
         }
-      })
-      .catch(err => {
-        if (type === "changeValidity") {
-          this.cbdCanEdit = !this.cbdCanEdit
-          this.cbdDisabled = !this.cbdCanEdit
-          this.setApriceChange()
+      }
+      
+      this.saveChangeLoading = true
+      saveAPirce({
+        ...this.form,
+        apriceCbdChange:this.cbdSummaryTableData[0].apriceChange,
+        apriceChange:this.apriceChange,
+        isChange:!this.isChange,
+        cbdCanEdit: this.cbdCanEdit,
+        aprice: this.allSummaryData()[0].aprice || "0.00",
+        quotationId: this.partInfo.quotationId,
+        rawMaterialList: this.moduleMap.material ? this.rawMaterialsTableData : undefined,
+        makeCostList: this.moduleMap.production ? this.manufacturingCostTableData : undefined,
+        scrapVO: this.moduleMap.scrap ? this.scrapCostTableData[0] : undefined,
+        manageFeeList: this.moduleMap.manage ? this.manageTableData : undefined,
+        otherFeeList: this.otherCostTableData.length ? this.otherCostTableData : undefined,
+        profitVO: this.moduleMap.profit ? this.profitTableData[0] : undefined,
+        cbdSummarySelected: this.cbdSummarySelected,
+        materialChange: this.cbdSummaryTableData[0].materialChange,
+        makeCostChange: this.cbdSummaryTableData[0].makeCostChange,
+        discardCostChange: this.cbdSummaryTableData[0].discardCostChange,
+        manageFeeChange: this.cbdSummaryTableData[0].manageFeeChange,
+        otherFee: this.cbdSummaryTableData[0].otherFee,
+        profitChange: this.cbdSummaryTableData[0].profitChange
+      }).then((res)=>{
+        if(res?.code==200){
+          this.getBasicInfo(false)
+          this.getAekoQuotationSummary()
+          iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+        }else{
+          iMessage.error(this.language("CAOZUOSHIBAI", "操作失败"))
         }
       })
       .finally(() => {
         this.saveChangeLoading = false
       })
+      // Promise.all([
+      //   // 保存汇总表
+      //   this.$refs.changeSummary.save(),
+      //   // 保存变动值CBD
+      //   this.save()
+      // ])
+      // .then(([res1, res2]) => {
+      //   if (res1 && res1.code == 200 && res2 && res2.code == 200) {
+      //     iMessage.success(this.$i18n.locale === "zh" ? res1.desZh : res1.desEn)
+
+      //     this.$refs.changeSummary.getAekoCbdPriceSum()
+      //     this.getAekoQuotationSummary()
+      //   } else {
+      //     iMessage.error(this.language("CAOZUOSHIBAI", "操作失败"))
+
+      //     if (type === "changeValidity") {
+      //       this.cbdCanEdit = !this.cbdCanEdit
+      //       this.cbdDisabled = !this.cbdCanEdit
+      //       this.setApriceChange()
+      //     }
+      //   }
+      // })
+      // .catch(err => {
+      //   if (type === "changeValidity") {
+      //     this.cbdCanEdit = !this.cbdCanEdit
+      //     this.cbdDisabled = !this.cbdCanEdit
+      //     this.setApriceChange()
+      //   }
+      // })
+      // .finally(() => {
+      //   this.saveChangeLoading = false
+      // })
     },
   }
 }
