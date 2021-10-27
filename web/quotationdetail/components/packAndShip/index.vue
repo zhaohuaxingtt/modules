@@ -54,9 +54,23 @@
       <span class="title">{{ $t('LK_BAOZHUANGYUNSHU') }}</span>
       <span class="tip margin-left10">{{ $t('LK_DANWEIYUAN') }}</span>
     </div>
-    <div class="body">
-      <iframe class="iframe" :src="url"></iframe>
-    </div>
+    <!-------输入框区域------->
+    <iFormGroup
+      :row="4"
+      inline
+      class="packAndShip-form margin-top20"
+      :rules="rules"
+    >
+      <iFormItem
+        v-for="item in inputs"
+        :key="item.props"
+        :label="language(item.i18n, item.name) + '：'"
+      >
+          <!-------只能输入数字，可以输入小数点后四位---------->
+        <iInput v-if="!disabled && item.editable" v-model="params[item.props]" title="" type="number" oninput="if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+5)}"></iInput>
+        <iText v-else>{{ params[item.props] }}</iText>
+      </iFormItem>
+    </iFormGroup>
   </iCard>
 </template>
 
@@ -66,7 +80,6 @@ import { savePackageTransport, getPackageTransport } from '@/api/rfqManageMent/q
 import { getDictByCode } from '@/api/dictionary'
 import {partProjTypes} from '@/config'
 import { priceStatusMixin } from "../mixins"
-import { bnkSupplierToken } from '@/api/aeko/quotationdetail'
 
 export default {
   components: {
@@ -131,31 +144,13 @@ export default {
         { props: "packageLs", name: "LS(PC)", i18n: 'LS_PC' },
         { props: "packageStack", name: "Stack", i18n: 'STACK' },
       ],
-      selectOptions: {},
-      url: ""
+      selectOptions: {}
     };
   },
   created() {
     this.getPackageOptions()
-    this.url = "http://10.122.44.58/sol-bnk/pages/rise/quotes/lsp-view.jsf?partProjId=55011902&tmRfqId=51308250&ppSupplierId=50002936&ppSupplierUserId=4&token=769cabb7c17d541a9c41e0a40be3eb0e8615c33d9f42b1e490f2acdc449cc1d3"
   },
   methods: {
-    bnkSupplierToken() {
-      this.loading = true
-
-      bnkSupplierToken({
-        partProjId: this.partInfo.projectPartId || this.partInfo.partId,
-        rfqId: this.partInfo.rfqId
-      })
-      .then(res => {
-        if (res.code == 200) {
-          console.log("res.data", res.data)
-        } else {
-          iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
-        }
-      })
-      .finally(() => this.loading = false)
-    },
     getName(val) {
       return this.selectOptions.PACKAGETYPE?.find(item => item.value === val)?.label
     },
@@ -185,9 +180,8 @@ export default {
      * @param {*}
      * @return {*}
      */    
-    init() {
-      this.bnkSupplierToken()
-      // this.getPackageTransport()
+    init(){
+      this.getPackageTransport()
     },
     /**
      * 获取包装运输初始数据
@@ -258,11 +252,6 @@ export default {
       width: 140px;
       font-size: 16px;
     }
-  }
-
-  .iframe {
-    width: 100%;
-    height: 70vh;
   }
 }
 </style>
