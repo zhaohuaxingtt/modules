@@ -346,7 +346,7 @@ export default {
             })
           }
 
-          if(this.partInfo.partProjectType == '1000009'){
+          if(this.partInfo.partProjectType == '1000009' || this.partInfo.priceStatus == "DB"){
             this.isDb = true
           }
         } else {
