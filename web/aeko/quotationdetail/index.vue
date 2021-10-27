@@ -161,7 +161,7 @@ export default {
     },
 
     // 获取基础信息
-    async getBasicInfo(){
+    async getBasicInfo(doNext=true){
       const {query,path} = this.$route;
       const { quotationId ='',aekoCode=""} = query;
       this.aekoCode = aekoCode;
@@ -195,7 +195,7 @@ export default {
 
           this.$nextTick(() => {
             const component = this.$refs[this.currentTab][0]
-            if (typeof component.init === "function") component.init()
+            if (typeof component.init === "function" && doNext) component.init()
           })
         }else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
