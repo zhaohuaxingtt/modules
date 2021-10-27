@@ -22,6 +22,12 @@
         <template #isShared="scope">
           <span>{{ scope.row.isShared | statesFilter }}</span>
         </template>
+        <template #assetPrice="scope">
+          <span>{{ floatFixNum( scope.row.assetPrice) }}</span>
+        </template>
+        <template #assetTotal="scope">
+          <span>{{ floatFixNum(scope.row.assetPrice) }}</span>
+        </template>
       </tableList>
     </div>
   </iCard>
@@ -32,6 +38,7 @@ import { iCard, iButton, icon, iMessage } from "rise"
 import tableList from "rise/web/quotationdetail/components/tableList"
 import { statesFilter } from "rise/web/quotationdetail/components/mouldAndDevelopmentCost/components/data"
 import { sourcePartCBDTableTitle as tableTitle } from "../data"
+import { floatFixNum } from "../../../data"
 import { getMoldCbd } from "@/api/aeko/quotationdetail"
 
 export default {
@@ -65,6 +72,7 @@ export default {
     })
   },
   methods: {
+    floatFixNum,
     handleSelectionChange(list) {
       this.multipleSelection = list
     },
@@ -84,7 +92,7 @@ export default {
             Array.isArray(res.data) ? 
             res.data.map(item => ({
               ...item,
-              isShared: 1
+              isShared: 0
             })) : 
             []
         } else {

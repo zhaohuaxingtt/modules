@@ -81,7 +81,7 @@
         <el-table-column align="center" width="120" :render-header="h => h('span', { domProps: { innerHTML: `${ language('DANJIARMBUOM', '单价') }(RMB/UoM)` }})">
           <template v-slot="scope">
             <iInput v-if="(scope.row.partCbdType == 1 || scope.row.partCbdType == 2) && !disabled" class="input-center" v-model="scope.row.unitPrice" :class="{ changeClass: originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId] ? (scope.row.unitPrice !== originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId].unitPrice) : false }" @input="handleInputByNumber($event, 'unitPrice', scope.row, 2, updateUnitPrice)"></iInput>
-            <span v-else :class="{ changeClass: originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId] ? (scope.row.unitPrice !== originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId].unitPrice) : false }">{{ scope.row.unitPrice }}</span>
+            <span v-else :class="{ changeClass: originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId] ? (scope.row.unitPrice !== originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId].unitPrice) : false }">{{ floatFixNum(scope.row.unitPrice) }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" width="96" :render-header="h => h('span', { domProps: { innerHTML: `${ language('SHULIANG', '数量') }(1..n)` }})">
@@ -90,7 +90,9 @@
             <span v-else :class="{ changeClass: originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId] ? (scope.row.quantity !== originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId].quantity) : false }" @input="handleInputByNumber($event, 'quantity', scope.row, 0, updateQuantity)">{{ scope.row.quantity }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" width="140" prop="directMaterialCost" :render-header="h => h('span', { domProps: { innerHTML: `${ language('ZHIJIEYUANCAILIAOSANJIANCHENGBEN', '直接原材料/散件成本') }<br/>（RMB/Pc.）` }})"></el-table-column>
+        <el-table-column align="center" width="140" prop="directMaterialCost" :render-header="h => h('span', { domProps: { innerHTML: `${ language('ZHIJIEYUANCAILIAOSANJIANCHENGBEN', '直接原材料/散件成本') }<br/>（RMB/Pc.）` }})">
+          <template slot-scope="scope">{{ floatFixNum(scope.row.directMaterialCost) }}</template>
+        </el-table-column>
         <el-table-column :label="language('WULIAOGUANLIFEI', '物料管理费')" align="center">
           <el-table-column label="(%)" align="center" width="88">
             <template v-slot="scope">
@@ -98,9 +100,13 @@
               <span v-else :class="{ changeClass: originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId] ? (scope.row.materialManageCostRate !== originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId].materialManageCostRate) : false }">{{ scope.row.materialManageCostRate }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="(RMB/Pc.)" align="center" width="93" prop="materialManageCost"></el-table-column>
+          <el-table-column label="(RMB/Pc.)" align="center" width="93" prop="materialManageCost">
+            <template slot-scope="scope">{{ floatFixNum(scope.row.materialManageCost) }}</template>
+          </el-table-column>
         </el-table-column>
-        <el-table-column align="center" min-width="122" prop="materialCost" :render-header="h => h('span', { domProps: { innerHTML: `${ language('YUANCAILIAOSANJIANCHENGBEN', '原材料/散件成本') }<br/>（RMB/Pc.）` }})"></el-table-column>
+        <el-table-column align="center" min-width="122" prop="materialCost" :render-header="h => h('span', { domProps: { innerHTML: `${ language('YUANCAILIAOSANJIANCHENGBEN', '原材料/散件成本') }<br/>（RMB/Pc.）` }})">
+          <template slot-scope="scope">{{ floatFixNum(scope.row.materialCost) }}</template>
+        </el-table-column>
       </el-table>
     </div>
   </div>  
@@ -111,8 +117,9 @@
 
 import { iButton, iInput, iSelect, iMessage, iMessageBox } from "rise"
 import iconFont from "../iconFont"
+import { floatFixNum } from "../../../data"
 import { uuidv4, originRowClass, validateChangeKeysByRawMaterials as validateChangeKeys } from "../data"
-import { numberProcessor } from "@/utils"
+import { handleInputByNumber } from "rise/web/quotationdetail/components/data"
 
 export default {
   components: { iButton, iInput, iSelect, iconFont },
@@ -178,6 +185,7 @@ export default {
     })
   },
   methods: {
+    floatFixNum,
     originRowClass,
     selectionChange(list) {
       this.multipleSelection = list
@@ -194,7 +202,14 @@ export default {
       this.$set(this.originMap, data.frontMaterialId, data)
     },
     handleAddNewData() {
-      if (!this.multipleSelection.length) return
+      if (!this.multipleSelection.length){
+        // 当列表有原零件数据时 提示用户勾选
+        if(this.tableListData.length){
+          return iMessage.warn(this.language('LK_HANDLEADDNEWDATA_TIPS_CHECK','请先勾选一条原零件CBD行项目'));
+        }else{ // 当列表无数据时提示条件行
+          return iMessage.warn(this.language('LK_HANDLEADDNEWDATA_TIPS','请先添加一行原零件CBD行项目'));
+        }
+      } 
 
       const originIdSet = new Set()
       
@@ -204,7 +219,7 @@ export default {
         }
 
         if (item.partCbdType == 1) {
-          originIdSet.add(item.frontMaterialId)
+          originIdSet.add(item.id || item.frontMaterialId)
         }
 
         if (item.partCbdType == 2) {
@@ -289,13 +304,7 @@ export default {
     updateOriginDataIndex() {
       this.originTableListData.forEach((item, index) => this.$set(item, "index", `C${ ++index }`))
     },
-    handleInputByNumber(value, key, row, precision, cb) {
-      this.$set(row, key, numberProcessor(value, precision))
-      
-      if (typeof cb === "function") {
-        cb(value, key, row)
-      }
-    },
+    handleInputByNumber,
     updateUnitPrice(value, key, row) {
       this.computeDirectMaterialCost(value, key, row)
     },

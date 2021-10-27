@@ -13,10 +13,13 @@
 -->
 
 <template>
-  <!-- <div v-if="isSkd">
-    <skdCostSummary />
-  </div> -->
-  <div>
+  <div v-if="isSkd">
+    <skdCostSummary ref="skdCostSummary" :partInfo="partInfo" />
+  </div>
+  <div v-else>
+    <div v-if="isSkdLc" class="margin-bottom20">
+      <skdCostSummary ref="skdCostSummary" :partInfo="partInfo" showTitle />
+    </div>
     <!---partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU----->
     <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU">
       <quotationAnalysis :disabled="disabled || isOriginprice" :dbDetailList="dbDetailList" />
@@ -25,7 +28,7 @@
       <!--------------------------------------------------------->
       <!----------------------百分比模块-------------------------->
       <!--------------------------------------------------------->
-      <persentComponents ref='components' :cbdlist='cbdlist' :isSteel="isSteel" :quotationId='partInfo.quotationId' :tableData='topTableData' :disabled='disabled || isOriginprice' :allTableData='allTableData' :partType="partInfo.partType" :partProjectType="partInfo.partProjectType"></persentComponents>
+      <persentComponents ref='components' :cbdlist='cbdlist' :isSteel="isSteel" :quotationId='partInfo.quotationId' :tableData='topTableData' :disabled='disabled || isOriginprice' :allTableData='allTableData' :partType="partInfo.partType" :partProjectType="partInfo.partProjectType" :showTitle="isSkdLc" :isAutoCal.sync="isAutoCal"></persentComponents>
       <!--------------------------------------------------------->
       <!----------------------2.1 原材料/散件--------------------->
       <!--------------------------------------------------------->
@@ -188,9 +191,12 @@ import {selectDictByKeyss} from '@/api/dictionary'
 import quotationAnalysis from './components/quotationAnalysis'
 import {partProjTypes} from '@/config'
 import {cloneDeep} from 'lodash'
+import skdCostSummary from "../skdCostSummary"
+import { priceStatusMixin } from "../mixins"
 
 export default{
-  components:{persentComponents,tableTemlate,iButton,quotationAnalysis},
+  components:{persentComponents,tableTemlate,iButton,quotationAnalysis, skdCostSummary},
+  mixins: [ priceStatusMixin ],
   props:{
     //父组件中的值
     partInfo:{
@@ -282,7 +288,8 @@ export default{
       sourceResponseData: {},
       initData: true,
       count: 0,
-      summaryData: {}
+      summaryData: {},
+      isAutoCal: false
     }
   },
   watch:{
@@ -749,6 +756,7 @@ export default{
       const form = {
         cbdLevel: this.allTableData.level,
         editFlag: this.allTableData.editFlag,
+        isAutoCal: this.isAutoCal,
         levelOneSumDTO: this.allTableData.level === 1 ? baseSumDTO : undefined,
         levelTwoSumDTO: this.allTableData.level === 2 ? {
           ...baseSumDTO,
@@ -789,6 +797,11 @@ export default{
      * @return {*}
      */    
     init(type) {
+      if (this.isSkd || this.isSkdLc) {
+        this.$refs.skdCostSummary.init()
+        if (this.isSkd) return
+      }
+
       if (this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || this.partInfo.partProjectType === partProjTypes.DBLINGJIAN) {
         this.getCostSummaryDB()
       } else {
@@ -824,9 +837,10 @@ export default{
             this.packAndShipFee = data
             this.initData = true
             this.count = 0
+            this.isAutoCal = res.data.allTableData
             this.allTableData = this.translateDataForRender(res.data)
             this.topTableData = this.translateDataTopData(cloneDeep(this.allTableData), data)
-            this.$refs.components.partsQuotationss(this.partInfo.rfqId,this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId,this.partInfo.round,this.allTableData.level)
+            this.$refs.components && typeof this.$refs.components.partsQuotationss == "function" && this.$refs.components.partsQuotationss(this.partInfo.rfqId,this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId,this.partInfo.round,this.allTableData.level)
             // this.allpagefrom.quotationId,
             this.findFiles()
           }
@@ -1159,6 +1173,20 @@ export default{
      * @return {*}
      */    
     save(type) {
+      if (this.isSkd) {
+        return this.$refs.skdCostSummary.save()
+        .then(res => {
+          if (res.code == 200) {
+            if (type !== "submit") {
+              iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+              this.init()
+            }
+          } else {
+            iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+          }
+        })
+      }
+
       if (this.partInfo.partProjectType === partProjTypes.PEIJIAN || this.partInfo.partProjectType === partProjTypes.FUJIAN) {
         return Promise.all([this.postCostSummary(), this.saveBzfreeAndYunshuFree()])
           .then(([res1, res2]) => {
@@ -1198,6 +1226,27 @@ export default{
           iMessage.error(err.desZh)
         })
       } else {
+        if (this.isSkdLc) {
+          if (+moment(this.$refs.skdCostSummary.skdStartProductDate) > +moment(this.allTableData.startProductDate)) throw iMessage.warn(this.language("LCQIBUSHENGCHANRIQIBUNENGXIAOYUSKDQIBUSHENGCHANRIQI", "LC起步生产日期不能小于SKD起步生产日期"))
+
+          return Promise.all([
+            this.$refs.skdCostSummary.save(),
+            this.postCostSummary()
+          ])
+          .then(([res1, res2]) => {
+            if (res1 && res1.code == 200 && res2 && res2.code == 200) {
+              if (type !== "submit") {
+                iMessage.success(this.$i18n.locale === "zh" ? res1.desZh : res1.desEn)
+                this.init()
+              }
+
+              this.updateCbdLevel(this.allTableData.level)
+            } else {
+              iMessage.error(this.language("CAOZUOSHIBAI", "操作失败"))
+            }
+          })
+        }
+
         return this.postCostSummary().then(res => {
           if (res.code == 200) {
             this.updateCbdLevel(this.allTableData.level)

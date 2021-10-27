@@ -15,6 +15,7 @@
           <template #itemTypeNameByLang="scope">
             <span>{{ typeof scope.row.itemTypeNameByLang === "function" ? scope.row.itemTypeNameByLang() : scope.row.itemTypeName }}</span>
           </template>
+          <template #changeAmount="scope">{{ floatFixNum(scope.row.changeAmount) }}</template>
         </tableList>
       </div>
     </div>
@@ -27,6 +28,7 @@
 import { iButton } from "rise"
 import tableList from "rise/web/quotationdetail/components/tableList"
 import { otherCostTableTitle as tableTitle } from "../data"
+import { floatFixNum } from "../../../data"
 
 export default {
   components: { iButton, tableList },
@@ -80,7 +82,9 @@ export default {
       deep: true
     }
   },
-  methods: {}
+  methods: {
+    floatFixNum
+  }
 }
 </script>
 

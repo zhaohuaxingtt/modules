@@ -7,11 +7,11 @@
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\tableList.vue
 -->
 <template>
-  <el-table class="table" tooltip-effect="light" :height="height" :data="tableData" :cell-class-name="cellClassName" v-loading="tableLoading" @selection-change="handleSelectionChange" :empty-text="$t('LK_ZANWUSHUJU')">
+  <el-table ref="table" class="table" tooltip-effect="light" :height="height" :data="tableData" :cell-class-name="cellClassName" v-loading="tableLoading" @selection-change="handleSelectionChange" :empty-text="$t('LK_ZANWUSHUJU')">
     <el-table-column v-if="selection" type="selection" width="40" align="center"></el-table-column>
     <el-table-column v-if="index" type="index" align="center" :label="indexLabel"></el-table-column>
     <template v-for="item in tableTitle">
-      <el-table-column :key="item.props" align="center" :label="`${ item.seq ? item.seq + ' ' : '' }${ item.key ? (lang ? language(item.key, item.name) : $t(item.key)) : item.name }`" :prop="item.props" :show-overflow-tooltip="item.tooltip" :width="item.width" :min-width="item.minWidth" :render-header="item.renderHeader">
+      <el-table-column :key="item.updateKey || item.props" align="center" :label="`${ item.seq ? item.seq + ' ' : '' }${ item.key ? (lang ? language(item.key, item.name) : $t(item.key)) : item.name }`" :prop="item.props" :show-overflow-tooltip="item.tooltip" :width="item.width" :min-width="item.minWidth" :render-header="item.renderHeader">
         <template v-if="$scopedSlots[item.props] || $slots[item.props]" v-slot="scope">
           <slot :name="item.props" v-bind="scope" ></slot>
           <!-- :\$index="scope.$index" :row="scope.row" -->

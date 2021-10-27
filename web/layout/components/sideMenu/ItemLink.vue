@@ -11,25 +11,14 @@
       <icon
         symbol
         class="icon margin-right20 leftIconActive"
-        :name="
-          isActive
-            ? 'iconxunyuandingdianxuanzhong'
-            : 'iconxunyuandingdianweixuanzhong'
-        "
+        :name="isActive ? 'iconxunyuandingdianxuanzhong' : 'iconxunyuandingdianweixuanzhong'"
       />
       <span>{{ item.title }}</span>
-      <icon
-        symbol
-        class="icon floatright margin-top32"
-        v-if="!isActive"
-        name="iconmuluweixuanzhongshijiantou"
-      />
+      <icon symbol class="icon floatright margin-top32" v-if="!isActive" name="iconmuluweixuanzhongshijiantou" />
     </router-link>
     <a
       v-else
-      :href="
-        item.url || (item.menuList && item.menuList.length && item.menuList[0])
-      "
+      :href="item.url || (item.menuList && item.menuList.length && item.menuList[0])"
       :class="{ active: isActive, disabled: !item.url }"
       :target="item.target"
       class="side-menu-link"
@@ -38,19 +27,10 @@
       <icon
         symbol
         class="icon margin-right20 leftIconActive"
-        :name="
-          isActive
-            ? 'iconxunyuandingdianxuanzhong'
-            : 'iconxunyuandingdianweixuanzhong'
-        "
+        :name="isActive ? 'iconxunyuandingdianxuanzhong' : 'iconxunyuandingdianweixuanzhong'"
       />
       <span>{{ item.title }}</span>
-      <icon
-        symbol
-        class="icon floatright margin-top32"
-        v-if="!isActive"
-        name="iconmuluweixuanzhongshijiantou"
-      />
+      <icon symbol class="icon floatright margin-top32" v-if="!isActive" name="iconmuluweixuanzhongshijiantou" />
     </a>
   </div>
 </template>
@@ -78,20 +58,13 @@ export default {
     isActive() {
       const list = this.$route.matched
       const url =
-        this.item.url?.match(/((?<=#).*(?=\?))|((?<=#).*)/g) &&
-        this.item.url?.match(/((?<=#).*(?=\?))|((?<=#).*)/g)[0]
+        this.item.url?.match(/((?<=#).*(?=\?))|((?<=#).*)/g) && this.item.url?.match(/((?<=#).*(?=\?))|((?<=#).*)/g)[0]
       for (let key in list) {
-        if (
-          (list[key].path && url === list[key].path) ||
-          (list[key].path && url.includes(list[key].path))
-        ) {
+        if ((list[key].path && url === list[key].path) || (list[key].path && url?.includes(list[key].path))) {
           return true
         }
       }
-      return (
-        this.item.url.includes(this.$route.path) ||
-        this.item.url.includes(this.$route.redirectedFrom)
-      )
+      return this.item.url.includes(this.$route.path) || this.item.url.includes(this.$route.redirectedFrom)
     }
   },
   methods: {

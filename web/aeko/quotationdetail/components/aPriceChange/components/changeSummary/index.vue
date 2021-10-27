@@ -69,7 +69,11 @@
 							<span v-else>{{ scope.row.originUseage }}</span>
 						</template>
 					</el-table-column>
-					<el-table-column :label="language('XIAOJI', '小计')" align="center" prop="originTotalPrice"></el-table-column>
+					<el-table-column :label="language('XIAOJI', '小计')" align="center" prop="originTotalPrice">
+						<template slot-scope="scope">
+							{{ floatFixNum(scope.row.originTotalPrice) }}
+						</template>
+					</el-table-column>
 				</el-table-column>
 				<el-table-column :label="language('XINLINGJIAN', '新零件')" align="center">
 					<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('XINLINGJIANHAO', '新零件号') }<span class='require'>*</span>` }})" align="center">
@@ -96,13 +100,21 @@
 							<span v-else>{{ scope.row.newUseage }}</span>
 						</template>
 					</el-table-column>
-					<el-table-column :label="language('XIAOJI', '小计')" align="center" prop="newTotalPrice"></el-table-column>
+					<el-table-column :label="language('XIAOJI', '小计')" align="center" prop="newTotalPrice">
+						<template slot-scope="scope">
+							{{ floatFixNum(scope.row.newTotalPrice) }}
+						</template>
+					</el-table-column>
 				</el-table-column>
-				<el-table-column :label="language('BIANDONGZHI', '变动值')" align="center" prop="changeValue"></el-table-column>
+				<el-table-column :label="language('BIANDONGZHI', '变动值')" align="center" prop="changeValue">
+					<template slot-scope="scope">
+						{{ floatFixNum(scope.row.changeValue) }}
+					</template>
+				</el-table-column>
 				<template #append>
 					<div class="summary">
 						<span>TOTAL</span>
-						<span>RMB {{ total }}</span>
+						<span>RMB {{ floatFixNum(total) }}</span>
 					</div>
 				</template>
 			</el-table>
@@ -114,8 +126,9 @@
 /* eslint-disable no-undef */
 
 import { iCard, iButton, iInput, iSelect, iMessage, iMessageBox } from "rise"
-import { handleInputByNumber } from "../data"
+import { handleInputByNumber } from "rise/web/quotationdetail/components/data"
 import { getAekoCbdPriceSum, saveAekoCbdPriceSum } from "@/api/aeko/quotationdetail"
+import { floatFixNum } from "../../../data"
 
 export default {
 	components: { iCard, iButton, iInput, iSelect, iMessage },
@@ -167,6 +180,7 @@ export default {
 		}
 	},
 	methods: {
+		floatFixNum,
 		getTypeName(value) {
 			const current = this.moduleOptions.find(item => item.code == value)
 
@@ -259,7 +273,7 @@ export default {
       }
 
 			this.tableListData = this.tableListData.filter(item => !this.multipleSelection.includes(item))
-      this.computTotal()
+      this.computeTotal()
 		},
     updateOriginUnitPrice(value, key, row) {
       this.computeOriginTotalPrice(value, key, row)
@@ -270,7 +284,7 @@ export default {
     computeOriginTotalPrice(originValue, originKey, row) {
       this.$set(row, "originTotalPrice", math.multiply(math.bignumber(row.originUnitPrice || 0), math.bignumber(row.originUseage || 0)).toFixed(4))
 
-      this.computChangeValue(originValue, originKey, row)
+      this.computeChangeValue(originValue, originKey, row)
     },
     updateNewUnitPrice(value, key, row) {
       this.computeNewTotalPrice(value, key, row)
@@ -281,18 +295,18 @@ export default {
     computeNewTotalPrice(originValue, originKey, row) {
       this.$set(row, "newTotalPrice", math.multiply(math.bignumber(row.newUnitPrice || 0), math.bignumber(row.newUseage || 0)).toFixed(4))
 
-      this.computChangeValue(originValue, originKey, row)
+      this.computeChangeValue(originValue, originKey, row)
     },
-    computChangeValue(originValue, originKey, row) {
+    computeChangeValue(originValue, originKey, row) {
       if (row.newUnitPrice && row.newUseage) {
         this.$set(row, "changeValue", math.subtract(math.bignumber(row.newTotalPrice || 0), math.bignumber(row.originTotalPrice || 0)).toFixed(4))
       } else {
         this.$set(row, "changeValue", "0.0000")
       }
 
-      this.computTotal(originValue, originKey)
+      this.computeTotal(originValue, originKey)
     },
-    computTotal(originValue, originKey) {
+    computeTotal(originValue, originKey) {
       this.total = this.tableListData.reduce((acc, cur) => math.add(math.bignumber(math.bignumber(acc || 0)), math.bignumber(cur.changeValue || 0)).toFixed(4), 0)
 
 			this.$emit("updateTotal", this.total)

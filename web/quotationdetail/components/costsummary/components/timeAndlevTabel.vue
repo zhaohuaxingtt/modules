@@ -7,7 +7,7 @@
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\costsummary\components\timeAndlevTabel.vue
 -->
 <template>
-  <iCard class="topcontent" v-loading='copeData'>
+  <iCard class="topcontent" v-loading='copeData' :title="showTitle ? language('LCBAOJIA', 'LC报价') : ''">
     <!--------------------------------------------------------->
     <!----------------------搜索区域  -------------------------->
     <!--------------------------------------------------------->        
@@ -17,9 +17,18 @@
           <el-option v-for="items in selectList" :key='items.fsNum' :value='items.fsNum' :label="`${ items.partNum }_${ items.fsNum }`"></el-option>
         </iSelect>
       </i-form-item>
-      <i-form-item :label="$t('LK_STARTTIME')">
-        <iText v-if='disabled'>{{allTableData.startProductDate}}</iText> 
-        <iDatePicker v-else v-model="allTableData.startProductDate"></iDatePicker>
+      <i-form-item :label="showTitle ? language('LCQIBUSHENGCHANRIQI', 'LC起步生产日期') : $t('LK_STARTTIME')">
+        <div class="startProductDate">
+          <iText v-if='disabled'>{{allTableData.startProductDate}}</iText>
+          <iDatePicker v-else v-model="allTableData.startProductDate" :disabled="isAutoCal"></iDatePicker>
+          <el-popover
+            placement="top"
+            width="200"
+            trigger="hover"
+            :content="language('SHIFOUZIDONGJISUAN', '是否自动计算')">
+              <el-checkbox class="isAutoCal" slot="reference" :disabled="disabled" v-model="isAutoCal" @change="handleChangeIsAutoCal"></el-checkbox>
+          </el-popover>
+        </div>
       </i-form-item>
       <i-form-item :label="$t('LK_CBDLINEKEY')">
         <iText v-if='disabled'>L{{allTableData.level}}</iText> 
@@ -58,14 +67,14 @@
   </iCard>
 </template>
 <script>
-import {iCard,iFormGroup,iFormItem,iText,iDatePicker,iSelect,iButton,iMessageBox,iMessage} from 'rise';
+import {iCard,iFormGroup,iFormItem,iText,iDatePicker,iSelect,iButton,iMessageBox,iMessage, icon} from 'rise';
 import tableList from '../../../../workingRfq/components/tableList'
 import {tableTilel1Fn} from './data'
 import persent from './persent'
-import {partsQuotations,copyPartsQuotation,downPartCbdLoadFile} from '@/api/rfqManageMent/quotationdetail'
+import {partsQuotations,copyPartsQuotation,downPartCbdLoadFile, getIsAutoCal} from '@/api/rfqManageMent/quotationdetail'
 import { getToken } from "@/utils";
 export default{
-  components:{iCard,iFormGroup,iFormItem,iText,tableList,persent,iDatePicker,iSelect,iButton},
+  components:{iCard,iFormGroup,iFormItem,iText,tableList,persent,iDatePicker,iSelect,iButton, icon},
   props:{
     tableData:{
       type:Object,
@@ -97,6 +106,14 @@ export default{
     isSteel: {
       type: Boolean,
       default: false,
+    },
+    showTitle: {
+      type: Boolean,
+      default: false
+    },
+    isAutoCal: {
+      type: Boolean,
+      default: false
     }
   },
   inject:['vm'],
@@ -108,8 +125,14 @@ export default{
       selectedList:[],
       downLoadLoding:false,
       uploadLoading:false,
-      copeData:false
+      copeData:false,
     }
+  },
+  computed: {
+    // eslint-disable-next-line no-undef
+    ...Vuex.mapState({
+      userInfo: state => state.permission.userInfo,
+    }),
   },
   methods:{
     fileSuccess(res){
@@ -217,7 +240,30 @@ export default{
         iMessage.error("上传失败！")
       }
     },
-    getToken
+    getToken,
+    handleChangeIsAutoCal() {
+      if (this.isAutoCal) {
+        this.getIsAutoCal()
+      } else {
+        this.$emit("update:isAutoCal", false)
+      }
+    },
+    getIsAutoCal() {
+      getIsAutoCal({
+        isAutoCal: true,
+        quotationId: this.vm.partInfo.quotationId,
+        supplierId: this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId
+      })
+      .then(res => {
+        if (res.code == 200) {
+          this.allTableData.startProductDate = res.data.startProductDate
+          this.$emit("update:isAutoCal", true)
+        } else {
+          iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+          this.$emit("update:isAutoCal", false)
+        }
+      })
+    }
   }
 }
 </script>
@@ -243,5 +289,14 @@ export default{
   text-align: right;
   color: #485465;
   font-size: 12px;
+}
+
+.startProductDate {
+  display: flex;
+  align-items: center;
+
+  .isAutoCal {
+    margin-left: 8px;
+  }
 }
 </style>
