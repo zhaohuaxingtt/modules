@@ -103,7 +103,8 @@ import startProductionDateDialog from "./components/startProductionDateDialog"
 
 import { getPartsQuotations, getStates, submitPartsQuotation, quoteBatchPrice, cancelQuoteBatchPrice, quotations,contrastBidding,getNoticeStatus } from "@/api/rfqManageMent/quotationdetail"
 import { cloneDeep } from "lodash"
-import {partProjTypes,roundsType} from '@/config'
+import {partProjTypes} from '@/config'
+import {roundsType} from 'rise/web/config'
 import { getEnumValue as $enum } from "rise/web/config"
 import { getNominateDisabled } from "rise/web/common"
 import { priceStatusMixin } from "./components/mixins"
