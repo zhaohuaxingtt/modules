@@ -56,7 +56,7 @@ export default {
             this.defaultTitle = this.language("XUNJIACHENGNUOSHU", "询价承诺书")
             break
           case "CARBON":
-            this.defaultTitle = this.language("KEZAISHENGNENGYUANSHIYONGCHENGNUOSHU", "可再生能源使用承诺书")
+            this.defaultTitle = this.language("KEZAISHENGNENGYUANSHIYONGCHENGNUOSHU", "碳减排承诺书")
             break
           default:
             this.defaultTitle = this.language("CHENGNUOSHU", "承诺书")
@@ -106,7 +106,7 @@ export default {
       this.loading = true
       
       // RFQ 询价承诺书
-      // CARBON 可再生能源使用承诺书
+      // CARBON 碳减排承诺书
       getNoticeDetail({
         supplierId: this.supplierId,
         type: this.type
