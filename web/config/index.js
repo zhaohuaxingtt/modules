@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2021-09-14 20:31:03
+ * @LastEditTime: 2021-10-28 21:42:11
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \front-modules\web\config\index.js
+ */
 const enums = {
   "RFQ_STATE_ENUM": { // RFQ状态
     "NO_INQUIRY": "NOT_REQ", // 未询价
@@ -53,4 +61,7 @@ export const getEnumValue = function(fullKey) {
   } catch {
     return ""
   }
+}
+export const roundsType = {
+  zxjjys:'biddingRound'
 }
