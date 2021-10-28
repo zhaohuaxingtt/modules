@@ -199,7 +199,7 @@ export default {
       }
       // Sprint11新增(US:CRW1-1591)：若某一零件的零件项目类型为[DB零件]，或是[一次性采购]且是DB零件，则在我的报价成本汇总页面，我可以看到DB零件的特殊页面
       // DB的报价单共有7个页签，分别是信息与要求，报价分析，降价计划，包装运输，送样进度，工装样件，报价附件与说明。
-      if (this.partInfo.partProjectType === partProjTypes.DBLINGJIAN || this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU) {
+      if (this.partInfo.partProjectType === partProjTypes.DBLINGJIAN || this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || this.partInfo.priceStatus == "DB") {
         const tabNames = ['infoAndReq','costsummary','packAndShip','reducePlan','sampleDeliveryProgress','sample','remarksAndAttachment']
         return this.tabs.filter(item => tabNames.includes(item.name))
       }
@@ -346,7 +346,7 @@ export default {
             })
           }
 
-          if(this.partInfo.partProjectType == '1000009' || this.partInfo.priceStatus == "DB"){
+          if(this.partInfo.partProjectType == partProjTypes.DBLINGJIAN || this.partInfo.priceStatus == "DB"){
             this.isDb = true
           }
         } else {

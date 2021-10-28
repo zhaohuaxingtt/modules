@@ -5,7 +5,7 @@
  * @LastEditTime: 2021-07-20 15:57:03
 -->
 <template>
-  <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU" v-loading="loading">
+  <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU ||  partInfo.priceStatus == 'DB'" v-loading="loading">
     <iCard :title="language('CANKAOBAOZHUANG','参考包装')">
       <iFormGroup
         :row="4"
