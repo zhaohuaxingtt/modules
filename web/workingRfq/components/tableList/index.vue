@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-02-24 09:42:07
- * @LastEditTime: 2021-07-13 18:47:34
+ * @LastEditTime: 2021-10-28 15:55:18
  * @LastEditors: Please set LastEditors
  * @Description: 零件签收-table组件。
  * @FilePath: \front-supplier\src\views\rfqManageMent\workingRfq\components\tableList\index.vue
@@ -18,7 +18,15 @@
       <!----------------------A价------------------------>
       <el-table-column :key="items.key" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-if='items.props == "totalPrice"' :prop="items.props" :label="items.key ? $t(items.key) : items.name">
         <template slot-scope="row">
-          <span v-if="isSteel">{{ row.row.totalPrice }}</span>
+          <!--钢材只显示A价--->
+          <template v-if="isSteel">
+            <span>{{row.row.totalPrice}}</span>
+          </template>
+          <!--在线竞价，显示一个定值，并且计算totalPrice--->
+          <template v-else-if="roundIsOnlineBidding">
+            <span>{{ row.row.biddingTotalPrice }}</span>
+            <span v-show="false">{{getAallPrice(Aprice,row.row)}}</span>
+          </template>
           <span v-else>{{ isEmptyPriceCompute(Aprice,row.row) ? row.row.totalPrice : getAallPrice(Aprice,row.row) }}</span>
         </template>
       </el-table-column>
@@ -107,6 +115,12 @@
             </div>
             <span v-else>{{scope.row[items.props]}}</span>
           </template>
+          <!---------------------------bidding---------------------------->
+          <template v-else-if='items.props.indexOf("items") > -1'>
+              <span v-if='scope.$index == 0'>{{scope.row[items.props].quotation}}</span>
+              <span v-if='scope.$index == 1'>{{scope.row[items.props].bidding}}</span>
+              <span v-if='scope.$index == 2' :class="{redClass:scope.row[items.props].isColor}">{{scope.row[items.props].result}}</span>
+          </template>
           <template v-else>
             <span v-if="items.type === 'inputRate' && !notEdit">{{scope.row[items.props]}}{{ (scope.row[items.props] == null || scope.row[items.props] == "") && scope.row[items.props] !== 0  ? '' : '%' }}</span>
             <span v-else>{{ typeof filterProps[items.props] === "function" ? filterProps[items.props](scope.row[items.props]) : scope.row[items.props] }}</span>
@@ -143,6 +157,10 @@ export default{
     isSteel: {
       type: Boolean,
       default: false
+    },
+    roundIsOnlineBidding:{
+      type:Boolean,
+      default:false
     }
   },
   inject:['vm'],
@@ -244,5 +262,8 @@ export default{
 .flexVerticalCenter {
   display: flex;
   align-items: center;
+}
+.redClass{
+  color:red;
 }
 </style>
