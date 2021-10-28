@@ -634,40 +634,40 @@ export default {
     },
     // 修改接口
     saveChange(type) {
-      // this.saveChangeLoading = true
+      this.saveChangeLoading = true
 
-      // Promise.all([
-      //   this.$refs.changeSummary.save(),
-      //   this.save()
-      // ])
-      // .then(([res1, res2]) => {
-      //   if (res1 && res1.code == 200 && res2 && res2.code == 200) {
-      //     iMessage.success(this.$i18n.locale === "zh" ? res1.desZh : res1.desEn)
+      Promise.all([
+        this.$refs.changeSummary.save(),  // 保存汇总表
+        this.save() // 保存变动值CBD
+      ])
+      .then(([res1, res2]) => {
+        if (res1 && res1.code == 200 && res2 && res2.code == 200) {
+          iMessage.success(this.$i18n.locale === "zh" ? res1.desZh : res1.desEn)
 
-      //     this.$refs.changeSummary.getAekoCbdPriceSum()
-      //     this.getAekoQuotationSummary()
-      //   } else {
-      //     iMessage.error(this.language("CAOZUOSHIBAI", "操作失败"))
+          this.$refs.changeSummary.getAekoCbdPriceSum() // 获取汇总表数据
+          this.getAekoQuotationSummary()  // 获取变动值CBD数据
+        } else {
+          iMessage.error(this.language("CAOZUOSHIBAI", "操作失败"))
 
-      //     if (type === "changeValidity") {
-      //       this.cbdCanEdit = !this.cbdCanEdit
-      //       this.cbdDisabled = !this.cbdCanEdit
-      //       this.setApriceChange()
-      //     }
-      //   }
-      // })
-      // .catch(err => {
-      //   if (type === "changeValidity") {
-      //     this.cbdCanEdit = !this.cbdCanEdit
-      //     this.cbdDisabled = !this.cbdCanEdit
-      //     this.setApriceChange()
-      //   }
-      // })
-      // .finally(() => {
-      //   this.saveChangeLoading = false
-      // })
+          if (type === "changeValidity") {  // 修改A价变动
+            this.cbdCanEdit = !this.cbdCanEdit
+            this.cbdDisabled = !this.cbdCanEdit
+            this.setApriceChange()
+          }
+        }
+      })
+      .catch(err => {
+        if (type === "changeValidity") {
+          this.cbdCanEdit = !this.cbdCanEdit
+          this.cbdDisabled = !this.cbdCanEdit
+          this.setApriceChange()
+        }
+      })
+      .finally(() => {
+        this.saveChangeLoading = false
+      })
     },
-    async saveAPriceChange(type) {
+    saveAPriceChange(type) {
       if (!this.isChange && !this.cbdCanEdit) {
         if (+this.apriceChange > +this.$refs.changeSummary.total) throw iMessage.warn(this.language("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。"))
       }
