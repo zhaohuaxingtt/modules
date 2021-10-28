@@ -211,7 +211,9 @@ export default {
 		handleChangeByIsChange() {
 			if (this.isChange) {
 				if (this.tableListData.length) {
-					this.isChange = false
+					this.$nextTick(()=>{
+						this.isChange = false
+					})
 					return iMessage.warn(this.language("QINGXIANSHANCHUHUIZONGBIAOHANGXIANGMU", "请先删除汇总表行项目。"))
 				}
 			}
