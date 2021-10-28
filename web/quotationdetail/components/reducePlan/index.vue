@@ -14,7 +14,7 @@
 				<span class="tip margin-left10">{{ language("SKDBUFENYIJINGWAICHUCHANGJIAWEIZHUN", "SKD部分以境外出厂价为准") }}，{{ language("LCBUFENYIAJIAWEIZHUN", "LC部分以A价为准") }}</span>
 			</span>
 			<span v-else>
-				<span v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU">
+				<span v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || partInfo.priceStatus == 'DB'">
 					降价计划以{{basic}}为准
 				</span>
 				<!-----------配件报价的降价计划可以选择基于A价或B价，---------------------------------------------->
@@ -179,7 +179,7 @@ export default {
                 if (res?.result) {
                     if (!res.data.priceType) {
                         // 如果返回结果没有priceType，则配件默认为A价
-                        this.computedBasic = this.partInfo.partProjectType === partProjTypes.PEIJIAN ? '01' : this.partInfo.partProjectType === partProjTypes.FUJIAN ? '02' : (this.partInfo.partProjectType === partProjTypes.DBLINGJIAN || this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU) ? '3' : '01'
+                        this.computedBasic = this.partInfo.partProjectType === partProjTypes.PEIJIAN ? '01' : this.partInfo.partProjectType === partProjTypes.FUJIAN ? '02' : (this.partInfo.partProjectType === partProjTypes.DBLINGJIAN || this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || this.partInfo.priceStatus == 'DB') ? '3' : '01'
                     } else {
                         this.computedBasic = res.data.priceType
                     }

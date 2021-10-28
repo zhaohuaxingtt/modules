@@ -21,7 +21,7 @@
       <skdCostSummary ref="skdCostSummary" :partInfo="partInfo" showTitle />
     </div>
     <!---partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU----->
-    <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU">
+    <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || partInfo.priceStatus == 'DB'">
       <quotationAnalysis :disabled="disabled || isOriginprice" :dbDetailList="dbDetailList" />
     </div>
     <div class="cost" v-else>
@@ -806,7 +806,7 @@ export default{
         if (this.isSkd) return
       }
 
-      if (this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || this.partInfo.partProjectType === partProjTypes.DBLINGJIAN) {
+      if (this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || this.partInfo.partProjectType === partProjTypes.DBLINGJIAN || this.partInfo.priceStatus == 'DB') {
         this.getCostSummaryDB()
       } else {
         this.cbdlist = []
@@ -1216,7 +1216,7 @@ export default{
               }
             } else throw [res1, res2]
           })
-      } else if (this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || this.partInfo.partProjectType === partProjTypes.DBLINGJIAN){
+      } else if (this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || this.partInfo.partProjectType === partProjTypes.DBLINGJIAN || this. partInfo.priceStatus == 'DB'){
         return this.updateCostSummaryDB().then(res => {
           if (res?.result) {
             if (type !== "submit") {

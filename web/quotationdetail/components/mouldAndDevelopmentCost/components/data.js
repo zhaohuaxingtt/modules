@@ -1,8 +1,8 @@
 /*
  * @Author: ldh
  * @Date: 2021-04-23 09:16:55
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-09-23 10:13:39
+ * @LastEditors:  
+ * @LastEditTime: 2021-10-27 19:09:43
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\data.js
  */
@@ -26,7 +26,7 @@ export const mouldTableTitle = [
   { props: "supplierPartNameList", name: "散件名称", tooltip: true, width: 90, key: "LK_SANJIANMINGCHENG", tipsKey: "LK_SANJIANMINGCHENGTIPS", /* tips: "一次件总成零件号" */ },
   { props: "supplierPartCodeList", name: "散件零件号", tooltip: true, width: 110, key: "LK_SANJIANLINGJIANHAO", tipsKey: "LK_SANJIANLINGJIANHAOTIPS", /* tips: "<p style='text-align: center'>散件零件号<br/>(若无，则用总成号)</p>" */ },
   { props: "quantity", name: "数量", width: 70, tooltip: true, key: "LK_SHULIANG", tipsKey: "LK_SHULIANGTIPS", /* tips: "<p style='text-align: center'>必须为整数</p>" */ },
-  { props: "assetUnitPrice", name: "资产单价", tooltip: true, width: 90, key: "LK_ZICHANDANJIA", tipsKey: "LK_ZICHANDANJIATIPS", /* tips: "<p style='text-align: center'>不含税价格，<br/>并且保留四位小数</p>" */ },
+  { props: "assetUnitPrice", name: "资产单价", tooltip: true, width: 90, key: "LK_ZICHANDANJIA", tipsKey: "LK_ZICHANDANJIATIPS2", /* tips: "<p style='text-align: center'>不含税价格，<br/>并且保留四位小数</p>" */ },
   { props: "totalPrice", name: "资产总额", tooltip: true, key: "LK_ZICHANZONGE" },
   { props: "isShared", name: "是否分摊", width: 110, tooltip: true, key: "LK_SHIFOUFENTAN" }
 ]

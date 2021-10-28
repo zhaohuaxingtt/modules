@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-10-28 16:01:59
+ * @LastEditTime: 2021-10-28 21:14:30
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -101,7 +101,7 @@ import sampleDeliveryProgress from './components/sampleDeliveryProgress'
 import remarksAndAttachment from './components/remarksAndAttachment'
 import startProductionDateDialog from "./components/startProductionDateDialog"
 
-import { getPartsQuotations, getStates, submitPartsQuotation, quoteBatchPrice, cancelQuoteBatchPrice, quotations,contrastBidding } from "@/api/rfqManageMent/quotationdetail"
+import { getPartsQuotations, getStates, submitPartsQuotation, quoteBatchPrice, cancelQuoteBatchPrice, quotations,contrastBidding,getNoticeStatus } from "@/api/rfqManageMent/quotationdetail"
 import { cloneDeep } from "lodash"
 import {partProjTypes,roundsType} from '@/config'
 import { getEnumValue as $enum } from "rise/web/config"
@@ -207,7 +207,7 @@ export default {
       }
       // Sprint11新增(US:CRW1-1591)：若某一零件的零件项目类型为[DB零件]，或是[一次性采购]且是DB零件，则在我的报价成本汇总页面，我可以看到DB零件的特殊页面
       // DB的报价单共有7个页签，分别是信息与要求，报价分析，降价计划，包装运输，送样进度，工装样件，报价附件与说明。
-      if (this.partInfo.partProjectType === partProjTypes.DBLINGJIAN || this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU) {
+      if (this.partInfo.partProjectType === partProjTypes.DBLINGJIAN || this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || this.partInfo.priceStatus == "DB") {
         const tabNames = ['infoAndReq','costsummary','packAndShip','reducePlan','sampleDeliveryProgress','sample','remarksAndAttachment']
         return this.tabs.filter(item => tabNames.includes(item.name))
       }
@@ -300,8 +300,30 @@ export default {
        }
      }
     },
-    rejectPrice(){
-      this.dialogVisible = true
+    getNoticeStatus() {
+      this.agentQutationLoading = true
+
+      return new Promise(resolve => {
+        getNoticeStatus({
+          supplierId: this.supplierId,
+          type: "RFQ" // 该字段必传，但是这个把RFQ和CARBON的状态都返回了，所以这个接口只用调一次
+        })
+        .then(res => {
+          if (res.code == 200) {
+            // rfqStatus 询价承诺书状态  carbonStatus 可再生能源使用承诺书状态
+            if (!+res.data.rfqStatus) { // 0 拒绝  1同意 
+              iMessage.warn(this.language("GONGYINGSHANGWEIQIANSHUXUNJIACHENGNUOSHU", "供应商未签署《询价承诺书》，不可代报价"))
+              resolve(false)
+            } else {
+              resolve(true)
+            }
+          } else {
+            iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+            resolve(false)
+          }
+        })
+        .finally(() => this.agentQutationLoading = false)
+      })
     },
     /**
      * @description: 确认拒接按钮 
@@ -320,8 +342,17 @@ export default {
      * @param {*}
      * @return {*}
      */
-    agreePrice() {
+    async agreePrice() {
+      const status = await this.getNoticeStatus()
+      if (!status) return
+      
       this.updateQuotations(1)
+    },
+    async rejectPrice() {
+      const status = await this.getNoticeStatus()
+      if (!status) return
+
+      this.dialogVisible = true
     },
        /**
      * @description: 签收拒绝 
@@ -394,7 +425,7 @@ export default {
             })
           }
 
-          if(this.partInfo.partProjectType == '1000009'){
+          if(this.partInfo.partProjectType == partProjTypes.DBLINGJIAN || this.partInfo.priceStatus == "DB"){
             this.isDb = true
           }
         } else {
