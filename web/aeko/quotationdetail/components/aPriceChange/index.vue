@@ -269,7 +269,7 @@ export default {
         if (res.code == 200) {
           this.form = res.data
           this.cbdCanEdit = res.data.cbdCanEdit
-          this.cbdDisabled = !res.data.isChange
+          this.cbdDisabled = res.data.isChange
           
           this.responseData = {}
           this.responseData.cbdSummarySelected = res.data.cbdSummarySelected
@@ -541,8 +541,8 @@ export default {
         ...this.form,
         apriceCbdChange:this.cbdSummaryTableData[0].apriceChange,
         apriceChange:this.apriceChange,
-        isChange:!this.isChange,
-        cbdCanEdit: this.cbdCanEdit,
+        isChange: this.isChange,
+        cbdCanEdit: this.isChange&&false||this.cbdCanEdit,
         aprice: this.allSummaryData()[0].aprice || "0.00",
         quotationId: this.partInfo.quotationId,
         rawMaterialList: this.moduleMap.material ? this.rawMaterialsTableData : undefined,
@@ -638,10 +638,12 @@ export default {
 
       Promise.all([
         this.$refs.changeSummary.save(),  // 保存汇总表
-        this.save() // 保存变动值CBD
+        // this.save() // 保存变动值CBD
       ])
       .then(([res1, res2]) => {
-        if (res1 && res1.code == 200 && res2 && res2.code == 200) {
+        if (res1 && res1.code == 200
+        //  && res2 && res2.code == 200
+         ) {
           iMessage.success(this.$i18n.locale === "zh" ? res1.desZh : res1.desEn)
 
           this.$refs.changeSummary.getAekoCbdPriceSum() // 获取汇总表数据
