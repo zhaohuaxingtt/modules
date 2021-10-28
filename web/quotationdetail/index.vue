@@ -344,14 +344,14 @@ export default {
      * @return {*}
      */
     async agreePrice() {
-      const status = await this.getNoticeStatus()
-      if (!status) return
+      // const status = await this.getNoticeStatus()
+      // if (!status) return
       
       this.updateQuotations(1)
     },
     async rejectPrice() {
-      const status = await this.getNoticeStatus()
-      if (!status) return
+      // const status = await this.getNoticeStatus()
+      // if (!status) return
 
       this.dialogVisible = true
     },
