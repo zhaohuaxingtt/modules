@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-09-27 17:39:57
+ * @LastEditTime: 2021-10-28 16:01:59
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -64,7 +64,7 @@
     <div id="tabList" v-loading="tabLoading">
       <iTabsList class="margin-top20" type="card" v-model="currentTab" :before-leave="tabLeaveBefore" @tab-click="tabChange">
         <el-tab-pane v-for="(tab, $tabIndex) in trueTabs" :key="$tabIndex" :label="$t(tab.key)" :name="tab.name">
-          <component :ref="tab.name" :is="component" :partInfo="partInfo" v-for="(component, $componentIndex) in tab.components" :class="$componentIndex !== 0 ? 'margin-top20' : ''" :key="$componentIndex" :disabled="disabled || agentQutationDisabled" :isOriginprice="partInfo.isOriginprice" :isSteel="isSteel" :isDb="isDb" @changeReduceStatus="changeReduceStatus"/>
+          <component :ref="tab.name" :is="component" :partInfo="partInfo" v-for="(component, $componentIndex) in tab.components" :class="$componentIndex !== 0 ? 'margin-top20' : ''" :key="$componentIndex" :disabled="disabled || agentQutationDisabled" :isOriginprice="partInfo.isOriginprice" :isSteel="isSteel" :isDb="isDb" :roundIsOnlineBidding='roundIsOnlineBidding' @changeReduceStatus="changeReduceStatus"/>
         </el-tab-pane>
       </iTabsList>
     </div>
@@ -81,13 +81,14 @@
       </span>
     </iDialog>
     <startProductionDateDialog :visible.sync="startProductionDateDialogVisible" @confirm="confirmQuoteBatchPrice" />
+    <onlineBiddingDialog :show='show' :tabelData='biddingData'></onlineBiddingDialog>
   </iPage>
 </template>
 
 <script>
 import { iPage, iButton,iDialog, iCard,iInput, iFormGroup, iFormItem, iText, iTabsList, iSelect, icon, iMessage, iMessageBox } from "rise"
 import logButton from "./components/logButton"
-import { partInfoItems } from "./components/data"
+import { partInfoItems,translateServiceData } from "./components/data"
 import infoAndReq from "./components/infoAndReq"
 import originAndCapacity from "./components/originAndCapacity"
 import mouldAndDevelopmentCost from "./components/mouldAndDevelopmentCost"
@@ -100,13 +101,13 @@ import sampleDeliveryProgress from './components/sampleDeliveryProgress'
 import remarksAndAttachment from './components/remarksAndAttachment'
 import startProductionDateDialog from "./components/startProductionDateDialog"
 
-import { getPartsQuotations, getStates, submitPartsQuotation, quoteBatchPrice, cancelQuoteBatchPrice, quotations } from "@/api/rfqManageMent/quotationdetail"
+import { getPartsQuotations, getStates, submitPartsQuotation, quoteBatchPrice, cancelQuoteBatchPrice, quotations,contrastBidding } from "@/api/rfqManageMent/quotationdetail"
 import { cloneDeep } from "lodash"
-import {partProjTypes} from '@/config'
+import {partProjTypes,roundsType} from '@/config'
 import { getEnumValue as $enum } from "rise/web/config"
 import { getNominateDisabled } from "rise/web/common"
 import { priceStatusMixin } from "./components/mixins"
-
+import onlineBiddingDialog from 'rise/web/quotationdetail/components/dialogBidding'
 export default {
   components: { 
     iPage, 
@@ -130,7 +131,8 @@ export default {
     remarksAndAttachment,
     iInput,
     iDialog,
-    startProductionDateDialog
+    startProductionDateDialog,
+    onlineBiddingDialog
   },
   mixins: [ filters, priceStatusMixin ],
   data() {
@@ -180,6 +182,12 @@ export default {
       acceptQuotationDisabled: true, // 是否禁用等待接收报价
       agentQutation: false, // 代报价
       agentQutationDisabled: true, // 是否禁用代报价
+
+      show:{show:false},
+      biddingData:{
+        tableTitle:[],
+        tabelData:[]
+      }
     }
   },
   provide: function () {
@@ -205,8 +213,16 @@ export default {
       }
       return this.tabs
     },
+    /**
+     * @description: 判断当前的RFq类型是否是钢材 / 轮次类型是否是在线竞价 
+     * @param {*}
+     * @return {*}
+     */
     isSteel() {
-      return this.partInfo.partProjectType === partProjTypes.GANGCAIPILIANGCAIGOU || this.partInfo.partProjectType === partProjTypes.GANGCAIYICIXINGCAIGOU
+      return this.partInfo.partProjectType === partProjTypes.GANGCAIPILIANGCAIGOU || this.partInfo.partProjectType === partProjTypes.GANGCAIYICIXINGCAIGOU 
+    },
+    roundIsOnlineBidding(){
+      return this.partInfo.roundsType == roundsType.zxjjys
     }
   },
   watch: {
@@ -252,6 +268,38 @@ export default {
     // }});
   },
   methods: {
+    updateOnlineBiddingDialog(){
+      contrastBidding(this.partInfo.quotationId).then(res=>{
+        if(res.data && res.data.length > 0){
+          this.show.show = true
+          this.biddingData = this.translateDataBidding(res.data)
+        }
+      }).catch(err=>{})
+    },
+    translateDataBidding(list){
+     try {
+      const tableTitle = []
+      const tabelData = {}
+      list.forEach((r,indexs)=>{
+        tabelData['items'+indexs] = r
+        tableTitle.push({props:'items'+indexs,name:r.typeDesc})
+      })
+      return {
+        tableTitle:tableTitle,
+        tabelData:[
+          tabelData,
+          tabelData,
+          tabelData
+        ]
+      }
+     } catch (error) {
+       console.log(error)
+       return {
+         tableTitle:[],
+         tabelData:[]
+       }
+     }
+    },
     rejectPrice(){
       this.dialogVisible = true
     },
@@ -446,6 +494,7 @@ export default {
 
       try {
         await component.save(type)
+        this.updateOnlineBiddingDialog()
         this.getPartsQuotations("save")
       } finally {
         this.saveLoading = false
