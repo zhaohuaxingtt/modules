@@ -195,7 +195,7 @@ export default {
 			.then(res => {
 				if (res.code == 200) {
 					const data = res.data ? res.data : {}
-					this.isChange = !data.isChange
+					this.isChange = data.isChange
 					this.tableListData = Array.isArray(data.priceList) ? data.priceList : []
 
 					this.total = this.tableListData.reduce((acc, cur) => {
@@ -249,7 +249,7 @@ export default {
 			if (typeof beforeHook === "function") beforeHook()
 
 			return saveAekoCbdPriceSum({
-				isChange: !this.isChange,
+				isChange: this.isChange,
 				quotationId: this.partInfo.quotationId,
 				priceList: this.tableListData
 			})
