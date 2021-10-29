@@ -36,10 +36,17 @@
           <iButton v-if="!disabled && !isSteel && agentQutationDisabled" @click="handleAgentQutation">{{ $t("LK_DAIGONGYINGSHANGBAOJIA") }}</iButton>
           <iButton v-if="!disabled && !agentQutationDisabled" @click="handleCancelQutation">{{ $t("LK_QUXIAO") }}</iButton>
         </span>
-        <span v-if="!agentQutationDisabled">
+        <span class="btns" v-if="!agentQutationDisabled">
           <iButton v-if="!partInfo.isOriginprice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="quoteBatchPriceLoading" @click="handleQuoteBatchPrice">{{ $t("LK_YINYONGPILIANGJIAGE") }}</iButton>
           <iButton v-if="partInfo.isOriginprice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="cancelQuoteBatchPriceLoading" @click="handleCancelBatchPrice">{{ $t("LK_QUXIAOPILIANGJIAGE") }}</iButton>
-          <iButton @click="handleSave" v-if="currentTab != 'infoAndReq' && !disabled" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
+          <span class="saveBtn">
+            <span v-if="currentTab == 'packAndShip'">
+              <iButton @click="handleSave" v-if="!hidePackAndShipSave && !disabled" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
+            </span>
+            <span v-else>
+              <iButton @click="handleSave" v-if="currentTab != 'infoAndReq' && !disabled" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
+            </span>
+          </span>
           <iButton @click="handleSubmit" v-if="!disabled" :loading="submitLoading">{{ $t('LK_TIJIAO') }}</iButton>
         </span>
         <logButton class="margin-left20" @click="log" />
@@ -64,7 +71,7 @@
     <div id="tabList" v-loading="tabLoading">
       <iTabsList class="margin-top20" type="card" v-model="currentTab" :before-leave="tabLeaveBefore" @tab-click="tabChange">
         <el-tab-pane v-for="(tab, $tabIndex) in trueTabs" :key="$tabIndex" :label="$t(tab.key)" :name="tab.name">
-          <component :ref="tab.name" :is="component" :partInfo="partInfo" v-for="(component, $componentIndex) in tab.components" :class="$componentIndex !== 0 ? 'margin-top20' : ''" :key="$componentIndex" :disabled="disabled || agentQutationDisabled" :isOriginprice="partInfo.isOriginprice" :isSteel="isSteel" :isDb="isDb" :roundIsOnlineBidding='roundIsOnlineBidding' @changeReduceStatus="changeReduceStatus"/>
+          <component :ref="tab.name" :is="component" :partInfo="partInfo" v-for="(component, $componentIndex) in tab.components" :class="$componentIndex !== 0 ? 'margin-top20' : ''" :key="$componentIndex" :disabled="disabled || agentQutationDisabled" :isOriginprice="partInfo.isOriginprice" :isSteel="isSteel" :isDb="isDb" :roundIsOnlineBidding='roundIsOnlineBidding' @changeReduceStatus="changeReduceStatus" @hidePackAndShipSave="hidePackAndShipSave = true"/>
         </el-tab-pane>
       </iTabsList>
     </div>
@@ -188,7 +195,8 @@ export default {
       biddingData:{
         tableTitle:[],
         tabelData:[]
-      }
+      },
+      hidePackAndShipSave: false
     }
   },
   provide: function () {
@@ -525,9 +533,10 @@ export default {
       this.saveLoading = true
 
       try {
-        await component.save(type)
+        const res = await component.save(type)
         this.updateOnlineBiddingDialog()
         this.getPartsQuotations("save")
+        return res
       } finally {
         this.saveLoading = false
       }
@@ -567,7 +576,6 @@ export default {
     // 提交
     async handleSubmit() {
       this.submitLoading = true
-
       try {
         if (this.$refs[this.currentTab][0] && typeof this.$refs[this.currentTab][0].save === "function") {
           await this.handleSave("submit")
@@ -719,6 +727,19 @@ export default {
     right: -10px;
     width: 20px;
     height: 20px;
+  }
+
+  
+  .btns {
+    button {
+      margin-right: 10px;
+    }
+
+    .saveBtn {
+      & + button {
+        margin-right: 10px;
+      }
+    }
   }
 }
 
