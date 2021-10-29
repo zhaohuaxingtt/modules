@@ -6,8 +6,10 @@
 -->
 <template>
   <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU ||  partInfo.priceStatus == 'DB'" v-loading="loading">
-    <iCard :title="language('CANKAOBAOZHUANG','参考包装')">
+    <iCard :title="url ? '' : language('CANKAOBAOZHUANG','参考包装')">
+      <iframe v-if="url" class="iframe" :src="url"></iframe>
       <iFormGroup
+        v-else
         :row="4"
         inline
         class="packAndShip-form margin-top20"
@@ -21,8 +23,10 @@
         </iFormItem>
       </iFormGroup>
     </iCard>
-    <iCard :title="language('BAOZHUANGYAOQIU','包装要求')" class="margin-top20">
+    <iCard :title="url ? '' : language('BAOZHUANGYAOQIU','包装要求')" class="margin-top20">
+      <iframe v-if="url" class="iframe" :src="url"></iframe>
       <iFormGroup
+        v-else
         :row="4"
         inline
         class="packAndShip-form margin-top20"
@@ -50,7 +54,8 @@
   <!--- 先做出[包装费][运输费][操作费]三个文本输入框（只能输入数字，可以输入小数点后四位），提供给报价成本汇总使用----->
   <!----在未来BNK页面开发好后，再将该包装运输页面迁移到本系统内---------------------------------------------------->
   <iCard v-else class="packAndShip" v-loading="loading">
-    <div class="header">
+    <iframe v-if="url" class="iframe" :src="url"></iframe>
+    <div class="header" v-else>
       <span class="title">{{ $t('LK_BAOZHUANGYUNSHU') }}</span>
       <span class="tip margin-left10">{{ $t('LK_DANWEIYUAN') }}</span>
     </div>
@@ -60,13 +65,14 @@
       inline
       class="packAndShip-form margin-top20"
       :rules="rules"
+      v-if="!url"
     >
       <iFormItem
         v-for="item in inputs"
         :key="item.props"
         :label="language(item.i18n, item.name) + '：'"
       >
-          <!-------只能输入数字，可以输入小数点后四位---------->
+          <!-- -------只能输入数字，可以输入小数点后四位---------- -->
         <iInput v-if="!disabled && item.editable" v-model="params[item.props]" title="" type="number" oninput="if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+5)}"></iInput>
         <iText v-else>{{ params[item.props] }}</iText>
       </iFormItem>
@@ -80,6 +86,7 @@ import { savePackageTransport, getPackageTransport } from '@/api/rfqManageMent/q
 import { getDictByCode } from '@/api/dictionary'
 import {partProjTypes} from '@/config'
 import { priceStatusMixin } from "../mixins"
+import { bnkSupplierToken } from "@/api/aeko/quotationdetail"
 
 export default {
   components: {
@@ -103,6 +110,10 @@ export default {
     disabled: {type: Boolean}
   },
   computed: {
+    // eslint-disable-next-line no-undef
+    ...Vuex.mapState({
+      userInfo: state => state.permission.userInfo,
+    }),
     inputs() {
       if (this.isSkd || this.isSkdLc) {
         this.params.logisticsQuotationStatus = undefined
@@ -144,13 +155,30 @@ export default {
         { props: "packageLs", name: "LS(PC)", i18n: 'LS_PC' },
         { props: "packageStack", name: "Stack", i18n: 'STACK' },
       ],
-      selectOptions: {}
+      selectOptions: {},
+      url: ""
     };
   },
   created() {
     this.getPackageOptions()
   },
   methods: {
+    bnkSupplierToken() {
+      return bnkSupplierToken({
+        partProjId: this.partInfo.projectPartId,
+        rfqId: this.partInfo.rfqId
+      })
+      .then(res => {
+        if (res.code == 200 && res.data) {
+          this.url = `http://10.122.44.58/sol-bnk/pages/rise/quotes/lsp-view.jsf?partProjId=${ this.partInfo.projectPartId }&tmRfqId=${ this.partInfo.rfqId }&ppSupplierId=${ this.userInfo.supplierId }&ppSupplierUserId=${ this.userInfo.id }&token=${ res.data }`
+          this.$emit("hidePackAndShipSave") 
+        } else {
+          this.url = ""
+          iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+        }
+      })
+    },
+    // 
     getName(val) {
       return this.selectOptions.PACKAGETYPE?.find(item => item.value === val)?.label
     },
@@ -180,8 +208,11 @@ export default {
      * @param {*}
      * @return {*}
      */    
-    init(){
-      this.getPackageTransport()
+    async init(){
+      await this.bnkSupplierToken()
+      if (!this.url) {
+        this.getPackageTransport()
+      }
     },
     /**
      * 获取包装运输初始数据
@@ -252,6 +283,11 @@ export default {
       width: 140px;
       font-size: 16px;
     }
+  }
+
+  .iframe {
+    width: 100%;
+    height: 80vh;
   }
 }
 </style>
