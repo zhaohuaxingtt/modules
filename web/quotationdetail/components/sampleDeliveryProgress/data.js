@@ -8,10 +8,10 @@
  */
 
 export const tableTitle = [
-  { props: "sampleDeliverType", name: "具体进度", tooltip: true, key: "LK_JUTIJINDU" },
-	{ props: "requiredTime", name: "SAIC VOLKSWGEN要求(周)", tooltip: true, key: "LK_SAICVOLKSWGENZHOU" },
-	{ props: "supplierTime", name: "供应商周期(周)", tooltip: true, key: "LK_GONGYINGSHANGZHOUQIZHOU", type: 'input' },
-	{ props: "remark", name: "备注", tooltip: true, key: "LK_BEIZHU", type: 'input' },
+  { props: "sampleDeliverType", name: "具体进度", key: "LK_JUTIJINDU" },
+	{ props: "requiredTime", name: "SAIC VOLKSWGEN要求(周)", key: "LK_SAICVOLKSWGENZHOU" },
+	{ props: "supplierTime", name: "供应商周期(周)", key: "LK_GONGYINGSHANGZHOUQIZHOU", type: 'input' },
+	{ props: "remark", name: "备注", key: "LK_BEIZHU", type: 'input' },
 ]
 
 export const dateTemplate = [
