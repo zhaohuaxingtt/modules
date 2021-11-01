@@ -16,7 +16,7 @@
     </template>
 		<div class="body margin-top20">
 			<el-table class="table" ref="table" :data="tableListData" v-loading="loading" @selection-change="handleSelectionChange">
-				<el-table-column type="selection" align="center" width="55"></el-table-column>
+				<el-table-column type="selection" align="center" width="55" v-if="!disabled && !editDisabled"></el-table-column>
 				<el-table-column label="#" type="index" align="center" width="55" ></el-table-column>
 				<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('LEIBIE', '类别') }<span class='require'>*</span>` }})" align="center" width="135">
 					<template v-slot="scope">

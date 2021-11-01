@@ -43,7 +43,7 @@
             multiple
             v-model="modules"
             :placeholder="language('QINGXUANZE','请选择')"
-            :disabled="disabled || cbdDisabled || editDisabled"
+            :disabled="disabled || cbdDisabled || editDisabled || !cbdCanEdit"
             @change="handleChangeByModules">
             <el-option
               value=""
@@ -66,7 +66,7 @@
             ref="rawMaterials"
             v-if="moduleMap.material" 
             v-model="rawMaterialsTableData" 
-            :disabled="disabled || cbdDisabled || editDisabled"
+            :disabled="disabled || cbdDisabled || editDisabled || !cbdCanEdit"
             :materialTypeOptions="materialTypeOptions"
             :sumData.sync="rawMaterialsSumData"
             v-permission.auto="AEKO_QUOTATION_CBD_VIEW_YUANCAILIAOSANJIAN|原材料/散件" />
@@ -76,14 +76,14 @@
             ref="manufacturingCost"
             v-if="moduleMap.production" 
             v-model="manufacturingCostTableData" 
-            :disabled="disabled || cbdDisabled || editDisabled"
+            :disabled="disabled || cbdDisabled || editDisabled || !cbdCanEdit"
             :sumData.sync="manufacturingCostSumData"
             v-permission.auto="AEKO_QUOTATION_CBD_VIEW_ZHIZAOCHENGBEN|制造成本" />
           <div class="flexBox">
-            <scrapCost v-if="moduleMap.scrap" class="margin-top30" topCutLine v-model="scrapCostTableData" :disabled="disabled || cbdDisabled || editDisabled" :sumData="sumData" :discardCostChange.sync="discardCostChange" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_BAOFEICHENGBEN|报废成本" />
-            <manageCost v-if="moduleMap.manage" class="margin-top30" topCutLine v-model="manageTableData" :disabled="disabled || cbdDisabled || editDisabled" :sumData="sumData" :manageFeeChange.sync="manageFeeChange" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_GUANLIFEI|管理费" />
+            <scrapCost v-if="moduleMap.scrap" class="margin-top30" topCutLine v-model="scrapCostTableData" :disabled="disabled || cbdDisabled || editDisabled || !cbdCanEdit" :sumData="sumData" :discardCostChange.sync="discardCostChange" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_BAOFEICHENGBEN|报废成本" />
+            <manageCost v-if="moduleMap.manage" class="margin-top30" topCutLine v-model="manageTableData" :disabled="disabled || cbdDisabled || editDisabled || !cbdCanEdit" :sumData="sumData" :manageFeeChange.sync="manageFeeChange" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_GUANLIFEI|管理费" />
             <otherCost v-if="Array.isArray(otherCostTableData) && otherCostTableData.length > 0" class="margin-top30" :tableListData="otherCostTableData" topCutLine :otherFee.sync="otherFee" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_QITAFEIYONG|其他费用" />
-            <profit v-if="moduleMap.profit" class="margin-top30" topCutLine v-model="profitTableData" :disabled="disabled || cbdDisabled || editDisabled" :sumData="sumData" :profitChange.sync="profitChange" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_LIRUN|利润" />
+            <profit v-if="moduleMap.profit" class="margin-top30" topCutLine v-model="profitTableData" :disabled="disabled || cbdDisabled || editDisabled || !cbdCanEdit" :sumData="sumData" :profitChange.sync="profitChange" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_LIRUN|利润" />
           </div>
         </div>
       </div>
