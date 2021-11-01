@@ -2,29 +2,29 @@
   <div class="aPriceChange">
     <iCard :title="language('BIANDONGZHI', '变动值')">
       <template #header-control>
-        <iButton v-if="sourceApriceChange != apriceChange && !disabled" :loading="saveChangeLoading" @click="saveAPriceChange">{{ language("BAOCUN", "保存") }}</iButton>
+        <iButton v-if="sourceApriceChange != apriceChange && !disabled && !editDisabled"  :loading="saveChangeLoading" @click="saveAPriceChange">{{ language("BAOCUN", "保存") }}</iButton>
       </template>
       <div class="aPriceChangeMode">
         <div class="margin-top20">
           <div class="input" v-permission.auto="AEKO_QUOTATION_CBD_INPUT_AJIABIANDONGHANFENTAN|A价变动_含分摊">
             <span class="label">{{ language("AJIABIANDONGHANFENTAN", "A价变动(含分摊)") }}:</span>
-            <iInput v-if="!apriceChangeDisabled" v-model="apriceChange" @input="handleInputByApriceChange" />
+            <iInput v-if="!apriceChangeDisabled && !editDisabled" v-model="apriceChange" @input="handleInputByApriceChange" />
             <iText v-else>{{ floatFixNum(apriceChange) }}</iText>
           </div>
         </div>
       </div>
     </iCard>
-    <changeSummary ref="changeSummary" class="margin-top20" :partInfo="partInfo" :moduleOptions="allModuleOptions" :disabled="disabled" @updateTotal="updateTotal" @updateIsChange="updateIsChange" @getBasicInfo="getBasicInfo"/>
+    <changeSummary ref="changeSummary" class="margin-top20" :partInfo="partInfo" :moduleOptions="allModuleOptions" :disabled="disabled" :editDisabled="editDisabled" @updateTotal="updateTotal" @updateIsChange="updateIsChange" @getBasicInfo="getBasicInfo"/>
     <iCard v-permission.auto="AEKO_QUOTATION_CBD_TAB_BIANDONGZHICBD|变动值CBD" class="margin-top20">
       <template #header>
         <div class="title">
           <span>{{ `${ language("BIANDONGZHI", "变动值") } - CBD` }}</span>
           <span class="tip margin-left12">{{ language("DANWEI", "单位") }}：RMB/Pc.</span>
         </div>
-        <div class="header-control">
+        <div class="header-control" v-if="!editDisabled">
           <el-switch
             class="switch"
-            :disabled="cbdDisabled || disabled"
+            :disabled="cbdDisabled || disabled || editDisabled"
             :class="{ switchSpace: !cbdDisabled }"
             v-model="cbdCanEdit"
             :active-text="language('YOUXIAO', '有效')"
@@ -32,8 +32,8 @@
             :inactive-value="false"
             @change="handleChangeByCbdCanEdit">
           </el-switch>
-          <iButton v-permission.auto="AEKO_QUOTATION_CBD_BUTTON_BAOCUN|保存" v-if="!disabled && !cbdDisabled" :loading="saveLoading" @click="handleSave">{{ language("BAOCUN", "保存") }}</iButton>
-          <iButton v-permission.auto="AEKO_QUOTATION_CBD_BUTTON_XIAZAI|下载" v-if="!disabled && !cbdDisabled" :loading="downloadLoading" @click="handleDownload">{{ language("XIAZAI", "下载") }}</iButton>
+          <iButton v-permission.auto="AEKO_QUOTATION_CBD_BUTTON_BAOCUN|保存" v-if="!disabled && !cbdDisabled && cbdCanEdit" :loading="saveLoading" @click="handleSave">{{ language("BAOCUN", "保存") }}</iButton>
+          <iButton v-permission.auto="AEKO_QUOTATION_CBD_BUTTON_XIAZAI|下载" v-if="!disabled && !cbdDisabled && cbdCanEdit" :loading="downloadLoading" @click="handleDownload">{{ language("XIAZAI", "下载") }}</iButton>
         </div>
       </template>
       <div class="body" v-loading="loading">
@@ -43,7 +43,7 @@
             multiple
             v-model="modules"
             :placeholder="language('QINGXUANZE','请选择')"
-            :disabled="disabled || cbdDisabled"
+            :disabled="disabled || cbdDisabled || editDisabled || !cbdCanEdit"
             @change="handleChangeByModules">
             <el-option
               value=""
@@ -66,7 +66,7 @@
             ref="rawMaterials"
             v-if="moduleMap.material" 
             v-model="rawMaterialsTableData" 
-            :disabled="disabled || cbdDisabled"
+            :disabled="disabled || cbdDisabled || editDisabled || !cbdCanEdit"
             :materialTypeOptions="materialTypeOptions"
             :sumData.sync="rawMaterialsSumData"
             v-permission.auto="AEKO_QUOTATION_CBD_VIEW_YUANCAILIAOSANJIAN|原材料/散件" />
@@ -76,14 +76,14 @@
             ref="manufacturingCost"
             v-if="moduleMap.production" 
             v-model="manufacturingCostTableData" 
-            :disabled="disabled || cbdDisabled"
+            :disabled="disabled || cbdDisabled || editDisabled || !cbdCanEdit"
             :sumData.sync="manufacturingCostSumData"
             v-permission.auto="AEKO_QUOTATION_CBD_VIEW_ZHIZAOCHENGBEN|制造成本" />
           <div class="flexBox">
-            <scrapCost v-if="moduleMap.scrap" class="margin-top30" topCutLine v-model="scrapCostTableData" :disabled="disabled || cbdDisabled" :sumData="sumData" :discardCostChange.sync="discardCostChange" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_BAOFEICHENGBEN|报废成本" />
-            <manageCost v-if="moduleMap.manage" class="margin-top30" topCutLine v-model="manageTableData" :disabled="disabled || cbdDisabled" :sumData="sumData" :manageFeeChange.sync="manageFeeChange" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_GUANLIFEI|管理费" />
+            <scrapCost v-if="moduleMap.scrap" class="margin-top30" topCutLine v-model="scrapCostTableData" :disabled="disabled || cbdDisabled || editDisabled || !cbdCanEdit" :sumData="sumData" :discardCostChange.sync="discardCostChange" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_BAOFEICHENGBEN|报废成本" />
+            <manageCost v-if="moduleMap.manage" class="margin-top30" topCutLine v-model="manageTableData" :disabled="disabled || cbdDisabled || editDisabled || !cbdCanEdit" :sumData="sumData" :manageFeeChange.sync="manageFeeChange" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_GUANLIFEI|管理费" />
             <otherCost v-if="Array.isArray(otherCostTableData) && otherCostTableData.length > 0" class="margin-top30" :tableListData="otherCostTableData" topCutLine :otherFee.sync="otherFee" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_QITAFEIYONG|其他费用" />
-            <profit v-if="moduleMap.profit" class="margin-top30" topCutLine v-model="profitTableData" :disabled="disabled || cbdDisabled" :sumData="sumData" :profitChange.sync="profitChange" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_LIRUN|利润" />
+            <profit v-if="moduleMap.profit" class="margin-top30" topCutLine v-model="profitTableData" :disabled="disabled || cbdDisabled || editDisabled || !cbdCanEdit" :sumData="sumData" :profitChange.sync="profitChange" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_LIRUN|利润" />
           </div>
         </div>
       </div>
@@ -119,7 +119,11 @@ export default {
     disabled: {
       type: Boolean,
       default: false
-    }
+    },
+    editDisabled: {
+      type: Boolean,
+      default: false
+    },
   },
   data() {
     return {
@@ -312,7 +316,6 @@ export default {
           this.moduleOptions.forEach(module => this.$set(this.moduleMap, module.value, true))
           return
         }
-
         modules.forEach(moduleKey => this.$set(this.moduleMap, moduleKey, true))
         this.modules = this.moduleOptions.filter(module => !!this.moduleMap[module.value]).map(module => module.value)
       }

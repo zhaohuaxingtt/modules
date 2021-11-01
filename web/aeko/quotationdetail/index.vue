@@ -3,7 +3,7 @@
     <div class="margin-bottom20 clearFloat">
       <span class="font18 font-weight">{{ language("AEKOHAO", "AEKO号") }}：{{ basicInfo.aekoCode }}</span>
       <div class="floatright" v-if="!loading">
-        <iButton v-permission.auto="AEKO_QUOTATION_DETAIL_BUTTON_TIJIAO|提交" v-if="!disabled" :loading="submitLoading" @click="handleSubmit">{{ language("TIJIAO", "提交") }}</iButton>
+        <iButton v-permission.auto="AEKO_QUOTATION_DETAIL_BUTTON_TIJIAO|提交" v-if="!disabled && !editDisabled" :loading="submitLoading" @click="handleSubmit">{{ language("TIJIAO", "提交") }}</iButton>
         <logButton class="margin-left20" @click="log" v-permission.auto="AEKO_QUOTATION_DETAIL_BUTTON_RIZHI|日志" />
         <span class="margin-left20">
 					<icon symbol name="icondatabaseweixuanzhong" class="font18" />
@@ -71,7 +71,7 @@
     <iTabsList class="margin-top20" type="card" v-model="currentTab" :before-leave="tabLeaveBefore" @tab-click="tabChange">
       <el-tab-pane v-for="(tab, $tabIndex) in tabs" :key="$tabIndex" :label="language(tab.key, tab.label)" :name="tab.name" v-permission.dynamic.auto="tab.permissionKey">
         <template v-if="tab.name == currentTab">
-          <component :ref="tab.name" :is="component" v-for="(component, $componentIndex) in tab.components" :class="$componentIndex !== 0 ? 'margin-top20' : ''" :key="$componentIndex" :partInfo="partInfo" :basicInfo="basicInfo" :disabled="disabled" @getBasicInfo="getBasicInfo" @updateApriceChange="updateApriceChange" />
+          <component :ref="tab.name" :is="component" v-for="(component, $componentIndex) in tab.components" :class="$componentIndex !== 0 ? 'margin-top20' : ''" :key="$componentIndex" :partInfo="partInfo" :basicInfo="basicInfo" :disabled="disabled" :editDisabled ="editDisabled" @getBasicInfo="getBasicInfo" @updateApriceChange="updateApriceChange" />
         </template>
       </el-tab-pane>
     </iTabsList>
@@ -125,6 +125,10 @@ export default {
     this.getBasicInfo();
   },
   computed: {
+    // 是否显示编辑功能
+    editDisabled(){
+      return this.$route.query.editDisabled == 'true'? true : false
+    },
       //eslint-disable-next-line no-undef
       ...Vuex.mapState({
           userInfo: state => state.permission.userInfo,
@@ -216,7 +220,6 @@ export default {
           let quotationStateDisabled = res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.NOT_QUOTED") || res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.REFUSE") || res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.DELEGATE_REFUSE")
           let rfqRoundStateDisabled = res.data.rfqRoundStateCode != $enum("RFQ_ROUNDS_STATE_ENUM.RUNNING")
           let roundDisabled = +this.partInfo.round != +res.data.currentRounds
-          
           this.disabled = fsStateDisabled || rfqStateDisabled || quotationStateDisabled || rfqRoundStateDisabled || roundDisabled
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
