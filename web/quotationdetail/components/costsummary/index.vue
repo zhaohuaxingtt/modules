@@ -1251,17 +1251,17 @@ export default{
           })
         }
 
-        // return this.postCostSummary().then(res => {
-        //   if (res.code == 200) {
-        //     this.updateCbdLevel(this.allTableData.level)
-        //     this.init()
-        //     if (type !== "submit") {
-        //       iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn) 
-        //     }
-        //   } else {
-        //     iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
-        //   }
-        // })
+        return this.postCostSummary().then(res => {
+          if (res.code == 200) {
+            this.updateCbdLevel(this.allTableData.level)
+            this.init()
+            if (type !== "submit") {
+              iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn) 
+            }
+          } else {
+            iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+          }
+        })
       }
     },
     getCostSummaryDB() {
