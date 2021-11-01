@@ -164,6 +164,8 @@ export default {
   },
   methods: {
     bnkSupplierToken() {
+      if (!this.userInfo.supplierId) return
+
       return bnkSupplierToken({
         partProjId: this.partInfo.projectPartId,
         rfqId: this.partInfo.rfqId
