@@ -166,12 +166,18 @@ export default {
     bnkSupplierToken() {
       return bnkSupplierToken({
         partProjId: this.partInfo.projectPartId,
-        rfqId: this.partInfo.rfqId
+        rfqId: this.partInfo.rfqId,
+        supplierId: this.userInfo.supplierId || this.$route.query.supplierId
       })
       .then(res => {
         if (res.code == 200 && res.data) {
-          this.url = `http://10.122.44.58/sol-bnk/pages/rise/quotes/lsp-view.jsf?partProjId=${ this.partInfo.projectPartId }&tmRfqId=${ this.partInfo.rfqId }&ppSupplierId=${ this.userInfo.supplierId }&ppSupplierUserId=${ this.userInfo.id }&token=${ res.data }`
-          this.$emit("hidePackAndShipSave") 
+          if (this.userInfo.supplierId) {
+            this.url = `http://10.122.44.58/sol-bnk/pages/rise/quotes/lsp-view.jsf?partProjId=${ this.partInfo.projectPartId }&tmRfqId=${ this.partInfo.rfqId }&ppSupplierId=${ this.userInfo.supplierId }&ppSupplierUserId=${ this.userInfo.id }&token=${ res.data }`
+          } else if (this.$route.query.supplierId) {
+            this.url = `http://10.122.44.58/sol-bnk/pages/rise/quotes/lsp-employee-view.jsf?partProjId=${ this.partInfo.projectPartId }&tmRfqId=${ this.partInfo.rfqId }&ppSupplierId=${ this.userInfo.supplierId }&ppSupplierUserId=${ this.userInfo.id }&token=${ res.data }`
+          }
+          
+          this.$emit("hidePackAndShipSave")
         } else {
           this.url = ""
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
@@ -209,10 +215,11 @@ export default {
      * @return {*}
      */    
     async init(){
-      await this.bnkSupplierToken()
-      if (!this.url) {
-        this.getPackageTransport()
-      }
+      this.bnkSupplierToken()
+      
+      // if (!this.url) {
+      //   this.getPackageTransport()
+      // }
     },
     /**
      * 获取包装运输初始数据

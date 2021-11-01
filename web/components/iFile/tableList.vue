@@ -1,7 +1,7 @@
 <!--
  * @Author: haojiang
  * @Date: 2021-02-24 09:42:07
- * @LastEditTime: 2021-10-13 09:31:46
+ * @LastEditTime: 2021-11-01 14:39:10
  * @LastEditors: Hao,Jiang
  * @Description: table组件
 -->
@@ -22,7 +22,7 @@
     default-expand-all
     ref="moviesTable">
     <!----------------------复选框------------------------------------->
-    <el-table-column v-if="selection" type='selection' width="56" align='center'></el-table-column>
+    <el-table-column v-if="selection" type='selection' width="56" align='center' :selectable="selectable"></el-table-column>
     <!----------------------支持自定义的index插槽------------------------>
     <el-table-column v-if='index' type='index' width='50' align='center' :label='indexLabel'>
       <template slot-scope="scope">
@@ -109,6 +109,12 @@ export default{
      * @return {*}
      */    
     selection:{type:Boolean,default:true},
+    /**
+     * @description: 是否支持选中逻辑
+     * @param {*}
+     * @return {*}
+     */    
+    selectable: {type:Function},
     /**
      * @description: 表格索引
      * @param {*}
