@@ -6,7 +6,7 @@
         <span class="tip margin-left14">({{ language("DANWEI", "单位") }}：{{ language("YUAN", "元") }})</span>
       </div>
       <div class="header-control">
-        <div class="btn">
+        <div class="btn" v-if="!editDisabled">
           <iButton v-if="!disabled" @click="handleAdd">{{ language("TIANJIAHANG", "添加行") }}</iButton>
           <iButton v-if="!disabled" @click="handleDelete">{{ language("SHANCHUHANG", "删除行") }}</iButton>
           <iButton @click="handleQuote">{{ language("GUANLIANLINGJIAN", "关联零件") }}</iButton>
@@ -27,7 +27,7 @@
           :tableData="tableListData"
           @handleSelectionChange="handleSelectionChange">
         <template #isShared="scope">
-          <iSelect v-if="!disabled && !isQuote(scope.row)" v-model="scope.row.isShared"
+          <iSelect v-if="!disabled && !isQuote(scope.row) && !editDisabled" v-model="scope.row.isShared"
                    @change="handleChangeByIsShared($event, scope.row)">
             <el-option :label="language('SHI', '是')" :value="1"></el-option>
             <el-option :label="language('FOU', '否')" :value="0"></el-option>
@@ -36,7 +36,7 @@
         </template>
         <!--类型选择--->
         <template #changeType="scope">
-          <iSelect v-if="scope.row.isShared == 1 && !disabled" v-model="scope.row.changeType"
+          <iSelect v-if="scope.row.isShared == 1 && !disabled && !editDisabled" v-model="scope.row.changeType"
                    @change="handleChangeByChangeType($event, scope.row)">
             <el-option :label="language('XINZENG', '新增')" value="新增"></el-option>
             <el-option :label="language('XIUMU', '修模')" value="修模"></el-option>
@@ -46,18 +46,18 @@
         </template>
         <!--工艺类型-->
         <template #stuffType="scope">
-          <iInput v-if="!isQuote(scope.row) && !disabled" v-model="scope.row.stuffType"></iInput>
+          <iInput v-if="!isQuote(scope.row) && !disabled && !editDisabled" v-model="scope.row.stuffType"></iInput>
           <span v-else>{{ scope.row.stuffType }}</span>
         </template>
         <!--工模具种类-->
         <template #mouldType="scope">
-          <iInput v-if="!isQuote(scope.row) && !disabled" v-model="scope.row.mouldType"
+          <iInput v-if="!isQuote(scope.row) && !disabled && !editDisabled" v-model="scope.row.mouldType"
                   @input="handleInputByMouldType($event, scope.row)"></iInput>
           <span v-else>{{ scope.row.mouldType }}</span>
         </template>
         <!--资产分类编号-->
         <template #assetTypeCode="scope">
-          <iSelect v-if="!isQuote(scope.row) && !disabled" v-model="scope.row.assetTypeCode">
+          <iSelect v-if="!isQuote(scope.row) && !disabled && !editDisabled" v-model="scope.row.assetTypeCode">
             <el-option v-for="assetType in assetTypeCodeOptions" :key="assetType.value" :label="assetType.label"
                        :value="assetType.value"></el-option>
           </iSelect>
@@ -65,29 +65,31 @@
         </template>
         <!--FS号-->
         <template #assembledPartPrjCode="scope">
-          <iInput v-if="!isQuote(scope.row) && !disabled" v-model="scope.row.assembledPartPrjCode"></iInput>
+          <iInput v-if="!isQuote(scope.row) && !disabled && !editDisabled" v-model="scope.row.assembledPartPrjCode"></iInput>
           <span v-else>{{ scope.row.assembledPartPrjCode }}</span>
         </template>
         <!--散件名称-->
         <template #supplierPartNameList="scope">
-          <iInput v-if="!isQuote(scope.row) && !disabled" v-model="scope.row.supplierPartNameList"
+          <iInput v-if="!isQuote(scope.row) && !disabled && !editDisabled" v-model="scope.row.supplierPartNameList"
                   @input="handleInputBySupplierPartNameList($event, scope.row)"></iInput>
           <span v-else>{{ scope.row.supplierPartNameList }}</span>
         </template>
         <!--散件零件号-->
         <template #supplierPartCodeList="scope">
-          <iInput v-if="!isQuote(scope.row) && !disabled" v-model="scope.row.supplierPartCodeList"></iInput>
+          <iInput v-if="!isQuote(scope.row) && !disabled && !editDisabled" v-model="scope.row.supplierPartCodeList"></iInput>
           <span v-else>{{ scope.row.supplierPartCodeList }}</span>
         </template>
         <!--数量-->
         <template #quantity="scope">
-          <iInput v-model="scope.row.quantity"
+          <iInput v-model="scope.row.quantity" v-if="!editDisabled"
                   @input="handleInputByNumber($event, 'quantity', scope.row, 0, updateQuantity)"></iInput>
+          <span v-else>{{ floatFixNum(scope.row.quantity, 0, 0) }}</span>
         </template>
         <!--资产变动单价-->
         <template #changeUnitPrice="scope">
-          <iInput v-model="scope.row.changeUnitPrice"
+          <iInput v-model="scope.row.changeUnitPrice" v-if="!editDisabled"
                   @input="handleInputByNumber($event, 'changeUnitPrice', scope.row, 2, updateChangeUnitPrice, scope.row.changeType === '减值')"></iInput>
+          <span v-else>{{ floatFixNum(scope.row.changeUnitPrice) }}</span>
         </template>
         <!--资产变动总额-->
         <template #changeTotalPrice="scope">{{ floatFixNum(scope.row.changeTotalPrice) }}</template>
@@ -99,7 +101,7 @@
       <iFormGroup class="subCost margin-top30" :row="4" inline>
         <iFormItem class="item" v-for="(info, $index) in mouldCostInfos" :key="$index"
                    :label="`${ language(info.key, info.name) }`">
-          <iInput v-if="info.props === 'shareQuantity' && !disabled" v-model="dataGroup[info.props]"
+          <iInput v-if="info.props === 'shareQuantity' && !disabled && !editDisabled" v-model="dataGroup[info.props]"
                   @input="handleInputByShareQuantity"/>
           <iText v-else>{{ floatFixNum(dataGroup[info.props]) }}</iText>
         </iFormItem>
@@ -129,7 +131,11 @@ export default {
     disabled: {
       type: Boolean,
       default: false
-    }
+    },
+    editDisabled: {
+      type: Boolean,
+      default: false
+    },
   },
   data() {
     return {

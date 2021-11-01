@@ -5,7 +5,7 @@
         <span>{{ `${ language("BIANDONGZHI", "变动值") } - ${ language("HUIZONGBIAO", "汇总表") }` }}</span>
         <span class="tip margin-left12">{{ language("DANWEI", "单位") }}：RMB/Pc.</span>
       </div>
-      <div class="header-control">
+      <div class="header-control" v-if="!editDisabled">
         <el-checkbox v-model="isChange" class="isChangeCheckbox" :class="{ isChangeCheckboxSpace: !isChange && !disabled }" :disabled="changeSummaryDisabled || disabled" @change="handleChangeByIsChange">{{ language("WUBIANDONGZHI", "无变动值") }}</el-checkbox>
 				<div v-if="!changeSummaryDisabled && !isChange && !disabled" class="btn">
 					<iButton :loading="saveLoading" @click="handleSave">{{ language("BAOCUN", "保存") }}</iButton>
@@ -20,7 +20,7 @@
 				<el-table-column label="#" type="index" align="center" width="55" ></el-table-column>
 				<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('LEIBIE', '类别') }<span class='require'>*</span>` }})" align="center" width="135">
 					<template v-slot="scope">
-						<iSelect v-if="!changeSummaryDisabled && !disabled" v-model="scope.row.typeName" class="select-center">
+						<iSelect v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.typeName" class="select-center">
 							<el-option
 								v-for="item in moduleOptions"
 								:key="item.value"
@@ -39,7 +39,7 @@
 							trigger="hover"
 							:content="scope.row.newContent"
 							:disabled="newContentFoucus || !scope.row.newContent">
-							<iInput v-if="!changeSummaryDisabled && !disabled" v-model="scope.row.newContent" slot="reference" class="input-center" @focus="newContentFoucus = true" @blur="newContentFoucus = false" />
+							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.newContent" slot="reference" class="input-center" @focus="newContentFoucus = true" @blur="newContentFoucus = false" />
 							<span v-else slot="reference">{{ scope.row.newContent | contentFilter }}</span>
 						</el-popover>
           </template>
@@ -47,25 +47,25 @@
 				<el-table-column :label="language('YUANLINGJIAN', '原零件')" align="center">
 					<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('YUANLINGJIANHAO', '原零件号') }<span class='require'>*</span>` }})" align="center">
 						<template v-slot="scope">
-							<iInput v-if="!changeSummaryDisabled && !disabled" v-model="scope.row.originPartNum" class="input-center" />
+							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.originPartNum" class="input-center" />
 							<span v-else>{{ scope.row.originPartNum }}</span>
 						</template>
 					</el-table-column>
 					<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('DANJIA', '单价') }<span class='require'>*</span>` }})" align="center">
 						<template v-slot="scope">
-							<iInput v-if="!changeSummaryDisabled && !disabled" v-model="scope.row.originUnitPrice" class="input-center" @input="handleInputByNumber($event, 'originUnitPrice', scope.row, 4, updateOriginUnitPrice)" />
+							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.originUnitPrice" class="input-center" @input="handleInputByNumber($event, 'originUnitPrice', scope.row, 4, updateOriginUnitPrice)" />
 							<span v-else>{{ scope.row.originUnitPrice }}</span>
 						</template>
 					</el-table-column>
 					<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('DANWEI', '单位') }<span class='require'>*</span>` }})" align="center">
 						<template v-slot="scope">
-							<iInput v-if="!changeSummaryDisabled && !disabled" v-model="scope.row.originUnit" class="input-center" />
+							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.originUnit" class="input-center" />
 							<span v-else>{{ scope.row.originUnit }}</span>
 						</template>
 					</el-table-column>
 					<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('YONGLIANG', '用量') }<span class='require'>*</span>` }})" align="center">
 						<template v-slot="scope">
-							<iInput v-if="!changeSummaryDisabled && !disabled" v-model="scope.row.originUseage" class="input-center" @input="handleInputByNumber($event, 'originUseage', scope.row, 4, updateOriginUseage)" />
+							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.originUseage" class="input-center" @input="handleInputByNumber($event, 'originUseage', scope.row, 4, updateOriginUseage)" />
 							<span v-else>{{ scope.row.originUseage }}</span>
 						</template>
 					</el-table-column>
@@ -78,25 +78,25 @@
 				<el-table-column :label="language('XINLINGJIAN', '新零件')" align="center">
 					<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('XINLINGJIANHAO', '新零件号') }<span class='require'>*</span>` }})" align="center">
 						<template v-slot="scope">
-							<iInput v-if="!changeSummaryDisabled && !disabled" v-model="scope.row.newPartNum" class="input-center" />
+							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.newPartNum" class="input-center" />
 							<span v-else>{{ scope.row.newPartNum }}</span>
 						</template>
 					</el-table-column>
 					<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('DANJIA', '单价') }<span class='require'>*</span>` }})" align="center">
 						<template v-slot="scope">
-							<iInput v-if="!changeSummaryDisabled && !disabled" v-model="scope.row.newUnitPrice" class="input-center" @input="handleInputByNumber($event, 'newUnitPrice', scope.row, 4, updateNewUnitPrice)" />
+							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.newUnitPrice" class="input-center" @input="handleInputByNumber($event, 'newUnitPrice', scope.row, 4, updateNewUnitPrice)" />
 							<span v-else>{{ scope.row.newUnitPrice }}</span>
 						</template>
 					</el-table-column>
 					<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('DANWEI', '单位') }<span class='require'>*</span>` }})" align="center">
 						<template v-slot="scope">
-							<iInput v-if="!changeSummaryDisabled && !disabled" v-model="scope.row.newUnit" class="input-center" />
+							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.newUnit" class="input-center" />
 							<span v-else>{{ scope.row.newUnit }}</span>
 						</template>
 					</el-table-column>
 					<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('YONGLIANG', '用量') }<span class='require'>*</span>` }})" align="center">
 						<template v-slot="scope">
-							<iInput v-if="!changeSummaryDisabled && !disabled" v-model="scope.row.newUseage" class="input-center" @input="handleInputByNumber($event, 'newUseage', scope.row, 4, updateNewUseage)" />
+							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.newUseage" class="input-center" @input="handleInputByNumber($event, 'newUseage', scope.row, 4, updateNewUseage)" />
 							<span v-else>{{ scope.row.newUseage }}</span>
 						</template>
 					</el-table-column>
@@ -144,6 +144,10 @@ export default {
 			default: () => ([])
 		},
 		disabled: {
+			type: Boolean,
+			default: false
+		},
+		editDisabled:{
 			type: Boolean,
 			default: false
 		}
