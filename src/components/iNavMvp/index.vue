@@ -1,7 +1,7 @@
 <!--
 * @author:shujie
 * @Date: 2021-2-25 16:13:25
- * @LastEditors: Please set LastEditors
+ * @LastEditors: YoHo
 * @Description: mvp顶部导航栏
  -->
 <template>
@@ -181,6 +181,7 @@
 			margin-left: 10px;
 			position: relative;
 			cursor: pointer;
+			display: flex;
 
 			.name {
 				padding: 4px 10px;
