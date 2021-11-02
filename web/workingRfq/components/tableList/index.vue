@@ -100,10 +100,17 @@
         <!----------------------------如果是展示select 或者input------------------------>
         <template v-if='!items.list' slot-scope="scope">
           <template v-if='items.type == "select"'>
-            <iSelect v-model="scope.row[items.props]" v-if='!notEdit'>
-                <el-option :value="options.value" v-for='(options,optionIndex) in items.options' :key='optionIndex' :label="options.name || options.label"></el-option>
+            <iSelect v-model="scope.row[items.props]" v-if='!notEdit' @change="$emit('handleSelectChange', $event, scope.row, items.props)">
+              <el-option :value="options.value" v-for='(options,optionIndex) in items.options' :key='optionIndex' :label="options.name || options.label"></el-option>
             </iSelect>
-            <span v-else>{{scope.row[items.props]}}</span>  
+            <span v-else>{{ items.showLabel ? showLabel(scope.row[items.props], items.options) : scope.row[items.props]}}</span>
+          </template>
+          <template v-else-if='items.type == "autocomplete"'>
+            <el-autocomplete
+              v-model="scope.row[items.props]"
+              :fetch-suggestions="scope.row.autocompleteFn || items.autocompleteFn"
+              @select="$emit('handleAutocompleteSelect', $event, scope.row, items.props)"
+            ></el-autocomplete>
           </template>
           <template v-else-if='items.type == "input"'>
             <iInput v-model="scope.row[items.props]" v-if='!notEdit' @input="handleInput($event, scope.row, items.props, items)"></iInput>
@@ -245,6 +252,14 @@ export default{
         this.$set(row, key, numberProcessor(value, 2))
       }
       this.$emit("handleInput", value, row, key)
+    },
+    showLabel(value, options = []) {
+      const current = options.find(item => item.value === value)
+      if (current) {
+        return current.name || current.label
+      } else {
+        return value
+      }
     }
   }
 }
