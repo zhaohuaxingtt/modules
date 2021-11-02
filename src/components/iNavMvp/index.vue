@@ -181,7 +181,6 @@
 			margin-left: 10px;
 			position: relative;
 			cursor: pointer;
-			display: flex;
 
 			.name {
 				padding: 4px 10px;
@@ -189,6 +188,7 @@
 				border-radius: 5px;
 				font-size: 16px;
 				color: #727272;
+				display: inline-block;
 			}
 
 			.active {
