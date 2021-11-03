@@ -14,15 +14,15 @@
 
 <template>
   <div v-if="isSkd">
-    <skdCostSummary ref="skdCostSummary" :partInfo="partInfo" />
+    <skdCostSummary ref="skdCostSummary" :partInfo="partInfo" :disabled="disabled" />
   </div>
   <div v-else>
     <div v-if="isSkdLc" class="margin-bottom20">
-      <skdCostSummary ref="skdCostSummary" :partInfo="partInfo" showTitle />
+      <skdCostSummary ref="skdCostSummary" :partInfo="partInfo" :disabled="disabled" showTitle />
     </div>
     <!---partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU----->
     <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || partInfo.priceStatus == 'DB'">
-      <quotationAnalysis :disabled="disabled || isOriginprice" :dbDetailList="dbDetailList" />
+      <quotationAnalysis :disabled="disabled || isOriginprice" :partInfo="partInfo" :dbDetailList="dbDetailList" />
     </div>
     <div class="cost" v-else>
       <!--------------------------------------------------------->
@@ -875,6 +875,7 @@ export default{
             this.initData = true
             this.count = 0
             this.isAutoCal = res.data.allTableData
+            if (this.isSkdLc) this.isAutoCal = false
             this.allTableData = this.translateDataForRender(res.data)
             this.topTableData = this.translateDataTopData(cloneDeep(this.allTableData), data)
             this.$refs.components && typeof this.$refs.components.partsQuotationss == "function" && this.$refs.components.partsQuotationss(this.partInfo.rfqId,this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId,this.partInfo.round,this.allTableData.level)
@@ -1269,6 +1270,7 @@ export default{
       } else {
         if (this.isSkdLc) {
           if (+moment(this.$refs.skdCostSummary.skdStartProductDate) > +moment(this.allTableData.startProductDate)) throw iMessage.warn(this.language("LCQIBUSHENGCHANRIQIBUNENGXIAOYUSKDQIBUSHENGCHANRIQI", "LC起步生产日期不能小于SKD起步生产日期"))
+          if (!moment(this.allTableData.startProductDate).isAfter(moment(this.$refs.skdCostSummary.skdStartProductDate), "month")) throw iMessage.warn(this.language("SKDAFTERLCNOTMONTH", "LC起步生产日期必须是SKD起步生产日期所在月份之后的日期"))
 
           return Promise.all([
             this.$refs.skdCostSummary.save(),
@@ -1328,8 +1330,9 @@ export default{
           ...item,
           capacity: item.sortOrder == 14 ? item.seaPrice : item.capacity,
           sopDate: item.sortOrder == 13 ? item.seaPrice : item.sopDate,
+          isAutoCal: item.sortOrder == 13 ? item.isAutoCal : undefined,
           isReduce: item.sortOrder == 11 ? item.seaPrice : item.isReduce,
-          seaPrice: item.sortOrder == 14 || item.sortOrder == 13 || item.sortOrder == 11 ? null : item.seaPrice
+          seaPrice: item.sortOrder == 14 || item.sortOrder == 13 || item.sortOrder == 11 ? null : item.seaPrice,
         }
       })
 

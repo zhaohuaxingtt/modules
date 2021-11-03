@@ -19,12 +19,34 @@
       <el-table-column prop="fee" align='center' :label="language('JINE', '金额')">
         <el-table-column prop="seaPrice" align='center' :label="language('HAIYUN', '海运')">
           <template slot-scope="scope">
-            <span v-if="disabled" :class="(scope.row.isRequire || scope.row.sortOrder === 13) && 'withRequire'">{{scope.row.type === 'select' ? scope.row.seaPrice ?language('SHI', '是'): language('FOU', '否') : scope.row.type === 'date' ? moment(scope.row.seaPrice).format('YYYY-MM-DD') : scope.row.seaPrice}}</span>
+            <span v-if="disabled" :class="(scope.row.isRequire || scope.row.sortOrder === 13) && 'withRequire'">
+              {{scope.row.type === 'select' ? scope.row.seaPrice ?language('SHI', '是'): language('FOU', '否') : scope.row.type === 'date' ? moment(scope.row.seaPrice).format('YYYY-MM-DD') : scope.row.seaPrice}}
+              <el-popover
+                v-if="scope.row.sortOrder == 13"
+                placement="top"
+                width="200"
+                trigger="hover"
+                :content="language('SHIFOUZIDONGJISUAN', '是否自动计算')">
+                  <el-checkbox class="isAutoCal" slot="reference" :disabled="disabled" v-model="scope.row.isAutoCal" @change="handleChangeIsAutoCal"></el-checkbox>
+              </el-popover>
+            </span>
             <iSelect v-else-if="scope.row.type === 'select'" v-model="scope.row.seaPrice">
               <el-option :value="true" :label="language('SHI', '是')"></el-option>
               <el-option :value="false" :label="language('FOU', '否')"></el-option>
             </iSelect>
-            <iDatePicker v-else-if="scope.row.type === 'date'" value-format="" v-model="scope.row.seaPrice" :class="scope.row.sortOrder === 13 && 'withRequire'"></iDatePicker>
+            <span v-else-if="scope.row.type === 'date'">
+              <div v-if="scope.row.sortOrder == 13" :class="scope.row.sortOrder === 13 && 'withRequire'">
+                <iDatePicker value-format="" v-model="scope.row.seaPrice" :disabled="scope.row.isAutoCal"></iDatePicker>
+                <el-popover
+                  placement="top"
+                  width="200"
+                  trigger="hover"
+                  :content="language('SHIFOUZIDONGJISUAN', '是否自动计算')">
+                    <el-checkbox class="isAutoCal" slot="reference" :disabled="disabled" v-model="scope.row.isAutoCal" @change="handleChangeIsAutoCal"></el-checkbox>
+                </el-popover>
+              </div>
+              <iDatePicker v-else value-format="" v-model="scope.row.seaPrice" :class="scope.row.sortOrder === 13 && 'withRequire'"></iDatePicker>
+            </span>
             <iInput v-else :value="scope.row.seaPrice" :class="scope.row.isRequire && 'withRequire'" @input="val => onChangeInput(val, scope.row, 'seaPrice')" ></iInput>
             <!-- <span v-if="scope.row.isRequire" style="color:red;">*</span> -->
           </template>
@@ -50,11 +72,14 @@
 import { iCard, iSelect, iDatePicker, iInput } from 'rise'
 import {tableTitleDB,tableDataDB} from './data'
 import moment from 'moment'
+import { getIsAutoCal } from "@/api/rfqManageMent/quotationdetail"
+
 export default {
   components: {iCard, iSelect, iDatePicker, iInput},
   props: {
     disabled: {type:Boolean, default:false},
-    dbDetailList: {type:Array, default: []}
+    dbDetailList: {type:Array, default: []},
+    partInfo: {type:Object, default: () => ({})}
   },
   data() {
     return {
@@ -62,6 +87,12 @@ export default {
       tableData: tableDataDB,
       moment
     }
+  },
+  computed: {
+    // eslint-disable-next-line no-undef
+    ...Vuex.mapState({
+      userInfo: state => state.permission.userInfo,
+    }),
   },
   methods: {
     onChangeInput(val, params, type){
@@ -77,6 +108,29 @@ export default {
           return [1, 3];
         } 
       }
+    },
+    handleChangeIsAutoCal(value) {
+      if (value) {
+        this.getIsAutoCal()
+      }
+    },
+    getIsAutoCal() {
+      getIsAutoCal({
+        isAutoCal: true,
+        quotationId: this.partInfo.quotationId,
+        supplierId: this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId
+      })
+      .then(res => {
+        if (res.code == 200) {
+          const current = this.dbDetailList.find(item => item.sortOrder == 13)
+          if (current) {
+            this.$set(current, "seaPrice", res.data.startProductDate)
+            this.$set(current, "sopDate", res.data.startProductDate)
+          }
+        } else {
+          iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+        }
+      })
     }
   }
 }
@@ -90,6 +144,10 @@ export default {
   }
   ::v-deep .el-table__row:last-child .el-input {
     width: 94%;
+  }
+
+  .isAutoCal {
+    margin-left: 8px;
   }
 }
 .withRequire::after {
