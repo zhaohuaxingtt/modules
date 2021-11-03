@@ -253,7 +253,7 @@ export default{
       if (this.isAutoCal) {
         this.getIsAutoCal()
       } else {
-        this.$emit("update:c", false)
+        this.$emit("update:isAutoCal", false)
       }
     },
     getIsAutoCal() {
