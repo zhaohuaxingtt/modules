@@ -62,8 +62,8 @@
 <script>
 import { iInput } from 'rise'
 // import Sortable from 'sortablejs'
-import iSortable from '@/utils/iSortable'
-import { updateBatchModules } from '@/api/home'
+// import iSortable from '@/utils/iSortable'
+// import { updateBatchModules } from '@/api/home'
 export default {
   components: { iInput },
   data() {
@@ -84,6 +84,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
+      return
       iSortable(document.getElementById('sideModules'), {
         group: {
           name: 'myModules',
@@ -138,7 +139,7 @@ export default {
         e.orderNum = i
         return e
       })
-      const res = await updateBatchModules(newCards)
+      // const res = await updateBatchModules(newCards)
       // const res = await updateModules(item)
       if (res.result) {
         this.getList()
