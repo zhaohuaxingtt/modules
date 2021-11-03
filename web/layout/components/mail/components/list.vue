@@ -26,6 +26,7 @@
         :item="item"
         @readCallback="handleReadCallback"
         @delCallback="handleDelCallback"
+        @hide-drawer="() => $emit('hide-drawer')"
       ></mail-card>
       <p v-if="loading">加载中...</p>
       <p v-if="noMore">
@@ -61,7 +62,7 @@ export default {
   props: {
     tab: {
       type: String,
-      default: function() {
+      default: function () {
         return '0'
       }
     }
@@ -142,7 +143,7 @@ export default {
             done()
           }
         }
-      }).then(action => {})
+      }).then((action) => {})
     },
     load() {
       this.loading = true
@@ -155,6 +156,10 @@ export default {
         result.data.unshift({ name: '全部', code: '' })
         this.typeOptions = result.data
       }
+    },
+    getNewList() {
+      this.current = 1
+      this.getList()
     },
     async getList() {
       const data = {

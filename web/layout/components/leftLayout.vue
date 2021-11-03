@@ -111,7 +111,6 @@ export default {
     const rootIndex = this.getFirstMenuActive()
 
     this.activeIndex = rootIndex
-    console.log('rootInex', rootIndex)
     this.$emit('toggle-active', rootIndex)
   },
   mounted() {
@@ -127,7 +126,6 @@ export default {
   watch: {
     $route: {
       handler: function(route) {
-        console.log('route', route)
         if (route.path === '/index') {
           this.showSideMenu()
         }

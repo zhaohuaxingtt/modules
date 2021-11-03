@@ -20,6 +20,7 @@
             @listCallback="handleListCallback"
             @unReadCallback="handleUnreadCallback"
             @triggerCallback="handleTriggerCallback"
+            @hide-drawer="() => $emit('hide-drawer')"
           ></component>
         </el-tab-pane>
       </el-tabs>
@@ -51,23 +52,36 @@ export default {
     }
   },
   mounted() {
-    this.closeSocket = getHomeSocketMessage(messages => {
+    console.log('inMail getHomeSocketMessage')
+    this.closeSocket = getHomeSocketMessage((messages) => {
       const tab = messages.msgTxt.type
       const type = messages.msgTxt.subType
       console.log(messages.msgTxt)
       this.$emit('triggerCallback')
       if (tab === '4') {
         this.$refs.list[1].getUnreadCount()
-        this.$refs.list[1].query.type === '' ||
+        /* this.$refs.list[1].query.type === '' ||
         this.$refs.list[1].query.type === type
           ? this.$refs.list[1].list.unshift(messages.msgTxt)
-          : ''
+          : '' */
+        if (
+          this.$refs.list[1].query.type === '' ||
+          this.$refs.list[1].query.type === type
+        ) {
+          this.getNewList()
+        }
       } else if (tab === '5') {
         this.$refs.list[0].getUnreadCount()
-        this.$refs.list[0].query.type === '' ||
+        if (
+          this.$refs.list[0].query.type === '' ||
+          this.$refs.list[0].query.type === type
+        ) {
+          this.getNewList()
+        }
+        /* this.$refs.list[0].query.type === '' ||
         this.$refs.list[0].query.type === type
           ? this.$refs.list[0].list.unshift(messages.msgTxt)
-          : ''
+          : '' */
       }
     })
   },
@@ -112,11 +126,11 @@ export default {
     },
     handleUnreadCallback(val) {
       const { unread, name } = val
-      const item = this.tabs.find(t => {
+      const item = this.tabs.find((t) => {
         return parseInt(t.name) === parseInt(name)
       })
       item.unread = unread
-      const index = _.findIndex(this.tabs, t => {
+      const index = _.findIndex(this.tabs, (t) => {
         return parseInt(t.name) === parseInt(name)
       })
       this.$set(this.tabs, index, item)
