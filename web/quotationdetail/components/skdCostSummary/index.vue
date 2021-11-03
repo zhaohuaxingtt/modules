@@ -1,6 +1,6 @@
 <template>
   <iCard class="skdCostSummary" v-loading="copyLoading" :title="showTitle ? this.language('SKDBAOJIA', 'SKD报价') : ''">
-    <iFormGroup row="4" class="formGroup">
+    <iFormGroup row="4" class="formGroup" :class="{ 'formGroupDisabled': disabled, 'formGroup': !disabled }">
       <iFormItem v-if="!disabled" :label="language('FUZHIBAOJIAZHI', '复制报价至')">
         <iSelect v-model="copyParts" :placeholder="language('QINGXUANZELINGJIAN', '请选择零件')" multiple collapse-tags @visible-change="visibleChange">
           <el-option 
@@ -12,16 +12,16 @@
         </iSelect>
       </iFormItem>
       <iFormItem :label="language('SKDQIBUSHENGCHANRIQI', 'SKD起步生产日期')">
-        <iText v-if="disabled">{{ skdStartProductDate }}</iText>
-        <div class="startProductDate" v-else>
-          <iDatePicker v-model="skdStartProductDate" type="date" />
-          <!-- <el-popover
+        <div class="startProductDate">
+          <iText v-if="disabled">{{ skdStartProductDate }}</iText>
+          <iDatePicker v-else v-model="skdStartProductDate" :disabled="isAutoCal"></iDatePicker>
+          <el-popover
             placement="top"
             width="200"
             trigger="hover"
-            :content="language('HUOQUZIDONGJISUANQIBUSHENGCHANRIQI', '获取自动计算起步生产日期')">
-            <i class="el-icon-refresh refresh" :class="{ updateStartProductDateLoading }" slot="reference" @click="updateStartProductDate"></i>
-          </el-popover> -->
+            :content="language('SHIFOUZIDONGJISUAN', '是否自动计算')">
+              <el-checkbox class="isAutoCal" slot="reference" :disabled="disabled" v-model="isAutoCal" @change="handleChangeIsAutoCal"></el-checkbox>
+          </el-popover>
         </div>
       </iFormItem>
       <iFormItem :label="language('HUOBI', '货币')">
@@ -83,7 +83,7 @@
 <script>
 /* eslint-disable no-undef */
 
-import { iCard, iFormGroup, iFormItem, iSelect, iDatePicker, iInput, iMessage, iMessageBox } from "rise"
+import { iCard, iFormGroup, iFormItem, iSelect, iText, iDatePicker, iInput, iMessage, iMessageBox } from "rise"
 import tableList from "rise/web/quotationdetail/components/tableList"
 import percentage from "./components/percentage"
 import { tableTitle } from "./components/data"
@@ -92,7 +92,7 @@ import { handleInputByNumber } from "../data"
 import { uuidv4 } from "rise/web/aeko/quotationdetail/components/aPriceChange/components/data"
 
 export default {
-  components: { iCard, iFormGroup, iFormItem, iSelect, iDatePicker, iInput, tableList, percentage },
+  components: { iCard, iFormGroup, iFormItem, iSelect, iText, iDatePicker, iInput, tableList, percentage },
   props: {
     disabled: {
       type: Boolean,
@@ -125,7 +125,8 @@ export default {
       parts: [],
       copyParts: [],
       copyLoading: false,
-      // updateStartProductDateLoading: false
+      // updateStartProductDateLoading: false,
+      isAutoCal: false
     }
   },
   computed: {
@@ -202,6 +203,7 @@ export default {
           this.computeSalesPrice("", "", this.tableListData[0])
           this.skdStartProductDate = res.data.skdStartProductDate
           this.currency = res.data.currency || "RMB"
+          this.isAutoCal = res.data.isAutoCal
           this.handleChangeByCurrency()
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
@@ -237,6 +239,7 @@ export default {
       return saveSkdCostSummary({
         ...this.tableListData[0],
         skdStartProductDate: this.skdStartProductDate,
+        isAutoCal: this.isAutoCal,
         currency: this.currency,
         quotationId: this.partInfo.quotationId,
         exchangeRateVos: this.exchangeRateVos
@@ -316,6 +319,25 @@ export default {
     //   })
     //   .finally(() => this.updateStartProductDateLoading = false)
     // }
+    handleChangeIsAutoCal(value) {
+      if (value) {
+        this.getIsAutoCal()
+      }
+    },
+    getIsAutoCal() {
+      getIsAutoCal({
+        isAutoCal: true,
+        quotationId: this.partInfo.quotationId,
+        supplierId: this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId
+      })
+      .then(res => {
+        if (res.code == 200) {
+          this.skdStartProductDate = res.data.startProductDate
+        } else {
+          iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+        }
+      })
+    }
   }
 }
 </script>
@@ -358,27 +380,42 @@ export default {
     }
   }
 
+  .formGroupDisabled {
+    ::v-deep .el-form-item {
+      &:first-of-type {
+        width: 350px!important;
+
+        label {
+          width: 150px;
+        }
+      }
+
+      &:nth-of-type(2),
+      &:last-of-type {
+        width: 280px!important;
+
+        label {
+          width: 55px;
+        }
+      }
+
+      &:last-of-type {
+        .el-form-item__content {
+          text-align: left;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+
   .startProductDate {
     display: flex;
     align-items: center;
 
-    // .refresh {
-    //   margin-left: 8px;
-    //   font-size: 21px;
-    //   cursor: pointer;
-    //   vertical-align: middle;
-    //   color: #1660F1;
-    // }
-
-    // .updateStartProductDateLoading {
-    //   animation: loading 1.7s infinite;
-    //   animation-timing-function: linear;
-    // }
-
-    // @keyframes loading {
-    //   from { transform: rotate(0deg); }
-    //   to { transform: rotate(360deg); }
-    // }
+    .isAutoCal {
+      margin-left: 8px;
+      width: 0 !important;
+    }
   }
 
   .table {

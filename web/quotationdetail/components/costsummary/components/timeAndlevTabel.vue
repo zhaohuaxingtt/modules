@@ -22,6 +22,7 @@
           <iText v-if='disabled'>{{allTableData.startProductDate}}</iText>
           <iDatePicker v-else v-model="allTableData.startProductDate" :disabled="isAutoCal"></iDatePicker>
           <el-popover
+            v-if="!isSkdLc"
             placement="top"
             width="200"
             trigger="hover"
@@ -73,8 +74,11 @@ import {tableTilel1Fn} from './data'
 import persent from './persent'
 import {partsQuotations,copyPartsQuotation,downPartCbdLoadFile, getIsAutoCal} from '@/api/rfqManageMent/quotationdetail'
 import { getToken } from "@/utils";
+import { priceStatusMixin } from "../../mixins"
+
 export default{
   components:{iCard,iFormGroup,iFormItem,iText,tableList,persent,iDatePicker,iSelect,iButton, icon},
+  mixins: [ priceStatusMixin ],
   props:{
     tableData:{
       type:Object,
@@ -249,7 +253,7 @@ export default{
       if (this.isAutoCal) {
         this.getIsAutoCal()
       } else {
-        this.$emit("update:isAutoCal", false)
+        this.$emit("update:c", false)
       }
     },
     getIsAutoCal() {

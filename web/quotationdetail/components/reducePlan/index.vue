@@ -201,8 +201,8 @@ export default {
             } else {
                 const res = await getLtcPlanSkcLc(this.partInfo.quotationId)
                 if (res.code == 200) {
-                    if (!res.data.lcAPrice || !res.data.skdAPrice) iMessage.error(`${ this.language("AJIABUCUNZAIHUOWEILING", "A价不存在或为0") }`)
-                    if (!res.data.lcStartProductDate) iMessage.error(this.language("LCQIBUSHENGCHANRIQIWEIKONG", "LC起步生产日期为空"))
+                    if (!res.data.lcAPrice || !res.data.skdAPrice) await iMessage.error(`${ this.language("AJIABUCUNZAIHUOWEILING", "A价不存在或为0") }`)
+                    if (!res.data.lcStartProductDate) await iMessage.error(this.language("LCQIBUSHENGCHANRIQIWEIKONG", "LC起步生产日期为空"))
                     this.computedBasic = '01'
                     this.lcStartProductDate = res.data.lcStartProductDate
                     this.skdAPrice = res.data.skdAPrice || "0"
