@@ -63,13 +63,13 @@ export default {
   props: {
     item: {
       type: Object,
-      default: function () {
+      default: function() {
         return {}
       }
     },
     menuMap: {
       type: Object,
-      default: function () {
+      default: function() {
         return []
       }
     }
