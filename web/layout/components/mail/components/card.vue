@@ -10,20 +10,41 @@
     <div>
       <div class="title">
         <div class="flex-between-center-center">
-          <icon symbol class="icon" :name="type2Icon[tab]['title'][parseInt(item.subType)] || 'iconmorenxiaoxi'"></icon>
+          <icon
+            symbol
+            class="icon"
+            :name="
+              type2Icon[tab]['title'][parseInt(item.subType)] ||
+                'iconmorenxiaoxi'
+            "
+          ></icon>
           <div class="single-ellipsis">{{ item.title }}</div>
         </div>
         <div class="time" v-if="tab || item.subType === '2'">{{ time }}</div>
       </div>
-      <div class="time" v-if="!tab && (item.subType === '1' || item.subType === '3')">
-        <icon symbol class="icon icon-time" :name="type2Icon[tab]['time'][parseInt(item.subType)]"></icon>
+      <div
+        class="time"
+        v-if="!tab && (item.subType === '1' || item.subType === '3')"
+      >
+        <icon
+          symbol
+          class="icon icon-time"
+          :name="type2Icon[tab]['time'][parseInt(item.subType)]"
+        ></icon>
         <span class="multi-ellipsis">{{ item | filterTime }}</span>
       </div>
       <div class="address" v-if="!tab && item.subType === '1'">
-        <icon symbol class="icon icon-addr" :name="type2Icon[tab]['address'][parseInt(item.subType)]"></icon>
+        <icon
+          symbol
+          class="icon icon-addr"
+          :name="type2Icon[tab]['address'][parseInt(item.subType)]"
+        ></icon>
         <span class="multi-ellipsis">{{ item.addr }}</span>
       </div>
-      <div class="name" v-if="(!tab && item.subType === '3') || (tab && item.subType !== '2')">
+      <div
+        class="name"
+        v-if="(!tab && item.subType === '3') || (tab && item.subType !== '2')"
+      >
         <div>
           <icon
             symbol
@@ -33,30 +54,51 @@
           ></icon>
           <span class="multi-ellipsis">{{ item.topics || item.desc }}</span>
         </div>
-        <div v-if="!tab && item.subType === '3'">{{ item.fixNum }} / {{ item.num }}</div>
+        <div v-if="!tab && item.subType === '3'">
+          {{ item.fixNum }} / {{ item.num }}
+        </div>
       </div>
       <div class="person" v-if="!tab && item.subType === '3'">
-        <icon symbol class="icon icon-person" :name="type2Icon[tab]['person'][parseInt(item.subType)]"></icon>
+        <icon
+          symbol
+          class="icon icon-person"
+          :name="type2Icon[tab]['person'][parseInt(item.subType)]"
+        ></icon>
         <span class="multi-ellipsis">{{ item.sponsor }}</span>
       </div>
       <div
         class="content"
         :class="{ expanded }"
         v-if="
-          tab || (!tab && item.subType === '2') || (!tab && item.subType === '0') || (!tab && item.subType === null)
+          tab ||
+            (!tab && item.subType === '2') ||
+            (!tab && item.subType === '0') ||
+            (!tab && item.subType === null)
         "
       >
-        <span class="multi-ellipsis">{{ item.content }}</span>
-        <div class="btn-expanded" v-if="rows > 2 && !expanded" @click.stop="expanded = true">
+        <span class="multi-ellipsis" v-html="item.content"></span>
+        <div
+          class="btn-expanded"
+          v-if="rows > 2 && !expanded"
+          @click.stop="expanded = true"
+        >
           展开
         </div>
       </div>
     </div>
     <div
-      :class="['mail-card-tips', !item.state ? 'will' : item.state === 1 ? 'ongoing' : 'overdue']"
+      :class="[
+        'mail-card-tips',
+        !item.state ? 'will' : item.state === 1 ? 'ongoing' : 'overdue'
+      ]"
       v-if="!tab && item.subType === '1'"
     >
-      <span v-if="!item.state && ((item.tipBegin > 0 && item.tipBegin < 15) || item.tipBegin === 15)">
+      <span
+        v-if="
+          !item.state &&
+            ((item.tipBegin > 0 && item.tipBegin < 15) || item.tipBegin === 15)
+        "
+      >
         还有{{ item.tipBegin }}分钟开始
         <!-- {{ $t('MAIL.WILL', { tipBegin: item.tipBegin }) }} -->
       </span>
@@ -99,7 +141,14 @@ export default {
       const bTime = item.beginDate.split(' ')[1] || ''
       const eDate = item.endDate.split(' ')[0] || ''
       const eTime = item.endDate.split(' ')[1] || ''
-      return bDate === eDate ? `${bDate} ${bTime}-${eTime}` : `${item.beginDate}-${item.endDate}`
+      return bDate === eDate
+        ? `${bDate} ${bTime}-${eTime}`
+        : `${item.beginDate}-${item.endDate}`
+    },
+    removeTag: function(text) {
+      text = text || ''
+      const regex = /(<([^>]+)>)/gi
+      return text.replace(regex, '')
     }
   },
   data() {
@@ -107,8 +156,19 @@ export default {
       time: '',
       type2Icon: [
         {
-          title: ['', 'iconhuiyixiaoxiliebiao', 'iconxinwenxiaoxiliebiao', 'iconyiti', ''],
-          time: ['', 'iconshijianxiaoxiliebiao', '', 'iconshijianxiaoxiliebiao'],
+          title: [
+            '',
+            'iconhuiyixiaoxiliebiao',
+            'iconxinwenxiaoxiliebiao',
+            'iconyiti',
+            ''
+          ],
+          time: [
+            '',
+            'iconshijianxiaoxiliebiao',
+            '',
+            'iconshijianxiaoxiliebiao'
+          ],
           address: ['', 'icondidianxiaoxiliebiao', '', ''],
           name: ['', '', '', 'iconhuiyix'],
           person: ['', '', '', 'iconrenwuxiaoxiliebiao']
@@ -140,9 +200,21 @@ export default {
       if (!this.item.url) {
         console.log('url为空')
       } else {
-        this.item.url.indexOf('http') !== -1 || this.item.url.indexOf('https') !== -1
-          ? (location.href = this.item.url)
-          : this.$router.replace(this.item.url)
+        this.$emit('hide-drawer')
+        setTimeout(() => {
+          if (
+            this.item.url.indexOf('http://') !== -1 ||
+            this.item.url.indexOf('https://') !== -1
+          ) {
+            location.href = this.item.url
+          } else {
+            if (this.item.url.indexOf('#') === -1) {
+              this.$router.replace(this.item.url)
+            } else {
+              location.href = this.item.url
+            }
+          }
+        }, 200)
       }
     },
     async handleDel() {
@@ -167,11 +239,16 @@ export default {
       div.style.width = '240px'
       div.style.lineHeight = '16px'
       div.style.fontSize = '12px'
-      div.innerText = this.item.content || ''
+      div.innerHTML = this.item.content || ''
       document.body.append(div)
       const divRows = div.clientHeight / 16
       this.rows = divRows
       document.body.removeChild(div)
+    },
+    removeHtmlTag(text) {
+      text = text || ''
+      const regex = /(<([^>]+)>)/gi
+      return text.replace(regex, '')
     }
   }
 }

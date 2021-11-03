@@ -14,7 +14,12 @@
     <div class="right">
       <i-user-setting :userInfo="userInfo" :menus="menus"></i-user-setting>
       <div class="language" @click="handleChangeLang">
-        <icon symbol v-if="lang === 'zh'" class="icon" name="iconzhongyingwenzhuanhuanzhong" />
+        <icon
+          symbol
+          v-if="lang === 'zh'"
+          class="icon"
+          name="iconzhongyingwenzhuanhuanzhong"
+        />
         <icon symbol v-else class="icon" name="iconzhongyingwenzhuanhuanying" />
       </div>
       <iMailTrigger />
@@ -59,7 +64,7 @@ export default {
   props: {
     menus: {
       type: Array,
-      default: function() {
+      default: function () {
         return []
       }
     }
@@ -85,13 +90,13 @@ export default {
   computed: {
     // eslint-disable-next-line no-undef
     ...Vuex.mapState({
-      userInfo: state => state.permission.userInfo
+      userInfo: (state) => state.permission.userInfo
     })
   },
   created() {
     this.lang = localStorage.getItem('lang')
     //this.getCountInMail();
-    this.getMessageBySocket('1001')
+    // this.getMessageBySocket('1001')
   },
 
   beforeDestroy() {
@@ -104,7 +109,7 @@ export default {
       window.location.href = '/login'
       window.location.reload()
     },
-    getMessageBySocket(userId) {
+    /* getMessageBySocket(userId) {
       messageSocket(userId)
         .then(({ res, vm }) => {
           this.socketVm = vm
@@ -160,11 +165,10 @@ export default {
       this.reconnectTimer = setTimeout(() => {
         this.getMessageBySocket('1001')
       }, 20000)
-    },
+    }, */
     handleChangeLang() {
       this.lang = this.lang === 'zh' ? 'en' : 'zh'
       this.$store.commit('SET_LANGUAGE', this.lang)
-      // localStorage.setItem('lang', this.lang)
       this.$i18n.locale = this.lang
       if (this.lang == 'en') {
         // eslint-disable-next-line no-undef
@@ -180,9 +184,11 @@ export default {
     },
     // 获取消息数目
     getCountInMail() {
-      getCountInMail({ receiverId: this.userInfo.id, inMailType: 5 }).then(res => {
-        this.messageCount = res.data
-      })
+      getCountInMail({ receiverId: this.userInfo.id, inMailType: 5 }).then(
+        (res) => {
+          this.messageCount = res.data
+        }
+      )
     },
     afterClear() {
       this.getCountInMail()
