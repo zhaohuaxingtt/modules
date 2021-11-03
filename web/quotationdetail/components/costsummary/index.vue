@@ -874,7 +874,7 @@ export default{
             this.packAndShipFee = data
             this.initData = true
             this.count = 0
-            this.isAutoCal = res.data.allTableData
+            this.isAutoCal = res.data.isAutoCal
             if (this.isSkdLc) this.isAutoCal = false
             this.allTableData = this.translateDataForRender(res.data)
             this.topTableData = this.translateDataTopData(cloneDeep(this.allTableData), data)
