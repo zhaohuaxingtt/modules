@@ -104,7 +104,7 @@
       <iFormGroup class="subCost margin-top30" :row="4" inline>
         <iFormItem class="item" v-for="(info, $index) in mouldCostInfos" :key="$index"
                    :label="`${ language(info.key, info.name) }`">
-          <iInput v-if="info.props === 'shareQuantity' && !disabled && !editDisabled" v-model="dataGroup[info.props]"
+          <iInput v-if="info.props === 'shareQuantity' && !disabled && !editDisabled" v-model="shareQuantity"
                   @input="handleInputByShareQuantity"/>
           <iText v-else>{{ floatFixNum(dataGroup[info.props], info.props == 'shareQuantity' ? 0 : 2) }}</iText>
         </iFormItem>
@@ -119,7 +119,6 @@ import tableList from "rise/web/quotationdetail/components/tableList"
 import {moduleTableTitle as tableTitle, assetTypeCodeOptions, mouldCostInfos} from "../data"
 import {floatFixNum} from "../../../data"
 import {statesFilter} from "rise/web/quotationdetail/components/mouldAndDevelopmentCost/components/data"
-import {numberProcessor} from "@/utils"
 import {getMoulds, saveMoulds} from "@/api/aeko/quotationdetail"
 import {handleInputByNumber} from "rise/web/quotationdetail/components/data";
 
@@ -139,6 +138,7 @@ export default {
       type: Boolean,
       default: false
     },
+
   },
   data() {
     return {
@@ -166,13 +166,24 @@ export default {
 
     }
   },
+
   filters: {
     statesFilter
   },
   computed: {
-    //eslint-disable-next-line no-undef
+    shareQuantity: {
+      get: function () {
+        if (this.dataGroup.shareQuantity)
+          return Math.trunc(Number(this.dataGroup.shareQuantity))
+        return ''
+      },
+      set: function (val) {
+        this.dataGroup.shareQuantity = val
+      }
+    },
     ...Vuex.mapState({
       userInfo: state => state.permission.userInfo,
+
     })
   },
   methods: {
@@ -224,7 +235,7 @@ export default {
       }
 
       this.tableListData.push({
-        mouldId: `${this.partInfo.rfqId}_${this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId}_${this.partInfo.partNum}_T${this.indexProcess(index)}`,
+        mouldId: `${this.partInfo.rfqId}_${this.$route.query.supplierCode}_${this.partInfo.partNum}_T${this.indexProcess(index)}`,
         changeType: "新增"
       })
 
@@ -251,7 +262,7 @@ export default {
         quantity: item.count,
         originTotalPrice: item.assetTotal,
         originPartNums: item.partsShareNum,
-        isQuote:true,
+        isQuote: true,
       }))
 
       this.tableListData = this.tableListData.concat(quoteList)
@@ -316,7 +327,7 @@ export default {
       this.computeChangeTotalPrice(value, "changeUnitPrice", row)
     },
     handleInputByShareQuantity(val) {
-      this.dataGroup.shareQuantity = numberProcessor(val, 0)
+      this.dataGroup.shareQuantity = Math.trunc(val)
       this.computeShareAmount()
     },
     handleInputByMouldType($event, row) {

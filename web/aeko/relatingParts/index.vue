@@ -22,7 +22,7 @@
           <iInput v-model="scope.row.partNum"></iInput>
         </template>
         <template v-for="item in moulds" #[item.mouldId]="scope">
-          <div :key="item.mouldId">
+          <div :key="item.mouldId" style="width: 300px">
             <icon v-if="scope.row.selected.includes(item.mouldId)" symbol name="iconguanlianlingjian-xuanzhong" class="cursor" @click.native="changeStatus(false, item.mouldId, scope.row)"></icon>
             <icon v-else symbol name="iconguanlianlingjian-moren" class="cursor" @click.native="changeStatus(true, item.mouldId, scope.row)"></icon>
           </div>
