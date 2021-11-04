@@ -107,7 +107,11 @@ export default {
         }
       }
     },
-    disabled: {type: Boolean}
+    disabled: {type: Boolean},
+    roundIsOnlineBidding: {
+      type: Boolean,
+      default: false
+    }
   },
   computed: {
     // eslint-disable-next-line no-undef
@@ -215,7 +219,7 @@ export default {
      * @return {*}
      */    
     async init(){
-      this.bnkSupplierToken()
+      if (!this.roundIsOnlineBidding) this.bnkSupplierToken()
       
       // if (!this.url) {
       //   this.getPackageTransport()
@@ -247,6 +251,7 @@ export default {
      */
     save(type) {
       return new Promise((r,j)=>{
+        if (this.url) return r()
         this.loading = true
         savePackageTransport(this.params).then(res => {
           if (res && res.result) {
