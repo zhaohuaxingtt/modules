@@ -36,9 +36,9 @@
         </template>
         <!--类型选择--->
         <template #changeType="scope">
-          <iSelect v-if="scope.row.isShared == 1 && !disabled && !editDisabled" v-model="scope.row.changeType"
+          <iSelect v-if="!disabled && !editDisabled" v-model="scope.row.changeType"
                    @change="handleChangeByChangeType($event, scope.row)">
-            <el-option :label="language('XINZENG', '新增')" value="新增"></el-option>
+            <el-option v-if="!isQuote(scope.row) " :label="language('XINZENG', '新增')" value="新增"></el-option>
             <el-option :label="language('XIUMU', '修模')" value="修模"></el-option>
             <el-option :label="language('JIANZHI', '减值')" value="减值"></el-option>
           </iSelect>
@@ -58,7 +58,8 @@
         <!--资产分类编号-->
         <template #assetTypeCode="scope">
           <iSelect v-if="!isQuote(scope.row) && !disabled && !editDisabled" v-model="scope.row.assetTypeCode">
-            <el-option v-for="assetType in assetTypeCodeOptions" :key="assetType.value" :label="`${assetType.value}-${assetType.label}`"
+            <el-option v-for="assetType in assetTypeCodeOptions" :key="assetType.value"
+                       :label="`${assetType.value}-${assetType.label}`"
                        :value="assetType.value"></el-option>
           </iSelect>
           <span v-else>{{ getAssetClassificationVal(scope.row.assetTypeCode) }}</span>
@@ -105,7 +106,7 @@
                    :label="`${ language(info.key, info.name) }`">
           <iInput v-if="info.props === 'shareQuantity' && !disabled && !editDisabled" v-model="dataGroup[info.props]"
                   @input="handleInputByShareQuantity"/>
-          <iText v-else>{{ floatFixNum(dataGroup[info.props], info.props === 'shareQuantity' ? 0 : 2) }}</iText>
+          <iText v-else>{{ floatFixNum(dataGroup[info.props], info.props == 'shareQuantity' ? 0 : 2) }}</iText>
         </iFormItem>
       </iFormGroup>
     </div>
@@ -234,7 +235,6 @@ export default {
       // 如果用户勾选的原零件模具CBD已经被引入过，则不对此行做任何操作
       const arrId = this.tableListData.map((item) => item.id) || [];
       list = list.filter((item) => !arrId.includes(item.id));
-
       const quoteList = list.map(item => ({
         id: item.id,
         mouldId: item.moldId,
@@ -250,13 +250,14 @@ export default {
         supplierPartCodeList: item.partsNum,
         quantity: item.count,
         originTotalPrice: item.assetTotal,
-        originPartNums: item.partsShareNum
+        originPartNums: item.partsShareNum,
+        isQuote:true,
       }))
 
       this.tableListData = this.tableListData.concat(quoteList)
     },
     isQuote(row) {
-      return !!row.originPartNums
+      return row.isQuote
     },
     async handleDelete() {
       if (this.multipleSelection.length) {
@@ -414,9 +415,9 @@ export default {
           })
           .finally(() => this.saveLoading = false)
     },
-    getAssetClassificationVal(val){
-      let mItem=this.assetTypeCodeOptions.find(item=>item.value==val)
-      if(null!=mItem){
+    getAssetClassificationVal(val) {
+      let mItem = this.assetTypeCodeOptions.find(item => item.value == val)
+      if (null != mItem) {
         return `${mItem.value}-${mItem.label}`
       }
 
