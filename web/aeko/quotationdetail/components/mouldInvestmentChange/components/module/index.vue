@@ -58,14 +58,15 @@
         <!--资产分类编号-->
         <template #assetTypeCode="scope">
           <iSelect v-if="!isQuote(scope.row) && !disabled && !editDisabled" v-model="scope.row.assetTypeCode">
-            <el-option v-for="assetType in assetTypeCodeOptions" :key="assetType.value" :label="assetType.label"
+            <el-option v-for="assetType in assetTypeCodeOptions" :key="assetType.value" :label="`${assetType.value}-${assetType.label}`"
                        :value="assetType.value"></el-option>
           </iSelect>
-          <span v-else>{{ scope.row.assetTypeCode }}</span>
+          <span v-else>{{ getAssetClassificationVal(scope.row.assetTypeCode) }}</span>
         </template>
         <!--FS号-->
         <template #assembledPartPrjCode="scope">
-          <iInput v-if="!isQuote(scope.row) && !disabled && !editDisabled" v-model="scope.row.assembledPartPrjCode"></iInput>
+          <iInput v-if="!isQuote(scope.row) && !disabled && !editDisabled"
+                  v-model="scope.row.assembledPartPrjCode"></iInput>
           <span v-else>{{ scope.row.assembledPartPrjCode }}</span>
         </template>
         <!--散件名称-->
@@ -76,7 +77,8 @@
         </template>
         <!--散件零件号-->
         <template #supplierPartCodeList="scope">
-          <iInput v-if="!isQuote(scope.row) && !disabled && !editDisabled" v-model="scope.row.supplierPartCodeList"></iInput>
+          <iInput v-if="!isQuote(scope.row) && !disabled && !editDisabled"
+                  v-model="scope.row.supplierPartCodeList"></iInput>
           <span v-else>{{ scope.row.supplierPartCodeList }}</span>
         </template>
         <!--数量-->
@@ -103,7 +105,7 @@
                    :label="`${ language(info.key, info.name) }`">
           <iInput v-if="info.props === 'shareQuantity' && !disabled && !editDisabled" v-model="dataGroup[info.props]"
                   @input="handleInputByShareQuantity"/>
-          <iText v-else>{{ floatFixNum(dataGroup[info.props]) }}</iText>
+          <iText v-else>{{ floatFixNum(dataGroup[info.props], info.props === 'shareQuantity' ? 0 : 2) }}</iText>
         </iFormItem>
       </iFormGroup>
     </div>
@@ -159,7 +161,8 @@ export default {
         "supplierPartCodeList",
         "quantity",
         "changeUnitPrice"
-      ]
+      ],
+
     }
   },
   filters: {
@@ -410,6 +413,13 @@ export default {
             }
           })
           .finally(() => this.saveLoading = false)
+    },
+    getAssetClassificationVal(val){
+      let mItem=this.assetTypeCodeOptions.find(item=>item.value==val)
+      if(null!=mItem){
+        return `${mItem.value}-${mItem.label}`
+      }
+
     }
   }
 }

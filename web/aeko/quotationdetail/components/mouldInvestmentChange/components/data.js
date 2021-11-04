@@ -9,7 +9,7 @@ export const moduleTableTitle = [
   { props: "mouldId", key: "MUJUID", name: "模具ID", width: 120 },
   { props: "isShared", key: "SHIFOUFENTAN", name: "是否分摊", width: 120 },
   { props: "changeType", key: "BIANGENGLEIXING", name: "变更类型", width: 120 },
-  { props: "fixedAssetsName", key: "GUDINGZICHANMINGCHENG", name: "固定资产名称", tipsLang: true, tipsKey: "GUDINGZICHANMINGCHENGTIPS", tips: "由“零件总成名称”、“零部件名称”、 “工模具种类”组成", width: 150 },
+  { props: "fixedAssetsName", key: "GUDINGZICHANMINGCHENG", name: "固定资产名称", tipsLang: true, tipsKey: "GUDINGZICHANMINGCHENGTIPS", tips: "由“零件总成名称”、“散件名称”、 “工模具种类”组成", width: 150 },
   { props: "stuffType", key: "GONGYILEIXING", name: "工艺类型", tipsLang: true, tipsKey: "GONGYILEIXINGTIPS", tips: "如注塑，冲压，电镀等", width: 120 },
   { props: "mouldType", key: "GONGMUJUZHONGLEI", name: "工模具种类", tipsLang: true, tipsKey: "GONGMUJUZHONGLEITIPS", tips: "如：热流道注塑模", width: 135 },
   { props: "assetTypeCode", key: "ZICHANFENLEIBIANHAO", name: "资产分类编号", tipsLang: true, tipsKey: "ZICHANFENLEIBIANHAOTIPS", tips: "13：模具<br/>14：夹具<br/>15：检具<br/>16：其他工装", width: 150 },
@@ -42,8 +42,8 @@ export const sourcePartCBDTableTitle = [
 ]
 
 export const assetTypeCodeOptions = [
-  { label: "13", value: 13 },
-  { label: "14", value: 14 },
-  { label: "15", value: 15 },
-  { label: "16", value: 16 }
+  { label: "模具", value: 13 },
+  { label: "夹具", value: 14 },
+  { label: "检具", value: 15 },
+  { label: "其他工装", value: 16 }
 ]
