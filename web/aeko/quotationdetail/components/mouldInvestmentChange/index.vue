@@ -7,7 +7,7 @@
 -->
 <template>
   <div>
-    <module ref="module" :partInfo="partInfo" :disabled="disabled" @getBasicInfo="getBasicInfo" :editDisabled="editDisabled" />
+    <module ref="module" :partInfo="partInfo"  :disabled="disabled" @getBasicInfo="getBasicInfo" :editDisabled="editDisabled" />
     <sourcePartCBD ref="sourcePartCBD" class="margin-top20" :partInfo="partInfo" @quote="handleQuote" :disabled="disabled" :editDisabled="editDisabled" />
   </div>
 </template>
