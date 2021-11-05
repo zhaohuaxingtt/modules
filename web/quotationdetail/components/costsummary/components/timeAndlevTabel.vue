@@ -74,7 +74,7 @@ import {tableTilel1Fn} from './data'
 import persent from './persent'
 import {partsQuotations,copyPartsQuotation,downPartCbdLoadFile, getIsAutoCal} from '@/api/rfqManageMent/quotationdetail'
 import { getToken } from "@/utils";
-import { priceStatusMixin } from "../../mixins"
+import { priceStatusMixin } from "rise/web/quotationdetail/components/mixins"
 
 export default{
   components:{iCard,iFormGroup,iFormItem,iText,tableList,persent,iDatePicker,iSelect,iButton, icon},
@@ -122,6 +122,10 @@ export default{
     isAutoCal: {
       type: Boolean,
       default: false
+    },
+    partInfo: {
+      type: Object,
+      default: () => ({})
     }
   },
   inject:['vm'],

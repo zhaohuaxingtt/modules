@@ -28,7 +28,7 @@
       <!--------------------------------------------------------->
       <!----------------------百分比模块-------------------------->
       <!--------------------------------------------------------->
-      <persentComponents ref='components' :cbdlist='cbdlist' :isSteel="isSteel" :roundIsOnlineBidding='roundIsOnlineBidding' :quotationId='partInfo.quotationId' :tableData='topTableData' :disabled='disabled || isOriginprice' :allTableData='allTableData' :partType="partInfo.partType" :partProjectType="partInfo.partProjectType" :showTitle="isSkdLc" :isAutoCal.sync="isAutoCal"></persentComponents>
+      <persentComponents ref='components' :partInfo="partInfo" :cbdlist='cbdlist' :isSteel="isSteel" :roundIsOnlineBidding='roundIsOnlineBidding' :quotationId='partInfo.quotationId' :tableData='topTableData' :disabled='disabled || isOriginprice' :allTableData='allTableData' :partType="partInfo.partType" :partProjectType="partInfo.partProjectType" :showTitle="isSkdLc" :isAutoCal.sync="isAutoCal"></persentComponents>
       <!--------------------------------------------------------->
       <!----------------------2.1 原材料/散件--------------------->
       <!--------------------------------------------------------->
