@@ -21,9 +21,11 @@
     </div>
     <tableList :selection="false" :tableTitle="tableTitle" :tableData="tableData" :tableLoading="loading">
       <template #supplierTime="scope">
-        <span v-if="!disabled && (['1st Tryout送样周期', 'EM送样周期'].includes(scope.row.sampleDeliverType) || isBmgpart)" class="required"></span>
-        <iInput v-if="!disabled" v-model="scope.row.supplierTime" @click="handleInputBySupplierTime($event, row)"/>
-        <span v-else>{{ scope.row.supplierTime }}</span>
+        <div class="flexWrapper">
+          <span v-if="!disabled && (['1st Tryout送样周期', 'EM送样周期'].includes(scope.row.sampleDeliverType) || isBmgpart)" class="required"></span>
+          <iInput v-if="!disabled" v-model="scope.row.supplierTime" @click="handleInputBySupplierTime($event, row)"/>
+          <span v-else>{{ scope.row.supplierTime }}</span>
+        </div>
       </template>
       <template #remark="scope">
         <iInput v-if="!disabled" v-model="scope.row.remark" />
@@ -251,5 +253,9 @@ export default {
     color: #f56c6c;
     margin-right: 4px;
   }
+}
+
+.flexWrapper {
+  display: flex;
 }
 </style>
