@@ -410,7 +410,7 @@ export default {
       this.$set(this.dataGroup, "shareAmount", math.divide(shareTotal, shareQuantity).toFixed(2))
     },
     handleSave() {
-      if (!this.tableListData.every(item => item.isQuote? this.quoteValidateKeys.every(key => item[key] || item[key] === 0 ): this.validateKeys.every(key => item[key] || item[key] === 0))) {
+      if (!this.tableListData.every(item => item.isQuote||(item.bmNum && item.bmSerialNum)? this.quoteValidateKeys.every(key => item[key] || item[key] === 0 ): this.validateKeys.every(key => item[key] || item[key] === 0))) {
         return this.$message.error(this.language("QINGWEIHUHAOBIANTIANXIANGHOUZAIBAOCUN", "请维护好必填项后，再保存。"))
       }
       this.saveLoading = true

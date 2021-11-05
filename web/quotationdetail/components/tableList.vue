@@ -7,8 +7,8 @@
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\tableList.vue
 -->
 <template>
-  <el-table ref="table" class="table" tooltip-effect="light" :height="height" :data="tableData" :cell-class-name="cellClassName" v-loading="tableLoading" @selection-change="handleSelectionChange" :empty-text="$t('LK_ZANWUSHUJU')">
-    <el-table-column v-if="selection" type="selection" width="40" align="center"  :fixed="fixed"></el-table-column>
+  <el-table ref="table"   :class="singleSelect ? 'singleSelectTable' : ''"  tooltip-effect="light" :height="height" :data="tableData" :cell-class-name="cellClassName" v-loading="tableLoading" @selection-change="handleSelectionChange" :empty-text="$t('LK_ZANWUSHUJU')">
+    <el-table-column v-if="selection" type="selection" width="30" align="center"  :fixed="fixed"></el-table-column>
     <el-table-column v-if="index" type="index" align="center" :label="indexLabel"  :fixed="fixed"></el-table-column>
     <template v-for="item in tableTitle">
       <el-table-column :key="item.updateKey || item.props" align="center" :label="`${ item.seq ? item.seq + ' ' : '' }${ item.key ? (lang ? language(item.key, item.name) : $t(item.key)) : item.name }`" :prop="item.props" :show-overflow-tooltip="item.tooltip" :width="item.width" :min-width="item.minWidth" :render-header="item.renderHeader" :fixed="item.fixed">
@@ -97,5 +97,11 @@ export default {
 }
 .require {
   color: red;
+}
+
+.singleSelectTable {
+  ::v-deep .el-table__header-wrapper .el-checkbox {
+    display: none;
+  }
 }
 </style>
