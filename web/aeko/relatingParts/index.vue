@@ -13,6 +13,7 @@
       <tableList 
         lang
         index
+        fixed
         class="table"
         v-loading="loading"
         :tableTitle="tableTitle"

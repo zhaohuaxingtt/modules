@@ -114,7 +114,7 @@
 </template>
 
 <script>
-import {iCard, iButton, icon, iFormGroup, iFormItem, iSelect, iInput, iText, iMessageBox, iMessage} from "rise"
+import {iCard, iButton, icon, iFormGroup, iFormItem, iSelect, iInput, iText, iMessageBox,} from "rise"
 import tableList from "rise/web/quotationdetail/components/tableList"
 import {moduleTableTitle as tableTitle, assetTypeCodeOptions, mouldCostInfos} from "../data"
 import {floatFixNum} from "../../../data"
@@ -151,6 +151,7 @@ export default {
       mouldCostInfos,
       indexSet: new Set(),
       saveLoading: false,
+      //添加行校验Key
       validateKeys: [
         "isShared",
         "changeType",
@@ -163,6 +164,13 @@ export default {
         "quantity",
         "changeUnitPrice"
       ],
+      //引用校验Key
+      quoteValidateKeys: [
+        "changeType",
+        "quantity",
+        "changeUnitPrice"
+      ]
+
 
     }
   },
@@ -205,7 +213,7 @@ export default {
 
               this.indexSet = new Set()
               if (this.tableListData.length) {
-                this.tableListData.forEach(item => {
+               this.tableListData.forEach(item => {
                   if (item.mouldId) {
                     const index = item.mouldId.replace(/.*_T(\d+)$/, "$1")
                     if (+index) this.indexSet.add(+index)
@@ -218,7 +226,7 @@ export default {
               this.computeShareTotalSum()
               this.indexSet.add(0)
             } else {
-              iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+              this.$message.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
             }
           })
           .finally(() => this.loading = false)
@@ -268,7 +276,8 @@ export default {
       this.tableListData = this.tableListData.concat(quoteList)
     },
     isQuote(row) {
-      return row.isQuote
+
+      return row.isQuote||(row.bmNum && row.bmSerialNum)
     },
     async handleDelete() {
       if (this.multipleSelection.length) {
@@ -319,10 +328,10 @@ export default {
     },
     handleChangeByChangeType(value, row) {
       if (row.changeType === "减值") {
-        const value = row.changeUnitPrice * -1
+        const value = (row.changeUnitPrice ? row.changeUnitPrice : 0) * -1
         this.$set(row, "changeUnitPrice", value)
       } else {
-        this.$set(row, "changeUnitPrice", Math.abs(row.changeUnitPrice))
+        this.$set(row, "changeUnitPrice", Math.abs(row.changeUnitPrice ? row.changeUnitPrice : 0))
       }
       this.computeChangeTotalPrice(value, "changeUnitPrice", row)
     },
@@ -401,12 +410,10 @@ export default {
       this.$set(this.dataGroup, "shareAmount", math.divide(shareTotal, shareQuantity).toFixed(2))
     },
     handleSave() {
-      if (!this.tableListData.every(item => this.validateKeys.every(key => item[key] || item[key] === 0))) {
-        return iMessage.error(this.language("QINGWEIHUHAOBIANTIANXIANGHOUZAIBAOCUN", "请维护好必填项后，再保存。"))
+      if (!this.tableListData.every(item => item.isQuote? this.quoteValidateKeys.every(key => item[key] || item[key] === 0 ): this.validateKeys.every(key => item[key] || item[key] === 0))) {
+        return this.$message.error(this.language("QINGWEIHUHAOBIANTIANXIANGHOUZAIBAOCUN", "请维护好必填项后，再保存。"))
       }
-
       this.saveLoading = true
-
       saveMoulds({
         moduleFeeDTOList: this.tableListData,
         moduleOtherFee: {
@@ -417,11 +424,11 @@ export default {
       })
           .then(res => {
             if (res.code == 200) {
-              iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+              this.$message.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
               // this.getMoulds()
               this.$emit("getBasicInfo")
             } else {
-              iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+              this.$message.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
             }
           })
           .finally(() => this.saveLoading = false)

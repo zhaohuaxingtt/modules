@@ -26,7 +26,7 @@
     <!----------灰色对勾表示该模具还未关联对应零件，------->
     <!----------点击可将模具与对应零件关联即变成蓝色对勾---->
     <!-------------------------------------------------->
-    <tableList v-update :tableTitle="tableTitle" :tableData="tableData" :tableLoading="tableLoading" :selection="false" @changeStatus="changeStatus"></tableList>
+    <tableList v-update :tableTitle="tableTitle"   :tableData="tableData" :tableLoading="tableLoading" :selection="false" @changeStatus="changeStatus"></tableList>
     <iPagination
       v-update
       @size-change="handleSizeChange($event, getTableList)"
