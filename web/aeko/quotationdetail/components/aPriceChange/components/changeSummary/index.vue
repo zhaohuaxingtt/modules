@@ -54,7 +54,7 @@
 					<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('DANJIA', '单价') }<span class='require'>*</span>` }})" align="center">
 						<template v-slot="scope">
 							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.originUnitPrice" class="input-center" @input="handleInputByNumber($event, 'originUnitPrice', scope.row, 4, updateOriginUnitPrice)" />
-							<span v-else>{{ scope.row.originUnitPrice }}</span>
+							<span v-else>{{ scope.row.originUnitPrice | thousandsFilter }}</span>
 						</template>
 					</el-table-column>
 					<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('DANWEI', '单位') }<span class='require'>*</span>` }})" align="center">
@@ -66,12 +66,12 @@
 					<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('YONGLIANG', '用量') }<span class='require'>*</span>` }})" align="center">
 						<template v-slot="scope">
 							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.originUseage" class="input-center" @input="handleInputByNumber($event, 'originUseage', scope.row, 4, updateOriginUseage)" />
-							<span v-else>{{ scope.row.originUseage }}</span>
+							<span v-else>{{ scope.row.originUseage | thousandsFilter }}</span>
 						</template>
 					</el-table-column>
 					<el-table-column :label="language('XIAOJI', '小计')" align="center" prop="originTotalPrice">
 						<template slot-scope="scope">
-							{{ floatFixNum(scope.row.originTotalPrice) }}
+							{{ floatFixNum(scope.row.originTotalPrice) | thousandsFilter }}
 						</template>
 					</el-table-column>
 				</el-table-column>
@@ -85,7 +85,7 @@
 					<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('DANJIA', '单价') }<span class='require'>*</span>` }})" align="center">
 						<template v-slot="scope">
 							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.newUnitPrice" class="input-center" @input="handleInputByNumber($event, 'newUnitPrice', scope.row, 4, updateNewUnitPrice)" />
-							<span v-else>{{ scope.row.newUnitPrice }}</span>
+							<span v-else>{{ scope.row.newUnitPrice | thousandsFilter }}</span>
 						</template>
 					</el-table-column>
 					<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('DANWEI', '单位') }<span class='require'>*</span>` }})" align="center">
@@ -97,12 +97,12 @@
 					<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('YONGLIANG', '用量') }<span class='require'>*</span>` }})" align="center">
 						<template v-slot="scope">
 							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.newUseage" class="input-center" @input="handleInputByNumber($event, 'newUseage', scope.row, 4, updateNewUseage)" />
-							<span v-else>{{ scope.row.newUseage }}</span>
+							<span v-else>{{ scope.row.newUseage | thousandsFilter }}</span>
 						</template>
 					</el-table-column>
 					<el-table-column :label="language('XIAOJI', '小计')" align="center" prop="newTotalPrice">
 						<template slot-scope="scope">
-							{{ floatFixNum(scope.row.newTotalPrice) }}
+							{{ floatFixNum(scope.row.newTotalPrice) | thousandsFilter }}
 						</template>
 					</el-table-column>
 				</el-table-column>
@@ -114,7 +114,7 @@
 				<template #append>
 					<div class="summary">
 						<span>TOTAL</span>
-						<span>RMB {{ floatFixNum(total) }}</span>
+						<span>RMB {{ floatFixNum(total) | thousandsFilter }}</span>
 					</div>
 				</template>
 			</el-table>
@@ -129,9 +129,11 @@ import { iCard, iButton, iInput, iSelect, iMessage, iMessageBox } from "rise"
 import { handleInputByNumber } from "rise/web/quotationdetail/components/data"
 import { getAekoCbdPriceSum, saveAekoCbdPriceSum } from "@/api/aeko/quotationdetail"
 import { floatFixNum } from "../../../data"
+import filters from "@/utils/filters"
 
 export default {
-	components: { iCard, iButton, iInput, iSelect, iMessage },
+	components: { iCard, iButton, iInput, iSelect },
+	mixins: [ filters ],
 	props: {
 		partInfo: {
 			type: Object,

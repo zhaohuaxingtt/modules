@@ -1,8 +1,8 @@
 <!--
  * @Author: YoHo
  * @Date: 2021-10-25 16:28:45
- * @LastEditTime: 2021-10-26 17:08:26
- * @LastEditors: YoHo
+ * @LastEditTime: 2021-11-05 14:50:00
+ * @LastEditors: Please set LastEditors
  * @Description: 
 -->
 <template>
@@ -15,13 +15,13 @@
         :tableTitle="tableTitle"
         :tableData="tableListData"
         >
-        <template #materialChange="scope">{{floatFixNum(scope.row.materialChange)}}</template>
-        <template #makeCostChange="scope">{{floatFixNum(scope.row.makeCostChange)}}</template>
-        <template #discardCostChange="scope">{{floatFixNum(scope.row.discardCostChange)}}</template>
-        <template #manageFeeChange="scope">{{floatFixNum(scope.row.manageFeeChange)}}</template>
-        <template #otherFee="scope">{{floatFixNum(scope.row.otherFee)}}</template>
-        <template #profitChange="scope">{{floatFixNum(scope.row.profitChange)}}</template>
-        <template #apriceChange="scope">{{floatFixNum(scope.row.apriceChange)}}</template>
+        <template #materialChange="scope">{{floatFixNum(scope.row.materialChange) | thousandsFilter}}</template>
+        <template #makeCostChange="scope">{{floatFixNum(scope.row.makeCostChange) | thousandsFilter}}</template>
+        <template #discardCostChange="scope">{{floatFixNum(scope.row.discardCostChange) | thousandsFilter}}</template>
+        <template #manageFeeChange="scope">{{floatFixNum(scope.row.manageFeeChange) | thousandsFilter}}</template>
+        <template #otherFee="scope">{{floatFixNum(scope.row.otherFee) | thousandsFilter}}</template>
+        <template #profitChange="scope">{{floatFixNum(scope.row.profitChange) | thousandsFilter}}</template>
+        <template #apriceChange="scope">{{floatFixNum(scope.row.apriceChange) | thousandsFilter}}</template>
         </tableList>
     </div>
   </div>  
@@ -33,9 +33,11 @@
 import tableList from "rise/web/quotationdetail/components/tableList"
 import { cbdSummaryTableTitle as tableTitle } from "../data"
 import { floatFixNum } from "../../../data"
+import filters from "@/utils/filters"
 
 export default {
   components: { tableList },
+	mixins: [ filters ],
   model: {
     prop: "tableListData"
   },
