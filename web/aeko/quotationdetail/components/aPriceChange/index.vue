@@ -100,7 +100,7 @@ import manufacturingCost from "./components/manufacturingCost"
 import scrapCost from "./components/scrapCost"
 import manageCost from "./components/manageCost"
 import otherCost from "./components/otherCost"
-import { floatFixNum } from "../data"
+import { floatNum, floatFixNum } from "../data"
 import profit from "./components/profit"
 import { validateChangeKeysByRawMaterials, validateChangeKeysByManufacturingCost } from "./components/data"
 import { getAekoCarDosage, getAekoQuotationSummary, saveAekoQuotationSummary, exportQuotation,updateCbdCanEdit, saveAPirce } from "@/api/aeko/quotationdetail"
@@ -205,6 +205,7 @@ export default {
     this.getMaterialTypeOptions()
   },
   methods: {
+    floatNum,
     floatFixNum,
     init() {
       this.$refs.changeSummary.getAekoCbdPriceSum()
@@ -631,7 +632,7 @@ export default {
       }
 
       if (this.isChange && !this.cbdCanEdit) this.apriceChange = "0"
-
+      this.apriceChange = this.floatNum(this.apriceChange)
       this.apriceChangeDisabled = !+this.apriceChange
       this.$emit("updateApriceChange", this.apriceChange)
     },
