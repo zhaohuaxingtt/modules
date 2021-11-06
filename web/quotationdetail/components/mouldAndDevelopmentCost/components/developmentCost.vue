@@ -1,8 +1,8 @@
 <!--
  * @Author: ldh
  * @Date: 2021-04-23 00:21:17
- * @LastEditors: YoHo
- * @LastEditTime: 2021-11-01 12:49:47
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-11-05 15:21:26
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\developmentCost.vue
 -->
@@ -39,11 +39,11 @@
           </template>
           <template #unitPrice="scope">
             <iInput v-if="!disabled&&!editDisabled" v-model="scope.row.unitPrice" @input="handleInputByUnitPrice($event, scope.row)"/>
-            <span v-else>{{ scope.row.unitPrice }}</span>
+            <span v-else>{{ scope.row.unitPrice | thousandsFilter }}</span>
           </template>
           <template #quantity="scope">
             <iInput v-if="!disabled&&!editDisabled" v-model="scope.row.quantity" @input="handleInputByQuantity($event, scope.row)"/>
-            <span v-else>{{ scope.row.quantity }}</span>
+            <span v-else>{{ scope.row.quantity | thousandsFilter }}</span>
           </template>
           <template #isShared="scope">
             <iSelect v-if="!disabled&&!editDisabled" v-model="scope.row.isShared" @change="updateTotal">
@@ -56,7 +56,7 @@
         <iFormGroup class="subCost margin-top30" :row="4" inline>
           <iFormItem class="item" v-for="(info, $index) in subDevelopmentCostInfos" :key="$index" :label="isAeko&&info.languageKey ? language(info.languageKey,info.languageName) : $t(info.key)">
             <iInput v-if="info.props === 'shareQuantity' && !disabled&& !editDisabled" v-model="dataGroup[info.props]" @input="handleInputByShareQuantity" />
-            <iText v-else>{{ dataGroup[info.props] }}</iText>
+            <iText v-else>{{ dataGroup[info.props] | thousandsFilter }}</iText>
           </iFormItem>
         </iFormGroup>
       </div>
@@ -72,8 +72,10 @@ import { developmentCostInfos, developmentCostTableTitle as tableTitle, statesFi
 import { cloneDeep } from "lodash"
 import { getDevFee, getDevFeeSKD } from "@/api/rfqManageMent/quotationdetail"
 import { numberProcessor } from "@/utils"
+import filters from "@/utils/filters"
 
 export default {
+  mixins: [ filters ],
   components: {
 		iCard,
     iButton,

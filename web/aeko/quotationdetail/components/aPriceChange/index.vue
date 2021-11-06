@@ -21,7 +21,7 @@
           <span>{{ `${ language("BIANDONGZHI", "变动值") } - CBD` }}</span>
           <span class="tip margin-left12">{{ language("DANWEI", "单位") }}：RMB/Pc.</span>
         </div>
-        <div class="header-control" v-if="!editDisabled">
+        <div class="header-control" >
           <el-switch
             class="switch"
             :disabled="cbdDisabled || disabled || editDisabled"
@@ -32,8 +32,8 @@
             :inactive-value="false"
             @change="handleChangeByCbdCanEdit">
           </el-switch>
-          <iButton v-permission.auto="AEKO_QUOTATION_CBD_BUTTON_BAOCUN|保存" v-if="!disabled && !cbdDisabled && cbdCanEdit" :loading="saveLoading" @click="handleSave">{{ language("BAOCUN", "保存") }}</iButton>
-          <iButton v-permission.auto="AEKO_QUOTATION_CBD_BUTTON_XIAZAI|下载" v-if="!disabled && !cbdDisabled && cbdCanEdit" :loading="downloadLoading" @click="handleDownload">{{ language("XIAZAI", "下载") }}</iButton>
+          <iButton v-permission.auto="AEKO_QUOTATION_CBD_BUTTON_BAOCUN|保存" v-if="!disabled && !cbdDisabled && cbdCanEdit&&!editDisabled" :loading="saveLoading" @click="handleSave">{{ language("BAOCUN", "保存") }}</iButton>
+          <iButton v-permission.auto="AEKO_QUOTATION_CBD_BUTTON_XIAZAI|下载" v-if="!disabled && !cbdDisabled && cbdCanEdit&&!editDisabled" :loading="downloadLoading" @click="handleDownload">{{ language("XIAZAI", "下载") }}</iButton>
         </div>
       </template>
       <div class="body" v-loading="loading">
@@ -229,9 +229,9 @@ export default {
                 case "4":
                   return { code: item.code, seq: "2.4", key: "GUANLIFEI", label: "管理费", value: "manage", permissionKey: "AEKO_QUOTATION_CBD_VIEW_GUANLIFEI|管理费" }
                 case "5":
-                  return { code: item.code, seq: "2.6", key: "LIRUN", label: "利润", value: "profit", permissionKey: "AEKO_QUOTATION_CBD_VIEW_LIRUN|利润" }
-                case "6":
                   return { code: item.code, seq: "2.5", key: "QITAFEIYONG", label: "其他费用", value: "other" }
+                case "6":
+                  return { code: item.code, seq: "2.6", key: "LIRUN", label: "利润", value: "profit", permissionKey: "AEKO_QUOTATION_CBD_VIEW_LIRUN|利润" }
                 default:
                   return {}
               }

@@ -7,7 +7,7 @@
       </div>
       <div class="header-control" v-if="!editDisabled">
         <el-checkbox v-model="isChange" class="isChangeCheckbox" :class="{ isChangeCheckboxSpace: !isChange && !disabled }" :disabled="changeSummaryDisabled || disabled" @change="handleChangeByIsChange">{{ language("WUBIANDONGZHI", "无变动值") }}</el-checkbox>
-				<div v-if="!changeSummaryDisabled && !isChange && !disabled" class="btn">
+        <div v-if="!changeSummaryDisabled && !isChange && !disabled" class="btn">
 					<iButton :loading="saveLoading" @click="handleSave">{{ language("BAOCUN", "保存") }}</iButton>
 					<iButton @click="handleAdd">{{ language("TIANJIAHANG", "添加行") }}</iButton>
 					<iButton @click="handleDelete">{{ language("SHANCHUHANG", "删除行") }}</iButton>
@@ -15,10 +15,10 @@
       </div>
     </template>
 		<div class="body margin-top20">
-			<el-table class="table" ref="table" :data="tableListData" v-loading="loading" @selection-change="handleSelectionChange">
-				<el-table-column type="selection" align="center" width="55" v-if="!disabled && !editDisabled"></el-table-column>
-				<el-table-column label="#" type="index" align="center" width="55" ></el-table-column>
-				<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('LEIBIE', '类别') }<span class='require'>*</span>` }})" align="center" width="135">
+			<el-table class="table" ref="table" :data="tableListData"  v-loading="loading" @selection-change="handleSelectionChange">
+				<el-table-column type="selection" align="center" width="20" v-if="!disabled && !editDisabled"></el-table-column>
+				<el-table-column label="#" type="index" align="center" width="20" ></el-table-column>
+				<el-table-column  :render-header="h => h('span', { domProps: { innerHTML: `${ language('LEIBIE', '类别') }<span class='require'>*</span>` }})" align="center" width="135">
 					<template v-slot="scope">
 						<iSelect v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.typeName" class="select-center">
 							<el-option
@@ -35,7 +35,7 @@
           <template v-slot="scope">
 						<el-popover
 							placement="top"
-							width="200"
+							width="230"
 							trigger="hover"
 							:content="scope.row.newContent"
 							:disabled="newContentFoucus || !scope.row.newContent">
@@ -51,13 +51,13 @@
 							<span v-else>{{ scope.row.originPartNum }}</span>
 						</template>
 					</el-table-column>
-					<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('DANJIA', '单价') }<span class='require'>*</span>` }})" align="center">
+					<el-table-column  width="90"  :render-header="h => h('span', { domProps: { innerHTML: `${ language('DANJIA', '单价') }<span class='require'>*</span>` }})" align="center">
 						<template v-slot="scope">
 							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.originUnitPrice" class="input-center" @input="handleInputByNumber($event, 'originUnitPrice', scope.row, 4, updateOriginUnitPrice)" />
-							<span v-else>{{ scope.row.originUnitPrice }}</span>
+							<span v-else>{{ scope.row.originUnitPrice | thousandsFilter }}</span>
 						</template>
 					</el-table-column>
-					<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('DANWEI', '单位') }<span class='require'>*</span>` }})" align="center">
+					<el-table-column width="90" :render-header="h => h('span', { domProps: { innerHTML: `${ language('DANWEI', '单位') }<span class='require'>*</span>` }})" align="center">
 						<template v-slot="scope">
 							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.originUnit" class="input-center" />
 							<span v-else>{{ scope.row.originUnit }}</span>
@@ -66,12 +66,12 @@
 					<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('YONGLIANG', '用量') }<span class='require'>*</span>` }})" align="center">
 						<template v-slot="scope">
 							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.originUseage" class="input-center" @input="handleInputByNumber($event, 'originUseage', scope.row, 4, updateOriginUseage)" />
-							<span v-else>{{ scope.row.originUseage }}</span>
+							<span v-else>{{ scope.row.originUseage | thousandsFilter }}</span>
 						</template>
 					</el-table-column>
 					<el-table-column :label="language('XIAOJI', '小计')" align="center" prop="originTotalPrice">
 						<template slot-scope="scope">
-							{{ floatFixNum(scope.row.originTotalPrice) }}
+							{{ floatFixNum(scope.row.originTotalPrice) | thousandsFilter }}
 						</template>
 					</el-table-column>
 				</el-table-column>
@@ -82,13 +82,13 @@
 							<span v-else>{{ scope.row.newPartNum }}</span>
 						</template>
 					</el-table-column>
-					<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('DANJIA', '单价') }<span class='require'>*</span>` }})" align="center">
+					<el-table-column width="90" :render-header="h => h('span', { domProps: { innerHTML: `${ language('DANJIA', '单价') }<span class='require'>*</span>` }})" align="center">
 						<template v-slot="scope">
 							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.newUnitPrice" class="input-center" @input="handleInputByNumber($event, 'newUnitPrice', scope.row, 4, updateNewUnitPrice)" />
-							<span v-else>{{ scope.row.newUnitPrice }}</span>
+							<span v-else>{{ scope.row.newUnitPrice | thousandsFilter }}</span>
 						</template>
 					</el-table-column>
-					<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('DANWEI', '单位') }<span class='require'>*</span>` }})" align="center">
+					<el-table-column width="90" :render-header="h => h('span', { domProps: { innerHTML: `${ language('DANWEI', '单位') }<span class='require'>*</span>` }})" align="center">
 						<template v-slot="scope">
 							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.newUnit" class="input-center" />
 							<span v-else>{{ scope.row.newUnit }}</span>
@@ -97,12 +97,12 @@
 					<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('YONGLIANG', '用量') }<span class='require'>*</span>` }})" align="center">
 						<template v-slot="scope">
 							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.newUseage" class="input-center" @input="handleInputByNumber($event, 'newUseage', scope.row, 4, updateNewUseage)" />
-							<span v-else>{{ scope.row.newUseage }}</span>
+							<span v-else>{{ scope.row.newUseage | thousandsFilter }}</span>
 						</template>
 					</el-table-column>
 					<el-table-column :label="language('XIAOJI', '小计')" align="center" prop="newTotalPrice">
 						<template slot-scope="scope">
-							{{ floatFixNum(scope.row.newTotalPrice) }}
+							{{ floatFixNum(scope.row.newTotalPrice) | thousandsFilter }}
 						</template>
 					</el-table-column>
 				</el-table-column>
@@ -114,7 +114,7 @@
 				<template #append>
 					<div class="summary">
 						<span>TOTAL</span>
-						<span>RMB {{ floatFixNum(total) }}</span>
+						<span>RMB {{ floatFixNum(total) | thousandsFilter }}</span>
 					</div>
 				</template>
 			</el-table>
@@ -129,9 +129,11 @@ import { iCard, iButton, iInput, iSelect, iMessage, iMessageBox } from "rise"
 import { handleInputByNumber } from "rise/web/quotationdetail/components/data"
 import { getAekoCbdPriceSum, saveAekoCbdPriceSum } from "@/api/aeko/quotationdetail"
 import { floatFixNum } from "../../../data"
+import filters from "@/utils/filters"
 
 export default {
-	components: { iCard, iButton, iInput, iSelect, iMessage },
+	components: { iCard, iButton, iInput, iSelect },
+	mixins: [ filters ],
 	props: {
 		partInfo: {
 			type: Object,
