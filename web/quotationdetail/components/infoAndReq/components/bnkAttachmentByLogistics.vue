@@ -10,7 +10,7 @@
   <div class="bnkAttachmentByLogistics">
     <iCard :title="$t('LK_WULIUXIANGGUANBNKFUJIAN')">
       <template #header-control>
-        <iButton @click="handleDownload">{{ $t('LK_XIAZAI') }}</iButton>
+        <iButton :loading="downloadLoading" @click="handleDownload">{{ $t('LK_XIAZAI') }}</iButton>
       </template>
       <div>
         <tableList class="table" index :tableLoading="loading" :tableData="tableListData" :tableTitle="tableTitle" @handleSelectionChange="handleSelectionChange">
@@ -46,7 +46,7 @@ import tableList from "../../tableList"
 import { attachmentTableTitle as tableTitle } from "./data"
 import { pageMixins } from "@/utils/pageMixins"
 import filters from "@/utils/filters"
-import { getBnkFiles } from "@/api/rfqManageMent/quotationdetail"
+import { getBnkFiles, downloadBnkFile } from "@/api/rfqManageMent/quotationdetail"
 
 export default {
   components: {
@@ -65,6 +65,7 @@ export default {
   data() {
     return {
       loading: false,
+      downloadLoading: false,
       tableTitle,
       tableListData: [],
       multipleSelection: []
@@ -103,12 +104,18 @@ export default {
     handleSelectionChange(list) {
       this.multipleSelection = list
     },
-    handleDownload() {
+    async handleDownload() {
       if (!this.multipleSelection.length) {
         return iMessage.warn(this.language("QINGXUANZEXUYAOXIAZAIDEWENJIAN", "请选择需要下载的文件"))
       }
+
+      this.downloadLoading = true
+      await downloadBnkFile(this.multipleSelection.map(item => ({ ids: item.id })))
+      this.downloadLoading = false
     },
-    handlePreview(row) {},
+    handlePreview(row) {
+      downloadBnkFile([{ ids: row.id }])
+    },
     handleSizeChange(size) {
       this.page.currPage = 1
       this.page.pageSize = size
