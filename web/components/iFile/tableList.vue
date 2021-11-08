@@ -1,7 +1,7 @@
 <!--
  * @Author: haojiang
  * @Date: 2021-02-24 09:42:07
- * @LastEditTime: 2021-11-05 11:30:50
+ * @LastEditTime: 2021-11-08 15:34:30
  * @LastEditors: Hao,Jiang
  * @Description: table组件
 -->
@@ -22,9 +22,9 @@
     default-expand-all
     ref="moviesTable">
     <!----------------------复选框------------------------------------->
-    <el-table-column v-if="selection" type='selection' width="35" align='right' header-align="right" :selectable="selectable"></el-table-column>
+    <el-table-column v-if="selection" type='selection' :width="selectConfig.width || 56" :align="selectConfig.align || 'center'" :header-align="selectConfig.headerAlign || 'center'" :selectable="selectConfig.selectable || selectable"></el-table-column>
     <!----------------------支持自定义的index插槽------------------------>
-    <el-table-column v-if='index' type='index' width='40' align='left' header-align="left" :label='indexLabel'>
+    <el-table-column v-if='index' type='index' :width='indexConfig.width || 50' :align="indexConfig.width || 'center'" :header-align="indexConfig.width || 'center'" :label="indexConfig.label || indexLabel">
       <template slot-scope="scope">
         <slot :name="`_index`" :row="scope.row" :$index="scope.$index">
           {{scope.$index+1}}
@@ -115,12 +115,14 @@ export default{
      * @return {*}
      */    
     selectable: {type:Function},
+    selectConfig: {type: Object, default: () => ({})},
     /**
      * @description: 表格索引
      * @param {*}
      * @return {*}
      */    
     index:{type:Boolean,default:false},
+    indexConfig: {type: Object, default: () => ({})},
     /**
      * @description: 表格索引表头文本
      * @param {*}
