@@ -303,7 +303,10 @@ export default {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
         }
       })
-      .finally(() => this.loading = false)
+      .finally(() => {
+        this.loading = false;
+        this.setApriceChange()
+      })
     },
     handleInputByApriceChange(value) {
       this.apriceChange = numberProcessor(value, 4, true)
@@ -623,13 +626,14 @@ export default {
       this.setApriceChange()
     },
     setApriceChange() {
+      let cbdTotal = this.cbdSummaryTableData[0].apriceChange
       if (!this.isChange && !this.cbdCanEdit) this.apriceChange = this.$refs.changeSummary.total
 
       if (!this.isChange && this.cbdCanEdit) {
         if (this.$refs.changeSummary.tableListData.length) {
-          this.apriceChange = +this.$refs.changeSummary.total > +this.cbdTotal ? this.cbdTotal : this.$refs.changeSummary.total
+          this.apriceChange = +this.$refs.changeSummary.total > +cbdTotal ?cbdTotal : this.$refs.changeSummary.total
         } else {
-          this.apriceChange = this.cbdTotal
+          this.apriceChange = cbdTotal
         }
       }
 
