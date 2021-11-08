@@ -216,12 +216,14 @@ export default {
       getAekoCarDosage()
       .then(res => {
         if (res.code == 200) {
+          console.log('----',res.data)
           this.allModuleOptions = 
             Array.isArray(res.data) ?
             res.data.map(item => {
+
               switch(item.code) {
                 case "1":
-                  return { code: item.code, seq: "2.1", key: "YUANCAILIAOSANJIAN", label: "原材料/散件", value: "material", permissionKey: "AEKO_QUOTATION_CBD_VIEW_YUANCAILIAOSANJIAN|原材料/散件" }
+                  return { code: item.code, seq: "2.1", key: "原材料/散件", label: "原材料/散件", value: "material", permissionKey: "AEKO_QUOTATION_CBD_VIEW_YUANCAILIAOSANJIAN|原材料/散件" }
                 case "2":
                   return { code: item.code, seq: "2.2", key: "ZHIZAOCHENGBEN", label: "制造成本", value: "production", permissionKey: "AEKO_QUOTATION_CBD_VIEW_ZHIZAOCHENGBEN|制造成本" }
                 case "3":
