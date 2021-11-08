@@ -6,7 +6,7 @@
         <iButton v-permission.auto="AEKO_QUOTATION_DETAIL_BUTTON_TIJIAO|提交" v-if="!disabled && !editDisabled"
                  :loading="submitLoading" @click="handleSubmit">{{ language("TIJIAO", "提交") }}
         </iButton>
-        <!-- <logButton class="margin-left20" @click="log" v-permission.auto="AEKO_QUOTATION_DETAIL_BUTTON_RIZHI|日志"/> -->
+        <logButton class="margin-left20" @click="log" v-permission.auto="AEKO_QUOTATION_DETAIL_BUTTON_RIZHI|日志"/>
         <span class="margin-left20">
 					<icon symbol name="icondatabaseweixuanzhong" class="font18"/>
 				</span>
