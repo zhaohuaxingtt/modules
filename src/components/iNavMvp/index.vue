@@ -1,7 +1,7 @@
 <!--
 * @author:shujie
 * @Date: 2021-2-25 16:13:25
- * @LastEditors: Please set LastEditors
+ * @LastEditors: YoHo
 * @Description: mvp顶部导航栏
  -->
 <template>
@@ -188,6 +188,7 @@
 				border-radius: 5px;
 				font-size: 16px;
 				color: #727272;
+				display: inline-block;
 			}
 
 			.active {

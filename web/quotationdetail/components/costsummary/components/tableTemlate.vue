@@ -21,9 +21,11 @@
       :selection='selection'
       :notEdit='notEdit'
       :filterProps="filterProps"
+      @handleSelectChange='handleSelectChange'
       @handleSelectionChange='handleSelectionChange'
       @handleInput='handleInput'
-      @handleInputByRate='handleInputByRate'
+      @handleAutocompleteSelect='handleAutocompleteSelect'
+      @autocompleteSelect='autocompleteSelect'
     ></tableList>
     <!------------------------------------------------------------------------>
     <!--                  表格分页                                          --->
@@ -103,6 +105,12 @@ export default{
     handleInputByRate(value, row, key) {
       this.$emit("handleInputByRate", value, row, key)
     },
+    handleSelectChange(value, row, key) {
+      this.$emit("handleSelectChange", value, row, key)
+    },
+    handleAutocompleteSelect(value, row, key) {
+      this.$emit("handleAutocompleteSelect", value, row, key)
+    }
   }
 }
 </script>

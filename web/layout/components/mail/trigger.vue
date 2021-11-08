@@ -3,7 +3,11 @@
     <el-badge :value="messageCount" :hidden="!messageCount" :max="99">
       <icon symbol class="icon" name="iconxiaoxi" />
     </el-badge>
-    <iMail :visible="drawerVisible" @triggerCallback="handleTriggerCallback" />
+    <iMail
+      :visible="drawerVisible"
+      @triggerCallback="handleTriggerCallback"
+      @hide-drawer="handleHideDrawer"
+    />
   </div>
 </template>
 
@@ -39,6 +43,9 @@ export default {
     // 显示消息列表
     showMessage() {
       this.drawerVisible = !this.drawerVisible
+    },
+    handleHideDrawer() {
+      this.drawerVisible = false
     }
   }
 }

@@ -133,16 +133,16 @@ export const isornoNum = [
  * @param {*}
  * @return {*}
  */
-export const titleYcl = (productionCountryList = []) => [
-  {props:'partName',name:'类型',key: 'LK_LEIXING',tooltip:true,width:'',type:'input'},
-  {props:'partNumber',name:'原材料/散件描述',key: 'LK_YUANCLSJMS',tooltip:true,width:'150',type:'input' },
+export const titleYcl = (productionCountryList = [], materialOptions = []) => [
+  {props:'partName',name:'类型',key: 'LK_LEIXING',width:'',type:'select',width:'100',options:materialOptions,showLabel:true},
+  {props:'partNumber',name:'原材料/散件描述',key: 'LK_YUANCLSJMS',tooltip:true,width:'150',type:'autocomplete' },
   {props:'supplierName',name:'供应商名称',key: 'LK_GONGYINGSHANGMINGCHENG',tooltip:true,width:'',type:'input' },
   {props:'productionCountry',name:'原产国',key: 'LK_YUANCHANDI',tooltip:true,width:'',type:'select',options:productionCountryList },
   {props:'isSvwAssignPriceParts',name:'是否SVW指定价格散件',key: 'LK_SHIFOUSVWZHIDINGJIAGE',tooltip:true,width:'150',type:'select',options:isorno },
   {props:'quantityUnit',name:'数量单位（UoM）',key: 'LK_SHULIANGDANWEI',tooltip:true,width:'150',type:'input' },
   {props:'unitPrice',name:'单价（RMB/UoM）',key: 'LK_DANJIARMB',tooltip:true,width:'150',type:'input', inputType: 'decimal' },
   {props:'quantity',name:'数量',key: 'LK_SHULIANG',tooltip:true,width:'',type:'input', inputType: 'decimal' },
-  {props:'directMaterialCost',name:'直接原材料/散件成本（RMB/Pc.）',key: 'LK_ZHIJIEYUANCAILIAOSANJIANCHENGBEN',tooltip:true,width:'250', inputType: 'decimal' },
+  {props:'directMaterialCost',name:'直接原材料/散件成本（RMB/Pc.）',key: 'LK_ZHIJIEYUANCAILIAOSANJIANCHENGBEN',tooltip:true,width:'250',type:'input', inputType: 'decimal' },
   {props:'tpPartID',name:'物料管理费',key: 'LK_WULAOGLF',tooltip:true,width:'' ,list:[
     {props:'materialManageCostRate',name:'(%)',key: '',tooltip:true,width:'100',type:'input', inputType: 'decimal'},
     {props:'materialManageCost',name:'(RMB/Pc.)',key: '',tooltip:true,width:''}
@@ -157,7 +157,7 @@ export const titleYcl = (productionCountryList = []) => [
  * @return {*}
  */
 export const titleCbzz = [
-  {props:'manufacturingMethod',name:'制造工序',key: 'LK_ZHIZAOGONGXU',tooltip:true,width:'',type:'input'},
+  {props:'manufacturingMethod',name:'制造工序',key: 'LK_ZHIZAOGONGXU',tooltip:true,width:'',type:'autocomplete',width:'150'},
   {props:'material',name:'对应原材料/散件（Ref.-ID）',key: 'LK_DUIYINGYUANCAILIAOSANJIAN',tooltip:true,width:'200',type:'input' },
   {props:'machineName',name:'设备名称/型号（Ref.-Name）',key: 'LK_SHEBEIMINGCHENGXINGHAO',tooltip:true,width:'200',type:'input' },
   {props:'specialDeviceCost',name:'上汽大众专用设备费（RMB）',key: 'LK_SHANGQIDAZHONGZHUANYONGSHEBEIFEI',tooltip:true,width:'200',type:'input', inputType: 'decimal' },
@@ -295,10 +295,10 @@ export function getPersent(total,listData,data) {
  * @param {*}
  * @return {*}
  */
-export const titleYclByL3 = (productionCountryList = []) => 
+export const titleYclByL3 = (productionCountryList = [], materialOptions = []) => 
 [
-  {props:'partName',name:'类型',key: 'LK_LEIXING',tooltip:true,width:'',type:'input'},
-  {props:'partNumber',name:'原材料/散件描述',key: 'LK_YUANCLSJMS',tooltip:true,width:'150',type:'input' },
+  {props:'partName',name:'类型',key: 'LK_LEIXING',tooltip:true,width:'',type:'select',width:'100',options:materialOptions,showLabel:true},
+  {props:'partNumber',name:'原材料/散件描述',key: 'LK_YUANCLSJMS',tooltip:true,width:'150',type:'autocomplete' },
   {props:'materialBrand',name:'原材料牌号',key: 'LK_YUANCAILIAOPAIHAO',tooltip:true,width:'130',type:'input' },
   {props:'supplierName',name:'供应商名称',key: 'LK_GONGYINGSHANGMINGCHENG',tooltip:true,width:'120',type:'input' },
   {props:'productionCountry',name:'原产国',key: 'LK_YUANCHANDI',tooltip:true,width:'120',type:'select',options:productionCountryList},
@@ -327,7 +327,7 @@ export const titleYclByL3 = (productionCountryList = []) =>
  * @return {*}
  */
 export const titleCbzzByL3 = [
-  {props:'manufacturingMethod',name:'制造工序',key: 'LK_ZHIZAOGONGXU',tooltip:true,width:'',type:'input'},
+  {props:'manufacturingMethod',name:'制造工序',key: 'LK_ZHIZAOGONGXU',tooltip:true,width:'',type:'autocomplete',width:'150'},
   {props:'material',name:'对应原材料/散件（Ref.-ID）',key: 'LK_DUIYINGYUANCAILIAOSANJIAN',tooltip:true,width:'200',type:'input' },
   {props:'machineName',name:'设备名称/型号',key: 'LK_SHEBEIMINGCHENGXINGHAOOTHER',tooltip:true,width:'200',type:'input' },
   {props:'machineInvestInstall',name:'设备投资+安装（RMB）',key: 'LK_SHEBEITOUZIANZHUANGRMB',tooltip:true,width:'200',type:'input', inputType: 'decimal' },

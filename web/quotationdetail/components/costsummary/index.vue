@@ -1,8 +1,8 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-09-10 14:59:33
- * @LastEditors: Hao,Jiang
+ * @LastEditTime: 2021-10-28 11:56:47
+ * @LastEditors: Please set LastEditors
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
                   2）用户点击“保存”按钮，则保存当前页面已经编辑和输入的所有信息
@@ -14,21 +14,21 @@
 
 <template>
   <div v-if="isSkd">
-    <skdCostSummary ref="skdCostSummary" :partInfo="partInfo" />
+    <skdCostSummary ref="skdCostSummary" :partInfo="partInfo" :disabled="disabled" />
   </div>
   <div v-else>
     <div v-if="isSkdLc" class="margin-bottom20">
-      <skdCostSummary ref="skdCostSummary" :partInfo="partInfo" showTitle />
+      <skdCostSummary ref="skdCostSummary" :partInfo="partInfo" :disabled="disabled" showTitle />
     </div>
     <!---partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU----->
-    <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU">
-      <quotationAnalysis :disabled="disabled || isOriginprice" :dbDetailList="dbDetailList" />
+    <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || partInfo.priceStatus == 'DB'">
+      <quotationAnalysis :disabled="disabled || isOriginprice" :partInfo="partInfo" :dbDetailList="dbDetailList" />
     </div>
     <div class="cost" v-else>
       <!--------------------------------------------------------->
       <!----------------------百分比模块-------------------------->
       <!--------------------------------------------------------->
-      <persentComponents ref='components' :cbdlist='cbdlist' :isSteel="isSteel" :quotationId='partInfo.quotationId' :tableData='topTableData' :disabled='disabled || isOriginprice' :allTableData='allTableData' :partType="partInfo.partType" :partProjectType="partInfo.partProjectType" :showTitle="isSkdLc" :isAutoCal.sync="isAutoCal"></persentComponents>
+      <persentComponents ref='components' :partInfo="partInfo" :cbdlist='cbdlist' :isSteel="isSteel" :roundIsOnlineBidding='roundIsOnlineBidding' :quotationId='partInfo.quotationId' :tableData='topTableData' :disabled='disabled || isOriginprice' :allTableData='allTableData' :partType="partInfo.partType" :partProjectType="partInfo.partProjectType" :showTitle="isSkdLc" :isAutoCal.sync="isAutoCal"></persentComponents>
       <!--------------------------------------------------------->
       <!----------------------2.1 原材料/散件--------------------->
       <!--------------------------------------------------------->
@@ -45,8 +45,10 @@
         :tableTile='titleYcl' 
         :iPagination='disabled || isOriginprice' 
         tableIndexString='C'
+        @handleSelectChange="handleSelectChangeByRawMaterial"
         @handleSelectionChange="handleSelectionChangeByRawMaterial"
-        @handleInput="handleInputByRawMaterialL2">
+        @handleInput="handleInputByRawMaterialL2"
+        @handleAutocompleteSelect="handleAutocompleteSelectByRawMaterial">
         <template #header-control>
           <div v-if="!disabled && !isOriginprice">
             <iButton @click="handleAddByRawMaterial">{{ $t("LK_TIANJIAHANG") }}</iButton>
@@ -69,8 +71,10 @@
         :tableTile='titleYclByL3'
         :tableData='allTableData.rawMaterial.records'
         tableIndexString='C'
+        @handleSelectChange="handleSelectChangeByRawMaterial"
         @handleSelectionChange="handleSelectionChangeByRawMaterial"
-        @handleInput="handleInputByRawMaterialL3">
+        @handleInput="handleInputByRawMaterialL3"
+        @handleAutocompleteSelect="handleAutocompleteSelectByRawMaterial">>
         <template #header-control>
           <div v-if="!disabled && !isOriginprice">
             <iButton @click="handleAddByRawMaterial">{{ $t("LK_TIANJIAHANG") }}</iButton>
@@ -185,9 +189,9 @@ import tableTemlate from './components/tableTemlate'
 import {persentDatalist,titleYcl,titleCbzz,titlebfcb,titleglf,titleqtfy,titlelr,titleCBD,allpagefrom,needContactData,Aprice,getAallPrice,getPersent,cbdlist, titleYclByL3, titleCbzzByL3, titlebfcbByL3, titleglfByL3, titleqtfyByL3, titlelrByL3} from './components/data'
 import {iButton,iMessage} from 'rise'
 import {getCostSummary,packageTransport} from '@/api/rfqManageMent/rfqDetail'
-import {postCostSummary,savePackageTransport,getCostSummaryDB,updateCostSummaryDB} from '@/api/rfqManageMent/quotationdetail'
+import {postCostSummary,savePackageTransport,getCostSummaryDB,updateCostSummaryDB,getCategoryDetail} from '@/api/rfqManageMent/quotationdetail'
 import {getFiles,deleteFiles,downloadUdFile} from '@/api/file'
-import {selectDictByKeyss} from '@/api/dictionary'
+import {selectDictByKeys} from '@/api/dictionary'
 import quotationAnalysis from './components/quotationAnalysis'
 import {partProjTypes} from '@/config'
 import {cloneDeep} from 'lodash'
@@ -220,6 +224,10 @@ export default{
       default: false
     },
     isOriginprice: {
+      type:Boolean,
+      default:false
+    },
+    roundIsOnlineBidding:{
       type:Boolean,
       default:false
     }
@@ -289,7 +297,12 @@ export default{
       initData: true,
       count: 0,
       summaryData: {},
-      isAutoCal: false
+      isAutoCal: false,
+
+      materialOptions: [],
+      productionProcessOptions: [],
+      materialDescribeOptions: [],
+      componentDescribeOptions: []
     }
   },
   watch:{
@@ -352,10 +365,34 @@ export default{
      * @return {*}
      */
     selectDictByKeys(){
-      selectDictByKeyss('ORIGIN_COUNTRY').then(res=>{
-        if(res.code == 200 && res.data && res.data.ORIGIN_COUNTRY){
-          this.titleYcl = titleYcl(this.translateDicKeyCodeToName(res.data.ORIGIN_COUNTRY))
-          this.titleYclByL3 = titleYclByL3(this.translateDicKeyCodeToName(res.data.ORIGIN_COUNTRY))
+      selectDictByKeys([
+        { keys: "ORIGIN_COUNTRY" },
+        { keys: "CATEGORY_CBD_SETTING" },
+      ]).then(res=>{
+        if(res.code == 200 && res.data) {
+          let originCountryOptions = []
+          let materialOptions = []
+          
+          Object.keys(res.data).forEach(key => {
+            switch(key) {
+              case "ORIGIN_COUNTRY":
+                originCountryOptions = res.data.ORIGIN_COUNTRY
+                break
+              case "CATEGORY_CBD_SETTING":
+                if (Array.isArray(res.data.CATEGORY_CBD_SETTING)) {
+                  res.data.CATEGORY_CBD_SETTING.forEach(item => {
+                    if (item.code === "MATERIAL" || item.code === "COMPONENT") {
+                      materialOptions.push({ label: item.describe, value: item.code })
+                    }
+                  })
+                }
+                break
+              default:
+            }
+          })
+
+          this.titleYcl = titleYcl(this.translateDicKeyCodeToName(originCountryOptions), materialOptions)
+          this.titleYclByL3 = titleYclByL3(this.translateDicKeyCodeToName(originCountryOptions), materialOptions)
         }else{
           this.titleYcl = titleYcl()
           this.titleYclByL3 = titleYclByL3()
@@ -802,7 +839,7 @@ export default{
         if (this.isSkd) return
       }
 
-      if (this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || this.partInfo.partProjectType === partProjTypes.DBLINGJIAN) {
+      if (this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || this.partInfo.partProjectType === partProjTypes.DBLINGJIAN || this.partInfo.priceStatus == 'DB') {
         this.getCostSummaryDB()
       } else {
         this.cbdlist = []
@@ -837,12 +874,17 @@ export default{
             this.packAndShipFee = data
             this.initData = true
             this.count = 0
-            this.isAutoCal = res.data.allTableData
+            this.isAutoCal = res.data.isAutoCal
+            if (this.isSkdLc) this.isAutoCal = false
             this.allTableData = this.translateDataForRender(res.data)
             this.topTableData = this.translateDataTopData(cloneDeep(this.allTableData), data)
             this.$refs.components && typeof this.$refs.components.partsQuotationss == "function" && this.$refs.components.partsQuotationss(this.partInfo.rfqId,this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId,this.partInfo.round,this.allTableData.level)
             // this.allpagefrom.quotationId,
             this.findFiles()
+
+            this.getCategoryDetail("MATERIAL")
+            this.getCategoryDetail("COMPONENT")
+            this.getCategoryDetail("PRODUCTION_PROCESS")
           }
         }).catch(err=>{
           this.allTableData = {
@@ -1119,7 +1161,7 @@ export default{
         })
 
         data['tableData'].push(a)
-        if (!this.isSteel) {
+        if (!this.isSteel && !this.roundIsOnlineBidding) { //钢材和onlinebidding是默认展示的totalPrice 不需要计算
           const total = getAallPrice(this.Aprice,a)
           // data['tableData'][0]['totalPrice'] = total
           data['persent'] = getPersent(total,this.Aprice,a)
@@ -1212,7 +1254,7 @@ export default{
               }
             } else throw [res1, res2]
           })
-      } else if (this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || this.partInfo.partProjectType === partProjTypes.DBLINGJIAN){
+      } else if (this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || this.partInfo.partProjectType === partProjTypes.DBLINGJIAN || this. partInfo.priceStatus == 'DB'){
         return this.updateCostSummaryDB().then(res => {
           if (res?.result) {
             if (type !== "submit") {
@@ -1228,6 +1270,7 @@ export default{
       } else {
         if (this.isSkdLc) {
           if (+moment(this.$refs.skdCostSummary.skdStartProductDate) > +moment(this.allTableData.startProductDate)) throw iMessage.warn(this.language("LCQIBUSHENGCHANRIQIBUNENGXIAOYUSKDQIBUSHENGCHANRIQI", "LC起步生产日期不能小于SKD起步生产日期"))
+          if (!moment(this.allTableData.startProductDate).isAfter(moment(this.$refs.skdCostSummary.skdStartProductDate), "month")) throw iMessage.warn(this.language("SKDAFTERLCNOTMONTH", "LC起步生产日期必须是SKD起步生产日期所在月份之后的日期"))
 
           return Promise.all([
             this.$refs.skdCostSummary.save(),
@@ -1287,8 +1330,9 @@ export default{
           ...item,
           capacity: item.sortOrder == 14 ? item.seaPrice : item.capacity,
           sopDate: item.sortOrder == 13 ? item.seaPrice : item.sopDate,
+          isAutoCal: item.sortOrder == 13 ? item.isAutoCal : undefined,
           isReduce: item.sortOrder == 11 ? item.seaPrice : item.isReduce,
-          seaPrice: item.sortOrder == 14 || item.sortOrder == 13 || item.sortOrder == 11 ? null : item.seaPrice
+          seaPrice: item.sortOrder == 14 || item.sortOrder == 13 || item.sortOrder == 11 ? null : item.seaPrice,
         }
       })
 
@@ -1507,6 +1551,69 @@ export default{
 
     itemTypeFilter(value) {
       return value === 1 ? "分摊开发费" : "分摊模具费"
+    },
+
+    // 获取原材料/散件描述下拉列表
+    getCategoryDetail(code) {
+      getCategoryDetail({
+        code,
+        quotationId: this.partInfo.quotationId
+      })
+      .then(res => {
+        if (res.code == 200) {
+          switch(code) {
+            case "MATERIAL": // 原材料
+              this.materialDescribeOptions = Array.isArray(res.data) ? res.data.map(item => ({ value: item.describe, unitCode: item.unitCode })) : []
+              
+              if (Array.isArray(this.allTableData.rawMaterial.records)) {
+                this.allTableData.rawMaterial.records.forEach(item => {
+                  if (item.partName === "MATERIAL") this.$set(item, "autocompleteFn", (value, cb) => cb(this.materialDescribeOptions))
+                })
+              }
+              break
+            case "COMPONENT": // 散件
+              this.componentDescribeOptions = Array.isArray(res.data) ? res.data.map(item => ({ value: item.describe, unitCode: item.unitCode })) : []
+              
+              if (Array.isArray(this.allTableData.rawMaterial.records)) {
+                this.allTableData.rawMaterial.records.forEach(item => {
+                  if (item.partName === "COMPONENT") this.$set(item, "autocompleteFn", (value, cb) => cb(this.componentDescribeOptions))
+                })
+              }
+              break
+            case "PRODUCTION_PROCESS": // 制造成本
+              const productionProcessDescribeOptions = Array.isArray(res.data) ? res.data.map(item => ({ value: item.describe })) : []
+              if (Array.isArray(this.titleCbzz)) this.$set(this.titleCbzz[0], "autocompleteFn", (value, cb) => cb(productionProcessDescribeOptions))
+              if (Array.isArray(this.titleCbzzByL3)) this.$set(this.titleCbzzByL3[0], "autocompleteFn", (value, cb) => cb(productionProcessDescribeOptions))
+              break
+            default:
+              break
+          }
+        } else {
+          iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+        }
+      })
+    },
+    handleSelectChangeByRawMaterial(value, row, key) {
+      console.log(value, key)
+
+      switch(key) {
+        case "partName":
+          if (value === "MATERIAL") this.$set(row, "autocompleteFn", (value, cb) => cb(this.materialDescribeOptions))
+          else if (value === "COMPONENT") this.$set(row, "autocompleteFn", (value, cb) => cb(this.componentDescribeOptions))
+          break
+        default:
+          break
+      }
+    },
+    // 原材料/散件 autocomplete选择事件
+    async handleAutocompleteSelectByRawMaterial(value, row, key) {
+      switch(key) {
+        case "partNumber":
+          this.$set(row, "quantityUnit", value.unitCode)
+          break
+        default:
+          break
+      }
     }
   }
 }

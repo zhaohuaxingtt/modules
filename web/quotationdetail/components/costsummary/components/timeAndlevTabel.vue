@@ -1,13 +1,13 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-23 15:38:31
- * @LastEditTime: 2021-07-14 11:46:12
+ * @LastEditTime: 2021-10-27 18:21:17
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\costsummary\components\timeAndlevTabel.vue
 -->
 <template>
-  <iCard class="topcontent" v-loading='copeData' :title="showTitle ? language('LCBAOJIA', 'LC报价') : ''">
+  <iCard class="topcontent" v-loading='copeData' :title="showTitle ? language('LCBAOJIA', 'LC报价') : ''" :class="{ noTitle: !showTitle }">
     <!--------------------------------------------------------->
     <!----------------------搜索区域  -------------------------->
     <!--------------------------------------------------------->        
@@ -22,6 +22,7 @@
           <iText v-if='disabled'>{{allTableData.startProductDate}}</iText>
           <iDatePicker v-else v-model="allTableData.startProductDate" :disabled="isAutoCal"></iDatePicker>
           <el-popover
+            v-if="!isSkdLc"
             placement="top"
             width="200"
             trigger="hover"
@@ -62,7 +63,7 @@
     <!--------------------------------------------------------->
     <!----------------------表格百分比-------------------------->
     <!--------------------------------------------------------->
-    <tableList :tableTitle='tableTilel1' :notEdit='disabled ? true : (allTableData.level == 1 ? false : !allTableData.editFlag)' :tableData='tableData.tableData' :isSteel="isSteel" class="margin-top10"></tableList>
+    <tableList :tableTitle='tableTilel1' :notEdit='disabled ? true : (allTableData.level == 1 ? false : !allTableData.editFlag)' :tableData='tableData.tableData' :isSteel="isSteel" :roundIsOnlineBidding='roundIsOnlineBidding' class="margin-top10"></tableList>
     <persent v-if='!tableData.persent.every(items=>items == 0)' :persentList='tableData.persent' :realDataList='tableData.tableData'></persent>
   </iCard>
 </template>
@@ -73,8 +74,11 @@ import {tableTilel1Fn} from './data'
 import persent from './persent'
 import {partsQuotations,copyPartsQuotation,downPartCbdLoadFile, getIsAutoCal} from '@/api/rfqManageMent/quotationdetail'
 import { getToken } from "@/utils";
+import { priceStatusMixin } from "rise/web/quotationdetail/components/mixins"
+
 export default{
   components:{iCard,iFormGroup,iFormItem,iText,tableList,persent,iDatePicker,iSelect,iButton, icon},
+  mixins: [ priceStatusMixin ],
   props:{
     tableData:{
       type:Object,
@@ -107,6 +111,10 @@ export default{
       type: Boolean,
       default: false,
     },
+    roundIsOnlineBidding:{
+      type:Boolean,
+      default:false
+    },
     showTitle: {
       type: Boolean,
       default: false
@@ -114,6 +122,10 @@ export default{
     isAutoCal: {
       type: Boolean,
       default: false
+    },
+    partInfo: {
+      type: Object,
+      default: () => ({})
     }
   },
   inject:['vm'],
@@ -297,6 +309,12 @@ export default{
 
   .isAutoCal {
     margin-left: 8px;
+  }
+}
+
+.noTitle {
+  ::v-deep .cardBody {
+    padding-top: 30px!important;
   }
 }
 </style>

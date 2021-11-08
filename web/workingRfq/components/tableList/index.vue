@@ -1,13 +1,13 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-02-24 09:42:07
- * @LastEditTime: 2021-07-13 18:47:34
+ * @LastEditTime: 2021-10-28 15:55:18
  * @LastEditors: Please set LastEditors
  * @Description: 零件签收-table组件。
  * @FilePath: \front-supplier\src\views\rfqManageMent\workingRfq\components\tableList\index.vue
 -->
 <template>
-  <el-table fit tooltip-effect='light' :height="height" :data='tableData' v-loading='tableLoading' @selection-change="handleSelectionChange" :empty-text="$t('LK_ZANWUSHUJU')" ref="moviesTable" :class="radio && 'radio'">
+  <el-table class="table" fit tooltip-effect='light' :height="height" :data='tableData' v-loading='tableLoading' @selection-change="handleSelectionChange" :empty-text="$t('LK_ZANWUSHUJU')" ref="moviesTable" :class="radio && 'radio'">
     <el-table-column v-if="selection && hasList(tableTitle)" type='selection' width="50" align='center'></el-table-column>
     <el-table-column v-if='indexKey && hasList(tableTitle)' type='index' width='50' align='center' label='#'>
       <template slot-scope="scope">
@@ -18,7 +18,15 @@
       <!----------------------A价------------------------>
       <el-table-column :key="items.key" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-if='items.props == "totalPrice"' :prop="items.props" :label="items.key ? $t(items.key) : items.name">
         <template slot-scope="row">
-          <span v-if="isSteel">{{ row.row.totalPrice }}</span>
+          <!--钢材只显示A价--->
+          <template v-if="isSteel">
+            <span>{{row.row.totalPrice}}</span>
+          </template>
+          <!--在线竞价，显示一个定值，并且计算totalPrice--->
+          <template v-else-if="roundIsOnlineBidding">
+            <span>{{ row.row.biddingTotalPrice }}</span>
+            <span v-show="false">{{getAallPrice(Aprice,row.row)}}</span>
+          </template>
           <span v-else>{{ isEmptyPriceCompute(Aprice,row.row) ? row.row.totalPrice : getAallPrice(Aprice,row.row) }}</span>
         </template>
       </el-table-column>
@@ -92,10 +100,25 @@
         <!----------------------------如果是展示select 或者input------------------------>
         <template v-if='!items.list' slot-scope="scope">
           <template v-if='items.type == "select"'>
-            <iSelect v-model="scope.row[items.props]" v-if='!notEdit'>
-                <el-option :value="options.value" v-for='(options,optionIndex) in items.options' :key='optionIndex' :label="options.name || options.label"></el-option>
+            <iSelect v-model="scope.row[items.props]" v-if='!notEdit' @change="$emit('handleSelectChange', $event, scope.row, items.props)">
+              <el-option :value="options.value" v-for='(options,optionIndex) in items.options' :key='optionIndex' :label="options.name || options.label"></el-option>
             </iSelect>
-            <span v-else>{{scope.row[items.props]}}</span>  
+            <span v-else>{{ items.showLabel ? showLabel(scope.row[items.props], items.options) : scope.row[items.props]}}</span>
+          </template>
+          <template v-else-if='items.type == "autocomplete"'>
+            <el-autocomplete
+              v-if="!notEdit"
+              v-model="scope.row[items.props]"
+              :fetch-suggestions="scope.row.autocompleteFn || items.autocompleteFn"
+              @select="$emit('handleAutocompleteSelect', $event, scope.row, items.props)"
+            >
+              <template v-slot="scope">
+                <el-tooltip class="item" effect="light" placement="right" :content="scope.item.value">
+                  <span>{{ scope.item.value }}</span>
+                </el-tooltip>
+              </template>
+            </el-autocomplete>
+            <span v-else>{{ scope.row[items.props] }}</span>
           </template>
           <template v-else-if='items.type == "input"'>
             <iInput v-model="scope.row[items.props]" v-if='!notEdit' @input="handleInput($event, scope.row, items.props, items)"></iInput>
@@ -106,6 +129,12 @@
               <iInput v-model="scope.row[items.props]" @input="handleInputByRate($event, scope.row, items.props)"></iInput><span class="margin-left5">%</span>
             </div>
             <span v-else>{{scope.row[items.props]}}</span>
+          </template>
+          <!---------------------------bidding---------------------------->
+          <template v-else-if='items.props.indexOf("items") > -1'>
+              <span v-if='scope.$index == 0'>{{scope.row[items.props].quotation}}</span>
+              <span v-if='scope.$index == 1'>{{scope.row[items.props].bidding}}</span>
+              <span v-if='scope.$index == 2' :class="{redClass:scope.row[items.props].isColor}">{{scope.row[items.props].result}}</span>
           </template>
           <template v-else>
             <span v-if="items.type === 'inputRate' && !notEdit">{{scope.row[items.props]}}{{ (scope.row[items.props] == null || scope.row[items.props] == "") && scope.row[items.props] !== 0  ? '' : '%' }}</span>
@@ -143,6 +172,10 @@ export default{
     isSteel: {
       type: Boolean,
       default: false
+    },
+    roundIsOnlineBidding:{
+      type:Boolean,
+      default:false
     }
   },
   inject:['vm'],
@@ -227,6 +260,14 @@ export default{
         this.$set(row, key, numberProcessor(value, 2))
       }
       this.$emit("handleInput", value, row, key)
+    },
+    showLabel(value, options = []) {
+      const current = options.find(item => item.value === value)
+      if (current) {
+        return current.name || current.label
+      } else {
+        return value
+      }
     }
   }
 }
@@ -244,5 +285,20 @@ export default{
 .flexVerticalCenter {
   display: flex;
   align-items: center;
+}
+.redClass{
+  color:red;
+}
+
+.table {
+  ::v-deep td .cell {
+    width: 100%!important;
+  }
+
+  ::v-deep .el-input,
+  .el-select,
+  .el-autocomplete  {
+    width: 97% !important;
+  }
 }
 </style>

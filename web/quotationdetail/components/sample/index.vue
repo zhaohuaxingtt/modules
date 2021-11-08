@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 14:26:53
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-09-13 15:24:45
+ * @LastEditTime: 2021-11-05 15:24:16
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\sample\index.vue
 -->
@@ -15,15 +15,15 @@
         </template> -->
         <template #sampleUnitPrice="scope">
           <iInput v-if="!disabled && !isOriginprice" v-model="scope.row.sampleUnitPrice" @input="handleInputBySampleUnitPrice($event, scope.row)" />
-          <span v-else>{{ scope.row.sampleUnitPrice }}</span>
+          <span v-else>{{ scope.row.sampleUnitPrice | thousandsFilter }}</span>
         </template>
         <template #addionalMouldCost="scope">
           <iInput v-if="!disabled && !isOriginprice" v-model="scope.row.addionalMouldCost" @input="handleInputByAddionalMouldCost($event, scope.row)" />
-          <span v-else>{{ scope.row.addionalMouldCost }}</span>
+          <span v-else>{{ scope.row.addionalMouldCost | thousandsFilter }}</span>
         </template>
         <template #addionalMouldLife="scope">
           <iInput v-if="!disabled && !isOriginprice" v-model="scope.row.addionalMouldLife" @input="handleInputByAddionalMouldLife($event, scope.row)" />
-          <span v-else>{{ scope.row.addionalMouldLife }}</span>
+          <span v-else>{{ scope.row.addionalMouldLife | thousandsFilter}}</span>
         </template>
         <template #remark="scope">
           <iInput v-if="!disabled && !isOriginprice" v-model="scope.row.remark" />
@@ -40,8 +40,10 @@ import tableList from "../tableList"
 import { sampleTableTitle  } from "./data"
 import { getToolingSample, saveToolingSample } from "@/api/rfqManageMent/quotationdetail"
 import { numberProcessor } from '@/utils'
+import filters from "@/utils/filters"
 
 export default {
+  mixins: [ filters ],
   components: {
     iCard,
     iInput,

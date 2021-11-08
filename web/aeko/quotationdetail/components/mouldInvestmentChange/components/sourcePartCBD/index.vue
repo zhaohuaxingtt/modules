@@ -6,7 +6,7 @@
         <span class="tip margin-left14">({{ language("DANWEI", "单位") }}：{{ language("YUAN", "元") }})</span>
       </div>
       <div class="header-control">
-				<div class="btn" v-if="!disabled">
+				<div class="btn" v-if="!disabled && !editDisabled">
           <el-popover
             placement="top"
             width="263"
@@ -28,6 +28,9 @@
         <template #assetTotal="scope">
           <span>{{ floatFixNum(scope.row.assetPrice) }}</span>
         </template>
+        <template #assetTypeNum="scope">
+           <span>{{getAssetClassificationVal(scope.row.assetTypeNum)}}</span>
+        </template>
       </tableList>
     </div>
   </iCard>
@@ -37,7 +40,7 @@
 import { iCard, iButton, icon, iMessage } from "rise"
 import tableList from "rise/web/quotationdetail/components/tableList"
 import { statesFilter } from "rise/web/quotationdetail/components/mouldAndDevelopmentCost/components/data"
-import { sourcePartCBDTableTitle as tableTitle } from "../data"
+import {assetTypeCodeOptions, sourcePartCBDTableTitle as tableTitle} from "../data"
 import { floatFixNum } from "../../../data"
 import { getMoldCbd } from "@/api/aeko/quotationdetail"
 
@@ -52,12 +55,17 @@ export default {
     disabled: {
       type: Boolean,
       default: false
-    }
+    },
+    editDisabled: {
+      type: Boolean,
+      default: false
+    },
   },
   data() {
     return {
       loading: false,
       tableTitle,
+      assetTypeCodeOptions,
       tableListData: [],
       multipleSelection: []
     }
@@ -100,6 +108,13 @@ export default {
         }
       })
       .finally(() => this.loading = false)
+    },
+    getAssetClassificationVal(val){
+      let mItem=this.assetTypeCodeOptions.find(item=>item.value==val)
+      if(null!=mItem){
+        return `${mItem.value}-${mItem.label}`
+      }
+
     }
   }
 }

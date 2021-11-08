@@ -72,13 +72,13 @@ export default {
   props: {
     userInfo: {
       type: Object,
-      default: function() {
+      default: function () {
         return {}
       }
     },
     menus: {
       type: Array,
-      default: function() {
+      default: function () {
         return []
       }
     }
@@ -200,6 +200,8 @@ export default {
     width: 330px;
     padding: 0px;
     .admin-menus {
+      max-height: calc(100vh - 80px);
+      overflow-y: auto;
       > div {
         &:last-child {
           > .menu {

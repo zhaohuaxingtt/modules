@@ -27,6 +27,10 @@
           <i @click="handleCollapse" v-if='collapse' class="el-icon-arrow-up collapse margin-left20 cursor" :class="{ rotate: !collapseValue }"></i>
         </div>
     </div>
+    <!-- body不折叠部分 -->
+    <div class="bodyShow" v-if="title">
+      <slot name="body"></slot>
+    </div>
     <el-collapse-transition>
       <div v-show="collapseValue" v-if="$slots.default">
         <div class="cardBody" :style="{ paddingTop: !($slots.header || header || title || $slots['header-control'] || headerControl) || 0 }">
@@ -131,6 +135,10 @@ export default {
   .cardBody {
     height: 100%;
     padding: 30px 40px;
+  }
+  
+  .bodyShow {
+    padding: 0px 40px;
   }
 }
 

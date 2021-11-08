@@ -16,11 +16,11 @@
             <span>{{ typeof scope.row.typeNameByLang === "function" ? scope.row.typeNameByLang() : scope.row.typeName }}</span>
           </template>
           <template #originRatio="scope">
-            <span v-if="scope.row.originManageId || disabled">{{ scope.row.originRatio }}</span>
+            <span v-if="scope.row.originManageId || disabled || editDisabled">{{ scope.row.originRatio }}</span>
             <iInput class="input-center" v-else v-model="scope.row.originRatio" @input="handleInputByNumber($event, 'originRatio', scope.row, 2, computeChangeAmount)"></iInput>
           </template>
           <template #ratio="scope">
-            <span v-if="disabled" :class="{ changeClass: scope.row.ratio !== scope.row.originRatio }">{{ scope.row.ratio }}</span>
+            <span v-if="disabled || editDisabled" :class="{ changeClass: scope.row.ratio !== scope.row.originRatio }">{{ scope.row.ratio }}</span>
             <iInput class="input-center" v-else v-model="scope.row.ratio" :class="{ changeClass: scope.row.ratio !== scope.row.originRatio }" @input="handleInputByNumber($event, 'ratio', scope.row, 2, computeChangeAmount)"></iInput>
           </template>
           <template #changeAmount="scope">{{ floatFixNum(scope.row.changeAmount) }}</template>
@@ -68,7 +68,11 @@ export default {
     manageFeeChange: {
       type: String,
       default: 0
-    }
+    },
+		editDisabled:{
+			type: Boolean,
+			default: false
+		}
   },
   data() {
     return {
