@@ -228,9 +228,9 @@ export default {
                   return { code: item.code, seq: "2.3", key: "BAOFEICHENGBEN", label: "报废成本", value: "scrap", permissionKey: "AEKO_QUOTATION_CBD_VIEW_BAOFEICHENGBEN|报废成本" }
                 case "4":
                   return { code: item.code, seq: "2.4", key: "GUANLIFEI", label: "管理费", value: "manage", permissionKey: "AEKO_QUOTATION_CBD_VIEW_GUANLIFEI|管理费" }
-                case "5":
-                  return { code: item.code, seq: "2.5", key: "QITAFEIYONG", label: "其他费用", value: "other" }
                 case "6":
+                  return { code: item.code, seq: "2.5", key: "QITAFEIYONG", label: "其他费用", value: "other" }
+                case "5":
                   return { code: item.code, seq: "2.6", key: "LIRUN", label: "利润", value: "profit", permissionKey: "AEKO_QUOTATION_CBD_VIEW_LIRUN|利润" }
                 default:
                   return {}
