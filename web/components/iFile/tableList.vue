@@ -24,7 +24,7 @@
     <!----------------------复选框------------------------------------->
     <el-table-column v-if="selection" type='selection' :width="selectConfig.width || 56" :align="selectConfig.align || 'center'" :header-align="selectConfig.headerAlign || 'center'" :selectable="selectConfig.selectable || selectable"></el-table-column>
     <!----------------------支持自定义的index插槽------------------------>
-    <el-table-column v-if='index' type='index' :width='indexConfig.width || 50' :align="indexConfig.width || 'center'" :header-align="indexConfig.width || 'center'" :label="indexConfig.label || indexLabel">
+    <el-table-column v-if='index' type='index' :width='indexConfig.width || 56' :align="indexConfig.width || 'center'" :header-align="indexConfig.width || 'center'" :label="indexConfig.label || indexLabel">
       <template slot-scope="scope">
         <slot :name="`_index`" :row="scope.row" :$index="scope.$index">
           {{scope.$index+1}}
