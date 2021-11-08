@@ -15,10 +15,10 @@
       </div>
     </template>
 		<div class="body margin-top20">
-			<el-table class="table" ref="table" :data="tableListData"  v-loading="loading" @selection-change="handleSelectionChange">
-				<el-table-column type="selection" align="center" width="20" v-if="!disabled && !editDisabled"></el-table-column>
-				<el-table-column label="#" type="index" align="center" width="20" ></el-table-column>
-				<el-table-column  :render-header="h => h('span', { domProps: { innerHTML: `${ language('LEIBIE', '类别') }<span class='require'>*</span>` }})" align="center" width="135">
+			<el-table class="table" ref="table" :data="tableListData"  min-width="100%"  v-loading="loading" @selection-change="handleSelectionChange">
+				<el-table-column type="selection" align="center" min-width="0.8%" v-if="!disabled && !editDisabled"></el-table-column>
+				<el-table-column label="#" type="index" align="center" min-width="0.8%" ></el-table-column>
+				<el-table-column  min-width="10%" :render-header="h => h('span', { domProps: { innerHTML: `${ language('LEIBIE', '类别') }<span class='require'>*</span>` }})" align="center"  >
 					<template v-slot="scope">
 						<iSelect v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.typeName" class="select-center">
 							<el-option
@@ -31,11 +31,10 @@
 						<span v-else>{{ getTypeName(scope.row.typeName) }}</span>
 					</template>
 				</el-table-column>
-        <el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('NEIRONG', '内容') }<span class='require'>*</span>` }})" align="center">
+        <el-table-column min-width="13%" :render-header="h => h('span', { domProps: { innerHTML: `${ language('NEIRONG', '内容') }<span class='require'>*</span>` }})" align="center">
           <template v-slot="scope">
 						<el-popover
 							placement="top"
-							width="230"
 							trigger="hover"
 							:content="scope.row.newContent"
 							:disabled="newContentFoucus || !scope.row.newContent">
@@ -45,68 +44,68 @@
           </template>
         </el-table-column>
 				<el-table-column :label="language('YUANLINGJIAN', '原零件')" align="center">
-					<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('YUANLINGJIANHAO', '原零件号') }<span class='require'>*</span>` }})" align="center">
+					<el-table-column min-width="10%"  :render-header="h => h('span', { domProps: { innerHTML: `${ language('YUANLINGJIANHAO', '原零件号') }<span class='require'>*</span>` }})" align="center">
 						<template v-slot="scope">
 							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.originPartNum" class="input-center" />
 							<span v-else>{{ scope.row.originPartNum }}</span>
 						</template>
 					</el-table-column>
-					<el-table-column  width="90"  :render-header="h => h('span', { domProps: { innerHTML: `${ language('DANJIA', '单价') }<span class='require'>*</span>` }})" align="center">
+					<el-table-column min-width="7%"  :render-header="h => h('span', { domProps: { innerHTML: `${ language('DANJIA', '单价') }<span class='require'>*</span>` }})" align="center">
 						<template v-slot="scope">
 							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.originUnitPrice" class="input-center" @input="handleInputByNumber($event, 'originUnitPrice', scope.row, 4, updateOriginUnitPrice)" />
 							<span v-else>{{ scope.row.originUnitPrice | thousandsFilter }}</span>
 						</template>
 					</el-table-column>
-					<el-table-column width="90" :render-header="h => h('span', { domProps: { innerHTML: `${ language('DANWEI', '单位') }<span class='require'>*</span>` }})" align="center">
+					<el-table-column min-width="6%"  :render-header="h => h('span', { domProps: { innerHTML: `${ language('DANWEI', '单位') }<span class='require'>*</span>` }})" align="center">
 						<template v-slot="scope">
 							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.originUnit" class="input-center" />
 							<span v-else>{{ scope.row.originUnit }}</span>
 						</template>
 					</el-table-column>
-					<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('YONGLIANG', '用量') }<span class='require'>*</span>` }})" align="center">
+					<el-table-column min-width="6%"  :render-header="h => h('span', { domProps: { innerHTML: `${ language('YONGLIANG', '用量') }<span class='require'>*</span>` }})" align="center">
 						<template v-slot="scope">
 							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.originUseage" class="input-center" @input="handleInputByNumber($event, 'originUseage', scope.row, 4, updateOriginUseage)" />
 							<span v-else>{{ scope.row.originUseage | thousandsFilter }}</span>
 						</template>
 					</el-table-column>
-					<el-table-column :label="language('XIAOJI', '小计')" align="center" prop="originTotalPrice">
+					<el-table-column min-width="6%"   :label="language('XIAOJI', '小计')" align="center" prop="originTotalPrice">
 						<template slot-scope="scope">
 							{{ floatFixNum(scope.row.originTotalPrice) | thousandsFilter }}
 						</template>
 					</el-table-column>
 				</el-table-column>
-				<el-table-column :label="language('XINLINGJIAN', '新零件')" align="center">
-					<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('XINLINGJIANHAO', '新零件号') }<span class='require'>*</span>` }})" align="center">
+				<el-table-column  :label="language('XINLINGJIAN', '新零件')" align="center">
+					<el-table-column min-width="10%"  :render-header="h => h('span', { domProps: { innerHTML: `${ language('XINLINGJIANHAO', '新零件号') }<span class='require'>*</span>` }})" align="center">
 						<template v-slot="scope">
 							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.newPartNum" class="input-center" />
 							<span v-else>{{ scope.row.newPartNum }}</span>
 						</template>
 					</el-table-column>
-					<el-table-column width="90" :render-header="h => h('span', { domProps: { innerHTML: `${ language('DANJIA', '单价') }<span class='require'>*</span>` }})" align="center">
+					<el-table-column  min-width="7%"  :render-header="h => h('span', { domProps: { innerHTML: `${ language('DANJIA', '单价') }<span class='require'>*</span>` }})" align="center">
 						<template v-slot="scope">
 							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.newUnitPrice" class="input-center" @input="handleInputByNumber($event, 'newUnitPrice', scope.row, 4, updateNewUnitPrice)" />
 							<span v-else>{{ scope.row.newUnitPrice | thousandsFilter }}</span>
 						</template>
 					</el-table-column>
-					<el-table-column width="90" :render-header="h => h('span', { domProps: { innerHTML: `${ language('DANWEI', '单位') }<span class='require'>*</span>` }})" align="center">
+					<el-table-column min-width="6%"  :render-header="h => h('span', { domProps: { innerHTML: `${ language('DANWEI', '单位') }<span class='require'>*</span>` }})" align="center">
 						<template v-slot="scope">
 							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.newUnit" class="input-center" />
 							<span v-else>{{ scope.row.newUnit }}</span>
 						</template>
 					</el-table-column>
-					<el-table-column :render-header="h => h('span', { domProps: { innerHTML: `${ language('YONGLIANG', '用量') }<span class='require'>*</span>` }})" align="center">
+					<el-table-column min-width="6%" :render-header="h => h('span', { domProps: { innerHTML: `${ language('YONGLIANG', '用量') }<span class='require'>*</span>` }})" align="center">
 						<template v-slot="scope">
 							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.newUseage" class="input-center" @input="handleInputByNumber($event, 'newUseage', scope.row, 4, updateNewUseage)" />
 							<span v-else>{{ scope.row.newUseage | thousandsFilter }}</span>
 						</template>
 					</el-table-column>
-					<el-table-column :label="language('XIAOJI', '小计')" align="center" prop="newTotalPrice">
+					<el-table-column min-width="6%" :label="language('XIAOJI', '小计')" align="center" prop="newTotalPrice">
 						<template slot-scope="scope">
 							{{ floatFixNum(scope.row.newTotalPrice) | thousandsFilter }}
 						</template>
 					</el-table-column>
 				</el-table-column>
-				<el-table-column :label="language('BIANDONGZHI', '变动值')" align="center" prop="changeValue">
+				<el-table-column min-width="7%" :label="language('BIANDONGZHI', '变动值')" align="center" prop="changeValue">
 					<template slot-scope="scope">
 						{{ floatFixNum(scope.row.changeValue) }}
 					</template>
