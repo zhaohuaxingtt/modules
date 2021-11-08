@@ -107,7 +107,6 @@
           </template>
           <template v-else-if='items.type == "autocomplete"'>
             <el-autocomplete
-              class="autocomplete"
               v-if="!notEdit"
               v-model="scope.row[items.props]"
               :fetch-suggestions="scope.row.autocompleteFn || items.autocompleteFn"
@@ -295,8 +294,11 @@ export default{
   ::v-deep td .cell {
     width: 100%!important;
   }
-}
-.autocomplete {
-  width: 97% !important;
+
+  ::v-deep .el-input,
+  .el-select,
+  .el-autocomplete  {
+    width: 97% !important;
+  }
 }
 </style>
