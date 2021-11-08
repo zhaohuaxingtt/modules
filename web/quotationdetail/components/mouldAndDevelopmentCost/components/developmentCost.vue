@@ -1,8 +1,8 @@
 <!--
  * @Author: ldh
  * @Date: 2021-04-23 00:21:17
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-11-05 15:21:26
+ * @LastEditors: YoHo
+ * @LastEditTime: 2021-11-08 19:56:25
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\developmentCost.vue
 -->
@@ -267,6 +267,7 @@ export default {
 	}
 
   .header {
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;

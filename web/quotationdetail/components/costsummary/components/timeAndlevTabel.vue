@@ -131,7 +131,7 @@ export default{
   inject:['vm'],
   data(){
     return {
-      uploadUrl:process.env.VUE_APP_SUPPLIER_CBHUIZ,
+      uploadUrl: process.env.VUE_APP_SOURCING,
       tableTilel1:[],
       selectList:[],
       selectedList:[],

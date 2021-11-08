@@ -10,7 +10,6 @@
         <span class="margin-left20">
 					<icon symbol name="icondatabaseweixuanzhong" class="font18"/>
 				</span>
-        <iLog :show.sync="showDialog" :bizId="bizId"></iLog>
       </div>
     </div>
 
@@ -182,7 +181,7 @@ export default {
       disabled: false,
       aprice: 0,
       loading: false,
-      showDialog:false
+      // showDialog:false
     }
   },
   created() {
@@ -209,9 +208,9 @@ export default {
     floatFixNum,
     // 日志
     log() {
-      this.bizId = +this.$route.query.requirementAekoId
-      if(this.bizId)
-      this.showDialog = true
+      // this.bizId = +this.$route.query.requirementAekoId
+      // if(this.bizId)
+      // this.showDialog = true
     },
     tabLeaveBefore(active) {
       // if (this.saveStatus) {
