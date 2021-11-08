@@ -7,7 +7,7 @@
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\costsummary\components\timeAndlevTabel.vue
 -->
 <template>
-  <iCard class="topcontent" v-loading='copeData' :title="showTitle ? language('LCBAOJIA', 'LC报价') : ''">
+  <iCard class="topcontent" v-loading='copeData' :title="showTitle ? language('LCBAOJIA', 'LC报价') : ''" :class="{ noTitle: !showTitle }">
     <!--------------------------------------------------------->
     <!----------------------搜索区域  -------------------------->
     <!--------------------------------------------------------->        
@@ -309,6 +309,12 @@ export default{
 
   .isAutoCal {
     margin-left: 8px;
+  }
+}
+
+.noTitle {
+  ::v-deep .cardBody {
+    padding-top: 30px!important;
   }
 }
 </style>

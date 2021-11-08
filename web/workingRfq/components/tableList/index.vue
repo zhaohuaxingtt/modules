@@ -7,7 +7,7 @@
  * @FilePath: \front-supplier\src\views\rfqManageMent\workingRfq\components\tableList\index.vue
 -->
 <template>
-  <el-table fit tooltip-effect='light' :height="height" :data='tableData' v-loading='tableLoading' @selection-change="handleSelectionChange" :empty-text="$t('LK_ZANWUSHUJU')" ref="moviesTable" :class="radio && 'radio'">
+  <el-table class="table" fit tooltip-effect='light' :height="height" :data='tableData' v-loading='tableLoading' @selection-change="handleSelectionChange" :empty-text="$t('LK_ZANWUSHUJU')" ref="moviesTable" :class="radio && 'radio'">
     <el-table-column v-if="selection && hasList(tableTitle)" type='selection' width="50" align='center'></el-table-column>
     <el-table-column v-if='indexKey && hasList(tableTitle)' type='index' width='50' align='center' label='#'>
       <template slot-scope="scope">
@@ -107,10 +107,18 @@
           </template>
           <template v-else-if='items.type == "autocomplete"'>
             <el-autocomplete
+              v-if="!notEdit"
               v-model="scope.row[items.props]"
               :fetch-suggestions="scope.row.autocompleteFn || items.autocompleteFn"
               @select="$emit('handleAutocompleteSelect', $event, scope.row, items.props)"
-            ></el-autocomplete>
+            >
+              <template v-slot="scope">
+                <el-tooltip class="item" effect="light" placement="right" :content="scope.item.value">
+                  <span>{{ scope.item.value }}</span>
+                </el-tooltip>
+              </template>
+            </el-autocomplete>
+            <span v-else>{{ scope.row[items.props] }}</span>
           </template>
           <template v-else-if='items.type == "input"'>
             <iInput v-model="scope.row[items.props]" v-if='!notEdit' @input="handleInput($event, scope.row, items.props, items)"></iInput>
@@ -280,5 +288,17 @@ export default{
 }
 .redClass{
   color:red;
+}
+
+.table {
+  ::v-deep td .cell {
+    width: 100%!important;
+  }
+
+  ::v-deep .el-input,
+  .el-select,
+  .el-autocomplete  {
+    width: 97% !important;
+  }
 }
 </style>
