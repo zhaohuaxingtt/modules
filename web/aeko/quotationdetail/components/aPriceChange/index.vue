@@ -2,7 +2,7 @@
   <div class="aPriceChange">
     <iCard :title="language('BIANDONGZHI', '变动值')">
       <template #header-control>
-        <iButton v-if="sourceApriceChange != apriceChange && !disabled && !editDisabled"  :loading="saveChangeLoading" @click="saveAPriceChange">{{ language("BAOCUN", "保存") }}</iButton>
+        <iButton v-if="sourceApriceChange != apriceChange && !disabled && !editDisabled && !apriceChangeDisabled"  :loading="saveChangeLoading" @click="saveAPriceChange">{{ language("BAOCUN", "保存") }}</iButton>
       </template>
       <div class="aPriceChangeMode">
         <div class="margin-top20">
@@ -303,7 +303,7 @@ export default {
       })
       .finally(() => {
         this.loading = false;
-        this.setApriceChange()
+        this.setInitApriceChange()
       })
     },
     handleInputByApriceChange(value) {
@@ -606,7 +606,7 @@ export default {
       // this.setApriceChange()
       // this.saveChange("changeValidity")
     },
-    updateTotal(total) {
+    updateTotal(total) {  //更新汇总表的total
       // this.total = total // this.$refs.changeSummary.total
 
       this.setApriceChange()
@@ -618,7 +618,7 @@ export default {
       this.setApriceChange()
       this.saveChange("changeValidity")
     },
-    updateApriceChange(cbdTotal) {
+    updateApriceChange(cbdTotal) {  // 更新变动值-cbd A价
       this.cbdTotal = cbdTotal
 
       this.setApriceChange()
@@ -638,6 +638,36 @@ export default {
       if (this.isChange && !this.cbdCanEdit) this.apriceChange = "0"
       this.apriceChange = this.floatNum(this.apriceChange)
       this.apriceChangeDisabled = !+this.apriceChange
+      this.$emit("updateApriceChange", this.apriceChange)
+    },
+    setInitApriceChange() {
+      this.apriceChangeDisabled = false
+      if (!this.isChange && !this.cbdCanEdit){
+        // 类型1: 有变动值，cbd无效
+        // 和变动值-汇总表比较，取值小的
+        if(this.$refs.changeSummary.tableListData.length){
+          // 汇总表有数据
+          this.apriceChange = this.$refs.changeSummary.total> this.apriceChange ? this.apriceChange : this.$refs.changeSummary.total
+        }else{
+          // 汇总表无数据
+          this.apriceChange = "0"
+          this.apriceChangeDisabled = true
+        }
+      } else if (!this.isChange && this.cbdCanEdit) {
+        // 类型2: 有变动值，cbd有效
+        // A价和变动值-cbd做比较，取值小的
+        let minVal = this.cbdSummaryTableData[0].apriceChange>this.apriceChange?this.apriceChange:this.cbdSummaryTableData[0].apriceChange
+        if (this.$refs.changeSummary.tableListData.length) {
+          // 比较后的小值再和变动值-汇总表比较，取值小的
+          minVal = +this.$refs.changeSummary.total > minVal ? minVal : this.$refs.changeSummary.total
+        }
+        this.apriceChange = minVal
+      }else if (this.isChange && !this.cbdCanEdit){
+        // 类型3: 无变动值，cbd无效,A价指定为0
+        this.apriceChange = "0"
+        this.apriceChangeDisabled = true
+      }
+      this.apriceChange = this.floatNum(this.apriceChange)
       this.$emit("updateApriceChange", this.apriceChange)
     },
     // 修改接口
