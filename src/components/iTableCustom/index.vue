@@ -33,7 +33,7 @@
 			:header-cell-class-name="handleHeaderCellClassName"
 			@row-click="rowClick"
 		>
-			<template v-for="(item, index) in columns">
+			<template v-for="(item, index) in tableVisibleColumns">
 				<el-table-column
 					:key="index"
 					v-if="['selection', 'index'].includes(item.type)"
@@ -55,7 +55,7 @@
 					:fixed="item.fixed"
 				>
 					<template slot="header">
-						<div class="table-setting" @click="sortShow = true">
+						<div class="table-setting" @click="openSetting">
 							<icon symbol name="iconzidingyi" />
 						</div>
 					</template>
@@ -180,12 +180,14 @@
 			</template>
 		</el-table>
 		<iTableHeaderSorter
-			:data="columns"
-			:show.sync="sortShow"
+			v-if="settingVisible"
+			:data="tableSettingColumns"
+			:show.sync="settingVisible"
 			:value="'value'"
 			:label="'label'"
 			:visiableKey="'hidden'"
-			@callback="handleSaveSortCallback"
+			@callback="handleSaveSetting"
+			@reset="handleResetSetting"
 		/>
 		<el-tooltip
 			effect="light"
@@ -205,13 +207,22 @@
 </template>
 
 <script>
-import Icon from '../icon/index.vue'
 import iTableColumn from './iTableColumn'
+import Icon from '../icon/index.vue'
+import iButton from '../iButton/index.vue'
+import iSelect from '../iSelect/index.vue'
+import iInput from '../iInput/index.vue'
+import iRadio from '../iRadio/index.vue'
+import iMessage from '../iMessage'
 import iTableHeaderSorter from '../iTableHeaderSorter'
 export default {
 	// eslint-disable-next-line vue/no-unused-components
 	components: {
 		iTableColumn,
+		iButton,
+		iSelect,
+		iInput,
+		iRadio,
 		Icon,
 		iTableHeaderSorter,
 	},
@@ -350,8 +361,37 @@ export default {
 			const mergeKeys = [...new Set([...dataKeys, ...defaultCheckedKeys])]
 			return mergeKeys.length === defaultCheckedKeys.length
 		},
-		theSetColumns() {
-			return this.columns.filter((e) => !e.type)
+		unCols() {
+			// 列权限控制，返回无权限的字段列表
+			if (!this.permissionKey) {
+				return []
+			}
+			const columnPermissions = sessionStorage.getItem('columnConfig')
+			if (columnPermissions) {
+				const currentColumnPermission = JSON.parse(columnPermissions)[
+					this.permissionKey
+				]
+				if (currentColumnPermission) {
+					return currentColumnPermission.unCols
+				}
+			}
+			return []
+		},
+		tableVisibleColumns() {
+			// 表格的列
+			if (this.tableColumns.length) {
+				return this.tableColumns.filter(
+					(e) => !e.isHidden && !this.unCols.includes(e.prop)
+				)
+			}
+			return this.columns.filter((e) => !this.unCols.includes(e.prop))
+		},
+		tableSettingColumns() {
+			// 表格自由列表设置列
+			if (this.tableColumns.length) {
+				return this.tableColumns.filter((e) => !this.unCols.includes(e.prop))
+			}
+			return this.columns.filter((e) => !this.unCols.includes(e.prop))
 		},
 	},
 	data() {
@@ -361,11 +401,10 @@ export default {
 			checkedAll: false,
 			indeterminateAll: false,
 			defaultCheckedKeys: [],
-			columnsSetVisible: false,
-			columnViews: [],
 			tableColumns: [],
-			sortShow: false,
+			settingVisible: false,
 			tooltipContent: '',
+			settingId: '',
 		}
 	},
 	watch: {
@@ -378,6 +417,9 @@ export default {
 		},
 	},
 	created() {
+		if (this.permissionKey) {
+			this.querySetting()
+		}
 		this.setDefaultDefaultCheckedKeys()
 		this.getTableData()
 	},
@@ -821,36 +863,79 @@ export default {
 			return res
 		},
 		/******************* 记忆列表 ********************/
-		handleSaveSortCallback(val) {
-			console.log('此处做table刷新', val)
+		getCookie(name) {
+			const strCookie = document.cookie //获取cookie字符串
+			const arrCookie = strCookie.split('; ') //分割
+			//遍历匹配
+			for (let i = 0; i < arrCookie.length; i++) {
+				if (arrCookie[i].indexOf(`${name}=`) === 0) {
+					return arrCookie[i].replace(`${name}=`, '')
+				}
+			}
+			return ''
 		},
-		queryTableColumns() {
+		openSetting() {
+			this.settingVisible = true
+		},
+		handleSaveSetting(val) {
 			const userInfo = window.sessionStorage.getItem('userInfo') || ''
 			if (userInfo) {
 				const userData = JSON.parse(userInfo)
 				const accountId = userData?.accountId
 				const http = new XMLHttpRequest()
-				const url = `/usercenterApi/web/selectDictByKeys`
-				http.open('GET', url, true)
+				const url = `/usercenterApi/web/configUserListMemory`
+				http.open('POST', url, true)
 				http.setRequestHeader('content-type', 'application/json')
-				http.onreadystatechange = () => {
+				http.setRequestHeader('token', this.getCookie('token'))
+				http.onreadystatechange = (res) => {
 					if (http.readyState === 4 && http.status == 200) {
-						const response = JSON.parse(http.responseText).data
-						if (response) {
-							this.tableColumns = response
+						const response = JSON.parse(http.responseText)
+						if (response.code === '200') {
+							this.tableColumns = val.length ? val : this.columns
+							iMessage.success('保存成功')
 						} else {
-							this.tableColumns = this.columns
+							iMessage.error('保存失败')
 						}
-					} else {
-						this.tableColumns = this.columns
 					}
 				}
 				const requestData = {
-					accountId,
-					key: this.permissionKey,
+					accountId: accountId,
+					listConfig: JSON.stringify(val),
+					permissionKey: this.permissionKey,
+				}
+				if (this.settingId) {
+					requestData.id = this.settingId
 				}
 				http.send(JSON.stringify(requestData))
 			}
+		},
+		handleResetSetting() {
+			this.handleSaveSetting([])
+		},
+		querySetting() {
+			const http = new XMLHttpRequest()
+			const url = `/usercenterApi/web/getUserListMemory`
+			http.open('POST', url, true)
+			http.setRequestHeader('content-type', 'application/json')
+			http.setRequestHeader('token', this.getCookie('token'))
+			http.onreadystatechange = () => {
+				if (http.readyState === 4 && http.status == 200) {
+					const response = JSON.parse(http.responseText).data
+					if (response && response.length > 0) {
+						this.tableColumns = JSON.parse(response[0].listConfig)
+						this.settingId = response[0].id
+					} else {
+						this.tableColumns = this.columns
+					}
+				} else {
+					this.tableColumns = this.columns
+				}
+			}
+			const requestData = {
+				permissionKey: this.permissionKey,
+			}
+			http.send(JSON.stringify(requestData))
+			// }
 		},
 		/******************气泡框 Start****************** */
 
