@@ -22,7 +22,7 @@
     <tableList :selection="false" :tableTitle="tableTitle" :tableData="tableData" :tableLoading="loading">
       <template #supplierTime="scope">
         <div class="flexWrapper">
-          <span v-if="!disabled && (['1st Tryout送样周期', 'EM送样周期'].includes(scope.row.sampleDeliverType) || isBmgpart)" class="required"></span>
+          <span v-if="!disabled && (['1st Tryout送样周期', 'EM送样周期'].includes(scope.row.sampleDeliverType) || isBmgpart)" :class="requiredClass()"></span>
           <iInput v-if="!disabled" v-model="scope.row.supplierTime" @click="handleInputBySupplierTime($event, row)"/>
           <span v-else>{{ scope.row.supplierTime }}</span>
         </div>
@@ -151,8 +151,10 @@ export default {
         //   iMessage.error(this.language('LK_BITIANXIANGBUNENGWEIKONG','请输入必填项'))
         // } else {
 
-          if (this.isSkd) {
-            sampleProgressDTOS.forEach(item => {
+          if (this.isSkd || this.isSkdLc) {
+            sampleProgressDTOS.forEach((item) => {
+              if (this.isSkd && item.priceType == "LC") return
+
               switch(item.sampleDeliverType) { 
                 case "1st Tryout送样周期":
                   if (!item.supplierTime) {
@@ -221,6 +223,17 @@ export default {
     },
     handleInputBySupplierTime(value, row) {
       row.supplierTime = numberProcessor(value, 2)
+    },
+    requiredClass() {
+      if (this.isSkd) {
+        return this.priceType === "SKD" ? { required: true } : {}
+      }
+      
+      if (this.isSkdLc) {
+        return { required: true }
+      }
+
+      return this.priceType === "LC" ? { required: true } : {}
     }
   }
 }
