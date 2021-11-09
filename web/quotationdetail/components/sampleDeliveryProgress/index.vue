@@ -1,8 +1,8 @@
 <!--
  * @Author: Luoshuang
  * @Date: 2021-05-27 15:54:05
- * @LastEditors: Hao,Jiang
- * @LastEditTime: 2021-09-13 14:10:30
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-11-09 21:32:55
  * @Description: 送样进度
  * @FilePath: \front-modules\web\quotationdetail\components\sampleDeliveryProgress\index.vue
 -->
@@ -81,10 +81,10 @@ export default {
       loading: false,
       priceType: 'LC',
       tableTitle: tableTitle,
-      tableData: cloneDeep(dateTemplate),
+      tableData: JSON.parse(JSON.stringify(dateTemplate)),
       tableDataCache: {
-        LC: cloneDeep(dateTemplate),
-        SKD: cloneDeep(dateTemplate)
+        LC: JSON.parse(JSON.stringify(dateTemplate)),
+        SKD: JSON.parse(JSON.stringify(dateTemplate))
       }
     }
   },
