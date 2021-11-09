@@ -1,8 +1,8 @@
 <!--
  * @Author: Luoshuang
  * @Date: 2021-05-27 15:54:05
- * @LastEditors: Hao,Jiang
- * @LastEditTime: 2021-09-13 14:10:30
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-11-09 21:32:55
  * @Description: 送样进度
  * @FilePath: \front-modules\web\quotationdetail\components\sampleDeliveryProgress\index.vue
 -->
@@ -22,7 +22,7 @@
     <tableList :selection="false" :tableTitle="tableTitle" :tableData="tableData" :tableLoading="loading">
       <template #supplierTime="scope">
         <div class="flexWrapper">
-          <span v-if="!disabled && (['1st Tryout送样周期', 'EM送样周期'].includes(scope.row.sampleDeliverType) || isBmgpart)" class="required"></span>
+          <span v-if="!disabled && (['1st Tryout送样周期', 'EM送样周期'].includes(scope.row.sampleDeliverType) || isBmgpart)" :class="requiredClass()"></span>
           <iInput v-if="!disabled" v-model="scope.row.supplierTime" @click="handleInputBySupplierTime($event, row)"/>
           <span v-else>{{ scope.row.supplierTime }}</span>
         </div>
@@ -81,10 +81,10 @@ export default {
       loading: false,
       priceType: 'LC',
       tableTitle: tableTitle,
-      tableData: cloneDeep(dateTemplate),
+      tableData: JSON.parse(JSON.stringify(dateTemplate)),
       tableDataCache: {
-        LC: cloneDeep(dateTemplate),
-        SKD: cloneDeep(dateTemplate)
+        LC: JSON.parse(JSON.stringify(dateTemplate)),
+        SKD: JSON.parse(JSON.stringify(dateTemplate))
       }
     }
   },
@@ -151,8 +151,10 @@ export default {
         //   iMessage.error(this.language('LK_BITIANXIANGBUNENGWEIKONG','请输入必填项'))
         // } else {
 
-          if (this.isSkd) {
-            sampleProgressDTOS.forEach(item => {
+          if (this.isSkd || this.isSkdLc) {
+            sampleProgressDTOS.forEach((item) => {
+              if (this.isSkd && item.priceType == "LC") return
+
               switch(item.sampleDeliverType) { 
                 case "1st Tryout送样周期":
                   if (!item.supplierTime) {
@@ -221,6 +223,17 @@ export default {
     },
     handleInputBySupplierTime(value, row) {
       row.supplierTime = numberProcessor(value, 2)
+    },
+    requiredClass() {
+      if (this.isSkd) {
+        return this.priceType === "SKD" ? { required: true } : {}
+      }
+      
+      if (this.isSkdLc) {
+        return { required: true }
+      }
+
+      return this.priceType === "LC" ? { required: true } : {}
     }
   }
 }
