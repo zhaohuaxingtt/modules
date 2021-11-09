@@ -647,7 +647,7 @@ export default {
         // 和变动值-汇总表比较，取值小的
         if(this.$refs.changeSummary.tableListData.length){
           // 汇总表有数据
-          this.apriceChange = this.$refs.changeSummary.total> this.apriceChange ? this.apriceChange : this.$refs.changeSummary.total
+          this.apriceChange = +this.$refs.changeSummary.total> +this.apriceChange ? +this.apriceChange : +this.$refs.changeSummary.total
         }else{
           // 汇总表无数据
           this.apriceChange = "0"
@@ -656,14 +656,14 @@ export default {
       } else if (!this.isChange && this.cbdCanEdit) {
         // 类型2: 有变动值，cbd有效
         // A价和变动值-cbd做比较，取值小的
-        let minVal = this.cbdSummaryTableData[0].apriceChange>this.apriceChange?this.apriceChange:this.cbdSummaryTableData[0].apriceChange
+        let minVal = +this.cbdSummaryTableData[0].apriceChange>+this.apriceChange?+this.apriceChange:+this.cbdSummaryTableData[0].apriceChange
         if (this.$refs.changeSummary.tableListData.length) {
           // 比较后的小值再和变动值-汇总表比较，取值小的
-          minVal = +this.$refs.changeSummary.total > minVal ? minVal : this.$refs.changeSummary.total
+          minVal = +this.$refs.changeSummary.total > +minVal ? +minVal : +this.$refs.changeSummary.total
         }
         this.apriceChange = minVal
       }else if (this.isChange && !this.cbdCanEdit){
-        // 类型3: 无变动值，cbd无效,A价指定为0
+        // 类型3: 无变动值，cbd无效, A价指定为0
         this.apriceChange = "0"
         this.apriceChangeDisabled = true
       }
@@ -713,10 +713,10 @@ export default {
       }
 
       if (!this.isChange && this.cbdCanEdit) {
-        if (this.$refs.changeSummary.tableListData.length && +this.$refs.changeSummary.total < +this.cbdTotal) {
+        if (this.$refs.changeSummary.tableListData.length && +this.$refs.changeSummary.total < +this.cbdSummaryTableData[0].apriceChange) {
           if (+this.apriceChange > +this.$refs.changeSummary.total) throw iMessage.warn(this.language("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。"))
         } else {
-          if (+this.apriceChange > +this.cbdTotal) throw iMessage.warn(this.language("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。"))
+          if (+this.apriceChange > +this.cbdSummaryTableData[0].apriceChange) throw iMessage.warn(this.language("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。"))
         }
       }
       
