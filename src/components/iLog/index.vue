@@ -95,6 +95,11 @@ export default {
 				return {}
 			},
 		},
+		env: {
+			// 运行环境，如dev,sit,vmsit,uat等，一般传process.env.NODE_ENV
+			type: String,
+			default: '',
+		},
 	},
 	data() {
 		return {
@@ -128,8 +133,8 @@ export default {
 				this.$emit('update:show', val)
 			},
 		},
-		env() {
-			return window.sessionStorage.getItem('env')
+		appEnv() {
+			return window.sessionStorage.getItem('env') || this.env
 		},
 		baseApiPrefix() {
 			const baseMap = {
@@ -140,7 +145,7 @@ export default {
 				uat: '/baseApi',
 				production: '/api',
 			}
-			return baseMap[this.env.toLowerCase()] || '/api'
+			return baseMap[this.appEnv.toLowerCase()] || '/api'
 		},
 		bizLogApiPrefix() {
 			const baseMap = {
@@ -151,7 +156,7 @@ export default {
 				uat: '/bizlogApi',
 				production: '/api',
 			}
-			return baseMap[this.env.toLowerCase()] || '/api'
+			return baseMap[this.appEnv.toLowerCase()] || '/api'
 		},
 	},
 	methods: {

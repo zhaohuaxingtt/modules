@@ -326,6 +326,11 @@ export default {
 			type: String,
 			default: '100%',
 		},
+		env: {
+			// 运行环境，如dev,sit,vmsit,uat等，一般传process.env.NODE_ENV
+			type: String,
+			default: '',
+		},
 	},
 	computed: {
 		realTableData() {
