@@ -8,7 +8,7 @@
 -->
 <template>
   <iDialog :visible.sync='show.show' :title="'竞价结果对比'">
-    <tabelList class="padding-bottom20" :selection='false'  :tableData='tabelData.tabelData' :tableTitle='tabelData.tableTitle'></tabelList>
+    <tabelList lang class="padding-bottom20" :selection='false'  :tableData='tabelData.tabelData' :tableTitle='tabelData.tableTitle'></tabelList>
   </iDialog>
 </template>
 <script>

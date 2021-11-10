@@ -19,7 +19,7 @@
         </el-radio-group>
       </span>
     </div>
-    <tableList :selection="false" :tableTitle="tableTitle" :tableData="tableData" :tableLoading="loading">
+    <tableList lang :selection="false" :tableTitle="tableTitle" :tableData="tableData" :tableLoading="loading">
       <template #supplierTime="scope">
         <div class="flexWrapper">
           <span v-if="!disabled && (['1st Tryout送样周期', 'EM送样周期'].includes(scope.row.sampleDeliverType) || isBmgpart)" :class="requiredClass()"></span>
