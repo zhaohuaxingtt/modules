@@ -253,7 +253,7 @@ export default{
       allTableData:{
         level:'',
         startProductDate:'',
-        editFlag:true,
+        editFlag: false,
         discardCost:[],
         makeCost:{
           records:[],
@@ -890,7 +890,7 @@ export default{
           this.allTableData = {
               level:this.allTableData.level?this.allTableData.level:this.partInfo.currentCbdLevel,
               startProductDate:'',
-              editFlag:true,
+              editFlag: false,
               discardCost:[],
               makeCost:{
                 records:[],
@@ -1143,6 +1143,9 @@ export default{
         data['level'] = this.allTableData && this.allTableData.level?this.allTableData.level:this.partInfo.currentCbdLevel
         // eslint-disable-next-line no-undef
         data['startProductDate'] = baseData.startProductDate?moment(new Date(baseData.startProductDate)).format('YYYY-MM-DD HH:mm:ss'):''
+
+        data.editFlag = this.allTableData.editFlag || false
+
         return data
       } catch (error) {
         console.warn(error)

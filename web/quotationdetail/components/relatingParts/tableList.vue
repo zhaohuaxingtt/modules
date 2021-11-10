@@ -7,7 +7,7 @@
 <template>
   <div class="ptof-table">
     <el-table fit tooltip-effect='light' :height="height" :data='tableData' v-loading='tableLoading' @selection-change="handleSelectionChange" :empty-text="language('LK_ZANWUSHUJU', '暂无数据')" ref="moviesTable" >
-      <el-table-column v-if="selection" type='selection' width="50" align='center'></el-table-column>
+      <el-table-column v-if="selection" type='selection' width="55" align='center'></el-table-column>
       <el-table-column v-if='index' type='index' width='50' align='center' :label='indexLabel'></el-table-column>
       <template v-for="(items,index) in tableTitle">
         <!----------------------图标列,“√”-已报价可跳转-------------------->

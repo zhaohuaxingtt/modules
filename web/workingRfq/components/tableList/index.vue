@@ -8,7 +8,7 @@
 -->
 <template>
   <el-table class="table" fit tooltip-effect='light' :height="height" :data='tableData' v-loading='tableLoading' @selection-change="handleSelectionChange" :empty-text="language('LK_ZANWUSHUJU', '暂无数据')" ref="moviesTable" :class="radio && 'radio'">
-    <el-table-column v-if="selection && hasList(tableTitle)" type='selection' width="50" align='center'></el-table-column>
+    <el-table-column v-if="selection && hasList(tableTitle)" type='selection' width="55" align='center'></el-table-column>
     <el-table-column v-if='indexKey && hasList(tableTitle)' type='index' width='50' align='center' label='#'>
       <template slot-scope="scope">
         {{tableIndexString+(scope.$index+1)}}
@@ -65,7 +65,7 @@
         <!----------------------------存在二级表头的情况------------------------------->
         <template v-if='items.list && items.list.length > 0'>
            <template v-for="(itemss,indexs) in items.list">
-              <el-table-column v-if="selection && itemss.props == 'selection'" :key="indexs" type='selection' width="50" align='center'></el-table-column>
+              <el-table-column v-if="selection && itemss.props == 'selection'" :key="indexs" type='selection' width="55" align='center'></el-table-column>
               <el-table-column v-else-if='indexKey && itemss.props == "index"' :key="indexs" type='index' width='50' align='center' label='#'>
                 <template slot-scope="scope">{{tableIndexString+(scope.$index+1)}}</template>
               </el-table-column>
