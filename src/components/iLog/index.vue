@@ -89,6 +89,12 @@ export default {
 			},
 		},
 		show: [Boolean],
+		extendParams: {
+			type: Object,
+			default: function() {
+				return {}
+			},
+		},
 	},
 	data() {
 		return {
@@ -122,6 +128,31 @@ export default {
 				this.$emit('update:show', val)
 			},
 		},
+		env() {
+			return window.sessionStorage.getItem('env')
+		},
+		baseApiPrefix() {
+			const baseMap = {
+				'': '/api',
+				dev: '/baseApi',
+				sit: '/baseApi',
+				vmsit: '/baseApi',
+				uat: '/baseApi',
+				production: '/api',
+			}
+			return baseMap[this.env.toLowerCase()] || '/api'
+		},
+		bizLogApiPrefix() {
+			const baseMap = {
+				'': '/api',
+				dev: '/bizlogApi',
+				sit: '/bizlogApi',
+				vmsit: '/bizlogApi',
+				uat: '/bizlogApi',
+				production: '/api',
+			}
+			return baseMap[this.env.toLowerCase()] || '/api'
+		},
 	},
 	methods: {
 		sure() {
@@ -150,7 +181,7 @@ export default {
 		},
 		getOptions() {
 			const http = new XMLHttpRequest()
-			const url = `/baseInfo/web/selectDictByKeys?keys=LOG_TYPE`
+			const url = `${this.baseApiPrefix}/web/selectDictByKeys?keys=LOG_TYPE`
 			http.open('GET', url, true)
 			http.setRequestHeader('content-type', 'application/json')
 			http.onreadystatechange = () => {
@@ -161,9 +192,8 @@ export default {
 			http.send()
 		},
 		getList() {
-			console.log('bizId', this.bizId)
 			const http = new XMLHttpRequest()
-			const url = `/bizlog/operationLog/listOperationLogs`
+			const url = `${this.bizLogApiPrefix}/operationLog/listOperationLogs`
 			http.open('POST', url, true)
 			http.setRequestHeader('content-type', 'application/json')
 			http.onreadystatechange = () => {
@@ -172,8 +202,9 @@ export default {
 				}
 			}
 			this.query.bizId = this.bizId
+			const extendParams = this.extendParams || {}
 			const sendData = {
-				extendFields: this.query,
+				extendFields: { ...this.query, ...extendParams },
 			}
 			http.send(JSON.stringify(sendData))
 		},

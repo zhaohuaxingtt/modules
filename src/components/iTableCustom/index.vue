@@ -393,6 +393,20 @@ export default {
 			}
 			return this.columns.filter((e) => !this.unCols.includes(e.prop))
 		},
+		env() {
+			return window.sessionStorage.getItem('env') || ''
+		},
+		usercenterApiPrefix() {
+			const baseMap = {
+				'': '/api',
+				dev: '/usercenterApi',
+				sit: '/usercenterApi',
+				vmsit: '/usercenterApi',
+				uat: '/usercenterApi',
+				production: '/api',
+			}
+			return baseMap[this.env.toLowerCase()] || '/api'
+		},
 	},
 	data() {
 		return {
@@ -883,7 +897,7 @@ export default {
 				const userData = JSON.parse(userInfo)
 				const accountId = userData?.accountId
 				const http = new XMLHttpRequest()
-				const url = `/usercenterApi/web/configUserListMemory`
+				const url = `${this.usercenterApiPrefix}/web/configUserListMemory`
 				http.open('POST', url, true)
 				http.setRequestHeader('content-type', 'application/json')
 				http.setRequestHeader('token', this.getCookie('token'))
@@ -914,7 +928,7 @@ export default {
 		},
 		querySetting() {
 			const http = new XMLHttpRequest()
-			const url = `/usercenterApi/web/getUserListMemory`
+			const url = `${this.usercenterApiPrefix}/web/getUserListMemory`
 			http.open('POST', url, true)
 			http.setRequestHeader('content-type', 'application/json')
 			http.setRequestHeader('token', this.getCookie('token'))
