@@ -360,9 +360,9 @@ export default {
 
       const component = this.$refs[this.currentTab][0]
       if (typeof component.save === "function") {
-        const res = await component.save()
-
-        if (res.code != 200) {
+        const res = await component.save().catch(()=>{ this.submitLoading = false })
+        if(!res) return
+        if (res?.code != 200) {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
           this.submitLoading = false
           return

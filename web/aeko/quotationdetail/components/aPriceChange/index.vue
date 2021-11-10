@@ -535,10 +535,10 @@ export default {
       }
 
       if (!this.isChange && this.cbdCanEdit) {
-        if (this.$refs.changeSummary.tableListData.length && +this.$refs.changeSummary.total < +this.cbdTotal) {
+        if (this.$refs.changeSummary.tableListData.length && +this.$refs.changeSummary.total < +this.cbdSummaryTableData[0].apriceChange) {
           if (+this.apriceChange > +this.$refs.changeSummary.total) throw iMessage.warn(this.language("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。"))
         } else {
-          if (+this.apriceChange > +this.cbdTotal) throw iMessage.warn(this.language("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。"))
+          if (+this.apriceChange > +this.cbdSummaryTableData[0].apriceChange) throw iMessage.warn(this.language("AEKOCBDTOTALADJUSTTIPS", "变动值大于变动值-汇总表/变动值-CBD的值，请修改后，再次保存。"))
         }
       }
 
