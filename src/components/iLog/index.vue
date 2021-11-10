@@ -23,8 +23,8 @@
 							<el-option
 								v-for="item in options"
 								:key="item.code"
-								:label="item.name"
-								:value="item.name"
+								:label="item.value"
+								:value="item.code"
 							></el-option>
 						</el-select>
 					</el-form-item>
@@ -108,20 +108,7 @@ export default {
 				type: '',
 				creator: '',
 			},
-			options: [
-				{
-					label: '新增',
-					value: '10',
-				},
-				{
-					label: '修改',
-					value: '20',
-				},
-				{
-					label: '删除',
-					value: '30',
-				},
-			],
+			options: [],
 		}
 	},
 	computed: {
@@ -135,17 +122,6 @@ export default {
 		},
 		appEnv() {
 			return window.sessionStorage.getItem('env') || this.env
-		},
-		baseApiPrefix() {
-			const baseMap = {
-				'': '/api',
-				dev: '/baseApi',
-				sit: '/baseApi',
-				vmsit: '/baseApi',
-				uat: '/baseApi',
-				production: '/api',
-			}
-			return baseMap[this.appEnv.toLowerCase()] || '/api'
 		},
 		bizLogApiPrefix() {
 			const baseMap = {
@@ -186,17 +162,18 @@ export default {
 		},
 		getOptions() {
 			const http = new XMLHttpRequest()
-			const url = `${this.baseApiPrefix}/web/selectDictByKeys?keys=LOG_TYPE`
-			http.open('GET', url, true)
+			const url = `${this.bizLogApiPrefix}/operationLog/listOperationType`
+			http.open('POST', url, true)
 			http.setRequestHeader('content-type', 'application/json')
 			http.onreadystatechange = () => {
 				if (http.readyState === 4) {
-					this.options = JSON.parse(http.responseText).data?.LOG_TYPE || []
+					this.options = JSON.parse(http.responseText)?.data || []
 				}
 			}
 			http.send()
 		},
 		getList() {
+			console.log('bizId', this.bizId)
 			const http = new XMLHttpRequest()
 			const url = `${this.bizLogApiPrefix}/operationLog/listOperationLogs`
 			http.open('POST', url, true)
