@@ -8,9 +8,9 @@
 -->
 <template>
   <div class="origin">
-    <iCard :title="$t('LK_GONGYINGSHANGSHENGCHANDI')">
+    <iCard :title="language('LK_GONGYINGSHANGSHENGCHANDI', '供应商生产地')">
       <template v-if="!disabled" #header-control>
-        <iButton @click="selectOrigin">{{ $t('LK_XUANZESHENGCHANGONGCHANG') }}</iButton>
+        <iButton @click="selectOrigin">{{ language('LK_XUANZESHENGCHANGONGCHANG', '选择生产工厂') }}</iButton>
       </template>
       <div>
         <tableList class="table" :selection="false" index :tableData="tableListData" :tableTitle="tableTitle">

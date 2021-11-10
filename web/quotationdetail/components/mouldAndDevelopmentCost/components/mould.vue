@@ -12,19 +12,19 @@
       <template #header>
         <div class="header">
           <div>
-            <span class="title">{{ `${ (showMode ? (isSkd ? "SKD" : "LC") : "") + " " }${ $t('LK_MUJUFEIYONG') }` }}</span>
-            <span class="tip margin-left10">({{ $t('LK_DANWEI') }}：{{ $t('LK_YUAN') }})</span>
+            <span class="title">{{ `${ (showMode ? (isSkd ? "SKD" : "LC") : "") + " " }${ language('LK_MUJUFEIYONG', '模具费用') }` }}</span>
+            <span class="tip margin-left10">({{ language('LK_DANWEI', '单位') }}：{{ language('LK_YUAN', '元') }})</span>
             <iFormGroup class="total margin-left20" :row="1" inline>
-              <iFormItem class="item" :label="`${ $t(mouldCostInfos[0].key) }`">
+              <iFormItem class="item" :label="`${ language(mouldCostInfos[0].key, mouldCostInfos[0].name) }`">
                 <iText>{{ dataGroup[mouldCostInfos[0].props] }}</iText>
               </iFormItem>
             </iFormGroup>
           </div>
           <div class="control">
-            <iButton @click="jump" v-if='whenCourcerLogin && !disabled'>{{ $t('LK_TIAOZHUANZHIRFQMUJUBAOJIA') }}</iButton>
-            <iButton @click="changeRelatingPartsVisible(true)" v-if="!disabled">{{ $t('LK_GUANLIANLINGJIAN') }}</iButton>
+            <iButton @click="jump" v-if='whenCourcerLogin && !disabled'>{{ language('LK_TIAOZHUANZHIRFQMUJUBAOJIA', '跳转至RFQ模具报价') }}</iButton>
+            <iButton @click="changeRelatingPartsVisible(true)" v-if="!disabled">{{ language('LK_GUANLIANLINGJIAN', '关联零件') }}</iButton>
             <!--------------在任何状态下，下载按钮可以被看见，供用户下载---------------->
-            <iButton v-if="!isSkd" @click="handleDownload">{{ $t('LK_XIAZAIMUJUCBD') }}</iButton>
+            <iButton v-if="!isSkd" @click="handleDownload">{{ language('LK_XIAZAIMUJUCBD', '下载模具CBD') }}</iButton>
             <el-upload 
               v-if="!disabled && !isSkd"
               class="uploadBtn" 
@@ -35,10 +35,10 @@
               :show-file-list="false" 
               :before-upload="beforeUpload"
               accept=".xlsx">
-                <iButton :loading="uploadLoading">{{ $t('LK_SHANGCHUANBAOJIA') }}</iButton>
+                <iButton :loading="uploadLoading">{{ language('LK_SHANGCHUANBAOJIA', '上传报价') }}</iButton>
             </el-upload>
-            <iButton @click="handleAdd" v-if="!disabled">{{ $t('LK_TIANJIAHANG') }}</iButton>
-            <iButton @click="handleDel" v-if="!disabled">{{ $t('LK_SHANCHUHANG') }}</iButton>
+            <iButton @click="handleAdd" v-if="!disabled">{{ language('LK_TIANJIAHANG', '添加行') }}</iButton>
+            <iButton @click="handleDel" v-if="!disabled">{{ language('LK_SHANCHUHANG', '删除行') }}</iButton>
           </div>
         </div>
       </template>
@@ -87,7 +87,7 @@
           </template>
         </tableList>
         <iFormGroup class="subCost margin-top30" :row="4" inline>
-          <iFormItem class="item" v-for="(info, $index) in subMouldCostInfos" :key="$index" :label="`${ $t(info.key) }`">
+          <iFormItem class="item" v-for="(info, $index) in subMouldCostInfos" :key="$index" :label="`${ language(info.key, info.name) }`">
             <iInput v-if="info.props === 'shareQuantity' && !disabled" v-model="dataGroup[info.props]" @input="handleInputByShareQuantity" />
             <iText v-else>{{ dataGroup[info.props] }}</iText>
           </iFormItem>
@@ -198,7 +198,7 @@ export default {
     uploadSuccess(res) {
       this.uploadLoading = false
       if (res.code == 200) {
-        iMessage.success(this.$t("LK_SHANGCHUANCHENGGONG"))
+        iMessage.success(this.language("LK_SHANGCHUANCHENGGONG", "上传成功"))
 
         if (this.isSkd) {
           this.getMouldFeeSKD()
@@ -302,7 +302,7 @@ export default {
     },
     handleDel() {
       if (this.multipleSelection.length < 1) {
-        iMessage.warn(this.$t('LK_QINGXUANZEXUYAOSHANCHUDEHANG'))
+        iMessage.warn(this.language('LK_QINGXUANZEXUYAOSHANCHUDEHANG', '请选择需要删除的行'))
         return
       }
       this.tableListData = this.tableListData.filter(item => !this.multipleSelection.includes(item))

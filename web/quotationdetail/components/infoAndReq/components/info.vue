@@ -8,16 +8,16 @@
 -->
 <template>
 	<div class="info">
-		<iCard :title="$t('LK_LINGJIANJIBENXINXI')" collapse>
+		<iCard :title="language('LK_LINGJIANJIBENXINXI', '零件基本信息')" collapse>
 			<iFormGroup :key="$index" :row="4" inline>
 				<template v-for="item in infos">
-					<iFormItem :key="item.props" :label="$t(item.key)" v-if='item.props !== "originalPartNum"'>
+					<iFormItem :key="item.props" :label="language(item.key, item.name)" v-if='item.props !== "originalPartNum"'>
 						<iText v-if="item.props === 'drawingDate'">{{ data[item.props] | dateFilter }}</iText>
 						<iText v-else-if="item.props === 'isNew' || item.props === 'isInherit' || item.props === 'isUpdate'">{{ data[item.props] | numberStatusFilter }}</iText>
 						<iText v-else>{{ data[item.props] }}</iText>
 					</iFormItem>
 					<template v-else>
-						<iFormItem v-if='data.partProjectType == partProjTypes.DBJINLINGJIANHAOGENGAI || data.partProjectType == partProjTypes.JINLINGJIANHAOGENGGAI' :key="item.props" :label="$t(item.key)">
+						<iFormItem v-if='data.partProjectType == partProjTypes.DBJINLINGJIANHAOGENGAI || data.partProjectType == partProjTypes.JINLINGJIANHAOGENGGAI' :key="item.props" :label="language(item.key, item.name)">
 							<iText>{{ data[item.props] }}</iText>
 						</iFormItem>
 					</template>

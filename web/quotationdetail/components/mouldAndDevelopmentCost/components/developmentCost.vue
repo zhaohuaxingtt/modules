@@ -12,18 +12,18 @@
       <template #header>
         <div class="header">
           <div>
-            <span class="title">{{ `${ (showMode ? (isSkd ? "SKD" : "LC") : "") + " " }${ $t('LK_KAIFAFEIYONG') }` }}</span>
-            <span class="tip margin-left10">({{ $t('LK_DANWEI') }}：{{ $t('LK_YUAN') }})</span>
+            <span class="title">{{ `${ (showMode ? (isSkd ? "SKD" : "LC") : "") + " " }${ language('LK_KAIFAFEIYONG', '开发费用') }` }}</span>
+            <span class="tip margin-left10">({{ language('LK_DANWEI', '单位') }}：{{ language('LK_YUAN', '元') }})</span>
             <iFormGroup class="total margin-left20" :row="1" inline v-if="!isAeko">
-              <iFormItem class="item" :label="`${ $t(developmentCostInfos[0].key) }`">
+              <iFormItem class="item" :label="`${ language(developmentCostInfos[0].key, developmentCostInfos[0].name) }`">
                 <iText>{{ dataGroup[developmentCostInfos[0].props] }}</iText>
               </iFormItem>
             </iFormGroup>
           </div>
           <div v-if="!disabled&&!editDisabled" class="control">
-            <iButton v-if="isAeko" @click="save" :loading="saveLoading">{{language('LK_BAOCUN','保存')}}</iButton>
-            <iButton @click="handleAdd">{{ $t('LK_TIANJIAHANG') }}</iButton>
-            <iButton @click="handleDel">{{ $t('LK_SHANCHUHANG') }}</iButton>
+            <iButton v-if="isAeko" @click="save" :loading="saveLoading">{{ language('BAOCUN','保存') }}</iButton>
+            <iButton @click="handleAdd">{{ language('LK_TIANJIAHANG', '添加行') }}</iButton>
+            <iButton @click="handleDel">{{ language('LK_SHANCHUHANG', '删除行') }}</iButton>
           </div>
         </div>
       </template>
@@ -183,7 +183,7 @@ export default {
     },
     handleDel() {
       if (this.multipleSelection.length < 1) {
-        iMessage.warn(this.$t('LK_QINGXUANZEXUYAOSHANCHUDEHANG'))
+        iMessage.warn(this.language('LK_QINGXUANZEXUYAOSHANCHUDEHANG', '请选择需要删除的行'))
         return
       }else{
          this.$confirm(
