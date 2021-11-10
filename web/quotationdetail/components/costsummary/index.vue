@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-10-28 11:56:47
+ * @LastEditTime: 2021-11-10 16:30:07
  * @LastEditors: Please set LastEditors
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
@@ -367,7 +367,7 @@ export default{
     selectDictByKeys(){
       selectDictByKeys([
         { keys: "ORIGIN_COUNTRY" },
-        { keys: "CATEGORY_CBD_SETTING" },
+        { keys: "CATEGORY_CBD_SETTING" }
       ]).then(res=>{
         if(res.code == 200 && res.data) {
           let originCountryOptions = []
