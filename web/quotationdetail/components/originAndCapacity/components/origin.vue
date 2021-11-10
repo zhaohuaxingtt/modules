@@ -13,7 +13,7 @@
         <iButton @click="selectOrigin">{{ language('LK_XUANZESHENGCHANGONGCHANG', '选择生产工厂') }}</iButton>
       </template>
       <div>
-        <tableList class="table" :selection="false" index :tableData="tableListData" :tableTitle="tableTitle">
+        <tableList lang class="table" :selection="false" index :tableData="tableListData" :tableTitle="tableTitle">
           <template #isNominate="scope">
             <span>{{ scope.row.isNominate | boolFilter }}</span>
           </template>

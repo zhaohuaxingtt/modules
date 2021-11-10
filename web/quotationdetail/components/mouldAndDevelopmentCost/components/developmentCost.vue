@@ -28,7 +28,7 @@
         </div>
       </template>
       <div>
-        <tableList class="table" index :tableData="tableListData" :tableTitle="tableTitle" @handleSelectionChange="handleSelectionChange">
+        <tableList lang class="table" index :tableData="tableListData" :tableTitle="tableTitle" @handleSelectionChange="handleSelectionChange">
           <template #item="scope">
             <iInput v-if="!disabled&&!editDisabled" v-model="scope.row.item" />
             <span v-else>{{ scope.row.item }}</span>
@@ -54,7 +54,7 @@
           </template>
         </tableList>
         <iFormGroup class="subCost margin-top30" :row="4" inline>
-          <iFormItem class="item" v-for="(info, $index) in subDevelopmentCostInfos" :key="$index" :label="isAeko&&info.languageKey ? language(info.languageKey,info.languageName) : $t(info.key)">
+          <iFormItem class="item" v-for="(info, $index) in subDevelopmentCostInfos" :key="$index" :label="isAeko&&info.languageKey ? language(info.languageKey,info.languageName) : language(info.key, info.name)">
             <iInput v-if="info.props === 'shareQuantity' && !disabled&& !editDisabled" v-model="dataGroup[info.props]" @input="handleInputByShareQuantity" />
             <iText v-else>{{ dataGroup[info.props] | thousandsFilter }}</iText>
           </iFormItem>

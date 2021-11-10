@@ -70,7 +70,7 @@
           </div>
         </div>
       </template>
-      <tableList lang height="100%" class="table" :tableData="tableListData" :tableTitle="tableTitle" @handleSelectionChange="handleSelectionChange">
+      <tableList :lang="true" height="100%" class="table" :tableData="tableListData" :tableTitle="tableTitle" @handleSelectionChange="handleSelectionChange">
         <template #stuffType="scope">
           <iInput v-if="!disabled" v-model="scope.row.stuffType" />
           <span v-else>{{ scope.row.stuffType }}</span>
