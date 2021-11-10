@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-22 15:49:47
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-07-12 19:25:01
+ * @LastEditTime: 2021-11-10 17:08:51
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\originAndCapacity\components\capacity.vue
 -->
@@ -17,7 +17,7 @@
           </div>
           <div v-if="!disabled" class="control">
             <iButton @click="handleAdd">{{ language('LK_TIANJIAHANG', '添加行') }}</iButton>
-            <iButton @click="handleDel">{{ languaget('LK_SHANCHUHANG', '删除行') }}</iButton>
+            <iButton @click="handleDel">{{ language('LK_SHANCHUHANG', '删除行') }}</iButton>
           </div>
         </div>
       </template>
