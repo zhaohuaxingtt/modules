@@ -64,6 +64,7 @@ export default {
 			menu2IconMap: {
 				RISE_HOME: ['iconhomeweixuanzhong', 'iconhomexuanzhong'],
 				RISE_WORKBENCH: ['iconworkbenchweixuanzhong', 'iconworkbenchxuanzhong'],
+				RISE_GP: ['icona-GPtubiaohei', 'icona-GPtubiaolan'],
 				RISE_COMMON_FUNCTION: [
 					'iconcommonfunctionweixuanzhong',
 					'iconcommonfunctionxuanzhong',
