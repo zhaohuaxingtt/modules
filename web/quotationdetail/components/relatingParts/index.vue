@@ -13,11 +13,11 @@
     custom-class="parts-dialog"
   >
     <div slot="title" class="dialog-header">
-      <span class="title">{{ $t('LK_CHAKANGUANLIANLINGJIAN') }}</span>
+      <span class="title">{{ language('LK_CHAKANGUANLIANLINGJIAN', '查看关联零件') }}</span>
       <!---------弹窗按钮--------->
       <div class="head-btn">
-        <iButton @click="handleEditCancel">{{ $t('LK_QUXIAO') }}</iButton>
-        <iButton v-if="!disabled" @click="handleEditSave">{{ $t('LK_BAOCUN') }}</iButton>
+        <iButton @click="handleEditCancel">{{ language('QUXIAO', '取消') }}</iButton>
+        <iButton v-if="!disabled" @click="handleEditSave">{{ language('BAOCUN', '保存') }}</iButton>
       </div>
     </div>
     <!-------------------------------------------------->
@@ -26,7 +26,7 @@
     <!----------灰色对勾表示该模具还未关联对应零件，------->
     <!----------点击可将模具与对应零件关联即变成蓝色对勾---->
     <!-------------------------------------------------->
-    <tableList v-update :tableTitle="tableTitle"   :tableData="tableData" :tableLoading="tableLoading" :selection="false" @changeStatus="changeStatus"></tableList>
+    <tableList lang v-update :tableTitle="tableTitle"   :tableData="tableData" :tableLoading="tableLoading" :selection="false" @changeStatus="changeStatus"></tableList>
     <iPagination
       v-update
       @size-change="handleSizeChange($event, getTableList)"

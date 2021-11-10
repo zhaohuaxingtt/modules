@@ -11,12 +11,12 @@
     <template #header  v-if='useCardSlot'>
       <div class="header">
         <div>
-          <span class="title">{{ $t('LK_MUJUFEIYONG') }}</span>
-          <span class="tip margin-left10">({{ $t('LK_DANWEI') }}：{{ $t('LK_YUAN') }})</span>
+          <span class="title">{{ language('LK_MUJUFEIYONG', '模具费用') }}</span>
+          <span class="tip margin-left10">({{ language('LK_DANWEI', '单位') }}：{{ language('LK_YUAN', '元') }})</span>
         </div>
         <div class="control">
-          <iButton @click="changeRelatingPartsVisible(true)">{{ $t('LK_GUANLIANLINGJIAN') }}</iButton>
-          <iButton @click="handleDownload">{{ $t('LK_XIAZAIMUJUCBD') }}</iButton>
+          <iButton @click="changeRelatingPartsVisible(true)">{{ language('LK_GUANLIANLINGJIAN', '关联零件') }}</iButton>
+          <iButton @click="handleDownload">{{ language('LK_XIAZAIMUJUCBD', '下载模具CBD') }}</iButton>
             <el-upload 
             class="uploadBtn" 
             multiple
@@ -26,11 +26,11 @@
             :show-file-list="false" 
             :before-upload="beforeUpload"
             accept=".xlsx">
-              <iButton :loading="uploadLoading">{{ $t('LK_SHANGCHUANBAOJIA') }}</iButton>
+              <iButton :loading="uploadLoading">{{ language('LK_SHANGCHUANBAOJIA', '上传报价') }}</iButton>
           </el-upload>
-          <iButton @click="handleAdd">{{ $t('LK_TIANJIAHANG') }}</iButton>
-          <iButton @click="handleDel">{{ $t('LK_SHANCHUHANG') }}</iButton>
-          <iButton @click="handleSave" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
+          <iButton @click="handleAdd">{{ language('LK_TIANJIAHANG', '添加行') }}</iButton>
+          <iButton @click="handleDel">{{ language('LK_SHANCHUHANG', '删除行') }}</iButton>
+          <iButton @click="handleSave" :loading="saveLoading">{{ language('LK_BAOCUN', '保存') }}</iButton>
           <!-- <iButton>提交</iButton> -->
         </div>
       </div>
@@ -45,8 +45,8 @@
             </iSelect>
           </div>
           <div class="control">
-            <iButton @click="changeRelatingPartsVisible(true)">{{ $t('LK_GUANLIANLINGJIAN') }}</iButton>
-            <iButton @click="handleDownload">{{ $t('LK_XIAZAIMUJUCBD') }}</iButton>
+            <iButton @click="changeRelatingPartsVisible(true)">{{ language('LK_GUANLIANLINGJIAN', '关联零件') }}</iButton>
+            <iButton @click="handleDownload">{{ language('LK_XIAZAIMUJUCBD', '下载模具CBD') }}</iButton>
             <template v-if='dgysBj'>
             <el-upload 
               class="uploadBtn" 
@@ -57,11 +57,11 @@
               :show-file-list="false" 
               :before-upload="beforeUpload"
               accept=".xlsx">
-                <iButton :loading="uploadLoading">{{ $t('LK_SHANGCHUANBAOJIA') }}</iButton>
+                <iButton :loading="uploadLoading">{{ language('LK_SHANGCHUANBAOJIA', '上传报价') }}</iButton>
             </el-upload>
-            <iButton @click="handleAdd">{{ $t('LK_TIANJIAHANG') }}</iButton>
-            <iButton @click="handleDel">{{ $t('LK_SHANCHUHANG') }}</iButton>
-            <iButton @click="handleSave" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
+            <iButton @click="handleAdd">{{ language('LK_TIANJIAHANG', '添加行') }}</iButton>
+            <iButton @click="handleDel">{{ language('LK_SHANCHUHANG', '删除行') }}</iButton>
+            <iButton @click="handleSave" :loading="saveLoading">{{ language('LK_BAOCUN', '保存') }}</iButton>
             </template>
             <!-- <iButton>提交</iButton> -->
             <template v-else>
@@ -70,7 +70,7 @@
           </div>
         </div>
       </template>
-      <tableList height="100%" class="table" :tableData="tableListData" :tableTitle="tableTitle" @handleSelectionChange="handleSelectionChange">
+      <tableList :lang="true" height="100%" class="table" :tableData="tableListData" :tableTitle="tableTitle" @handleSelectionChange="handleSelectionChange">
         <template #stuffType="scope">
           <iInput v-if="!disabled" v-model="scope.row.stuffType" />
           <span v-else>{{ scope.row.stuffType }}</span>
@@ -129,7 +129,7 @@
           <span v-else>{{ scope.row.isShared | numberStatusFilter }}</span>
         </template>
       </tableList>
-      <div v-if="!disabled" class="totalCount margin-top30">{{ $t('LK_XIANSHI') }}<span class="count">{{ Array.isArray(tableListData) ? (tableListData.length > 0 ? 1 : 0) : 0 }}</span>{{ $t('LK_TIAODI') }}<span class="count">{{ Array.isArray(tableListData) ? tableListData.length : 0 }}</span>{{ $t('LK_TIAOJILU') }}，{{ $t('LK_GONG') }}<span class="count">{{ Array.isArray(tableListData) ? tableListData.length : 0 }}</span>{{ $t("LK_TIAOJILU") }}</div>
+      <div v-if="!disabled" class="totalCount margin-top30">{{ language('LK_XIANSHI', '显示') }}<span class="count">{{ Array.isArray(tableListData) ? (tableListData.length > 0 ? 1 : 0) : 0 }}</span>{{ language('LK_TIAODI', '条到第') }}<span class="count">{{ Array.isArray(tableListData) ? tableListData.length : 0 }}</span>{{ language('LK_TIAOJILU', '条记录') }}，{{ language('LK_GONG', '共') }}<span class="count">{{ Array.isArray(tableListData) ? tableListData.length : 0 }}</span>{{ language("LK_TIAOJILU", "条记录") }}</div>
       <iPagination
         v-else
         v-update
@@ -295,7 +295,7 @@ export default {
     uploadSuccess(res) {
       this.uploadLoading = false
       if (res.code == 200) {
-        iMessage.success(this.$t("LK_SHANGCHUANCHENGGONG"))
+        iMessage.success(this.language("LK_SHANGCHUANCHENGGONG", "上传成功"))
         this.getAllMouldFee()
       } else {
         iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
@@ -350,7 +350,7 @@ export default {
     },
     handleDel() {
       if (this.multipleSelection.length < 1) {
-        iMessage.warn(this.$t('LK_QINGXUANZEXUYAOSHANCHUDEHANG'))
+        iMessage.warn(this.language('LK_QINGXUANZEXUYAOSHANCHUDEHANG', '请选择需要删除的行'))
         return
       }
       this.tableListData = this.tableListData.filter(item => !this.multipleSelection.includes(item))

@@ -9,7 +9,7 @@
 <template> 
   <iPage class="quotation">
     <div class="margin-bottom20 clearFloat">
-      <span v-if="!fix" class="font18 font-weight">{{ $t('LK_QIEHUANLINGJIAN') }}：</span>
+      <span v-if="!fix" class="font18 font-weight">{{ language('LK_QIEHUANLINGJIAN', '切换零件') }}：</span>
       <!---------------------------------------无论任何情况下，就算是查看详情，也可以切换其他零件-------------------->
       <iSelect class="part" popper-class="partSelect" v-model="fsNum" placeholder="" @change="handlePartChange">
         <el-option
@@ -27,27 +27,27 @@
       <!-------------采购员界面跳转过来的时候，如果出现当前供应商还未接受报价情况----------------->
       <div class="floatright" v-if='acceptQuotation'>
         <div v-if='!acceptQuotationDisabled'>
-          <iButton @click="agreePrice">接受报价</iButton>
-          <iButton @click="rejectPrice">拒绝报价</iButton>
+          <iButton @click="agreePrice">{{ language('JIESHOUBAOJIA', '接受报价') }}</iButton>
+          <iButton @click="rejectPrice">{{ language('JUJUEBAOJIA', '拒绝报价') }}</iButton>
         </div>
       </div>
       <div class="floatright" v-else>
         <span v-if="agentQutation" class="margin-right10">
-          <iButton v-if="!disabled && !isSteel && agentQutationDisabled" @click="handleAgentQutation">{{ $t("LK_DAIGONGYINGSHANGBAOJIA") }}</iButton>
-          <iButton v-if="!disabled && !agentQutationDisabled" @click="handleCancelQutation">{{ $t("LK_QUXIAO") }}</iButton>
+          <iButton v-if="!disabled && !isSteel && agentQutationDisabled" @click="handleAgentQutation">{{ language("LK_DAIGONGYINGSHANGBAOJIA", "代供应商报价") }}</iButton>
+          <iButton v-if="!disabled && !agentQutationDisabled" @click="handleCancelQutation">{{ language("LK_QUXIAO", "取消") }}</iButton>
         </span>
         <span class="btns" v-if="!agentQutationDisabled">
-          <iButton v-if="!partInfo.isOriginprice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="quoteBatchPriceLoading" @click="handleQuoteBatchPrice">{{ $t("LK_YINYONGPILIANGJIAGE") }}</iButton>
-          <iButton v-if="partInfo.isOriginprice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="cancelQuoteBatchPriceLoading" @click="handleCancelBatchPrice">{{ $t("LK_QUXIAOPILIANGJIAGE") }}</iButton>
+          <iButton v-if="!partInfo.isOriginprice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="quoteBatchPriceLoading" @click="handleQuoteBatchPrice">{{ language("LK_YINYONGPILIANGJIAGE", "引用批量价格") }}</iButton>
+          <iButton v-if="partInfo.isOriginprice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="cancelQuoteBatchPriceLoading" @click="handleCancelBatchPrice">{{ language("LK_QUXIAOPILIANGJIAGE", "取消批量价格") }}</iButton>
           <span class="saveBtn">
             <span v-if="currentTab == 'packAndShip'">
-              <iButton @click="handleSave" v-if="!hidePackAndShipSave && !disabled" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
+              <iButton @click="handleSave" v-if="!hidePackAndShipSave && !disabled" :loading="saveLoading">{{ language('BAOCUN', '保存') }}</iButton>
             </span>
             <span v-else>
-              <iButton @click="handleSave" v-if="currentTab != 'infoAndReq' && !disabled" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
+              <iButton @click="handleSave" v-if="currentTab != 'infoAndReq' && !disabled" :loading="saveLoading">{{ language('BAOCUN', '保存') }}</iButton>
             </span>
           </span>
-          <iButton @click="handleSubmit" v-if="!disabled" :loading="submitLoading">{{ $t('LK_TIJIAO') }}</iButton>
+          <iButton @click="handleSubmit" v-if="!disabled" :loading="submitLoading">{{ language('TIJIAO', '提交') }}</iButton>
         </span>
         <logButton class="margin-left20" @click="log" />
         <span class="margin-left20">
@@ -55,22 +55,22 @@
 				</span>
       </div>
     </div>
-    <iCard class="info" :title="$t('LK_JICHUXINXI')" collapse v-loading="partInfoLoading">
+    <iCard class="info" :title="language('LK_JICHUXINXI', '基础信息')" collapse v-loading="partInfoLoading">
       <iFormGroup :key="$index" :row="4" inline>
-        <iFormItem v-for="item in partInfoItems.slice(0, partInfoItems.length - 1)" :key="item.props" :label="$t(item.key)">
+        <iFormItem v-for="item in partInfoItems.slice(0, partInfoItems.length - 1)" :key="item.props" :label="language(item.key, item.name)">
           <iText v-if="item.props === 'submitDate' || item.props === 'currentRoundsEndTime'">{{ partInfo[item.props] | dateFilter }}</iText>
           <iText v-else>{{ partInfo[item.props] }}</iText>
         </iFormItem>
       </iFormGroup>
       <iFormGroup :key="$index" :row="1" inline>
-        <iFormItem :key="partInfoItems[partInfoItems.length - 1].props" :label="$t(partInfoItems[partInfoItems.length - 1].key)">
+        <iFormItem :key="partInfoItems[partInfoItems.length - 1].props" :label="language(partInfoItems[partInfoItems.length - 1].key, partInfoItems[partInfoItems.length - 1].name)">
           <iText>{{ partInfo[partInfoItems[partInfoItems.length - 1].props] }}</iText>
         </iFormItem>
       </iFormGroup>
     </iCard>
     <div id="tabList" v-loading="tabLoading">
       <iTabsList class="margin-top20" type="card" v-model="currentTab" :before-leave="tabLeaveBefore" @tab-click="tabChange">
-        <el-tab-pane v-for="(tab, $tabIndex) in trueTabs" :key="$tabIndex" :label="$t(tab.key)" :name="tab.name">
+        <el-tab-pane v-for="(tab, $tabIndex) in trueTabs" :key="$tabIndex" :label="language(tab.key, tab.label)" :name="tab.name">
           <component :ref="tab.name" :is="component" :partInfo="partInfo" v-for="(component, $componentIndex) in tab.components" :class="$componentIndex !== 0 ? 'margin-top20' : ''" :key="$componentIndex" :disabled="disabled || agentQutationDisabled" :isOriginprice="partInfo.isOriginprice" :isSteel="isSteel" :isDb="isDb" :roundIsOnlineBidding='roundIsOnlineBidding' @changeReduceStatus="changeReduceStatus" @hidePackAndShipSave="hidePackAndShipSave = true"/>
         </el-tab-pane>
       </iTabsList>
@@ -95,7 +95,7 @@
 <script>
 import { iPage, iButton,iDialog, iCard,iInput, iFormGroup, iFormItem, iText, iTabsList, iSelect, icon, iMessage, iMessageBox } from "rise"
 import logButton from "./components/logButton"
-import { partInfoItems,translateServiceData } from "./components/data"
+import { partInfoItems } from "./components/data"
 import infoAndReq from "./components/infoAndReq"
 import originAndCapacity from "./components/originAndCapacity"
 import mouldAndDevelopmentCost from "./components/mouldAndDevelopmentCost"

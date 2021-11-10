@@ -14,15 +14,16 @@
     v-on="$listeners"
   >
     <template #title>
-      <p class="title">选择⽣产⼯⼚</p>
+      <p class="title">{{ language('LK_XUANZESHENGCHANGONGCHANG', '选择⽣产⼯⼚') }}</p>
       <div class="control" id="control">
-        <iButton @click="handleConfirm">{{ $t('LK_QUEREN') }}</iButton>
-        <iButton @click="handleAdd">{{ $t('LK_TIANJIA') }}</iButton>
+        <iButton @click="handleConfirm">{{ language('QUEREN', '确认') }}</iButton>
+        <iButton @click="handleAdd">{{ language('LK_TIANJIA', '添加') }}</iButton>
       </div>
     </template>
     <div class="body">
       <tableList
         index
+        lang
         height="100%"
         v-show="visible"
         class="table"
@@ -99,7 +100,7 @@ export default {
     },
     handleConfirm() {
       if (this.multipleSelection.length !== 1) {
-        return iMessage.warn(this.$t("LK_QINGXUANZEYIGEGONGYINGSHANGGONGCHANG"))
+        return iMessage.warn(this.language("LK_QINGXUANZEYIGEGONGYINGSHANGGONGCHANG", "请选择一个供应商工厂"))
       }
 
       this.$emit("confirm", this.multipleSelection[0])

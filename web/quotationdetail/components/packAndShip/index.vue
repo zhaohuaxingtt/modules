@@ -56,8 +56,8 @@
   <iCard v-else class="packAndShip" v-loading="loading">
     <iframe v-if="url" class="iframe" :src="url"></iframe>
     <div class="header" v-else>
-      <span class="title">{{ $t('LK_BAOZHUANGYUNSHU') }}</span>
-      <span class="tip margin-left10">{{ $t('LK_DANWEIYUAN') }}</span>
+      <span class="title">{{ language('LK_BAOZHUANGYUNSHU', '包装运输') }}</span>
+      <span class="tip margin-left10">{{ language('LK_DANWEIYUAN', '(单位：元)') }}</span>
     </div>
     <!-------输入框区域------->
     <iFormGroup
