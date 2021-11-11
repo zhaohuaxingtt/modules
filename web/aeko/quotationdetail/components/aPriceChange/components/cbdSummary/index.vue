@@ -1,8 +1,8 @@
 <!--
  * @Author: YoHo
  * @Date: 2021-10-25 16:28:45
- * @LastEditTime: 2021-11-05 14:50:00
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-11-11 20:28:11
+ * @LastEditors: YoHo
  * @Description: 
 -->
 <template>
@@ -15,13 +15,13 @@
         :tableTitle="tableTitle"
         :tableData="tableListData"
         >
-        <template #materialChange="scope">{{floatFixNum(scope.row.materialChange) | thousandsFilter}}</template>
-        <template #makeCostChange="scope">{{floatFixNum(scope.row.makeCostChange) | thousandsFilter}}</template>
-        <template #discardCostChange="scope">{{floatFixNum(scope.row.discardCostChange) | thousandsFilter}}</template>
-        <template #manageFeeChange="scope">{{floatFixNum(scope.row.manageFeeChange) | thousandsFilter}}</template>
-        <template #otherFee="scope">{{floatFixNum(scope.row.otherFee) | thousandsFilter}}</template>
-        <template #profitChange="scope">{{floatFixNum(scope.row.profitChange) | thousandsFilter}}</template>
-        <template #apriceChange="scope">{{floatFixNum(scope.row.apriceChange) | thousandsFilter}}</template>
+        <template #materialChange="scope">{{floatFixNum(scope.row.materialChange) }}</template>
+        <template #makeCostChange="scope">{{floatFixNum(scope.row.makeCostChange) }}</template>
+        <template #discardCostChange="scope">{{floatFixNum(scope.row.discardCostChange) }}</template>
+        <template #manageFeeChange="scope">{{floatFixNum(scope.row.manageFeeChange) }}</template>
+        <template #otherFee="scope">{{floatFixNum(scope.row.otherFee) }}</template>
+        <template #profitChange="scope">{{floatFixNum(scope.row.profitChange) }}</template>
+        <template #apriceChange="scope">{{floatFixNum(scope.row.apriceChange) }}</template>
         </tableList>
     </div>
   </div>  
@@ -45,7 +45,7 @@ export default {
     tableListData: {
       type: Array,
       required: true,
-      default: () => ([{ materialChange: "0.00", makeCostChange: "0.00", discardCostChange: "0.00", manageFeeChange: "0.00", otherFee: "0.00", profitChange: "0.00", apriceChange: "0.00" }])
+      default: () => ([{ materialChange: null, makeCostChange: null, discardCostChange: null, manageFeeChange: null, otherFee: null, profitChange: null, apriceChange: null }])
     },
     isFetch: {
       type: Boolean,
@@ -60,14 +60,17 @@ export default {
   watch: {
     tableListData: {
       handler(list) {
-        const apriceChange = math.add(
-          math.bignumber(list[0].materialChange || 0),
-          math.bignumber(list[0].makeCostChange || 0),
-          math.bignumber(list[0].discardCostChange || 0),
-          math.bignumber(list[0].manageFeeChange || 0),
-          math.bignumber(list[0].otherFee || 0),
-          math.bignumber(list[0].profitChange || 0)
-        ).toFixed(2)
+        let apriceChange = null
+        if(list[0].materialChange||list[0].makeCostChange||list[0].discardCostChange||list[0].manageFeeChange||list[0].otherFee||list[0].profitChange){
+          apriceChange = math.add(
+            math.bignumber(list[0].materialChange || 0),
+            math.bignumber(list[0].makeCostChange || 0),
+            math.bignumber(list[0].discardCostChange || 0),
+            math.bignumber(list[0].manageFeeChange || 0),
+            math.bignumber(list[0].otherFee || 0),
+            math.bignumber(list[0].profitChange || 0)
+          ).toFixed(2)
+        }
         
         this.$set(list[0], "apriceChange", apriceChange)
 

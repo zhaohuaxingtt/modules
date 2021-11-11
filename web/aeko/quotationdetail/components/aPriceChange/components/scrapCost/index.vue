@@ -89,39 +89,42 @@ export default {
     handleInputByNumber,
     computeChangeAmount() {
       const originSum = math.add(
-        math.bignumber(this.sumData.originMaterialCostSum || 0),
-        math.bignumber(this.sumData.originLaborCostSum || 0),
-        math.bignumber(this.sumData.originDeviceCostSum || 0)
-      )
-
+          math.bignumber(this.sumData.originMaterialCostSum || 0),
+          math.bignumber(this.sumData.originLaborCostSum || 0),
+          math.bignumber(this.sumData.originDeviceCostSum || 0)
+        )
+      
       const newSum = math.add(
-        math.bignumber(this.sumData.newMaterialCostSum || 0),
-        math.bignumber(this.sumData.newLaborCostSum || 0),
-        math.bignumber(this.sumData.newDeviceCostSum || 0)
-      )
-
-      const discardCostChange = math.subtract(
-        math.subtract(
-          math.divide(
-            newSum,
-            math.subtract(
-              1,
-              math.divide(math.bignumber(this.tableListData[0].ratio || 0), 100)
-            )
+          math.bignumber(this.sumData.newMaterialCostSum || 0),
+          math.bignumber(this.sumData.newLaborCostSum || 0),
+          math.bignumber(this.sumData.newDeviceCostSum || 0)
+        )
+      let discardCostChange = null
+      let {ratio, originRatio} = this.tableListData[0]
+      if((newSum||newSum===0)&&(originSum||originSum===0)&&(ratio||ratio===0)&&(originRatio||originRatio===0)){
+        discardCostChange = math.subtract(
+          math.subtract(
+            math.divide(
+              newSum,
+              math.subtract(
+                1,
+                math.divide(math.bignumber(this.tableListData[0].ratio), 100)
+              )
+            ),
+            newSum
           ),
-          newSum
-        ),
-        math.subtract(
-          math.divide(
-            originSum,
-            math.subtract(
-              1,
-              math.divide(math.bignumber(this.tableListData[0].originRatio || 0), 100)
-            )
+          math.subtract(
+            math.divide(
+              originSum,
+              math.subtract(
+                1,
+                math.divide(math.bignumber(this.tableListData[0].originRatio), 100)
+              )
+            ),
+            originSum
           ),
-          originSum
-        ),
-      ).toFixed(2)
+        ).toFixed(2)
+      }
 
       this.$set(this.tableListData[0], "changeAmount", discardCostChange)
       this.$emit("update:discardCostChange", discardCostChange)
@@ -148,8 +151,6 @@ export default {
       color: #131523;
       font-weight: bold;
     }
-
-    .control {}
   }
 
   ::v-deep .table {
