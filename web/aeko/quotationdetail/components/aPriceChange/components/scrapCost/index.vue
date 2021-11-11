@@ -24,7 +24,7 @@
             <span v-if="disabled" :class="{ changeClass: scope.row.ratio !== scope.row.originRatio }">{{ scope.row.ratio }}</span>
             <iInput class="input-center" v-else v-model="scope.row.ratio" :class="{ changeClass: scope.row.ratio !== scope.row.originRatio }" @input="handleInputByNumber($event, 'ratio', scope.row, 2, computeChangeAmount)"></iInput>
           </template>
-          <template #changeAmount="scope">{{floatFixNum(scope.row.changeAmount)}}</template>
+          <template #changeAmount="scope">{{floatFixNum(scope.row.changeAmount) | thousandsFilter}}</template>
         </tableList>
       </div>
     </div>
@@ -40,9 +40,11 @@ import { scrapCostTableTitle as tableTitle } from "../data"
 import { floatFixNum } from "../../../data"
 import { handleInputByNumber } from "rise/web/quotationdetail/components/data"
 import sInput from "rise/web/aeko/quotationdetail/components/sInput"
+import filters from "@/utils/filters"
 
 export default {
   components: { iButton, iInput, tableList, sInput },
+  mixins: [ filters ],
   model: {
     prop: "tableListData",
     event: "change"
