@@ -1,7 +1,7 @@
 <!--
  * @Author: haojiang
  * @Date: 2021-02-24 09:42:07
- * @LastEditTime: 2021-11-08 15:34:30
+ * @LastEditTime: 2021-11-11 15:01:01
  * @LastEditors: Hao,Jiang
  * @Description: table组件
 -->
@@ -16,6 +16,7 @@
     :empty-text="$t('LK_ZANWUSHUJU')"
     :class="{'moviesTable': true, 'radio': radio}"
     :cell-style="borderLeft"
+    :span-method="spanMethod"
     @selection-change="handleSelectionChange"
     @select="handleSelect"
     @select-all="handleSelectAll"
@@ -164,7 +165,13 @@ export default{
      * @param {*}
      * @return {*}
      */    
-    lang: {type: Boolean}
+    lang: {type: Boolean},
+    /**
+     * @description: 表格合并
+     * @param {*}
+     * @return {*}
+     */    
+    spanMethod: { type: Function },
   },
   inject:['vm'],
   components:{icon},
