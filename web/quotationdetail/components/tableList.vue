@@ -1,13 +1,13 @@
 <!--
  * @Author: ldh
  * @Date: 2021-04-22 12:34:50
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-09-07 15:58:35
+ * @LastEditors: Hao,Jiang
+ * @LastEditTime: 2021-11-11 15:02:08
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\tableList.vue
 -->
 <template>
-  <el-table ref="table"   :class="singleSelect ? 'singleSelectTable' : ''"  tooltip-effect="light" :height="height" :data="tableData" :cell-class-name="cellClassName" v-loading="tableLoading" @selection-change="handleSelectionChange" :empty-text="language('LK_ZANWUSHUJU', '暂无数据')">
+  <el-table ref="table"   :class="singleSelect ? 'singleSelectTable' : ''"  tooltip-effect="light" :height="height" :data="tableData" :cell-class-name="cellClassName" v-loading="tableLoading" @selection-change="handleSelectionChange" :empty-text="language('LK_ZANWUSHUJU', '暂无数据')" :span-method="spanMethod">
     <el-table-column v-if="selection" type="selection" width="55" align="center"  :fixed="fixed"></el-table-column>
     <el-table-column v-if="index" type="index" align="center" :label="indexLabel"  :fixed="fixed"></el-table-column>
     <template v-for="item in tableTitle">
@@ -80,6 +80,7 @@ export default {
       type: Boolean,
       default: false
     },
+    spanMethod: { type: Function },
   },
   methods: {
     handleSelectionChange(list){
