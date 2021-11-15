@@ -1,10 +1,3 @@
-/*
- * @Author: YoHo
- * @Date: 2021-10-25 16:28:45
- * @LastEditTime: 2021-11-15 17:39:15
- * @LastEditors: YoHo
- * @Description: 
- */
 export const cbdSummaryTableTitle = [
   { props: "materialChange", seq: "2.1", key: "YUANCAILIAOSANJIANCHENGBENBIANDONG", name: "原材料/散件成本变动" },
   { props: "makeCostChange", seq: "2.2", key: "ZHIZAOCHENGBENBIANDONG", name: "制造成本变动" }, 
