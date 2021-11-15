@@ -12,7 +12,8 @@
     <template #header-control>
       <slot name='header-control'></slot>
     </template>
-    <tableList 
+    <tableList
+      lang
       :tableIndexString='tableIndexString'
       :tableData='tableData'
       :tableTitle="tableTile" 

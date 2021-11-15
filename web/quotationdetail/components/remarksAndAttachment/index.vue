@@ -9,15 +9,15 @@
 
 <template>
   <div>
-    <iCard :title="$t('LK_BAOJIABEIZHU')" v-loading="remarkLoading">
+    <iCard :title="language('LK_BAOJIABEIZHU', '报价备注')" v-loading="remarkLoading">
       <iEditor :showMenus="false" v-model="remark" :height="120" :disabled="disabled" autoHeight/>
       <!-- <iInput type="textarea" :rows="6" resize="none" :placeholder="$t('LK_QINGSHURUBEIZHU')"></iInput> -->
     </iCard>
     <iCard class="sampleDelivery margin-top20">
       <div class="header margin-bottom20">
-        <span class="title">{{ $t('LK_BAOJIAFUJIAN') }}</span>
+        <span class="title">{{ language('LK_BAOJIAFUJIAN', '报价附件') }}</span>
         <span class="margin-left10">
-          <span class="tip">{{$t('LK_SHANGCHUANSHIXUANZHUANZHIZHENGCHANGFANGXIANG')}}</span>
+          <span class="tip">{{ language('LK_SHANGCHUANSHIXUANZHUANZHIZHENGCHANGFANGXIANG', '上传时文件请旋转至正常方向后上传') }}</span>
         </span>
         <div class="floatright" >
           <el-upload
@@ -30,13 +30,13 @@
             :show-file-list="false" 
             :before-upload="beforeUpload"
             accept=".jpg,.jpge,.png,.xls,.xlsx,.ppt,.pptx,.doc,.docx">
-              <iButton :loading="uploadLoading">{{$t('LK_SHANGCHUANFUJIAN')}}</iButton>
+              <iButton :loading="uploadLoading">{{ language('LK_SHANGCHUANFUJIAN', '上传附件') }}</iButton>
             </el-upload>
-          <iButton @click="handleDownload">{{$t('LK_XIAZAI')}}</iButton>
-          <iButton v-if="!disabled" :loading="deleteLoading" @click="handleDelete">{{$t('LK_SHANCHU')}}</iButton>
+          <iButton @click="handleDownload">{{ language('LK_XIAZAI', '下载') }}</iButton>
+          <iButton v-if="!disabled" :loading="deleteLoading" @click="handleDelete">{{ language('LK_SHANCHU', '删除') }}</iButton>
         </div>
       </div>
-      <tableList selection :tableTitle="tableTitle" :tableData="tableData" :tableLoading="fileLoading" @handleSelectionChange="handleSelectionChange">
+      <tableList lang selection :tableTitle="tableTitle" :tableData="tableData" :tableLoading="fileLoading" @handleSelectionChange="handleSelectionChange">
         <template #fileName="scope">
           <span class="link-underline" @click="download(scope.row)">{{ scope.row.fileName }}</span>
         </template>
@@ -155,7 +155,7 @@ export default {
         iMessage.error(`${ this.$i18n.locale === 'zh' ? res.desZh : res.desEn }`)
       } else {
         clearTimeout(this.timer)
-        iMessage.success(`${ file.name } ${ this.$t('LK_SHANGCHUANCHENGGONG') }`)
+        iMessage.success(`${ file.name } ${ this.language('LK_SHANGCHUANCHENGGONG', '上传成功') }`)
         this.fileList.push({ id: res.data[0].id, fileName: res.data[0].name, filePath: res.data[0].path, fileSize: file.size })
         this.timer = setTimeout(() => {
           this.uploadFileList()
@@ -221,7 +221,7 @@ export default {
     },
     // 删除
     handleDelete() {
-      if (this.multipleSelection.length < 1) return iMessage.warn(this.$t("LK_QINGXUANZHEXUYAOSHANCHUYOUJIAN"))
+      if (this.multipleSelection.length < 1) return iMessage.warn(this.language("LK_QINGXUANZHEXUYAOSHANCHUYOUJIAN", "请选择需要删除的附件"))
       this.deleteLoading = true
       deleteFiles(
         this.multipleSelection.map(item => item.id)
@@ -242,7 +242,7 @@ export default {
     },
     // 多选下载
     handleDownload() {
-      if (this.multipleSelection.length < 1) return iMessage.warn(this.$t("LK_QINGXUANZHEXUYAOXIAZHAIWENJIAN"))
+      if (this.multipleSelection.length < 1) return iMessage.warn(this.language("LK_QINGXUANZHEXUYAOXIAZHAIWENJIAN", "请选择需要下载文件"))
 
       // downloadFile({
       //   applicationName: "rise",

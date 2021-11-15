@@ -8,12 +8,12 @@
 -->
 <template>
   <div class="bnkAttachmentByProject">
-    <iCard :title="$t('LK_BNKLINGJIANCAIGOUXIANGMUFUJIAN')">
+    <iCard :title="language('LK_BNKLINGJIANCAIGOUXIANGMUFUJIAN', 'BNK零件采购项目附件')">
       <template #header-control>
-        <iButton v-loading="downloadLoading" @click="handleDownload">{{ $t('LK_XIAZAI') }}</iButton>
+        <iButton v-loading="downloadLoading" @click="handleDownload">{{ language('LK_XIAZAI', '下载') }}</iButton>
       </template>
       <div>
-        <tableList class="table" index :tableLoading="loading" :tableData="tableListData" :tableTitle="tableTitle" @handleSelectionChange="handleSelectionChange">
+        <tableList lang class="table" index :tableLoading="loading" :tableData="tableListData" :tableTitle="tableTitle" @handleSelectionChange="handleSelectionChange">
           <template #fileTruename="scope">
             <span class="link-underline" @click="handlePreview(scope.row)">{{ scope.row.fileTruename }}</span>
           </template>

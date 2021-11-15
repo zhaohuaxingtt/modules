@@ -1,7 +1,7 @@
 <!--
  * @Author: haojiang
  * @Date: 2021-02-24 09:42:07
- * @LastEditTime: 2021-11-08 15:34:30
+ * @LastEditTime: 2021-11-11 15:01:01
  * @LastEditors: Hao,Jiang
  * @Description: table组件
 -->
@@ -16,15 +16,16 @@
     :empty-text="$t('LK_ZANWUSHUJU')"
     :class="{'moviesTable': true, 'radio': radio}"
     :cell-style="borderLeft"
+    :span-method="spanMethod"
     @selection-change="handleSelectionChange"
     @select="handleSelect"
     @select-all="handleSelectAll"
     default-expand-all
     ref="moviesTable">
     <!----------------------复选框------------------------------------->
-    <el-table-column v-if="selection" type='selection' :width="selectConfig.width || 56" :align="selectConfig.align || 'center'" :header-align="selectConfig.headerAlign || 'center'" :selectable="selectConfig.selectable || selectable"></el-table-column>
+    <el-table-column v-if="selection" type='selection' :width="selectConfig.width || 40" :align="selectConfig.align || 'center'" :header-align="selectConfig.headerAlign || 'center'" :selectable="selectConfig.selectable || selectable"></el-table-column>
     <!----------------------支持自定义的index插槽------------------------>
-    <el-table-column v-if='index' type='index' :width='indexConfig.width || 50' :align="indexConfig.width || 'center'" :header-align="indexConfig.width || 'center'" :label="indexConfig.label || indexLabel">
+    <el-table-column v-if='index' type='index' :width='indexConfig.width || 32' :align="indexConfig.width || 'center'" :header-align="indexConfig.width || 'center'" :label="indexConfig.label || indexLabel">
       <template slot-scope="scope">
         <slot :name="`_index`" :row="scope.row" :$index="scope.$index">
           {{scope.$index+1}}
@@ -164,7 +165,13 @@ export default{
      * @param {*}
      * @return {*}
      */    
-    lang: {type: Boolean}
+    lang: {type: Boolean},
+    /**
+     * @description: 表格合并
+     * @param {*}
+     * @return {*}
+     */    
+    spanMethod: { type: Function },
   },
   inject:['vm'],
   components:{icon},

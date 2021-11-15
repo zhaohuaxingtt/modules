@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-10-28 11:56:47
+ * @LastEditTime: 2021-11-10 16:30:07
  * @LastEditors: Please set LastEditors
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
@@ -32,7 +32,7 @@
       <!--------------------------------------------------------->
       <!----------------------2.1 原材料/散件--------------------->
       <!--------------------------------------------------------->
-      <tableTemlate 
+      <tableTemlate
         v-show='allTableData.level == 2' 
         :selection="!disabled && !isOriginprice" 
         :index='true' 
@@ -41,7 +41,7 @@
         :notEdit='disabled || isOriginprice' 
         :tableData='allTableData.rawMaterial.records' 
         class="margin-top20" 
-        :title="`${allTableData.level}.1 ${$t('LK_YUANCLSJ')}`" 
+        :title="`${allTableData.level}.1 ${ language('LK_YUANCLSJ', '原材料/散件')}`" 
         :tableTile='titleYcl' 
         :iPagination='disabled || isOriginprice' 
         tableIndexString='C'
@@ -51,8 +51,8 @@
         @handleAutocompleteSelect="handleAutocompleteSelectByRawMaterial">
         <template #header-control>
           <div v-if="!disabled && !isOriginprice">
-            <iButton @click="handleAddByRawMaterial">{{ $t("LK_TIANJIAHANG") }}</iButton>
-            <iButton @click="handleDelByRawMaterial">{{ $t("LK_SHANCHUHANG") }}</iButton>
+            <iButton @click="handleAddByRawMaterial">{{ language("LK_TIANJIAHANG", "添加行") }}</iButton>
+            <iButton @click="handleDelByRawMaterial">{{ language("LK_SHANCHUHANG", "删除行") }}</iButton>
           </div>
         </template>
       </tableTemlate>
@@ -66,7 +66,7 @@
         pageNationReq='queryRawMaterialDTO' 
         pageNationRes='rawMaterial' 
         :notEdit='disabled || isOriginprice'
-        :title="`${ allTableData.level }.1 ${$t('LK_YUANCLSJ')}`" 
+        :title="`${ allTableData.level }.1 ${ language('LK_YUANCLSJ', '原材料/散件') }`" 
         class="margin-top20"
         :tableTile='titleYclByL3'
         :tableData='allTableData.rawMaterial.records'
@@ -77,8 +77,8 @@
         @handleAutocompleteSelect="handleAutocompleteSelectByRawMaterial">>
         <template #header-control>
           <div v-if="!disabled && !isOriginprice">
-            <iButton @click="handleAddByRawMaterial">{{ $t("LK_TIANJIAHANG") }}</iButton>
-            <iButton @click="handleDelByRawMaterial">{{ $t("LK_SHANCHUHANG") }}</iButton>
+            <iButton @click="handleAddByRawMaterial">{{ language("LK_TIANJIAHANG", "添加行") }}</iButton>
+            <iButton @click="handleDelByRawMaterial">{{ language("LK_SHANCHUHANG", "删除行") }}</iButton>
           </div>
         </template>
       </tableTemlate>
@@ -94,7 +94,7 @@
         :notEdit='disabled || isOriginprice' 
         :tableData='allTableData.makeCost.records' 
         class="margin-top20"
-        :title="`${allTableData.level}.2 ${$t('LK_ZHIZHAOCB')}`" 
+        :title="`${allTableData.level}.2 ${ language('LK_ZHIZHAOCB', '制造成本') }`" 
         :tableTile='titleCbzz' 
         :iPagination='disabled || isOriginprice' 
         tableIndexString='P'
@@ -102,8 +102,8 @@
         @handleInput="handleInputByMakeCostL2">
         <template #header-control>
           <div v-if="!disabled && !isOriginprice">
-            <iButton @click="handleAddByMakeCost">{{ $t("LK_TIANJIAHANG") }}</iButton>
-            <iButton @click="handleDelByMakeCost">{{ $t("LK_SHANCHUHANG") }}</iButton>
+            <iButton @click="handleAddByMakeCost">{{ language("LK_TIANJIAHANG", "添加行") }}</iButton>
+            <iButton @click="handleDelByMakeCost">{{ language("LK_SHANCHUHANG", "删除行") }}</iButton>
           </div>
         </template>
       </tableTemlate>
@@ -117,7 +117,7 @@
         pageNationReq='queryMakeCostDTO' 
         pageNationRes='makeCost'
         :notEdit='disabled || isOriginprice'
-        :title="`${ allTableData.level }.2 ${$t('LK_ZHIZHAOCB')}`" 
+        :title="`${ allTableData.level }.2 ${ language('LK_ZHIZHAOCB', '制造成本') }`" 
         class="margin-top20"
         :tableTile='titleCbzzByL3'
         :tableData='allTableData.makeCost.records'
@@ -126,8 +126,8 @@
         @handleInput="handleInputByMakeCostL3">
         <template #header-control>
           <div v-if="!disabled && !isOriginprice">
-            <iButton @click="handleAddByMakeCost">{{ $t("LK_TIANJIAHANG") }}</iButton>
-            <iButton @click="handleDelByMakeCost">{{ $t("LK_SHANCHUHANG") }}</iButton>
+            <iButton @click="handleAddByMakeCost">{{ language("LK_TIANJIAHANG", "添加行") }}</iButton>
+            <iButton @click="handleDelByMakeCost">{{ language("LK_SHANCHUHANG", "删除行") }}</iButton>
           </div>
         </template>
       </tableTemlate>
@@ -136,18 +136,18 @@
       <!--------------------------------------------------------->
       <el-row class="row" v-show='allTableData.level == 2'>
         <el-col class="col" :span='12'>
-          <tableTemlate :notEdit='disabled || isOriginprice' :tableData='allTableData.discardCost' class="margin-top20" :index='true' :title="`${allTableData.level}.3 ${$t('LK_BAOFEICHENGBEN')}`" :tableTile='titlebfcb' tableIndexString='S' @handleInput="handleInputByDiscardCostL2"></tableTemlate>
+          <tableTemlate :notEdit='disabled || isOriginprice' :tableData='allTableData.discardCost' class="margin-top20" :index='true' :title="`${allTableData.level}.3 ${ language('LK_BAOFEICHENGBEN', '报废成本') }`" :tableTile='titlebfcb' tableIndexString='S' @handleInput="handleInputByDiscardCostL2"></tableTemlate>
         </el-col>
         <el-col class="col" :span='12'>
-          <tableTemlate :notEdit='disabled || isOriginprice' :tableData='allTableData.manageFee' class="margin-top20" :index='true' :title="`${allTableData.level}.4 ${$t('LK_GUANLIFEI')}`" :tableTile='titleglf' tableIndexString='O' @handleInput="handleInputByManageFeeL2"></tableTemlate>
+          <tableTemlate :notEdit='disabled || isOriginprice' :tableData='allTableData.manageFee' class="margin-top20" :index='true' :title="`${allTableData.level}.4 ${ language('LK_GUANLIFEI', '管理费') }`" :tableTile='titleglf' tableIndexString='O' @handleInput="handleInputByManageFeeL2"></tableTemlate>
         </el-col>
       </el-row>
       <el-row class="row" v-show='allTableData.level == 2'>
         <el-col class="col" :span='12'>
-          <tableTemlate :notEdit='disabled || isOriginprice' :tableData='allTableData.otherFee' class="margin-top20" :index='true' :title="`${allTableData.level}.5 ${$t('LK_QITAFEIYONG')}`" :tableTile='titleqtfy' tableIndexString='A'></tableTemlate>
+          <tableTemlate :notEdit='disabled || isOriginprice' :tableData='allTableData.otherFee' class="margin-top20" :index='true' :title="`${allTableData.level}.5 ${ language('LK_QITAFEIYONG', '其他费用') }`" :tableTile='titleqtfy' tableIndexString='A'></tableTemlate>
         </el-col>
         <el-col class="col" :span='12'>
-          <tableTemlate :notEdit='disabled || isOriginprice' :tableData='allTableData.profit' class="margin-top20" :index='true' :title="`${allTableData.level}.6 ${$t('LK_LIRUN')}`" :tableTile='titlelr' tableIndexString='P' @handleInput="handleInputByProfitL2"></tableTemlate>
+          <tableTemlate :notEdit='disabled || isOriginprice' :tableData='allTableData.profit' class="margin-top20" :index='true' :title="`${allTableData.level}.6 ${ language('LK_LIRUN', '利润') }`" :tableTile='titlelr' tableIndexString='P' @handleInput="handleInputByProfitL2"></tableTemlate>
         </el-col>
       </el-row>
       <!--------------------------------------------------------->
@@ -155,18 +155,18 @@
       <!--------------------------------------------------------->
       <el-row class="row" v-show='allTableData.level == 3'>
         <el-col class="col" :span='12'>
-          <tableTemlate :notEdit='disabled || isOriginprice' :tableData='allTableData.discardCost' class="margin-top20" :index='true' :title="`${allTableData.level}.3 ${$t('LK_BAOFEICHENGBEN')}`" :tableTile='titlebfcbByL3' tableIndexString='S'></tableTemlate>
+          <tableTemlate :notEdit='disabled || isOriginprice' :tableData='allTableData.discardCost' class="margin-top20" :index='true' :title="`${allTableData.level}.3 ${ language('LK_BAOFEICHENGBEN', '报废成本')}`" :tableTile='titlebfcbByL3' tableIndexString='S'></tableTemlate>
         </el-col>
         <el-col class="col" :span='12'>
-          <tableTemlate :notEdit='disabled || isOriginprice' :tableData='allTableData.manageFee' class="margin-top20" :index='true' :title="`${allTableData.level}.4 ${$t('LK_GUANLIFEI')}`" :tableTile='titleglfByL3' tableIndexString='O' @handleInput="handleInputByManageFeeL3"></tableTemlate>
+          <tableTemlate :notEdit='disabled || isOriginprice' :tableData='allTableData.manageFee' class="margin-top20" :index='true' :title="`${allTableData.level}.4 ${ language('LK_GUANLIFEI', '管理费') }`" :tableTile='titleglfByL3' tableIndexString='O' @handleInput="handleInputByManageFeeL3"></tableTemlate>
         </el-col>
       </el-row>
       <el-row class="row" v-show='allTableData.level == 3'>
         <el-col class="col" :span='12'>
-          <tableTemlate :notEdit='disabled || isOriginprice' :tableData='allTableData.otherFee' class="margin-top20" :index='true' :title="`${allTableData.level}.5 ${$t('LK_QITAFEIYONG')}`" :tableTile='titleqtfyByL3' :filterProps="{ itemType: itemTypeFilter }" tableIndexString='A'></tableTemlate>
+          <tableTemlate :notEdit='disabled || isOriginprice' :tableData='allTableData.otherFee' class="margin-top20" :index='true' :title="`${allTableData.level}.5 ${ language('LK_QITAFEIYONG', '其他费用') }`" :tableTile='titleqtfyByL3' :filterProps="{ itemType: itemTypeFilter }" tableIndexString='A'></tableTemlate>
         </el-col>
         <el-col class="col" :span='12'>
-          <tableTemlate :notEdit='disabled || isOriginprice' :tableData='allTableData.profit' class="margin-top20" :index='true' :title="`${allTableData.level}.6 ${$t('LK_LIRUN')}`" :tableTile='titlelrByL3' tableIndexString='P' @handleInput="handleInputByProfitL3"></tableTemlate>
+          <tableTemlate :notEdit='disabled || isOriginprice' :tableData='allTableData.profit' class="margin-top20" :index='true' :title="`${allTableData.level}.6 ${ language('LK_LIRUN', '利润') }`" :tableTile='titlelrByL3' tableIndexString='P' @handleInput="handleInputByProfitL3"></tableTemlate>
         </el-col>
       </el-row>
       <!--------------------------------------------------------->
@@ -174,8 +174,8 @@
       <!--------------------------------------------------------->
       <tableTemlate class="margin-top20" :cbdSelect='cbdSelect' pageNationReq='cbd' pageNationRes='cbd' title="CBD" selection :tableData='tableDataCbd' :tableTile='titleCBD' iPagination>
         <template #header-control>
-          <iButton @click="downLoadFile">{{$t('LK_XIAZAI')}}</iButton>
-          <iButton v-if='!disabled && !isOriginprice' @click="disabel">{{$t('delete')}}</iButton>
+          <iButton @click="downLoadFile">{{ language('LK_XIAZAI', '下载') }}</iButton>
+          <iButton v-if='!disabled && !isOriginprice' @click="disabel">{{ language('DELETE', '删除')}}</iButton>
         </template>
       </tableTemlate>
     </div>
@@ -253,7 +253,7 @@ export default{
       allTableData:{
         level:'',
         startProductDate:'',
-        editFlag:true,
+        editFlag: false,
         discardCost:[],
         makeCost:{
           records:[],
@@ -367,7 +367,7 @@ export default{
     selectDictByKeys(){
       selectDictByKeys([
         { keys: "ORIGIN_COUNTRY" },
-        { keys: "CATEGORY_CBD_SETTING" },
+        { keys: "CATEGORY_CBD_SETTING" }
       ]).then(res=>{
         if(res.code == 200 && res.data) {
           let originCountryOptions = []
@@ -497,7 +497,7 @@ export default{
         const rawMaterialFlag = form.levelTwoSumDTO.rawMaterial.every(item => {
           const flag = keys.every(key => {
             if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
-              iMessage.warn(this.$t("QINGTIANXIEWANZHENGYUANCAILIAOSANJIAN"))
+              iMessage.warn(this.language("QINGTIANXIEWANZHENGYUANCAILIAOSANJIAN", "请填写完整原材料/散件"))
               return false
             } else {
               return true
@@ -528,7 +528,7 @@ export default{
         const makeCostFlag = form.levelTwoSumDTO.makeCost.every(item => {
           const flag = keys.every(key => {
             if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
-              iMessage.warn(this.$t("QINGTIANXIEWANZHENGZHIZAOCHENGBEN"))
+              iMessage.warn(this.language("QINGTIANXIEWANZHENGZHIZAOCHENGBEN", "请填写完整制造成本"))
               return false
             } else {
               return true
@@ -559,7 +559,7 @@ export default{
         const discardCostFlag = form.levelTwoSumDTO.discardCost.every(item => {
           const flag = keys.every(key => {
             if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
-              iMessage.warn(this.$t("QINGTIANXIEWANZHENGBAOFEICHENGBEN"))
+              iMessage.warn(this.language("QINGTIANXIEWANZHENGBAOFEICHENGBEN", "请填写完整报废成本"))
               return false
             } else {
               return true
@@ -590,7 +590,7 @@ export default{
         const manageFeeFlag = form.levelTwoSumDTO.manageFee.every(item => {
           const flag = keys.every(key => {
             if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
-              iMessage.warn(this.$t("QINGTIANXIEWANZHENGGUANLIFEI"))
+              iMessage.warn(this.language("QINGTIANXIEWANZHENGGUANLIFEI", "请填写完整管理费"))
               return false
             } else {
               return true
@@ -621,7 +621,7 @@ export default{
         const profitFlag = form.levelTwoSumDTO.profit.every(item => {
           const flag = keys.every(key => {
             if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
-              iMessage.warn(this.$t("QINGTIANXIEWANZHENLIRUN"))
+              iMessage.warn(this.language("QINGTIANXIEWANZHENLIRUN", "请填写完整利润"))
               return false
             } else {
               return true
@@ -655,7 +655,7 @@ export default{
         const rawMaterialFlag = form.levelThreeSumDTO.rawMaterial.every(item => {
           const flag = keys.every(key => {
             if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
-              iMessage.warn(this.$t("QINGTIANXIEWANZHENGYUANCAILIAOSANJIANCHENGBEN"))
+              iMessage.warn(this.language("QINGTIANXIEWANZHENGYUANCAILIAOSANJIANCHENGBEN", "请填写完整原材料/散件成本"))
               return false
             } else {
               return true
@@ -686,7 +686,7 @@ export default{
         const makeCostFlag = form.levelThreeSumDTO.makeCost.every(item => {
           const flag = keys.every(key => {
             if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
-              iMessage.warn(this.$t("QINGTIANXIEWANZHENGZHIZAOCHENGBEN"))
+              iMessage.warn(this.language("QINGTIANXIEWANZHENGZHIZAOCHENGBEN", "请填写完整制造成本"))
               return false
             } else {
               return true
@@ -717,7 +717,7 @@ export default{
         const manageFeeFlag = form.levelThreeSumDTO.manageFee.every(item => {
           const flag = keys.every(key => {
             if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
-              iMessage.warn(this.$t("QINGTIANXIEWANZHENGGUANLIFEI"))
+              iMessage.warn(this.language("QINGTIANXIEWANZHENGGUANLIFEI", "请填写完整管理费"))
               return false
             } else {
               return true
@@ -748,7 +748,7 @@ export default{
         const profitFlag = form.levelThreeSumDTO.profit.every(item => {
           const flag = keys.every(key => {
             if (!(!!item[key] || item[key] === 0 || item[key] === false)) {
-              iMessage.warn(this.$t("QINGTIANXIEWANZHENLIRUN"))
+              iMessage.warn(this.language("QINGTIANXIEWANZHENLIRUN", "请填写完整利润"))
               return false
             } else {
               return true
@@ -890,7 +890,7 @@ export default{
           this.allTableData = {
               level:this.allTableData.level?this.allTableData.level:this.partInfo.currentCbdLevel,
               startProductDate:'',
-              editFlag:true,
+              editFlag: false,
               discardCost:[],
               makeCost:{
                 records:[],
@@ -1143,6 +1143,9 @@ export default{
         data['level'] = this.allTableData && this.allTableData.level?this.allTableData.level:this.partInfo.currentCbdLevel
         // eslint-disable-next-line no-undef
         data['startProductDate'] = baseData.startProductDate?moment(new Date(baseData.startProductDate)).format('YYYY-MM-DD HH:mm:ss'):''
+
+        data.editFlag = this.allTableData.editFlag || false
+
         return data
       } catch (error) {
         console.warn(error)

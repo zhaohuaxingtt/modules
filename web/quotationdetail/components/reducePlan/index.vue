@@ -6,7 +6,7 @@
 <template>
 	<iCard class="reducePlan" v-loading="loading">
 		<div class="header margin-bottom20">
-			<span class="title">{{ $t('LK_JIANGJIAJIHUA') }}</span>
+			<span class="title">{{ language('LK_JIANGJIAJIHUA', '降价计划') }}</span>
 			<span v-if="isSkd">
 				<span class="tip margin-left10">{{ language("JIANGJIAJISUANYIJINGWAICHUCHANGJIAWEIZHUN", "降价计算以境外出厂价为准") }}</span>
 			</span>

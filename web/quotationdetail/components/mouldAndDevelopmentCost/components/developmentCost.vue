@@ -1,8 +1,8 @@
 <!--
  * @Author: ldh
  * @Date: 2021-04-23 00:21:17
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-11-05 15:21:26
+ * @LastEditors: YoHo
+ * @LastEditTime: 2021-11-08 19:56:25
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\developmentCost.vue
 -->
@@ -12,23 +12,23 @@
       <template #header>
         <div class="header">
           <div>
-            <span class="title">{{ `${ (showMode ? (isSkd ? "SKD" : "LC") : "") + " " }${ $t('LK_KAIFAFEIYONG') }` }}</span>
-            <span class="tip margin-left10">({{ $t('LK_DANWEI') }}：{{ $t('LK_YUAN') }})</span>
+            <span class="title">{{ `${ (showMode ? (isSkd ? "SKD" : "LC") : "") + " " }${ language('LK_KAIFAFEIYONG', '开发费用') }` }}</span>
+            <span class="tip margin-left10">({{ language('LK_DANWEI', '单位') }}：{{ language('LK_YUAN', '元') }})</span>
             <iFormGroup class="total margin-left20" :row="1" inline v-if="!isAeko">
-              <iFormItem class="item" :label="`${ $t(developmentCostInfos[0].key) }`">
+              <iFormItem class="item" :label="`${ language(developmentCostInfos[0].key, developmentCostInfos[0].name) }`">
                 <iText>{{ dataGroup[developmentCostInfos[0].props] }}</iText>
               </iFormItem>
             </iFormGroup>
           </div>
           <div v-if="!disabled&&!editDisabled" class="control">
-            <iButton v-if="isAeko" @click="save" :loading="saveLoading">{{language('LK_BAOCUN','保存')}}</iButton>
-            <iButton @click="handleAdd">{{ $t('LK_TIANJIAHANG') }}</iButton>
-            <iButton @click="handleDel">{{ $t('LK_SHANCHUHANG') }}</iButton>
+            <iButton v-if="isAeko" @click="save" :loading="saveLoading">{{ language('BAOCUN','保存') }}</iButton>
+            <iButton @click="handleAdd">{{ language('LK_TIANJIAHANG', '添加行') }}</iButton>
+            <iButton @click="handleDel">{{ language('LK_SHANCHUHANG', '删除行') }}</iButton>
           </div>
         </div>
       </template>
       <div>
-        <tableList class="table" index :tableData="tableListData" :tableTitle="tableTitle" @handleSelectionChange="handleSelectionChange">
+        <tableList lang class="table" index :tableData="tableListData" :tableTitle="tableTitle" @handleSelectionChange="handleSelectionChange">
           <template #item="scope">
             <iInput v-if="!disabled&&!editDisabled" v-model="scope.row.item" />
             <span v-else>{{ scope.row.item }}</span>
@@ -54,7 +54,7 @@
           </template>
         </tableList>
         <iFormGroup class="subCost margin-top30" :row="4" inline>
-          <iFormItem class="item" v-for="(info, $index) in subDevelopmentCostInfos" :key="$index" :label="isAeko&&info.languageKey ? language(info.languageKey,info.languageName) : $t(info.key)">
+          <iFormItem class="item" v-for="(info, $index) in subDevelopmentCostInfos" :key="$index" :label="isAeko&&info.languageKey ? language(info.languageKey,info.languageName) : language(info.key, info.name)">
             <iInput v-if="info.props === 'shareQuantity' && !disabled&& !editDisabled" v-model="dataGroup[info.props]" @input="handleInputByShareQuantity" />
             <iText v-else>{{ dataGroup[info.props] | thousandsFilter }}</iText>
           </iFormItem>
@@ -183,7 +183,7 @@ export default {
     },
     handleDel() {
       if (this.multipleSelection.length < 1) {
-        iMessage.warn(this.$t('LK_QINGXUANZEXUYAOSHANCHUDEHANG'))
+        iMessage.warn(this.language('LK_QINGXUANZEXUYAOSHANCHUDEHANG', '请选择需要删除的行'))
         return
       }else{
          this.$confirm(
@@ -267,6 +267,7 @@ export default {
 	}
 
   .header {
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;

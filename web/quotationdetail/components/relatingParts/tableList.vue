@@ -6,12 +6,12 @@
 -->
 <template>
   <div class="ptof-table">
-    <el-table fit tooltip-effect='light' :height="height" :data='tableData' v-loading='tableLoading' @selection-change="handleSelectionChange" :empty-text="$t('LK_ZANWUSHUJU')" ref="moviesTable" >
-      <el-table-column v-if="selection" type='selection' width="50" align='center'></el-table-column>
+    <el-table fit tooltip-effect='light' :height="height" :data='tableData' v-loading='tableLoading' @selection-change="handleSelectionChange" :empty-text="language('LK_ZANWUSHUJU', '暂无数据')" ref="moviesTable" >
+      <el-table-column v-if="selection" type='selection' width="55" align='center'></el-table-column>
       <el-table-column v-if='index' type='index' width='50' align='center' :label='indexLabel'></el-table-column>
       <template v-for="(items,index) in tableTitle">
         <!----------------------图标列,“√”-已报价可跳转-------------------->
-        <el-table-column :key="index" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-if='items.type == "icon"' :prop="items.props" :label="items.key ? $t(items.key) : items.name" >
+        <el-table-column :key="index" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-if='items.type == "icon"' :prop="items.props" :label="items.key ? (lang ? language(items.key, items.name) : $t(items.key)) : items.name" >
           <template slot-scope="scope">
             <!-----该零件已经使用该模具，展示为*---------->
             <span v-if="isAssemblyPartNum(items.props, scope.row)" >*</span>
@@ -23,7 +23,7 @@
           </template>
         </el-table-column>
         <!-------------------------正常列--------------------------->
-        <el-table-column :key="index" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip'  v-else :label="items.key ? $t(items.key) : items.name" :prop="items.props"></el-table-column>
+        <el-table-column :key="index" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip'  v-else :label="items.key ? (lang ? language(items.key, items.name) : $t(items.key)) : items.name" :prop="items.props"></el-table-column>
       </template>
     </el-table>
   </div>
@@ -38,6 +38,7 @@ export default{
     tableLoading:{type:Boolean,default:false},
     selection:{type:Boolean,default:true},
     height:{type:Number||String},
+    lang: { type: Boolean, default: false }
   },
   inject:['vm'],
   methods:{

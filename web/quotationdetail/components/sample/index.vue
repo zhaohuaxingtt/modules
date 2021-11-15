@@ -9,7 +9,7 @@
 <template>
   <div class="sample" v-loading="loading">
     <iCard>
-      <tableList class="table" :selection="false" :tableData="tableListData" :tableTitle="sampleTableTitle">
+      <tableList lang class="table" :selection="false" :tableData="tableListData" :tableTitle="sampleTableTitle">
         <!-- <template #a="scope">
           <span>{{ $t(scope.row.a) }}</span>
         </template> -->

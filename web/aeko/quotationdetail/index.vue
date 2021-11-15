@@ -6,11 +6,10 @@
         <iButton v-permission.auto="AEKO_QUOTATION_DETAIL_BUTTON_TIJIAO|提交" v-if="!disabled && !editDisabled"
                  :loading="submitLoading" @click="handleSubmit">{{ language("TIJIAO", "提交") }}
         </iButton>
-        <logButton class="margin-left20" @click="log" v-permission.auto="AEKO_QUOTATION_DETAIL_BUTTON_RIZHI|日志"/>
+        <!-- <logButton class="margin-left20" @click="log" v-permission.auto="AEKO_QUOTATION_DETAIL_BUTTON_RIZHI|日志"/> -->
         <span class="margin-left20">
 					<icon symbol name="icondatabaseweixuanzhong" class="font18"/>
 				</span>
-        <iLog :show.sync="showDialog" :bizId="bizId"></iLog>
       </div>
     </div>
 
@@ -182,7 +181,7 @@ export default {
       disabled: false,
       aprice: 0,
       loading: false,
-      showDialog:false
+      // showDialog:false
     }
   },
   created() {
@@ -209,9 +208,9 @@ export default {
     floatFixNum,
     // 日志
     log() {
-      this.bizId = +this.$route.query.requirementAekoId
-      if(this.bizId)
-      this.showDialog = true
+      // this.bizId = +this.$route.query.requirementAekoId
+      // if(this.bizId)
+      // this.showDialog = true
     },
     tabLeaveBefore(active) {
       // if (this.saveStatus) {
@@ -361,9 +360,9 @@ export default {
 
       const component = this.$refs[this.currentTab][0]
       if (typeof component.save === "function") {
-        const res = await component.save()
-
-        if (res.code != 200) {
+        const res = await component.save().catch(()=>{ this.submitLoading = false })
+        if(!res) return
+        if (res?.code != 200) {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
           this.submitLoading = false
           return
@@ -388,9 +387,12 @@ export default {
     },
 
     updateApriceChange(apriceChange) {
+      // A价变动为空时，不显示新A价
       this.$set(this.tableListData[0], "apriceChange", apriceChange)
-
-      const aprice = math.add(math.bignumber(this.tableListData[0].originalAPrice || 0), math.bignumber(apriceChange || 0)).toFixed(2)
+      let aprice = null
+      if(apriceChange||apriceChange===0){
+        aprice = math.add(math.bignumber(this.tableListData[0].originalAPrice || 0), math.bignumber(apriceChange || 0)).toFixed(2)
+      }
       this.$set(this.tableListData[0], "aprice", aprice)
       this.aprice = aprice
     }
