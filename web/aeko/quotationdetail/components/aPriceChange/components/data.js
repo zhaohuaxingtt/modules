@@ -1,7 +1,7 @@
 /*
  * @Author: YoHo
  * @Date: 2021-10-25 16:28:45
- * @LastEditTime: 2021-11-15 17:27:05
+ * @LastEditTime: 2021-11-15 17:39:15
  * @LastEditors: YoHo
  * @Description: 
  */
@@ -33,7 +33,7 @@ export const manageCostTableTitle = [
 
 export const otherCostTableTitle = [
   { props: "index", name: "#", width: "60" },
-  { props: "itemTypeNameByLang", key: "QITAFEIYONG", name: "其他费用", width: "170" },
+  { props: "itemTypeNameByLang", key: "QITAFEIYONG",  name: "其他费用", width: "170" },
   { props: "shareTotal", key: "JINE", name: "金额", width: "120" },
   { props: "shareQuantity", renderHeader(h) { return h('span', { domProps: { innerHTML: `${ this.language('FENTANSHULIANG', '分摊数量') }(1..n)` }}) }, width: "120" },
   { props: "shareAmount", renderHeader(h) { return h('span', { domProps: { innerHTML: `${ this.language('FENTANJINE', '分摊金额') }(RMB/Pc.)` }}) } },
