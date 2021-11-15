@@ -70,7 +70,7 @@
 					</el-table-column>
 					<el-table-column min-width="6%"   :label="language('XIAOJI', '小计')" align="center" prop="originTotalPrice">
 						<template slot-scope="scope">
-							{{ floatFixNum(scope.row.originTotalPrice) }}
+							{{ floatFixNum(scope.row.originTotalPrice) | thousandsFilter }}
 						</template>
 					</el-table-column>
 				</el-table-column>
@@ -101,7 +101,7 @@
 					</el-table-column>
 					<el-table-column min-width="6%" :label="language('XIAOJI', '小计')" align="center" prop="newTotalPrice">
 						<template slot-scope="scope">
-							{{ floatFixNum(scope.row.newTotalPrice) }}
+							{{ floatFixNum(scope.row.newTotalPrice) | thousandsFilter }}
 						</template>
 					</el-table-column>
 				</el-table-column>
@@ -113,7 +113,7 @@
 				<template #append>
 					<div class="summary">
 						<span>TOTAL</span>
-						<span>RMB {{ floatFixNum(total) }}</span>
+						<span>RMB {{ floatFixNum(total) | thousandsFilter }}</span>
 					</div>
 				</template>
 			</el-table>
@@ -161,7 +161,7 @@ export default {
 			saveLoading: false,
 			tableListData: [],
 			multipleSelection: [],
-      total: null,
+      total: "0.0000",
 			validateKeys: [
 				"typeName",
 				"newContent",
@@ -202,12 +202,11 @@ export default {
 					const data = res.data ? res.data : {}
 					this.isChange = data.isChange
 					this.tableListData = Array.isArray(data.priceList) ? data.priceList : []
-					if(this.tableListData.length){
-						this.total = this.tableListData.reduce((acc, cur) => {
-							this.$set(cur, "changeValue", math.subtract(math.bignumber(cur.newTotalPrice || 0), math.bignumber(cur.originTotalPrice || 0)).toFixed(4))
-							return math.add(math.bignumber(math.bignumber(acc || 0)), math.bignumber(cur.changeValue || 0)).toFixed(4)
-						}, 0)
-					}
+
+					this.total = this.tableListData.reduce((acc, cur) => {
+						this.$set(cur, "changeValue", math.subtract(math.bignumber(cur.newTotalPrice || 0), math.bignumber(cur.originTotalPrice || 0)).toFixed(4))
+						return math.add(math.bignumber(math.bignumber(acc || 0)), math.bignumber(cur.changeValue || 0)).toFixed(4)
+					}, 0)
 				} else {
 					iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
 				}
@@ -266,10 +265,10 @@ export default {
 		handleAdd() {
 			this.tableListData.push({
 				originPartNum: this.partInfo.originalPartNum,
-        originTotalPrice: null,
+        originTotalPrice: "0.0000",
 				newPartNum: this.partInfo.partNum,
-        newTotalPrice: null,
-        changeValue: null,
+        newTotalPrice: "0.0000",
+        changeValue: "0.0000",
       })
 		},
 		async handleDelete() {
@@ -290,11 +289,7 @@ export default {
       this.computeOriginTotalPrice(value, key, row)
     },
     computeOriginTotalPrice(originValue, originKey, row) {
-			if((row.originUnitPrice||row.originUnitPrice===0)&&(row.originUseage||row.originUseage===0)){
-				this.$set(row, "originTotalPrice", math.multiply(math.bignumber(row.originUnitPrice), math.bignumber(row.originUseage)).toFixed(4))
-			}else{
-				this.$set(row, "originTotalPrice", null)
-			}
+      this.$set(row, "originTotalPrice", math.multiply(math.bignumber(row.originUnitPrice || 0), math.bignumber(row.originUseage || 0)).toFixed(4))
 
       this.computeChangeValue(originValue, originKey, row)
     },
@@ -305,31 +300,22 @@ export default {
       this.computeNewTotalPrice(value, key, row)
     },
     computeNewTotalPrice(originValue, originKey, row) {
-			if((row.newUnitPrice||row.newUnitPrice===0)&&(row.newUseage||row.newUseage===0)){
-				this.$set(row, "newTotalPrice", math.multiply(math.bignumber(row.newUnitPrice), math.bignumber(row.newUseage)).toFixed(4))
-			}else{
-				this.$set(row, "newTotalPrice", null)
-			}
+      this.$set(row, "newTotalPrice", math.multiply(math.bignumber(row.newUnitPrice || 0), math.bignumber(row.newUseage || 0)).toFixed(4))
 
       this.computeChangeValue(originValue, originKey, row)
     },
     computeChangeValue(originValue, originKey, row) {
-			if(row.newTotalPrice&&row.originTotalPrice){
-        this.$set(row, "changeValue", math.subtract(math.bignumber(row.newTotalPrice), math.bignumber(row.originTotalPrice)).toFixed(4))
+      if (row.newUnitPrice && row.newUseage) {
+        this.$set(row, "changeValue", math.subtract(math.bignumber(row.newTotalPrice || 0), math.bignumber(row.originTotalPrice || 0)).toFixed(4))
       } else {
-        this.$set(row, "changeValue", null)
+        this.$set(row, "changeValue", "0.0000")
       }
 
       this.computeTotal(originValue, originKey)
     },
     computeTotal(originValue, originKey) {
-      this.total = this.tableListData.reduce((acc, cur) =>{ 
-				if(cur.changeValue){
-					return math.add(math.bignumber(math.bignumber(acc || 0)), math.bignumber(cur.changeValue)).toFixed(4)
-				}else{
-					return acc
-				}
-			}, null)
+      this.total = this.tableListData.reduce((acc, cur) => math.add(math.bignumber(math.bignumber(acc || 0)), math.bignumber(cur.changeValue || 0)).toFixed(4), 0)
+
 			this.$emit("updateTotal", this.total)
     }
 	}

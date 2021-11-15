@@ -15,16 +15,7 @@
           <template #itemTypeNameByLang="scope">
             <span>{{ typeof scope.row.itemTypeNameByLang === "function" ? scope.row.itemTypeNameByLang() : scope.row.itemTypeName }}</span>
           </template>
-          <template #shareTotal="scope">
-            <span>{{scope.row.shareTotal | thousandsFilter}}</span>
-          </template>
-          <template #shareQuantity="scope">
-            <span>{{scope.row.shareQuantity | thousandsFilter}}</span>
-          </template>
-          <template #shareAmount="scope">
-            <span>{{scope.row.shareAmount | thousandsFilter}}</span>
-          </template>
-          <template #changeAmount="scope">{{ floatFixNum(scope.row.changeAmount) | thousandsFilter }}</template>
+          <template #changeAmount="scope">{{ floatFixNum(scope.row.changeAmount) }}</template>
         </tableList>
       </div>
     </div>
@@ -38,11 +29,9 @@ import { iButton } from "rise"
 import tableList from "rise/web/quotationdetail/components/tableList"
 import { otherCostTableTitle as tableTitle } from "../data"
 import { floatFixNum } from "../../../data"
-import filters from "@/utils/filters"
 
 export default {
   components: { iButton, tableList },
-  mixins: [ filters ],
   model: {
     prop: "tableListData",
     event: "change"
