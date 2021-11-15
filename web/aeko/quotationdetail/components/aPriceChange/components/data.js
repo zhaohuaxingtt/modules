@@ -1,3 +1,10 @@
+/*
+ * @Author: YoHo
+ * @Date: 2021-10-25 16:28:45
+ * @LastEditTime: 2021-11-15 17:27:05
+ * @LastEditors: YoHo
+ * @Description: 
+ */
 export const cbdSummaryTableTitle = [
   { props: "materialChange", seq: "2.1", key: "YUANCAILIAOSANJIANCHENGBENBIANDONG", name: "原材料/散件成本变动" },
   { props: "makeCostChange", seq: "2.2", key: "ZHIZAOCHENGBENBIANDONG", name: "制造成本变动" }, 
@@ -26,9 +33,9 @@ export const manageCostTableTitle = [
 
 export const otherCostTableTitle = [
   { props: "index", name: "#", width: "60" },
-  { props: "itemTypeNameByLang", key: "QITAFEIYONG", name: "其他费用", width: "190" },
-  { props: "shareTotal", key: "JINE", name: "金额", width: "110" },
-  { props: "shareQuantity", renderHeader(h) { return h('span', { domProps: { innerHTML: `${ this.language('FENTANSHULIANG', '分摊数量') }(1..n)` }}) }, width: "110" },
+  { props: "itemTypeNameByLang", key: "QITAFEIYONG", name: "其他费用", width: "170" },
+  { props: "shareTotal", key: "JINE", name: "金额", width: "120" },
+  { props: "shareQuantity", renderHeader(h) { return h('span', { domProps: { innerHTML: `${ this.language('FENTANSHULIANG', '分摊数量') }(1..n)` }}) }, width: "120" },
   { props: "shareAmount", renderHeader(h) { return h('span', { domProps: { innerHTML: `${ this.language('FENTANJINE', '分摊金额') }(RMB/Pc.)` }}) } },
 ]
 

@@ -1,7 +1,7 @@
 <!--
  * @Author: haojiang
  * @Date: 2021-02-24 09:42:07
- * @LastEditTime: 2021-11-11 15:01:01
+ * @LastEditTime: 2021-11-12 10:07:54
  * @LastEditors: Hao,Jiang
  * @Description: table组件
 -->
@@ -35,7 +35,7 @@
 
     <template v-for="(items,index) in tableTitle">
       <!----------------------需要高亮的列并且带有打开详情事件------------------------>
-      <el-table-column :key="index" align='center' :width="items.width" :min-width="items.minWidth ? items.minWidth.toString():''" :show-overflow-tooltip='items.tooltip' v-if='items.props == activeItems' :prop="items.props" :label="lang ? language(items.key, items.name) : $t(items.key)">
+      <el-table-column :key="index" :align="items.align || 'center'" :header-align="items.headerAlign || 'center'" :width="items.width" :min-width="items.minWidth ? items.minWidth.toString():''" :show-overflow-tooltip='items.tooltip' v-if='items.props == activeItems' :prop="items.props" :label="lang ? language(items.key, items.name) : $t(items.key)">
         <!-- slot header -->
         <template slot="header">
           <div class="slotHeader" :class="{headerRequiredLeft: items._headerRequiredLeft, headerRequiredRight:items._headerRequiredRight }">
@@ -56,7 +56,8 @@
       <!----------------------普通表格展示---------------------------------------->
       <el-table-column
         v-else
-        align='center'
+        :align="items.align || 'center'" 
+        :header-align="items.headerAlign || 'center'"
         :key="index"
         :width="items.width"
         :min-width="items.minWidth ? items.minWidth.toString():''"
@@ -309,7 +310,7 @@ export default{
     }
   }
   .slotHeader {
-    text-align: center;
+    // text-align: center;
     &:after, &:before {
       // display: inline-block;
       content: '*';

@@ -1,8 +1,8 @@
 <!--
  * @Author: ldh
  * @Date: 2021-04-23 00:21:17
- * @LastEditors: YoHo
- * @LastEditTime: 2021-11-08 19:56:25
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-11-15 11:07:45
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\developmentCost.vue
 -->
@@ -44,6 +44,10 @@
           <template #quantity="scope">
             <iInput v-if="!disabled&&!editDisabled" v-model="scope.row.quantity" @input="handleInputByQuantity($event, scope.row)"/>
             <span v-else>{{ scope.row.quantity | thousandsFilter }}</span>
+          </template>
+          <!-- 总金额 -->
+          <template #total="scope">
+            <span>{{scope.row.total | thousandsFilter}}</span>
           </template>
           <template #isShared="scope">
             <iSelect v-if="!disabled&&!editDisabled" v-model="scope.row.isShared" @change="updateTotal">
