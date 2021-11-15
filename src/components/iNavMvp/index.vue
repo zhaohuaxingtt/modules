@@ -1,7 +1,7 @@
 <!--
 * @author:shujie
 * @Date: 2021-2-25 16:13:25
- * @LastEditors: YoHo
+ * @LastEditors:  
 * @Description: mvp顶部导航栏
  -->
 <template>
@@ -203,11 +203,12 @@
 				position: relative;
 				right: -10px;
 				top: -12px;
-
+				
 				::v-deep .el-badge__content {
 					padding: 0 4px;
 					height: 18px;
 					line-height: 18px;
+					background: #1660F1;
 				}
 			}
 		}
