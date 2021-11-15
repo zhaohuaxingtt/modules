@@ -6,7 +6,7 @@
         <iButton v-permission.auto="AEKO_QUOTATION_DETAIL_BUTTON_TIJIAO|提交" v-if="!disabled && !editDisabled"
                  :loading="submitLoading" @click="handleSubmit">{{ language("TIJIAO", "提交") }}
         </iButton>
-        <logButton class="margin-left20" @click="log" v-permission.auto="AEKO_QUOTATION_DETAIL_BUTTON_RIZHI|日志"/>
+        <!-- <logButton class="margin-left20" @click="log" v-permission.auto="AEKO_QUOTATION_DETAIL_BUTTON_RIZHI|日志"/> -->
         <span class="margin-left20">
 					<icon symbol name="icondatabaseweixuanzhong" class="font18"/>
 				</span>
@@ -387,9 +387,12 @@ export default {
     },
 
     updateApriceChange(apriceChange) {
+      // A价变动为空时，不显示新A价
       this.$set(this.tableListData[0], "apriceChange", apriceChange)
-
-      const aprice = math.add(math.bignumber(this.tableListData[0].originalAPrice || 0), math.bignumber(apriceChange || 0)).toFixed(2)
+      let aprice = null
+      if(apriceChange||apriceChange===0){
+        aprice = math.add(math.bignumber(this.tableListData[0].originalAPrice || 0), math.bignumber(apriceChange || 0)).toFixed(2)
+      }
       this.$set(this.tableListData[0], "aprice", aprice)
       this.aprice = aprice
     }
