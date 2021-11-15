@@ -141,26 +141,26 @@ export default {
       moduleMap: {},
       rawMaterialsTableData: [],
       rawMaterialsSumData: {
-        originMaterialCostSum: null,
-        originMaterialCostSumByNotSvwAssignPriceParts: null,
-        newMaterialCostSum: null,
-        newMaterialCostSumByNotSvwAssignPriceParts: null
+        originMaterialCostSum: 0,
+        originMaterialCostSumByNotSvwAssignPriceParts: 0,
+        newMaterialCostSum: 0,
+        newMaterialCostSumByNotSvwAssignPriceParts: 0
       },
       manufacturingCostTableData: [],
       manufacturingCostSumData: {
-        originLaborCostSum: null,
-        originDeviceCostSum: null,
-        newLaborCostSum: null,
-        newDeviceCostSum: null
+        originLaborCostSum: 0,
+        originDeviceCostSum: 0,
+        newLaborCostSum: 0,
+        newDeviceCostSum: 0
       },
       scrapCostTableData: [],
-      discardCostChange: null,
+      discardCostChange: 0,
       manageTableData: [],
-      manageFeeChange: null,
+      manageFeeChange: 0,
       otherCostTableData: [],
-      otherFee: null,
+      otherFee: 0,
       profitTableData: [],
-      profitChange: null,
+      profitChange: 0,
       materialTypeOptions: [],
       responseData: {},
       saveChangeLoading: false,
@@ -192,12 +192,12 @@ export default {
     },
     cbdSummaryTableData() {
       return [{
-        materialChange: this.moduleMap.material ? this.rawMaterialsSumData.materialChange : null,
-        makeCostChange: this.moduleMap.production ? this.manufacturingCostSumData.makeCostChange : null,
-        discardCostChange: this.moduleMap.scrap ? this.discardCostChange : null,
-        manageFeeChange: this.moduleMap.manage ? this.manageFeeChange : null,
-        otherFee: this.otherFee || null,
-        profitChange: this.moduleMap.profit ? this.profitChange : null
+        materialChange: this.moduleMap.material ? (this.rawMaterialsSumData.materialChange || "0.00") : "0.00",
+        makeCostChange: this.moduleMap.production ? (this.manufacturingCostSumData.makeCostChange || "0.00") : "0.00",
+        discardCostChange: this.moduleMap.scrap ? (this.discardCostChange || "0.00") : "0.00",
+        manageFeeChange: this.moduleMap.manage ? (this.manageFeeChange || "0.00") : "0.00",
+        otherFee: this.otherFee || "0.00",
+        profitChange: this.moduleMap.profit ? (this.profitChange || "0.00") : "0.00"
       }]
     },
   },
@@ -279,7 +279,7 @@ export default {
           this.responseData = {}
           this.responseData.cbdSummarySelected = res.data.cbdSummarySelected
 
-          this.apriceChange = res.data.apriceChange
+          this.apriceChange = res.data.apriceChange || "0"
           this.apriceChangeDisabled = !+this.apriceChange
           this.sourceApriceChange = this.apriceChange
           this.setCbdSummarySelected(res.data.cbdSummarySelected)
@@ -363,9 +363,9 @@ export default {
             index: "S1",
             typeName: "discardCost",
             typeNameByLang: () => this.language("ZHENGTIBAOFEICHENGBENBIANDONG", "整体报废成本变动"),
-            originRatio: data[0].originRatio,
-            ratio: data[0].ratio,
-            changeAmount: data[0].changeAmount,
+            originRatio: data[0].originRatio ?? "0.00",
+            ratio: data[0].ratio ?? "0.00",
+            changeAmount: data[0].changeAmount ?? "0.00",
             originScrapId: data[0].originScrapId
           }
         )
@@ -375,9 +375,9 @@ export default {
             index: "S1",
             typeName: "discardCost",
             typeNameByLang: () => this.language("ZHENGTIBAOFEICHENGBENBIANDONG", "整体报废成本变动"),
-            originRatio: null,
-            ratio: null,
-            changeAmount: null
+            originRatio: "0.00",
+            ratio: "0.00",
+            changeAmount: "0.00"
           }
         )
       }
@@ -409,17 +409,17 @@ export default {
             index: "O1",
             typeName: "原材料与散件（不含SVW指定散件）管理费",
             typeNameByLang: () => this.language("YUANCAILIAOYUSANJIANBUHANSVWZHIDINGSANJIANGUANLIFEI", "原材料与散件(不含SVW指定散件)管理费"),
-            originRatio: null,
-            ratio: null,
-            changeAmount: null,
+            originRatio: "0.00",
+            ratio: "0.00",
+            changeAmount: "0.00",
           },
           {
             index: "O2",
             typeName: "制造管理费",
             typeNameByLang: () => this.language("ZHIZAOGUANLIFEI", "制造管理费"),
-            originRatio: null,
-            ratio: null,
-            changeAmount: null,
+            originRatio: "0.00",
+            ratio: "0.00",
+            changeAmount: "0.00",
           }
         )
       }
@@ -470,9 +470,9 @@ export default {
             index: "P1",
             typeName: "profit",
             typeNameByLang: () => this.language("LIRUNBUHANSVWZHIDINGSANJIAN", "利润(不含SVW指定散件)"),
-            originRatio: data[0].originRatio,
-            ratio: data[0].ratio,
-            changeAmount: data[0].changeAmount,
+            originRatio: data[0].originRatio ?? "0.00",
+            ratio: data[0].ratio ?? "0.00",
+            changeAmount: data[0].changeAmount ?? "0.00",
             originProfitId: data[0].originProfitId
           }
         )
@@ -482,9 +482,9 @@ export default {
             index: "P1",
             typeName: "profit",
             typeNameByLang: () => this.language("LIRUNBUHANSVWZHIDINGSANJIAN", "利润(不含SVW指定散件)"),
-            originRatio: null,
-            ratio: null,
-            changeAmount: null
+            originRatio: "0.00",
+            ratio: "0.00",
+            changeAmount: "0.00"
           }
         )
       }
@@ -550,7 +550,7 @@ export default {
         apriceChange:this.apriceChange,
         isChange: this.isChange,
         cbdCanEdit: this.isChange&&false||this.cbdCanEdit,
-        aprice: this.allSummaryData()[0].aprice,
+        aprice: this.allSummaryData()[0].aprice || "0.00",
         quotationId: this.partInfo.quotationId,
         rawMaterialList: this.moduleMap.material ? this.rawMaterialsTableData : undefined,
         makeCostList: this.moduleMap.production ? this.manufacturingCostTableData : undefined,
@@ -629,17 +629,13 @@ export default {
 
       if (!this.isChange && this.cbdCanEdit) {
         if (this.$refs.changeSummary.tableListData.length) {
-          if(cbdTotal!=null){
-            this.apriceChange = +this.$refs.changeSummary.total > +cbdTotal ? cbdTotal : this.$refs.changeSummary.total
-          }else{
-            this.apriceChange = +this.$refs.changeSummary.total
-          }
+          this.apriceChange = +this.$refs.changeSummary.total > +cbdTotal ?cbdTotal : this.$refs.changeSummary.total
         } else {
           this.apriceChange = cbdTotal
         }
       }
 
-      if (this.isChange && !this.cbdCanEdit) this.apriceChange = null
+      if (this.isChange && !this.cbdCanEdit) this.apriceChange = "0"
       this.apriceChange = this.floatNum(this.apriceChange)
       this.apriceChangeDisabled = !+this.apriceChange
       this.$emit("updateApriceChange", this.apriceChange)
@@ -654,7 +650,7 @@ export default {
           this.apriceChange = +this.$refs.changeSummary.total> +this.apriceChange ? +this.apriceChange : +this.$refs.changeSummary.total
         }else{
           // 汇总表无数据
-          this.apriceChange = null
+          this.apriceChange = "0"
           this.apriceChangeDisabled = true
         }
       } else if (!this.isChange && this.cbdCanEdit) {
@@ -665,15 +661,10 @@ export default {
           // 比较后的小值再和变动值-汇总表比较，取值小的
           minVal = +this.$refs.changeSummary.total > +minVal ? +minVal : +this.$refs.changeSummary.total
         }
-        if(this.cbdSummaryTableData[0].apriceChange!=null||this.$refs.changeSummary.total!=null){
-          this.apriceChange = minVal
-        }else{
-          this.apriceChange = null
-          this.apriceChangeDisabled = true
-        }
+        this.apriceChange = minVal
       }else if (this.isChange && !this.cbdCanEdit){
         // 类型3: 无变动值，cbd无效, A价指定为0
-        this.apriceChange = null
+        this.apriceChange = "0"
         this.apriceChangeDisabled = true
       }
       this.apriceChange = this.floatNum(this.apriceChange)
@@ -736,7 +727,7 @@ export default {
         apriceChange:this.apriceChange,
         isChange:!this.isChange,
         cbdCanEdit: this.cbdCanEdit,
-        aprice: this.allSummaryData()[0].aprice,
+        aprice: this.allSummaryData()[0].aprice || "0.00",
         quotationId: this.partInfo.quotationId,
         rawMaterialList: this.moduleMap.material ? this.rawMaterialsTableData : undefined,
         makeCostList: this.moduleMap.production ? this.manufacturingCostTableData : undefined,
