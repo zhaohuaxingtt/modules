@@ -58,7 +58,7 @@ export const getEnumValue = function(fullKey) {
     }, enums)
 
     return typeof result === "object" ? "" : result
-  } catch {
+  } catch(error) {
     return ""
   }
 }
