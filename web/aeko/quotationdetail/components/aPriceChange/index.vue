@@ -659,8 +659,12 @@ export default {
         }
       } else if (!this.isChange && this.cbdCanEdit) {
         // 类型2: 有变动值，cbd有效
+        let minVal = this.apriceChange
+        // 如果变动值-cbd有值
         // A价和变动值-cbd做比较，取值小的
-        let minVal = +this.cbdSummaryTableData[0].apriceChange>+this.apriceChange?+this.apriceChange:+this.cbdSummaryTableData[0].apriceChange
+        if(this.cbdSummaryTableData[0].apriceChange||this.cbdSummaryTableData[0].apriceChange===0){
+          minVal = +this.cbdSummaryTableData[0].apriceChange>+this.apriceChange?+this.apriceChange:+this.cbdSummaryTableData[0].apriceChange
+        }
         if (this.$refs.changeSummary.tableListData.length) {
           // 比较后的小值再和变动值-汇总表比较，取值小的
           minVal = +this.$refs.changeSummary.total > +minVal ? +minVal : +this.$refs.changeSummary.total
