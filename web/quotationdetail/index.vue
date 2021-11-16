@@ -59,6 +59,18 @@
       <iFormGroup :key="$index" :row="4" inline>
         <iFormItem v-for="item in partInfoItems.slice(0, partInfoItems.length - 1)" :key="item.props" :label="language(item.key, item.name)">
           <iText v-if="item.props === 'submitDate' || item.props === 'currentRoundsEndTime'">{{ partInfo[item.props] | dateFilter }}</iText>
+          <el-popover
+            v-else-if="item.props === 'referenceRate'"
+            placement="top"
+            width="300"
+            trigger="hover">
+            <template>
+              <div>
+                <p v-for="exchangeRate in exchangeRates" :key="exchangeRate.currencyCode">{{ exchangeRateProcess(exchangeRate) }}</p>
+              </div>
+            </template>
+            <iText slot="reference">{{ exchangeRates.map(item => `${ item.currencyCode }:${ item.originCurrencyCode } = ${ item.exchangeRate }`).join(", ") }}</iText>
+          </el-popover>
           <iText v-else>{{ partInfo[item.props] }}</iText>
         </iFormItem>
       </iFormGroup>
@@ -108,7 +120,7 @@ import sampleDeliveryProgress from './components/sampleDeliveryProgress'
 import remarksAndAttachment from './components/remarksAndAttachment'
 import startProductionDateDialog from "./components/startProductionDateDialog"
 
-import { getPartsQuotations, getStates, submitPartsQuotation, quoteBatchPrice, cancelQuoteBatchPrice, quotations,contrastBidding,getNoticeStatus } from "@/api/rfqManageMent/quotationdetail"
+import { getPartsQuotations, getStates, submitPartsQuotation, quoteBatchPrice, cancelQuoteBatchPrice, quotations,contrastBidding,getNoticeStatus, searchQuotationExchange } from "@/api/rfqManageMent/quotationdetail"
 import { cloneDeep } from "lodash"
 import {partProjTypes} from '@/config'
 import {roundsType} from 'rise/web/config'
@@ -196,7 +208,8 @@ export default {
         tableTitle:[],
         tabelData:[]
       },
-      hidePackAndShipSave: false
+      hidePackAndShipSave: false,
+      exchangeRates: []
     }
   },
   provide: function () {
@@ -421,6 +434,7 @@ export default {
           this.partInfo = cloneDeep(currentPart)
 
           this.getStates().then(()=>{r()})
+          this.searchQuotationExchange()
 
           if (type != "save") {
             this.$nextTick(() => {
@@ -679,6 +693,24 @@ export default {
         }
       })
       .finally(() => this.cancelQuoteBatchPriceLoading = false)
+    },
+    // 获取汇率显示列表
+    searchQuotationExchange() {
+      searchQuotationExchange({
+        quotationId: this.partInfo.quotationId
+      })
+      .then(res => {
+        if (res.code == 200) {
+          this.exchangeRates = Array.isArray(res.data) ? res.data : []
+          console.log()
+        } else {
+          iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+        }
+      })
+    },
+    // 汇率显示处理
+    exchangeRateProcess(row) {
+      return `100${ row.currencyCode } = ${ math.multiply(math.bignumber(row.exchangeRate || 0), 100).toString() }${ row.originCurrencyCode }（${ row.exchangeRate }）`
     }
   }
 };
