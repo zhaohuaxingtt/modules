@@ -1,82 +1,83 @@
 <template>
-  <div class="router-link">
-    <router-link
-      v-if="item.url.indexOf('http') === -1"
-      class="side-menu-link"
-      :class="{ active: isActive, disabled: !item.url }"
-      :to="{ path: item.url }"
-      :target="item.target"
-      @click.native="handleRouterClick"
-    >
-      <icon
-        symbol
-        class="icon margin-right20 leftIconActive"
-        :name="
-          isActive
-            ? 'iconxunyuandingdianxuanzhong'
-            : 'iconxunyuandingdianweixuanzhong'
-        "
-      />
-      <span>{{ item.title }}</span>
-      <icon
-        symbol
-        class="icon floatright margin-top32"
-        v-if="!isActive"
-        name="iconmuluweixuanzhongshijiantou"
-      />
-    </router-link>
-    <a
-      v-else
-      :href="
-        item.url || (item.menuList && item.menuList.length && item.menuList[0])
-      "
-      :class="{ active: isActive, disabled: !item.url }"
-      :target="item.target"
-      class="side-menu-link"
-      @click.stop="handleRouterClick"
-    >
-      <icon
-        symbol
-        class="icon margin-right20 leftIconActive"
-        :name="
-          isActive
-            ? 'iconxunyuandingdianxuanzhong'
-            : 'iconxunyuandingdianweixuanzhong'
-        "
-      />
-      <span>{{ item.title }}</span>
-      <icon
-        symbol
-        class="icon floatright margin-top32"
-        v-if="!isActive"
-        name="iconmuluweixuanzhongshijiantou"
-      />
-    </a>
-  </div>
+	<div class="router-link">
+		<router-link
+			v-if="item.url.indexOf('http') === -1"
+			class="side-menu-link"
+			:class="{ active: isActive, disabled: !item.url }"
+			:to="{ path: item.url }"
+			:target="item.target"
+			@click.native="handleRouterClick"
+		>
+			<icon
+				symbol
+				class="icon margin-right20 leftIconActive"
+				:name="
+					isActive
+						? 'iconxunyuandingdianxuanzhong'
+						: 'iconxunyuandingdianweixuanzhong'
+				"
+			/>
+			<span>{{ item.title }}</span>
+			<icon
+				symbol
+				class="icon floatright margin-top32"
+				v-if="!isActive"
+				name="iconmuluweixuanzhongshijiantou"
+			/>
+		</router-link>
+		<a
+			v-else
+			:href="
+				item.url || (item.menuList && item.menuList.length && item.menuList[0])
+			"
+			:class="{ active: isActive, disabled: !item.url }"
+			:target="item.target"
+			class="side-menu-link"
+			@click.stop="handleRouterClick"
+		>
+			<icon
+				symbol
+				class="icon margin-right20 leftIconActive"
+				:name="
+					isActive
+						? 'iconxunyuandingdianxuanzhong'
+						: 'iconxunyuandingdianweixuanzhong'
+				"
+			/>
+			<span>{{ item.title }}</span>
+			<icon
+				symbol
+				class="icon floatright margin-top32"
+				v-if="!isActive"
+				name="iconmuluweixuanzhongshijiantou"
+			/>
+		</a>
+	</div>
 </template>
 
 <script>
 import { Icon } from 'rise'
 export default {
-  name: 'ItemLink',
-  components: { Icon },
-  props: {
-    item: {
-      type: Object,
-      default: function() {
-        return {}
-      }
-    },
-    menuMap: {
-      type: Object,
-      default: function() {
-        return []
-      }
-    }
-  },
-  computed: {
-    isActive() {
-      const list = this.$route.matched
+	name: 'ItemLink',
+	components: { Icon },
+	props: {
+		item: {
+			type: Object,
+			default: function() {
+				return {}
+			},
+		},
+		menuMap: {
+			type: Object,
+			default: function() {
+				return []
+			},
+		},
+	},
+	computed: {
+		isActive() {
+			return false
+			/* const list = this.$route.matched
       const url =
         this.item.url?.match(/((?<=#).*(?=\?))|((?<=#).*)/g) &&
         this.item.url?.match(/((?<=#).*(?=\?))|((?<=#).*)/g)[0]
@@ -91,53 +92,53 @@ export default {
       return (
         this.item.url.includes(this.$route.path) ||
         this.item.url.includes(this.$route.redirectedFrom)
-      )
-    }
-  },
-  methods: {
-    handleRouterClick() {
-      this.$emit('hide-side-menu')
-    }
-  }
+      ) */
+		},
+	},
+	methods: {
+		handleRouterClick() {
+			this.$emit('hide-side-menu')
+		},
+	},
 }
 </script>
 
 <style lang="scss" scoped>
 .side-menu-link {
-  display: block;
-  width: 100%;
-  height: 84px;
-  padding-left: 40px;
-  line-height: 84px;
-  padding-right: 30px;
-  cursor: pointer;
+	display: block;
+	width: 100%;
+	height: 84px;
+	padding-left: 40px;
+	line-height: 84px;
+	padding-right: 30px;
+	cursor: pointer;
 
-  span {
-    color: #5f6f8f;
-    font-size: 20px;
-  }
-  .icon {
-    font-size: 20px;
-  }
-  &:hover {
-    span {
-      color: #1660f1;
-    }
-  }
-  &.active {
-    background: #1660f1;
-    span {
-      color: white;
-    }
-    &:hover {
-      span {
-        color: white;
-      }
-    }
-  }
-  &.disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-  }
+	span {
+		color: #5f6f8f;
+		font-size: 20px;
+	}
+	.icon {
+		font-size: 20px;
+	}
+	&:hover {
+		span {
+			color: #1660f1;
+		}
+	}
+	&.active {
+		background: #1660f1;
+		span {
+			color: white;
+		}
+		&:hover {
+			span {
+				color: white;
+			}
+		}
+	}
+	&.disabled {
+		cursor: not-allowed;
+		opacity: 0.5;
+	}
 }
 </style>
