@@ -14,7 +14,7 @@
         </div>
       </div>
     </iCard>
-    <changeSummary ref="changeSummary" class="margin-top20" :partInfo="partInfo" :moduleOptions="allModuleOptions" :disabled="disabled" :editDisabled="editDisabled" @updateTotal="updateTotal" @updateIsChange="updateIsChange" @getBasicInfo="getBasicInfo"/>
+    <changeSummary v-permission.auto="AEKO_QUOTATION_CBD_TABLE_BIANDONGZHIHUIZONGBIAO|变动值汇总表" ref="changeSummary" class="margin-top20" :partInfo="partInfo" :moduleOptions="allModuleOptions" :disabled="disabled" :editDisabled="editDisabled" @updateTotal="updateTotal" @updateIsChange="updateIsChange" @getBasicInfo="getBasicInfo"/>
     <iCard v-permission.auto="AEKO_QUOTATION_CBD_TAB_BIANDONGZHICBD|变动值CBD" class="margin-top20">
       <template #header>
         <div class="title">
@@ -23,6 +23,7 @@
         </div>
         <div class="header-control" >
           <el-switch
+            v-permission.auto="AEKO_QUOTATION_CBD_SWITCH_YOUXIAO|变动值CBD有效切换"
             class="switch"
             :disabled="cbdDisabled || disabled || editDisabled"
             :class="{ switchSpace: !cbdDisabled }"
@@ -40,6 +41,7 @@
         <div class="aPriceChangeModule" v-permission.auto="AEKO_QUOTATION_CBD_SELECT_CBDXUTIAOZHENGBUFEN|CBD需调整部分">
           <span class="label">{{ language("CBDXUTIAOZHENGBUFEN", "CBD需调整部分") }}:</span>
           <iSelect 
+            v-permission.auto="AEKO_QUOTATION_CBD_SELECT_CBDXUYAOTIAOZHENGBUFEN|CBD需调整部分"
             multiple
             v-model="modules"
             :placeholder="language('QINGXUANZE','请选择')"
@@ -659,8 +661,12 @@ export default {
         }
       } else if (!this.isChange && this.cbdCanEdit) {
         // 类型2: 有变动值，cbd有效
+        let minVal = this.apriceChange
+        // 如果变动值-cbd有值
         // A价和变动值-cbd做比较，取值小的
-        let minVal = +this.cbdSummaryTableData[0].apriceChange>+this.apriceChange?+this.apriceChange:+this.cbdSummaryTableData[0].apriceChange
+        if(this.cbdSummaryTableData[0].apriceChange||this.cbdSummaryTableData[0].apriceChange===0){
+          minVal = +this.cbdSummaryTableData[0].apriceChange>+this.apriceChange?+this.apriceChange:+this.cbdSummaryTableData[0].apriceChange
+        }
         if (this.$refs.changeSummary.tableListData.length) {
           // 比较后的小值再和变动值-汇总表比较，取值小的
           minVal = +this.$refs.changeSummary.total > +minVal ? +minVal : +this.$refs.changeSummary.total
