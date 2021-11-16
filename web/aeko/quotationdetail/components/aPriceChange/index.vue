@@ -639,7 +639,7 @@ export default {
         }
       }
 
-      if (this.isChange && !this.cbdCanEdit) this.apriceChange = null
+      if (this.isChange && !this.cbdCanEdit) this.apriceChange = 0
       this.apriceChange = this.floatNum(this.apriceChange)
       this.apriceChangeDisabled = !+this.apriceChange
       this.$emit("updateApriceChange", this.apriceChange)
@@ -677,7 +677,7 @@ export default {
         }
       }else if (this.isChange && !this.cbdCanEdit){
         // 类型3: 无变动值，cbd无效, A价指定为0
-        this.apriceChange = null
+        this.apriceChange = 0
         this.apriceChangeDisabled = true
       }
       this.apriceChange = this.floatNum(this.apriceChange)
