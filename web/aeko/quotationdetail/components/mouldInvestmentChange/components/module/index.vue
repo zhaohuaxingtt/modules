@@ -9,7 +9,7 @@
         <div class="btn" v-if="!editDisabled">
           <iButton v-if="!disabled" @click="handleAdd">{{ language("TIANJIAHANG", "添加行") }}</iButton>
           <iButton v-if="!disabled" @click="handleDelete">{{ language("SHANCHUHANG", "删除行") }}</iButton>
-          <iButton v-if="!disabled" @click="handleQuote">{{ language("GUANLIANLINGJIAN", "关联零件") }}</iButton>
+          <iButton v-permission.auto="AEKO_QUOTATION_DETAIL_MOULDLE_BUTTON_GUANLIANLINGJIAN|模具投资变动_关联零件" v-if="!disabled" @click="handleQuote">{{ language("GUANLIANLINGJIAN", "关联零件") }}</iButton>
           <iButton v-if="!disabled" :loading="saveLoading" @click="handleSave">{{ language("BAOCUN", "保存") }}</iButton>
         </div>
       </div>

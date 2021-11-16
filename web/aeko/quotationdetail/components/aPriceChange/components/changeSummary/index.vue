@@ -6,7 +6,7 @@
         <span class="tip margin-left12">{{ language("DANWEI", "单位") }}：RMB/Pc.</span>
       </div>
       <div class="header-control" v-if="!editDisabled">
-        <el-checkbox v-model="isChange" class="isChangeCheckbox" :class="{ isChangeCheckboxSpace: !isChange && !disabled }" :disabled="changeSummaryDisabled || disabled" @change="handleChangeByIsChange">{{ language("WUBIANDONGZHI", "无变动值") }}</el-checkbox>
+        <el-checkbox v-permission.auto="AEKO_QUOTATION_CBD_CHANGESUMMARY_BUTTON_WUBIANDONGZHI|无变动值" v-model="isChange" class="isChangeCheckbox" :class="{ isChangeCheckboxSpace: !isChange && !disabled }" :disabled="changeSummaryDisabled || disabled" @change="handleChangeByIsChange">{{ language("WUBIANDONGZHI", "无变动值") }}</el-checkbox>
         <div v-if="!changeSummaryDisabled && !isChange && !disabled" class="btn">
 					<iButton :loading="saveLoading" @click="handleSave">{{ language("BAOCUN", "保存") }}</iButton>
 					<iButton @click="handleAdd">{{ language("TIANJIAHANG", "添加行") }}</iButton>

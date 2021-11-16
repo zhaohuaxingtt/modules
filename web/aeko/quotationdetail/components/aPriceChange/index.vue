@@ -14,7 +14,7 @@
         </div>
       </div>
     </iCard>
-    <changeSummary ref="changeSummary" class="margin-top20" :partInfo="partInfo" :moduleOptions="allModuleOptions" :disabled="disabled" :editDisabled="editDisabled" @updateTotal="updateTotal" @updateIsChange="updateIsChange" @getBasicInfo="getBasicInfo"/>
+    <changeSummary v-permission.auto="AEKO_QUOTATION_CBD_TABLE_BIANDONGZHIHUIZONGBIAO|变动值汇总表" ref="changeSummary" class="margin-top20" :partInfo="partInfo" :moduleOptions="allModuleOptions" :disabled="disabled" :editDisabled="editDisabled" @updateTotal="updateTotal" @updateIsChange="updateIsChange" @getBasicInfo="getBasicInfo"/>
     <iCard v-permission.auto="AEKO_QUOTATION_CBD_TAB_BIANDONGZHICBD|变动值CBD" class="margin-top20">
       <template #header>
         <div class="title">
@@ -23,6 +23,7 @@
         </div>
         <div class="header-control" >
           <el-switch
+            v-permission.auto="AEKO_QUOTATION_CBD_SWITCH_YOUXIAO|变动值CBD有效切换"
             class="switch"
             :disabled="cbdDisabled || disabled || editDisabled"
             :class="{ switchSpace: !cbdDisabled }"
@@ -40,6 +41,7 @@
         <div class="aPriceChangeModule" v-permission.auto="AEKO_QUOTATION_CBD_SELECT_CBDXUTIAOZHENGBUFEN|CBD需调整部分">
           <span class="label">{{ language("CBDXUTIAOZHENGBUFEN", "CBD需调整部分") }}:</span>
           <iSelect 
+            v-permission.auto="AEKO_QUOTATION_CBD_SELECT_CBDXUYAOTIAOZHENGBUFEN|CBD需调整部分"
             multiple
             v-model="modules"
             :placeholder="language('QINGXUANZE','请选择')"
