@@ -179,7 +179,7 @@ export default {
 					this.options = JSON.parse(http.responseText)?.data || []
 				}
 			}
-			http.send()
+			http.send(JSON.stringify({ isAdmin: false }))
 		},
 		getList() {
 			this.loading = true
