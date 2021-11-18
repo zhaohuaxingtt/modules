@@ -27,9 +27,7 @@
 		</router-link>
 		<a
 			v-else
-			:href="
-				item.url || (item.menuList && item.menuList.length && item.menuList[0])
-			"
+			:href="itemUrl"
 			:class="{ active: isActive, disabled: !item.url }"
 			:target="item.target"
 			class="side-menu-link"
@@ -57,6 +55,7 @@
 
 <script>
 import { Icon } from 'rise'
+import { getToken } from '@/utils'
 export default {
 	name: 'ItemLink',
 	components: { Icon },
@@ -93,6 +92,22 @@ export default {
         this.item.url.includes(this.$route.path) ||
         this.item.url.includes(this.$route.redirectedFrom)
       ) */
+		},
+		itemUrl() {
+			if (this.item.url) {
+				if (
+					this.item.url.replace(process.env.VUE_APP_HOST, '') ===
+					'/bkm/login.do'
+				) {
+					return this.item.url + '?userno=' + getToken()
+				}
+				return this.item.url
+			}
+			return (
+				this.item.menuList &&
+				this.item.menuList.length &&
+				this.item.menuList[0].url
+			)
 		},
 	},
 	methods: {
