@@ -277,6 +277,7 @@ export default {
           this.form = res.data
           this.cbdCanEdit = res.data.cbdCanEdit
           this.cbdDisabled = res.data.isChange
+          this.isChange = res.data.isChange
           
           this.responseData = {}
           this.responseData.cbdSummarySelected = res.data.cbdSummarySelected
