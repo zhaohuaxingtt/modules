@@ -374,16 +374,16 @@ export default {
         objectAekoId: this.partInfo.objectAekoId
       })
           .then(res => {
+            this.submitLoading = false
             if (res.code == 200) {
               iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
               this.getBasicInfo()
             } else {
               iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
             }
-
-            this.submitLoading = false
           })
           .catch(() => this.submitLoading = false)
+          .finally(()=> this.submitLoading = false)
     },
 
     updateApriceChange(apriceChange) {
