@@ -1,8 +1,8 @@
 <!--
  * @Author: YoHo
  * @Date: 2021-10-22 19:14:28
- * @LastEditTime: 2021-11-16 14:20:40
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-11-19 12:26:28
+ * @LastEditors: YoHo
  * @Description: 
 -->
 <template>
@@ -41,6 +41,9 @@ export default {
     init() {
       this.$refs.module.getMoulds()
       this.$refs.sourcePartCBD.getMoldCbd()
+    },
+    async save(){
+      return await this.$refs.module.handleSave()
     }
   }
 }

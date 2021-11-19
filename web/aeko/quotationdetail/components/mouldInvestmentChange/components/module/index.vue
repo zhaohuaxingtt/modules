@@ -409,20 +409,8 @@ export default {
 
       this.$set(this.dataGroup, "shareAmount", math.divide(shareTotal, shareQuantity).toFixed(2))
     },
-    handleSave() {
-      if (!this.tableListData.every(item => item.isQuote||(item.bmNum && item.bmSerialNum)? this.quoteValidateKeys.every(key => item[key] || item[key] === 0 ): this.validateKeys.every(key => item[key] || item[key] === 0))) {
-        return this.$message.error(this.language("QINGWEIHUHAOBIANTIANXIANGHOUZAIBAOCUN", "请维护好必填项后，再保存。"))
-      }
-      this.saveLoading = true
-      saveMoulds({
-        moduleFeeDTOList: this.tableListData,
-        moduleOtherFee: {
-          itemType: 0,
-          ...this.dataGroup
-        },
-        quotationId: this.partInfo.quotationId
-      })
-          .then(res => {
+    save(){
+      this.handleSave().then(res => {
             if (res.code == 200) {
               this.$message.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
               // this.getMoulds()
@@ -432,6 +420,20 @@ export default {
             }
           })
           .finally(() => this.saveLoading = false)
+    },
+    async handleSave() {
+      if (!this.tableListData.every(item => item.isQuote||(item.bmNum && item.bmSerialNum)? this.quoteValidateKeys.every(key => item[key] || item[key] === 0 ): this.validateKeys.every(key => item[key] || item[key] === 0))) {
+        throw this.$message.error(this.language("QINGWEIHUHAOBIANTIANXIANGHOUZAIBAOCUN", "请维护好必填项后，再保存。"))
+      }
+      this.saveLoading = true
+      return saveMoulds({
+        moduleFeeDTOList: this.tableListData,
+        moduleOtherFee: {
+          itemType: 0,
+          ...this.dataGroup
+        },
+        quotationId: this.partInfo.quotationId
+      })
     },
     getAssetClassificationVal(val) {
       let mItem = this.assetTypeCodeOptions.find(item => item.value == val)
