@@ -434,6 +434,9 @@ export default {
   ::v-deep .el-table {
     .el-table__body-wrapper {
       min-height: initial !important;
+      .link-underline{
+        text-decoration: none;
+      }
     }
 
     &::before {
