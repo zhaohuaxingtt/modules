@@ -12,7 +12,12 @@
       <pInput v-model="search" :placeholder="$t('search') | capitalizeFilter" />
     </div>
     <div class="right">
-      <i-user-setting :userInfo="userInfo" :menus="menus"></i-user-setting>
+      <i-user-setting
+        :userInfo="userInfo"
+        :menus="menus"
+        :activeMenu="activeMenu"
+        @click-menu="$emit('click-menu')"
+      />
       <div class="language" @click="handleChangeLang">
         <icon
           symbol
@@ -23,46 +28,36 @@
         <icon symbol v-else class="icon" name="iconzhongyingwenzhuanhuanying" />
       </div>
       <iMailTrigger />
-      <!-- <div class="message" @click="showMessage">
-        <el-badge :value="messageCount" :hidden="!messageCount">
-          <icon symbol class="icon" name="iconxiaoxi" />
-        </el-badge>
-      </div> -->
     </div>
-    <!-- 消息列表 -->
-    <!-- <drawer
-      ref="drawer"
-      :visible="drawerVisible"
-      @afterClear="afterClear"
-      @updateMessageCount="getCountInMail"
-    /> -->
     <notify ref="notify" v-if="!drawerVisible" />
   </div>
 </template>
 <script>
 import pInput from './input.vue'
 import { icon } from 'rise'
-import drawer from '../message/drawer'
 import notify from '../message/notify'
 import filters from '@/utils/filters'
 import { getCountInMail } from '@/api/layout/topLayout'
-import { messageSocket } from '@/api/socket'
-import { removeToken, updataComponents } from '@/utils/index.js'
+import { removeToken } from '@/utils/index.js'
 import iMailTrigger from '../mail/trigger.vue'
 import iUserSetting from './userSetting.vue'
-import store from '@/store'
 export default {
   mixins: [filters],
   components: {
     pInput,
     icon,
-    drawer,
     notify,
     iMailTrigger,
     iUserSetting
   },
   props: {
     menus: {
+      type: Array,
+      default: function () {
+        return []
+      }
+    },
+    activeMenu: {
       type: Array,
       default: function () {
         return []
@@ -95,8 +90,6 @@ export default {
   },
   created() {
     this.lang = localStorage.getItem('lang')
-    //this.getCountInMail();
-    // this.getMessageBySocket('1001')
   },
 
   beforeDestroy() {
@@ -109,63 +102,6 @@ export default {
       window.location.href = '/login'
       window.location.reload()
     },
-    /* getMessageBySocket(userId) {
-      messageSocket(userId)
-        .then(({ res, vm }) => {
-          this.socketVm = vm
-          this.isClose = false
-
-          window.addEventListener('beforeunload', () => {
-            vm.close()
-          })
-
-          document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-              this.timer = setTimeout(() => {
-                vm.close()
-                this.isClose = true
-              }, 180000)
-            } else {
-              clearTimeout(this.timer)
-              if (this.isClose) {
-                this.reconnectMessageSocket()
-              }
-            }
-          })
-
-          try {
-            const data = JSON.parse(res.data)
-            const msgTxt = data.msgTxt
-            if (msgTxt) {
-              if (msgTxt.type == '4' || msgTxt.type == '5') {
-                if (this.drawerVisible) {
-                  this.$refs.drawer.unshift(msgTxt)
-                } else {
-                  this.$refs.notify.unshift(msgTxt)
-                }
-
-                if (msgTxt.type == '5') this.messageCount += 1
-              }
-            }
-          } catch (e) {
-            console.log(e)
-          }
-        })
-        .catch(e => {
-          this.reconnectMessageSocket()
-        })
-    },
-    reconnectMessageSocket() {
-      if (!this.isClose) {
-        return
-      }
-
-      clearTimeout(this.reconnectTimer)
-
-      this.reconnectTimer = setTimeout(() => {
-        this.getMessageBySocket('1001')
-      }, 20000)
-    }, */
     handleChangeLang() {
       this.lang = this.lang === 'zh' ? 'en' : 'zh'
       this.$store.commit('SET_LANGUAGE', this.lang)
