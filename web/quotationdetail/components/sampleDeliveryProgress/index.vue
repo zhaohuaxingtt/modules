@@ -125,8 +125,8 @@ export default {
               }
             })
           }else{
-             this.tableDataCache.LC = JSON.parse(JSON.stringify(dateTemplate))
-             this.tableDataCache.SKD = JSON.parse(JSON.stringify(dateTemplate))
+            //  this.tableDataCache.LC = JSON.parse(JSON.stringify(dateTemplate))
+            //  this.tableDataCache.SKD = JSON.parse(JSON.stringify(dateTemplate))
           }
 
           this.tableData = this.tableDataCache[this.priceType]
