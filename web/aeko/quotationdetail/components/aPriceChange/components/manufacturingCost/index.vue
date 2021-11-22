@@ -40,7 +40,8 @@
         </el-table-column>
         <el-table-column align="center" width="132" :render-header="h => h('span', { domProps: { innerHTML: `${ language('SHANGQIDAZHONGZHUANYONGSHEBEIFEI', '上汽大众专用设备费') }<br/>（RMB）` }})">
           <template v-slot="scope">
-            <iInput v-if="(scope.row.partCbdType == 1 || scope.row.partCbdType == 2) && !disabled" class="input-center" v-model="scope.row.specialDeviceCost" :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.specialDeviceCost !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].specialDeviceCost) : false }" @input="handleInputByNumber($event, 'specialDeviceCost', scope.row, 2)"></iInput>
+            <!-- <iInput v-if="(scope.row.partCbdType == 1 || scope.row.partCbdType == 2) && !disabled" class="input-center" v-model="scope.row.specialDeviceCost" :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.specialDeviceCost !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].specialDeviceCost) : false }" @input="handleInputByNumber($event, 'specialDeviceCost', scope.row, 2)"></iInput> -->
+            <thousandsFilterInput v-if="(scope.row.partCbdType == 1 || scope.row.partCbdType == 2) && !disabled" class="input-center" :inputValue="scope.row.specialDeviceCost" :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.specialDeviceCost !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].specialDeviceCost) : false }" :numberProcessor="2" :handleArg="['specialDeviceCost', scope.row, 2]" @handleInput="handleInputByNumber"/>
             <span v-else :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.specialDeviceCost !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].specialDeviceCost) : false }" @input="handleInputByNumber($event, 'specialDeviceCost', scope.row, 2)">{{ scope.row.specialDeviceCost | thousandsFilter }}</span>
           </template>
         </el-table-column>
@@ -111,9 +112,10 @@ import { numberProcessor } from "@/utils"
 import { cloneDeep } from "lodash"
 import { handleInputByNumber } from "rise/web/quotationdetail/components/data"
 import filters from "@/utils/filters"
+import thousandsFilterInput from 'rise/web/aeko/quotationdetail/components/thousandsFilterInput'
 
 export default {
-  components: { iButton, iInput, iconFont },
+  components: { iButton, iInput, iconFont,thousandsFilterInput },
   mixins: [ filters ],
   model: {
     prop: "tableListData",

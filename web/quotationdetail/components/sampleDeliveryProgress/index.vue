@@ -2,7 +2,7 @@
  * @Author: Luoshuang
  * @Date: 2021-05-27 15:54:05
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-11-09 21:32:55
+ * @LastEditTime: 2021-11-22 20:01:50
  * @Description: 送样进度
  * @FilePath: \front-modules\web\quotationdetail\components\sampleDeliveryProgress\index.vue
 -->
@@ -90,6 +90,11 @@ export default {
   },
   methods: {
     init() {
+      this.tableDataCache = { // 请求初始化, 清除之前数据
+        LC: JSON.parse(JSON.stringify(dateTemplate)),
+        SKD: JSON.parse(JSON.stringify(dateTemplate))
+      }
+
       this.loading = true
       getSampleProgress({
         quotationId: this.partInfo.quotationId
@@ -119,6 +124,9 @@ export default {
                   break
               }
             })
+          }else{
+            //  this.tableDataCache.LC = JSON.parse(JSON.stringify(dateTemplate))
+            //  this.tableDataCache.SKD = JSON.parse(JSON.stringify(dateTemplate))
           }
 
           this.tableData = this.tableDataCache[this.priceType]
@@ -270,5 +278,6 @@ export default {
 
 .flexWrapper {
   display: flex;
+  justify-content: center;
 }
 </style>
