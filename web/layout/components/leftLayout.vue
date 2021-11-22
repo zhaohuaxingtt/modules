@@ -36,7 +36,7 @@
 					</span>
 				</div>
 				<div class="btn-button">
-					<img src="../images/leftContent.png" alt="" />
+					<img src="../assets/images/leftContent.png" alt="" />
 				</div>
 			</div>
 		</div>

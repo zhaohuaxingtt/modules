@@ -51,7 +51,9 @@
 		<div class="povper-content" v-show="contentShowFlag">
 			<div v-for="(list, index) in popoverList" :key="index">
 				<div class="item-content" @click="handleClick(list)">
-					<div><img src="../images/partLifyCycle.svg" class="img" /></div>
+					<div>
+						<img src="./assets/images/partLifyCycle.svg" class="img" />
+					</div>
 					<div class="text">{{ list.name }}</div>
 				</div>
 			</div>
