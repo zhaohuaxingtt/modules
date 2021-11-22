@@ -43,13 +43,13 @@
             </template>
           </el-popover>
         </template>
-        <template #apriceChange="scope">{{ floatFixNum(scope.row.apriceChange) }}</template>
+        <template #apriceChange="scope"><a class="link-underline" @click="linkTabChange('apriceChange')">{{ floatFixNum(scope.row.apriceChange) }}</a></template>
         <template #aprice="scope">{{ floatFixNum(scope.row.aprice) }}</template>
         <template #originBnkFee="scope">{{ floatFixNum(scope.row.originBnkFee) }}</template>
-        <template #toolingCost="scope">{{ floatFixNum(scope.row.toolingCost) }}</template>
-        <template #developmentCost="scope">{{ floatFixNum(scope.row.developmentCost) }}</template>
-        <template #terminationPrice="scope">{{ floatFixNum(scope.row.terminationPrice) }}</template>
-        <template #sampleCost="scope">{{ floatFixNum(scope.row.sampleCost) }}</template>
+        <template #toolingCost="scope"><a class="link-underline" @click="linkTabChange('toolingCost')">{{ floatFixNum(scope.row.toolingCost) }}</a></template>
+        <template #developmentCost="scope"><a class="link-underline" @click="linkTabChange('developmentCost')">{{ floatFixNum(scope.row.developmentCost) }}</a></template>
+        <template #terminationPrice="scope"><a class="link-underline" @click="linkTabChange('terminationPrice')" >{{ floatFixNum(scope.row.terminationPrice) }}</a></template>
+        <template #sampleCost="scope"><a class="link-underline" @click="linkTabChange('sampleCost')" >{{ floatFixNum(scope.row.sampleCost) }}</a></template>
         <template #bnkFee="scope">
           <el-popover
               placement="top"
@@ -231,6 +231,12 @@ export default {
       })
     },
 
+    linkTabChange(tabName){
+      console.log('aaa',tabName)
+      this.currentTab=tabName
+      const component = this.$refs[this.currentTab][0]
+      component.init()
+    },
     // 获取基础信息
     async getBasicInfo(doNext = true) {
       const {query, path} = this.$route;
@@ -239,7 +245,7 @@ export default {
 
       this.loading = true
       await getQuotationInfo(quotationId).then(async (res) => {
-        const {code, data = {}} = res;
+        const {code,  data = {}} = res;
         if (code == 200) {
           const {
             aekoPartInfo = {},
