@@ -654,7 +654,11 @@ export default {
         // 和变动值-汇总表比较，取值小的
         if(this.$refs.changeSummary.tableListData.length){
           // 汇总表有数据
-          this.apriceChange = +this.$refs.changeSummary.total> +this.apriceChange ? +this.apriceChange : +this.$refs.changeSummary.total
+          if(this.apriceChange!=null){
+            this.apriceChange = Number(this.$refs.changeSummary.total)> Number(this.apriceChange) ? this.apriceChange : this.$refs.changeSummary.total
+          }else{
+            this.apriceChange = this.$refs.changeSummary.total
+          }
         }else{
           // 汇总表无数据
           this.apriceChange = null
@@ -666,12 +670,21 @@ export default {
         // 如果变动值-cbd有值
         // A价和变动值-cbd做比较，取值小的
         if(this.cbdSummaryTableData[0].apriceChange||this.cbdSummaryTableData[0].apriceChange===0){
-          minVal = +this.cbdSummaryTableData[0].apriceChange>+this.apriceChange?+this.apriceChange:+this.cbdSummaryTableData[0].apriceChange
+          if(minVal!=null){
+            minVal = Number(this.cbdSummaryTableData[0].apriceChange)>Number(minVal)?minVal:this.cbdSummaryTableData[0].apriceChange
+          }else{
+            minVal = this.cbdSummaryTableData[0].apriceChange
+          }
         }
         if (this.$refs.changeSummary.tableListData.length) {
           // 比较后的小值再和变动值-汇总表比较，取值小的
-          minVal = +this.$refs.changeSummary.total > +minVal ? +minVal : +this.$refs.changeSummary.total
+          if(minVal!=null){
+            minVal = Number(this.$refs.changeSummary.total) > Number(minVal) ? minVal : this.$refs.changeSummary.total
+          }else{
+            minVal = this.$refs.changeSummary.total
+          }
         }
+        // 任意一个不为null
         if(this.cbdSummaryTableData[0].apriceChange!=null||this.$refs.changeSummary.total!=null){
           this.apriceChange = minVal
         }else{
