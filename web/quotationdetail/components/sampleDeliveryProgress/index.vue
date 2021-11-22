@@ -90,6 +90,11 @@ export default {
   },
   methods: {
     init() {
+      this.tableDataCache = { // 请求初始化, 清除之前数据
+        LC: JSON.parse(JSON.stringify(dateTemplate)),
+        SKD: JSON.parse(JSON.stringify(dateTemplate))
+      }
+
       this.loading = true
       getSampleProgress({
         quotationId: this.partInfo.quotationId
@@ -270,5 +275,6 @@ export default {
 
 .flexWrapper {
   display: flex;
+  justify-content: center;
 }
 </style>
