@@ -9,7 +9,7 @@
 import { numberProcessor } from "@/utils"
 
 export const partInfoItems = [
-  { props: "rfqId", name: "RFQ编号", key: "LK_RFQBIANHAO" },
+  { props: "rfqId", name: "RFQ编号", key: "RFQBIANHAO" },
   { props: "supplier", name: "RFQ供应商", key: "LK_RFQGONGYINGSHANG" },
   { props: "round", name: "报价轮次", key: "LK_BAOJIALUNCI" },
   { props: "currentRoundsEndTime", name: "报价截至时间", key: "LK_BAOJIAJIEZHISHIJIAN" },

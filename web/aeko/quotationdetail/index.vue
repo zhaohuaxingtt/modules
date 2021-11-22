@@ -43,13 +43,13 @@
             </template>
           </el-popover>
         </template>
-        <template #apriceChange="scope">{{ floatFixNum(scope.row.apriceChange) }}</template>
+        <template #apriceChange="scope"><a class="link-underline" @click="linkTabChange('aPriceChange')">{{ floatFixNum(scope.row.apriceChange) }}</a></template>
         <template #aprice="scope">{{ floatFixNum(scope.row.aprice) }}</template>
         <template #originBnkFee="scope">{{ floatFixNum(scope.row.originBnkFee) }}</template>
-        <template #toolingCost="scope">{{ floatFixNum(scope.row.toolingCost) }}</template>
-        <template #developmentCost="scope">{{ floatFixNum(scope.row.developmentCost) }}</template>
-        <template #terminationPrice="scope">{{ floatFixNum(scope.row.terminationPrice) }}</template>
-        <template #sampleCost="scope">{{ floatFixNum(scope.row.sampleCost) }}</template>
+        <template #toolingCost="scope"><a class="link-underline" @click="linkTabChange('mouldInvestmentChange')">{{ floatFixNum(scope.row.toolingCost) }}</a></template>
+        <template #developmentCost="scope"><a class="link-underline" @click="linkTabChange('developmentFee')">{{ floatFixNum(scope.row.developmentCost) }}</a></template>
+        <template #terminationPrice="scope"><a class="link-underline" @click="linkTabChange('damages')" >{{ floatFixNum(scope.row.terminationPrice) }}</a></template>
+        <template #sampleCost="scope"><a class="link-underline" @click="linkTabChange('sampleFee')" >{{ floatFixNum(scope.row.sampleCost) }}</a></template>
         <template #bnkFee="scope">
           <el-popover
               placement="top"
@@ -231,6 +231,10 @@ export default {
       })
     },
 
+    linkTabChange(tabName){
+      this.currentTab = tabName
+      this.tabChange()
+    },
     // 获取基础信息
     async getBasicInfo(doNext = true) {
       const {query, path} = this.$route;
@@ -239,7 +243,7 @@ export default {
 
       this.loading = true
       await getQuotationInfo(quotationId).then(async (res) => {
-        const {code, data = {}} = res;
+        const {code,  data = {}} = res;
         if (code == 200) {
           const {
             aekoPartInfo = {},
