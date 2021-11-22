@@ -43,13 +43,13 @@
             </template>
           </el-popover>
         </template>
-        <template #apriceChange="scope"><a class="link-underline" @click="linkTabChange('apriceChange')">{{ floatFixNum(scope.row.apriceChange) }}</a></template>
+        <template #apriceChange="scope"><a class="link-underline" @click="linkTabChange('aPriceChange')">{{ floatFixNum(scope.row.apriceChange) }}</a></template>
         <template #aprice="scope">{{ floatFixNum(scope.row.aprice) }}</template>
         <template #originBnkFee="scope">{{ floatFixNum(scope.row.originBnkFee) }}</template>
-        <template #toolingCost="scope"><a class="link-underline" @click="linkTabChange('toolingCost')">{{ floatFixNum(scope.row.toolingCost) }}</a></template>
-        <template #developmentCost="scope"><a class="link-underline" @click="linkTabChange('developmentCost')">{{ floatFixNum(scope.row.developmentCost) }}</a></template>
-        <template #terminationPrice="scope"><a class="link-underline" @click="linkTabChange('terminationPrice')" >{{ floatFixNum(scope.row.terminationPrice) }}</a></template>
-        <template #sampleCost="scope"><a class="link-underline" @click="linkTabChange('sampleCost')" >{{ floatFixNum(scope.row.sampleCost) }}</a></template>
+        <template #toolingCost="scope"><a class="link-underline" @click="linkTabChange('mouldInvestmentChange')">{{ floatFixNum(scope.row.toolingCost) }}</a></template>
+        <template #developmentCost="scope"><a class="link-underline" @click="linkTabChange('developmentFee')">{{ floatFixNum(scope.row.developmentCost) }}</a></template>
+        <template #terminationPrice="scope"><a class="link-underline" @click="linkTabChange('damages')" >{{ floatFixNum(scope.row.terminationPrice) }}</a></template>
+        <template #sampleCost="scope"><a class="link-underline" @click="linkTabChange('sampleFee')" >{{ floatFixNum(scope.row.sampleCost) }}</a></template>
         <template #bnkFee="scope">
           <el-popover
               placement="top"
@@ -232,10 +232,8 @@ export default {
     },
 
     linkTabChange(tabName){
-      console.log('aaa',tabName)
-      this.currentTab=tabName
-      const component = this.$refs[this.currentTab][0]
-      component.init()
+      this.currentTab = tabName
+      this.tabChange()
     },
     // 获取基础信息
     async getBasicInfo(doNext = true) {
