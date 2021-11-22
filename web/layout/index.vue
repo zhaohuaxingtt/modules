@@ -69,8 +69,8 @@ import myModules from './components/myModules'
 import { arrayToTree, treeToArray } from '@/utils'
 import { popoverList } from './components/data.js'
 
-import popurIcon from '../images/leftContent.png'
-import activePopurIcon from '../images/active-popur.svg'
+import popurIcon from './assets/images/leftContent.png'
+import activePopurIcon from './assets/images/active-popur.svg'
 
 export default {
 	components: { topLayout, LeftLayout, sideMenu, myModules },
