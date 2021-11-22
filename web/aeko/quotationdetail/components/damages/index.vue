@@ -84,9 +84,9 @@ export default {
         }
       })
     },
-    saveTerminationPrice(beforeHook, afterHook) {
+    async saveTerminationPrice(beforeHook, afterHook) {
       const {value} = this;
-      if(!value) return iMessage.warn(this.language('LK_AEKO_TAB_DAMAGES_TIPS','请填写后提交'));
+      if(!value) throw iMessage.warn(this.language('LK_AEKO_TAB_DAMAGES_TIPS','请填写后提交'));
       const {basicInfo={}} = this;
       const {quotationId=""} = basicInfo;
       const data = {

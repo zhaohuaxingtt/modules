@@ -360,8 +360,11 @@ export default {
 
       const component = this.$refs[this.currentTab][0]
       if (typeof component.save === "function") {
-        const res = await component.save().catch(()=>{ this.submitLoading = false })
-        if(!res) return
+        const res = await component.save().catch((e)=>{ this.submitLoading = false })
+        if(!res){
+          this.submitLoading = false
+          return
+        }
         if (res?.code != 200) {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
           this.submitLoading = false
@@ -374,16 +377,16 @@ export default {
         objectAekoId: this.partInfo.objectAekoId
       })
           .then(res => {
+            this.submitLoading = false
             if (res.code == 200) {
               iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
               this.getBasicInfo()
             } else {
               iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
             }
-
-            this.submitLoading = false
           })
           .catch(() => this.submitLoading = false)
+          .finally(()=> this.submitLoading = false)
     },
 
     updateApriceChange(apriceChange) {

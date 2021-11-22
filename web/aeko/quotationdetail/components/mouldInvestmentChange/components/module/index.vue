@@ -10,7 +10,7 @@
           <iButton v-if="!disabled" @click="handleAdd">{{ language("TIANJIAHANG", "添加行") }}</iButton>
           <iButton v-if="!disabled" @click="handleDelete">{{ language("SHANCHUHANG", "删除行") }}</iButton>
           <iButton v-permission.auto="AEKO_QUOTATION_DETAIL_MOULDLE_BUTTON_GUANLIANLINGJIAN|模具投资变动_关联零件" v-if="!disabled" @click="handleQuote">{{ language("GUANLIANLINGJIAN", "关联零件") }}</iButton>
-          <iButton v-if="!disabled" :loading="saveLoading" @click="handleSave">{{ language("BAOCUN", "保存") }}</iButton>
+          <iButton v-if="!disabled" :loading="saveLoading" @click="save">{{ language("BAOCUN", "保存") }}</iButton>
         </div>
       </div>
     </template>
@@ -409,20 +409,9 @@ export default {
 
       this.$set(this.dataGroup, "shareAmount", math.divide(shareTotal, shareQuantity).toFixed(2))
     },
-    handleSave() {
-      if (!this.tableListData.every(item => item.isQuote||(item.bmNum && item.bmSerialNum)? this.quoteValidateKeys.every(key => item[key] || item[key] === 0 ): this.validateKeys.every(key => item[key] || item[key] === 0))) {
-        return this.$message.error(this.language("QINGWEIHUHAOBIANTIANXIANGHOUZAIBAOCUN", "请维护好必填项后，再保存。"))
-      }
+    save(){
       this.saveLoading = true
-      saveMoulds({
-        moduleFeeDTOList: this.tableListData,
-        moduleOtherFee: {
-          itemType: 0,
-          ...this.dataGroup
-        },
-        quotationId: this.partInfo.quotationId
-      })
-          .then(res => {
+      this.handleSave().then(res => {
             if (res.code == 200) {
               this.$message.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
               // this.getMoulds()
@@ -431,7 +420,21 @@ export default {
               this.$message.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
             }
           })
+          .catch(() => this.saveLoading = false)
           .finally(() => this.saveLoading = false)
+    },
+    async handleSave() {
+      if (!this.tableListData.every(item => item.isQuote||(item.bmNum && item.bmSerialNum)? this.quoteValidateKeys.every(key => item[key] || item[key] === 0 ): this.validateKeys.every(key => item[key] || item[key] === 0))) {
+        throw this.$message.error(this.language("QINGWEIHUHAOBIANTIANXIANGHOUZAIBAOCUN", "请维护好必填项后，再保存。"))
+      }
+      return saveMoulds({
+        moduleFeeDTOList: this.tableListData,
+        moduleOtherFee: {
+          itemType: 0,
+          ...this.dataGroup
+        },
+        quotationId: this.partInfo.quotationId
+      })
     },
     getAssetClassificationVal(val) {
       let mItem = this.assetTypeCodeOptions.find(item => item.value == val)
