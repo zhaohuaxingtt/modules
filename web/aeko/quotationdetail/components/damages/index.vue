@@ -19,7 +19,8 @@
       </template>
       <div class="contain">
         <span class="contain-label">{{ language('LK_DAMAGES_ZHONGZHIFEI','终⽌费') }}:</span>
-        <iInput class="contain-input" :disabled="disabled || editDisabled" @input="handleInputBySampleUnitPrice" v-model.trim="value"></iInput>
+        <!-- <iInput class="contain-input" :disabled="disabled || editDisabled" @input="handleInputBySampleUnitPrice" v-model.trim="value"></iInput> -->
+        <thousandsFilterInput class="contain-input" :filterDisabled="disabled || editDisabled" :numberProcessor="2" @handleInput="handleInputBySampleUnitPrice" :inputValue="value"/>
       </div>
   </iCard>
 </template>
@@ -34,11 +35,13 @@ import {
 import { saveTerminationPrice } from '@/api/aeko/quotationdetail'
 import { cloneDeep } from "lodash"
 import { numberProcessor } from '@/utils'
+import thousandsFilterInput from 'rise/web/aeko/quotationdetail/components/thousandsFilterInput'
 export default {
   components:{
     iCard,
     iButton,
     iInput,
+    thousandsFilterInput,
   },
   props:{
     basicInfo:{
@@ -100,8 +103,8 @@ export default {
         if (typeof afterHook === "function") afterHook()
       })
     },
-    handleInputBySampleUnitPrice(){
-      const {value} = this;
+    handleInputBySampleUnitPrice(value){
+      // const {value} = this;
       this.value = numberProcessor(value, 2)
     },
   }
