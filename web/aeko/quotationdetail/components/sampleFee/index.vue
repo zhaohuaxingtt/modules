@@ -64,8 +64,12 @@ export default {
       })
     },
     handleSave() {
+      this.saveLoading = true;
       this.$refs.sample.save().then(res => {
+        this.saveLoading = false;
         this.$emit('getBasicInfo')
+      }).catch(()=>{
+        this.saveLoading = false;
       })
     },
     init(){
