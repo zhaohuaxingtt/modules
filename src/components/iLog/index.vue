@@ -192,6 +192,7 @@ export default {
 			http.setRequestHeader('content-type', 'application/json')
 			http.onreadystatechange = () => {
 				if (http.readyState === 4) {
+					this.loading = false
 					if (this.isPage) {
 						const { data } = JSON.parse(http.responseText)
 						this.tableData = data.content || []
@@ -200,7 +201,6 @@ export default {
 						this.tableData = JSON.parse(http.responseText)?.data || []
 					}
 				}
-				this.loading = false
 			}
 			this.query.bizId = this.bizId
 			const extendParams = this.extendParams || {}

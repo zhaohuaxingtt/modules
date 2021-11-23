@@ -248,7 +248,9 @@ export default {
 
       this.tableListData.push({
         mouldId: `${this.partInfo.rfqId}_${this.$route.query.supplierCode}_${this.partInfo.partNum}_T${this.indexProcess(index)}`,
-        changeType: "新增"
+        changeType: "新增",
+        assembledPartCode:this.partInfo.partNum || null,
+        assembledPartName:this.partInfo.partName || null,
       })
 
       this.indexSet.add(index)
