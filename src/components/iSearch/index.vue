@@ -57,6 +57,9 @@ export default {
       stypeWidth:0
     }
   },
+  created() {
+    if (this.$vnode.componentOptions.children) this.processInput(this.$vnode.componentOptions.children)
+  },
   mounted(){
     this.getWidth()
   },
@@ -73,6 +76,20 @@ export default {
     toggle(){
       this.hidens = !this.hidens
       this.$emit('toggle', this.hidens)
+    },
+    processInput(vnodes) {
+      Array.prototype.forEach.call(vnodes, vnode => {
+        if (vnode.componentOptions.tag === "iInput" && (!vnode.componentOptions.propsData.type || vnode.componentOptions.propsData.type === "text")) {
+          this.$nextTick(() => {
+            vnode.elm.addEventListener("input", e => {
+              const value = e.target.value === null || e.target.value === undefined ? '' : String(e.target.value)
+              e.target.value = value.trim()
+            }, true)
+          })
+        } else {
+          if (vnode.componentOptions.children) this.processInput(vnode.componentOptions.children)
+        }
+      })
     }
   }
 }
