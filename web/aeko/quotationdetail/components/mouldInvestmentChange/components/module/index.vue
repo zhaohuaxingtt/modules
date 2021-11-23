@@ -220,6 +220,10 @@ export default {
                   }
                   this.computeRowChangeTotalPrice(item)
                   this.computeRowTotalPrice(item)
+
+                  // assembledPartCode assembledPartName 无值时从基础信息里面拿
+                  if(!item.assembledPartCode) item.assembledPartCode = this.partInfo.partNum || null;
+                  if(!item.assembledPartName) item.assembledPartName = this.partInfo.partName || null;
                 })
               }
               this.computeTotalPriceSum()
