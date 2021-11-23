@@ -14,18 +14,6 @@ import { Input } from 'element-ui'
 export default{
   name:'iInput',
   extends:Input,
-  methods: {
-    handleInput(e) {
-      const input = this.getInput()
-      if (this.isComposing) return
-      
-      if (this.type === 'text') input.value = e.target.value.trim() // CRW1-8418
-      
-      if (e.target.value === this.nativeInputValue) return
-      this.$emit('input', e.target.value)
-      this.$nextTick(this.setNativeInputValue)
-    }
-  }
 }
 </script>
 <style lang='scss' scoped>
