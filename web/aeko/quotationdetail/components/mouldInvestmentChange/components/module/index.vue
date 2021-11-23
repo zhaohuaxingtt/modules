@@ -36,7 +36,7 @@
         </template>
         <!--类型选择--->
         <template #changeType="scope">
-          <iSelect v-if="!disabled && !editDisabled" v-model="scope.row.changeType"
+          <iSelect v-if="scope.row.isShared == 1 && !disabled && !editDisabled" v-model="scope.row.changeType"
                    @change="handleChangeByChangeType($event, scope.row)">
             <el-option v-if="!isQuote(scope.row) " :label="language('XINZENG', '新增')" value="新增"></el-option>
             <el-option :label="language('XIUMU', '修模')" value="修模"></el-option>
@@ -433,6 +433,12 @@ export default {
       if (!this.tableListData.every(item => item.isQuote||(item.bmNum && item.bmSerialNum)? this.quoteValidateKeys.every(key => item[key] || item[key] === 0 ): this.validateKeys.every(key => item[key] || item[key] === 0))) {
         throw this.$message.error(this.language("QINGWEIHUHAOBIANTIANXIANGHOUZAIBAOCUN", "请维护好必填项后，再保存。"))
       }
+
+      // 保存时若列表是否分摊存在是的数据时，分摊数量必须有值
+      const isShareData = this.tableListData.filter((item)=>item.isShared);
+      if(isShareData.length && !this.dataGroup.shareQuantity){
+        throw this.$message.error(this.language("AEKO_TIPS_QINGTIANXIEHAOFENTANSHULIANGHOUZAIBAOCUN", "请填写好分摊数量后，再保存。"))
+      } 
       return saveMoulds({
         moduleFeeDTOList: this.tableListData,
         moduleOtherFee: {
