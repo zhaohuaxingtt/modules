@@ -31,7 +31,7 @@
 				<span v-else class="tip margin-left10">降价计算以A价为准</span>
 			</span>
 		</div>
-		<tableList :tableTitle="tableTitle" :tableData="tableData" :reducePlanedit="!disabled && !isOriginprice" @rateChange="handleRateChange" :lcStartProductDate="lcStartProductDate" />
+		<tableList :tableTitle="tableTitle" v-if='partInfo.quotationId' :partInfo='partInfo'  :tableData="tableData" :reducePlanedit="!disabled && !isOriginprice" @rateChange="handleRateChange" :lcStartProductDate="lcStartProductDate" />
 	</iCard>
 </template>
 

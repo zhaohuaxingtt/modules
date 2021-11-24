@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 00:21:08
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-07-12 16:00:25
+ * @LastEditTime: 2021-11-25 00:29:28
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\mould.vue
 -->
@@ -79,7 +79,7 @@
             <span v-else>{{ scope.row.assetUnitPrice }}</span>
           </template>
           <template #isShared="scope">
-            <iSelect v-if="!disabled" v-model="scope.row.isShared" @change="updateTotal">
+            <iSelect v-if="!disabled" v-model="scope.row.isShared" :disabled='partInfo.roundsType == "biddingRound"' @change="updateTotal">
               <el-option label="是" :value="1"></el-option>
               <el-option label="否" :value="0"></el-option>
             </iSelect>
@@ -87,10 +87,16 @@
           </template>
         </tableList>
         <iFormGroup class="subCost margin-top30" :row="4" inline>
-          <iFormItem class="item" v-for="(info, $index) in subMouldCostInfos" :key="$index" :label="`${ language(info.key, info.name) }`">
-            <iInput v-if="info.props === 'shareQuantity' && !disabled" v-model="dataGroup[info.props]" @input="handleInputByShareQuantity" />
-            <iText v-else>{{ dataGroup[info.props] }}</iText>
-          </iFormItem>
+          <template v-for="(info, $index) in subMouldCostInfos">
+            <iFormItem class="item" v-if='info.props === "totalInvestmentCost"' :key="$index" :label="`${ language(info.key, info.name) }`">
+              <iText v-if='dataGroup["biddingTotalCost"]'>{{ dataGroup["biddingTotalCost"] }}</iText>
+              <iText v-else>{{ dataGroup[info.props] }}</iText>
+            </iFormItem>
+            <iFormItem class="item" v-else :key="$index" :label="`${ language(info.key, info.name) }`">
+              <iInput v-if="info.props === 'shareQuantity' && !disabled" v-model="dataGroup[info.props]" @input="handleInputByShareQuantity" />
+              <iText v-else>{{ dataGroup[info.props] }}</iText>
+            </iFormItem>
+          </template>
         </iFormGroup>
       </div>
       <relatingParts :dialogVisible="relatingPartsVisible" @changeVisible="changeRelatingPartsVisible" :partInfo="partInfo" :disabled="disabled" :isSkd="isSkd" />
@@ -109,6 +115,7 @@ import { cbdDownloadFile, uploadModuleCbd, getMouldFee, getMouldFeeSKD } from "@
 import { numberProcessor } from "@/utils"
 
 export default {
+  inject:['jjys'],
   components: {
 		iCard,
     iButton,
@@ -242,6 +249,7 @@ export default {
           this.$set(this.dataGroup, "shareQuantity", res.data.shareQuantity)
           this.$set(this.dataGroup, "totalInvestmentCost", res.data.totalInvestmentCost)
           this.$set(this.dataGroup, "unitInvestmentCost", res.data.unitInvestmentCost)
+          this.$set(this.dataGroup,"biddingTotalCost",res.data.biddingTotalCost)
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
         }
@@ -297,7 +305,8 @@ export default {
         mouldId: `${ this.partInfo.rfqId }_${ this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId }_${ this.partInfo.partNum }_T${ index }`,
         fixedAssetsName: "",
         assembledPartPrjCode: this.partInfo.fsNum,
-        carModeCode: this.partInfo.modelNameZh
+        carModeCode: this.partInfo.modelNameZh,
+        isShared:this.partInfo.roundsType == "biddingRound"?0:''
       })
     },
     handleDel() {

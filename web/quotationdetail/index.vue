@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-10-28 21:14:30
+ * @LastEditTime: 2021-11-25 01:17:39
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -214,7 +214,8 @@ export default {
   },
   provide: function () {
     return {
-      updateCbdLevel: this.updateCbdLevel
+      updateCbdLevel: this.updateCbdLevel,
+      jjys:this.roundIsOnlineBidding
     }
   },
   computed: {
