@@ -2,7 +2,7 @@
  * @Descripttion: 供应商报价界面-报价页面-零件报价-包装运输
  * @Author: Luoshuang
  * @Date: 2021-04-22 16:53:47
- * @LastEditTime: 2021-11-25 00:35:27
+ * @LastEditTime: 2021-11-25 01:55:19
 -->
 <template>
   <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU ||  partInfo.priceStatus == 'DB'" v-loading="loading">
@@ -219,7 +219,11 @@ export default {
      * @return {*}
      */    
     async init(){
-      if (!this.roundIsOnlineBidding) this.bnkSupplierToken()
+      if (!this.roundIsOnlineBidding){
+        this.bnkSupplierToken()
+      }else{
+        this.getPackageTransport()
+      }
       
       // if (!this.url) {
       //   this.getPackageTransport()
