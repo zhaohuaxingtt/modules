@@ -196,7 +196,7 @@ export default {
               key: item.currencyCode,
               label: item.currencyName,
               value: item.currencyCode,
-              exchangeRate: item.currency
+              exchangeRate: item.exchangeRate
             })) :
             []
 

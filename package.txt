@@ -1,6 +1,6 @@
 {
   "name": "rise",
-  "version": "9.9.9",
+  "version": "2.6.3",
   "private": false,
   "main":"./lib/rise.min.js"
 }

@@ -16,11 +16,10 @@
 import {
     iInput,
 } from 'rise';
-import filters from "@/utils/filters"
 import { numberProcessor } from '@/utils'
+import { thousands } from 'rise/utils'
 export default {
     name:'thousandsFilterInput',
-    mixins: [ filters ],
     components:{
         iInput,
     },
@@ -45,7 +44,7 @@ export default {
     computed:{
         filterValue(){
             const value = this.inputValue;
-            return value ? filters.filters.thousandsFilter(value) : '';
+            return value ? thousands(value) : '';
         }
     },
     data(){

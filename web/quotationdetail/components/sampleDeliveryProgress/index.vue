@@ -90,6 +90,11 @@ export default {
   },
   methods: {
     init() {
+      this.tableDataCache = { // 请求初始化, 清除之前数据
+        LC: JSON.parse(JSON.stringify(dateTemplate)),
+        SKD: JSON.parse(JSON.stringify(dateTemplate))
+      }
+
       this.loading = true
       getSampleProgress({
         quotationId: this.partInfo.quotationId
@@ -120,8 +125,8 @@ export default {
               }
             })
           }else{
-             this.tableDataCache.LC = JSON.parse(JSON.stringify(dateTemplate))
-             this.tableDataCache.SKD = JSON.parse(JSON.stringify(dateTemplate))
+            //  this.tableDataCache.LC = JSON.parse(JSON.stringify(dateTemplate))
+            //  this.tableDataCache.SKD = JSON.parse(JSON.stringify(dateTemplate))
           }
 
           this.tableData = this.tableDataCache[this.priceType]
@@ -156,7 +161,7 @@ export default {
 
           if (this.isSkd || this.isSkdLc) {
             sampleProgressDTOS.forEach((item) => {
-              if (this.isSkd && item.priceType == "LC") return
+              if (item.priceType == "LC") return
 
               switch(item.sampleDeliverType) { 
                 case "1st Tryout送样周期":
@@ -228,12 +233,8 @@ export default {
       row.supplierTime = numberProcessor(value, 2)
     },
     requiredClass() {
-      if (this.isSkd) {
+      if (this.isSkd || this.isSkdLc) {
         return this.priceType === "SKD" ? { required: true } : {}
-      }
-      
-      if (this.isSkdLc) {
-        return { required: true }
       }
 
       return this.priceType === "LC" ? { required: true } : {}
@@ -273,5 +274,6 @@ export default {
 
 .flexWrapper {
   display: flex;
+  justify-content: center;
 }
 </style>

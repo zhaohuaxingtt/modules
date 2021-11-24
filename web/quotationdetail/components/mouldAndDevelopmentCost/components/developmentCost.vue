@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 00:21:17
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-11-25 00:28:34
+ * @LastEditTime: 2021-11-25 01:38:59
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\developmentCost.vue
 -->
@@ -44,6 +44,9 @@
           <template #quantity="scope">
             <iInput v-if="!disabled&&!editDisabled" v-model="scope.row.quantity" @input="handleInputByQuantity($event, scope.row)"/>
             <span v-else>{{ scope.row.quantity | thousandsFilter }}</span>
+          </template>
+          <template #total="scope">
+            <sapn>{{scope.row.total | thousandsFilter }}</sapn>
           </template>
           <template #isShared="scope">
             <iSelect v-if="!disabled&&!editDisabled" :disabled='partInfo.roundsType == "biddingRound"' v-model="scope.row.isShared" @change="updateTotal">

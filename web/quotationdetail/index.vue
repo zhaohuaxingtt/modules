@@ -63,7 +63,8 @@
             v-else-if="item.props === 'referenceRate'"
             placement="top"
             width="300"
-            trigger="hover">
+            trigger="hover"
+            :disabled="!exchangeRates.length">
             <template>
               <div>
                 <p v-for="exchangeRate in exchangeRates" :key="exchangeRate.currencyCode">{{ exchangeRateProcess(exchangeRate) }}</p>
