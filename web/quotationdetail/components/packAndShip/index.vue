@@ -2,7 +2,7 @@
  * @Descripttion: 供应商报价界面-报价页面-零件报价-包装运输
  * @Author: Luoshuang
  * @Date: 2021-04-22 16:53:47
- * @LastEditTime: 2021-07-20 15:57:03
+ * @LastEditTime: 2021-11-25 00:35:27
 -->
 <template>
   <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU ||  partInfo.priceStatus == 'DB'" v-loading="loading">
@@ -73,7 +73,7 @@
         :label="language(item.i18n, item.name) + '：'"
       >
           <!-- -------只能输入数字，可以输入小数点后四位---------- -->
-        <iInput v-if="!disabled && item.editable" v-model="params[item.props]" title="" type="number" oninput="if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+5)}"></iInput>
+        <iInput v-if="!disabled && item.editable" v-model="params[item.props]" :disabled='partInfo.roundsType == "biddingRound"' title="" type="number" oninput="if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+5)}"></iInput>
         <iText v-else>{{ params[item.props] }}</iText>
       </iFormItem>
     </iFormGroup>

@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-02-24 09:42:07
- * @LastEditTime: 2021-10-28 15:55:18
+ * @LastEditTime: 2021-11-25 01:13:00
  * @LastEditors: Please set LastEditors
  * @Description: 零件签收-table组件。
  * @FilePath: \front-supplier\src\views\rfqManageMent\workingRfq\components\tableList\index.vue
@@ -34,6 +34,8 @@
       <el-table-column :key="items.key" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-else-if='items.props == "totalPriceBprice"' :prop="items.props" :label="items.key ? (lang ? language(items.key, items.name) : $t(items.key)) : items.name">
         <template slot-scope="row">
           <span v-if="isSteel">{{ row.row.totalPrice }}</span>
+          <!-- 如果onlinebidding 有回写B价，则显示B价--->
+          <span v-else-if="row.row.biddingBPrice">{{row.row.biddingBPrice}}</span>
           <span v-else>{{ isEmptyPriceCompute(['packageCost','transportCost','operateCost'],row.row) ? row.row.totalPriceBprice : getBallPrice(Bprice,row.row) }}</span>
         </template>
       </el-table-column>
@@ -132,9 +134,9 @@
           </template>
           <!---------------------------bidding---------------------------->
           <template v-else-if='items.props.indexOf("items") > -1'>
-              <span v-if='scope.$index == 0'>{{scope.row[items.props].quotation}}</span>
-              <span v-if='scope.$index == 1'>{{scope.row[items.props].bidding}}</span>
-              <span v-if='scope.$index == 2' :class="{redClass:scope.row[items.props].isColor}">{{scope.row[items.props].result}}</span>
+              <span v-if='scope.$index == 0'>{{(scope.row[items.props]).quotation}}</span>
+              <span v-if='scope.$index == 1'>{{(scope.row[items.props]).bidding}}</span>
+              <span v-if='scope.$index == 2' :class="{redClass:(scope.row[items.props]).isColor}">{{(scope.row[items.props]).result}}</span>
           </template>
           <template v-else>
             <span v-if="items.type === 'inputRate' && !notEdit">{{scope.row[items.props]}}{{ (scope.row[items.props] == null || scope.row[items.props] == "") && scope.row[items.props] !== 0  ? '' : '%' }}</span>

@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 00:21:17
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-11-24 16:07:56
+ * @LastEditTime: 2021-11-25 01:38:59
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\developmentCost.vue
 -->
@@ -49,7 +49,7 @@
             <sapn>{{scope.row.total | thousandsFilter }}</sapn>
           </template>
           <template #isShared="scope">
-            <iSelect v-if="!disabled&&!editDisabled" v-model="scope.row.isShared" @change="updateTotal">
+            <iSelect v-if="!disabled&&!editDisabled" :disabled='partInfo.roundsType == "biddingRound"' v-model="scope.row.isShared" @change="updateTotal">
               <el-option label="是" :value="1"></el-option>
               <el-option label="否" :value="0"></el-option>
             </iSelect>
@@ -57,10 +57,16 @@
           </template>
         </tableList>
         <iFormGroup class="subCost margin-top30" :row="4" inline>
-          <iFormItem class="item" v-for="(info, $index) in subDevelopmentCostInfos" :key="$index" :label="isAeko&&info.languageKey ? language(info.languageKey,info.languageName) : language(info.key, info.name)">
-            <iInput v-if="info.props === 'shareQuantity' && !disabled&& !editDisabled" v-model="dataGroup[info.props]" @input="handleInputByShareQuantity" />
-            <iText v-else>{{ dataGroup[info.props] | thousandsFilter }}</iText>
-          </iFormItem>
+          <template v-for="(info, $index) in subDevelopmentCostInfos">
+            <iFormItem class="item" v-if='info.props == "devFee"'  :key="$index" :label="isAeko&&info.languageKey ? language(info.languageKey,info.languageName) : language(info.key, info.name)">
+              <iText v-if="dataGroup['biddingDevFee']">{{ dataGroup['biddingDevFee'] | thousandsFilter }}</iText>
+              <iText v-else>{{ dataGroup[info.props] | thousandsFilter }}</iText>
+            </iFormItem>
+            <iFormItem class="item" v-else :key="$index" :label="isAeko&&info.languageKey ? language(info.languageKey,info.languageName) : language(info.key, info.name)">
+              <iInput v-if="info.props === 'shareQuantity' && !disabled&& !editDisabled" v-model="dataGroup[info.props]" @input="handleInputByShareQuantity" />
+              <iText v-else>{{ dataGroup[info.props] | thousandsFilter }}</iText>
+            </iFormItem>
+          </template>
         </iFormGroup>
       </div>
     </iCard>
@@ -78,6 +84,7 @@ import { numberProcessor } from "@/utils"
 import filters from "@/utils/filters"
 
 export default {
+  inject:['jjys'],
   mixins: [ filters ],
   components: {
 		iCard,
@@ -148,6 +155,7 @@ export default {
           this.$set(this.dataGroup, "shareDevFee", res.data.shareDevFee)
           this.$set(this.dataGroup, "shareQuantity", res.data.shareQuantity)
           this.$set(this.dataGroup, "unitPrice", res.data.unitPrice)
+          this.$set(this.dataGroup,"biddingDevFee",res.data.biddingDevFee)
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
         }
@@ -182,7 +190,7 @@ export default {
       this.multipleSelection = list
     },
     handleAdd() {
-      this.tableListData.push({})
+      this.tableListData.push({isShared:this.partInfo.roundsType == "biddingRound"?0:''})
     },
     handleDel() {
       if (this.multipleSelection.length < 1) {
