@@ -30,7 +30,7 @@
 <script>
 import { iCard, iFormGroup, iFormItem, iText } from "rise"
 import { infos } from "./data"
-import filters from "@/utils/filters"
+import filters from "rise/utils/filters"
 import {partProjTypes} from 'rise/web/config'
 export default {
 	components: { iCard, iFormGroup, iFormItem, iText },

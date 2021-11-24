@@ -123,10 +123,10 @@ export default {
          */        
         handleABChange() {
             if (this.computedBasic === '01' && !this.aprice) {
-                iMessage.warn('A价不存在，无法根据A价计算降价后的价格')
+                iMessage.warn(this.language("AJIABUCUNZAIERROR", "A价不存在，无法根据A价计算降价后的价格"))
             }
             if (this.computedBasic === '02' && !this.bprice) {
-                iMessage.warn('B价不存在，无法根据B价计算降价后的价格')
+                iMessage.warn(this.language("BJIABUCUNZAIERROR", "B价不存在，无法根据B价计算降价后的价格"))
             }
             this.tableData = this.computeReducePrice(this.computedBasic === '01' ? this.aprice : this.bprice, this.tableData)
         },
@@ -186,10 +186,10 @@ export default {
                     this.aprice = res.data.aprice || 0
                     this.bprice = res.data.bprice || 0
                     if (this.computedBasic === '01' && (!res.data.aprice || res.data.aprice == 0)) {
-                        iMessage.error('A价不存在或为0')
+                        iMessage.warn(this.language("AJIABUCUNZAIHUOWEILING", "A价不存在或为0"))
                     }
                     if (this.computedBasic === '02' && (!res.data.bprice || res.data.bprice == 0)) {
-                        iMessage.error('B价不存在或为0')
+                        iMessage.warn(this.language("BJIABUCUNZAIHUOWEILING", "B价不存在或为0"))
                     }
                     if (['3','4','5','6','7'].includes(this.computedBasic) && (!res.data.bprice || res.data.bprice == 0)) {
                         iMessage.error(this.basic+this.language('BUCUNZAIHUOWEIO','不存在或为0'))
