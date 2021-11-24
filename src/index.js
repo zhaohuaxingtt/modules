@@ -37,6 +37,7 @@ import iLog from './components/iLog'
 import iSelectCustom from './components/iSelectCustom'
 import iTableHeaderSorter from './components/iTableHeaderSorter'
 import iTable from "./components/iTable"
+import iMultiLineInput from "./components/iMultiLineInput"
 
 const components = [
   iMessage,
@@ -67,7 +68,8 @@ const components = [
   iLog,
   iSelectCustom,
   iTableHeaderSorter,
-  iTable
+  iTable,
+  iMultiLineInput
 ]
 const install = function(Vue) {
   components.map(component => {
@@ -108,5 +110,6 @@ export {
   iLog,
   iSelectCustom,
   iTableHeaderSorter,
-  iTable
+  iTable,
+  iMultiLineInput
 }

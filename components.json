@@ -28,5 +28,6 @@
   "i-log": "./src/components/iLog/index.js",
   "i-select-custom": "./src/components/iSelectCustom/index.js",
   "i-table-header-sorter": "./src/components/iTableHeaderSorter/index.js",
-  "i-table": "./src/components/iTable/index.js"
+  "i-table": "./src/components/iTable/index.js",
+  "i-multi-line-input": "./src/components/iMultiLineInput/index.js"
 }
