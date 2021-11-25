@@ -134,7 +134,7 @@ export default {
           saveModuleDevFeeSkd(this.getParams("SKD"))
           .then(res => {
             if (res.code == 200) {
-              r()
+              r(res)
               if (type !== "submit") iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
               this.init()
             } else {
@@ -166,7 +166,7 @@ export default {
           saveModuleDevFee(this.getParams("LC"))
           .then(res => {
             if (res.code == 200) {
-              r()
+              r(res)
               if (type !== "submit") iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
               this.init()
             } else {
