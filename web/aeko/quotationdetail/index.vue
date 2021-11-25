@@ -56,12 +56,32 @@
               trigger="hover"
               :disabled="scope.row.bnkFee == scope.row.originBnkFee">
             <template>
-              <p>{{ language("YUANCHENGYUNFANGSHI", "原承运方式") }}：{{ language("ZIYUN", "自运") }}（{{
-                  language("HUO", "或")
-                }}{{ language("CHENGYUN", "承运") }}）</p>
-              <p>{{ language("XINCHENGYUNFANGSHI", "新承运方式") }}：{{
-                  language("CHENGYUN", "承运")
-                }}（{{ language("HUOZHE", "或者") }}{{ language("ZIYUN", "自运") }}）</p>
+              <p>
+                {{ language("YUANCHENGYUNFANGSHI", "原承运方式") }}：{{
+                  scope.row.originBnkTranWay === "自运"
+                    ? language("ZIYUN", "自运")
+                    : scope.row.originBnkTranWay === "承运"
+                    ? language("CHENGYUN", "承运")
+                    : language("ZIYUN", "自运") +
+                      "(" +
+                      language("HUO", "或") +
+                      language("CHENGYUN", "承运") +
+                      ")"
+                }}
+              </p>
+              <p>
+                {{ language("XINCHENGYUNFANGSHI", "新承运方式") }}：{{
+                  scope.row.bnkTranWay === "自运"
+                    ? language("ZIYUN", "自运")
+                    : scope.row.bnkTranWay === "承运"
+                    ? language("CHENGYUN", "承运")
+                    : language("ZIYUN", "自运") +
+                      "(" +
+                      language("HUO", "或") +
+                      language("CHENGYUN", "承运") +
+                      ")"
+                }}
+              </p>
             </template>
             <template #reference>
               <!-- 针对供应商报价可跳转 -->
