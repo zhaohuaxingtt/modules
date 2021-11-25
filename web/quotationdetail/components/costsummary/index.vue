@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-11-24 21:34:03
+ * @LastEditTime: 2021-11-25 12:02:34
  * @LastEditors: Please set LastEditors
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
@@ -1219,16 +1219,19 @@ export default{
      */    
     save(type) {
       if (this.isSkd) {
-        return this.$refs.skdCostSummary.save()
-        .then(res => {
-          if (res.code == 200) {
-            if (type !== "submit") {
-              iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
-              this.init()
+        return new Promise(r=>{
+          this.$refs.skdCostSummary.save()
+          .then(res => {
+            r(res)
+            if (res.code == 200) {
+              if (type !== "submit") {
+                iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+                this.init()
+              }
+            } else {
+              iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
             }
-          } else {
-            iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
-          }
+          })
         })
       }
 
@@ -1293,16 +1296,20 @@ export default{
           })
         }
 
-        return this.postCostSummary().then(res => {
+        return new Promise(r=>{
+          this.postCostSummary().then(res => {
+          r(res)
           if (res.code == 200) {
             this.updateCbdLevel(this.allTableData.level)
             this.init()
+            
             if (type !== "submit") {
               iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn) 
             }
           } else {
             iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
           }
+        })
         })
       }
     },
