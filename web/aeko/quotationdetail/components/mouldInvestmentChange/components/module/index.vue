@@ -64,11 +64,9 @@
           </iSelect>
           <span v-else>{{ getAssetClassificationVal(scope.row.assetTypeCode) }}</span>
         </template>
-        <!--FS号-->
+        <!--FS号：自动填充，不可编辑-->
         <template #assembledPartPrjCode="scope">
-          <iInput v-if="!isQuote(scope.row) && !disabled && !editDisabled"
-                  v-model="scope.row.assembledPartPrjCode"></iInput>
-          <span v-else>{{ scope.row.assembledPartPrjCode }}</span>
+          <span>{{ scope.row.assembledPartPrjCode }}</span>
         </template>
         <!--散件名称-->
         <template #supplierPartNameList="scope">
@@ -251,6 +249,7 @@ export default {
         changeType: "新增",
         assembledPartCode:this.partInfo.partNum || null,
         assembledPartName:this.partInfo.partName || null,
+        assembledPartPrjCode: this.partInfo.fsNum || null
       })
 
       this.indexSet.add(index)
