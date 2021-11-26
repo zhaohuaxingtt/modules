@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-11-25 01:17:39
+ * @LastEditTime: 2021-11-25 12:08:19
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -292,13 +292,17 @@ export default {
     // }});
   },
   methods: {
-    updateOnlineBiddingDialog(){
-      contrastBidding(this.partInfo.quotationId).then(res=>{
-        if(res.data && res.data.length > 0){
+    updateOnlineBiddingDialog(res){
+      // contrastBidding(this.partInfo.quotationId).then(res=>{
+      //   if(res.data && res.data.length > 0){
+      //     this.show.show = true
+      //     this.biddingData = this.translateDataBidding(res.data)
+      //   }
+      // }).catch(err=>{})
+      if(res.data && res.data.length > 0){
           this.show.show = true
           this.biddingData = this.translateDataBidding(res.data)
-        }
-      }).catch(err=>{})
+      }
     },
     translateDataBidding(list){
      try {
@@ -550,7 +554,7 @@ export default {
 
       try {
         const res = await component.save(type)
-        this.updateOnlineBiddingDialog()
+        this.updateOnlineBiddingDialog(res)
         this.getPartsQuotations("save")
         return res
       } finally {
@@ -606,6 +610,7 @@ export default {
         .then(res => {
           if (res.code == 200) {
             iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+            this.updateOnlineBiddingDialog(res)
             this.getPartsQuotations()
           } else {
             iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
