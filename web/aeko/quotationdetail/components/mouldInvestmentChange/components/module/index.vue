@@ -36,7 +36,7 @@
         </template>
         <!--类型选择--->
         <template #changeType="scope">
-          <iSelect v-if="scope.row.isShared == 1 && !disabled && !editDisabled" v-model="scope.row.changeType"
+          <iSelect v-if="(scope.row.isShared == 1 && !disabled && !editDisabled) || isQuote(scope.row)" v-model="scope.row.changeType"
                    @change="handleChangeByChangeType($event, scope.row)">
             <el-option v-if="!isQuote(scope.row) " :label="language('XINZENG', '新增')" value="新增"></el-option>
             <el-option :label="language('XIUMU', '修模')" value="修模"></el-option>
