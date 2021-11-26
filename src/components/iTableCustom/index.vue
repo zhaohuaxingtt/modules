@@ -398,19 +398,19 @@ export default {
 			}
 			return this.columns.filter((e) => !this.unCols.includes(e.prop))
 		},
-		env() {
-			return window.sessionStorage.getItem('env') || ''
+		appEnv() {
+			return window.sessionStorage.getItem('env') || this.env
 		},
 		usercenterApiPrefix() {
 			const baseMap = {
-				'': '/api',
+				'': '/usercenterApi',
 				dev: '/usercenterApi',
 				sit: '/usercenterApi',
 				vmsit: '/usercenterApi',
 				uat: '/usercenterApi',
-				production: '/api',
+				production: '/usercenterApi',
 			}
-			return baseMap[this.env.toLowerCase()] || '/api'
+			return baseMap[this.env.toLowerCase()] || '/usercenterApi'
 		},
 	},
 	data() {

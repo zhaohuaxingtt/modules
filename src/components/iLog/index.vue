@@ -132,12 +132,12 @@ export default {
 		},
 		bizLogApiPrefix() {
 			const baseMap = {
-				'': '/api',
+				'': '/bizlogApi',
 				dev: '/bizlogApi',
 				sit: '/bizlogApi',
 				vmsit: '/bizlogApi',
 				uat: '/bizlogApi',
-				production: '/api',
+				production: '/bizlogApi',
 			}
 			return baseMap[this.appEnv.toLowerCase()] || '/api'
 		},
