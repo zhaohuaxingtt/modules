@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-11-25 12:08:19
+ * @LastEditTime: 2021-11-29 18:40:25
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -299,7 +299,7 @@ export default {
       //     this.biddingData = this.translateDataBidding(res.data)
       //   }
       // }).catch(err=>{})
-      if(res.data && res.data.length > 0){
+      if(res && res.data && res.data.length > 0){
           this.show.show = true
           this.biddingData = this.translateDataBidding(res.data)
       }
