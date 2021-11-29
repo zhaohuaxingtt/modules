@@ -36,7 +36,7 @@
         </template>
         <!--类型选择--->
         <template #changeType="scope">
-          <iSelect v-if="scope.row.isShared == 1 && !disabled && !editDisabled" v-model="scope.row.changeType"
+          <iSelect v-if="(scope.row.isShared == 1 && !disabled && !editDisabled) || isQuote(scope.row)" v-model="scope.row.changeType"
                    @change="handleChangeByChangeType($event, scope.row)">
             <el-option v-if="!isQuote(scope.row) " :label="language('XINZENG', '新增')" value="新增"></el-option>
             <el-option :label="language('XIUMU', '修模')" value="修模"></el-option>
@@ -64,11 +64,9 @@
           </iSelect>
           <span v-else>{{ getAssetClassificationVal(scope.row.assetTypeCode) }}</span>
         </template>
-        <!--FS号-->
+        <!--FS号：自动填充，不可编辑-->
         <template #assembledPartPrjCode="scope">
-          <iInput v-if="!isQuote(scope.row) && !disabled && !editDisabled"
-                  v-model="scope.row.assembledPartPrjCode"></iInput>
-          <span v-else>{{ scope.row.assembledPartPrjCode }}</span>
+          <span>{{ scope.row.assembledPartPrjCode }}</span>
         </template>
         <!--散件名称-->
         <template #supplierPartNameList="scope">
@@ -251,6 +249,7 @@ export default {
         changeType: "新增",
         assembledPartCode:this.partInfo.partNum || null,
         assembledPartName:this.partInfo.partName || null,
+        assembledPartPrjCode: this.partInfo.fsNum || null
       })
 
       this.indexSet.add(index)

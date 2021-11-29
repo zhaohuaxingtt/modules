@@ -62,11 +62,7 @@
                     ? language("ZIYUN", "自运")
                     : scope.row.originBnkTranWay === "承运"
                     ? language("CHENGYUN", "承运")
-                    : language("ZIYUN", "自运") +
-                      "(" +
-                      language("HUO", "或") +
-                      language("CHENGYUN", "承运") +
-                      ")"
+                    : scope.row.originBnkTranWay
                 }}
               </p>
               <p>
@@ -75,11 +71,7 @@
                     ? language("ZIYUN", "自运")
                     : scope.row.bnkTranWay === "承运"
                     ? language("CHENGYUN", "承运")
-                    : language("ZIYUN", "自运") +
-                      "(" +
-                      language("HUO", "或") +
-                      language("CHENGYUN", "承运") +
-                      ")"
+                    : scope.row.bnkTranWay
                 }}
               </p>
             </template>
