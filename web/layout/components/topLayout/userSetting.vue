@@ -134,7 +134,9 @@ export default {
 		//模拟退出登录方法
 		logout() {
 			removeToken()
-			window.location.href = '/login'
+			window.sessionStorage.clear()
+			window.localStorage.clear()
+			window.location.href = process.env.VUE_APP_LOGOUT_URL
 			window.location.reload()
 		},
 		handleProfileClick(menu) {
