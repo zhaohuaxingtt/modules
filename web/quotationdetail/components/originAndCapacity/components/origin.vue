@@ -75,11 +75,15 @@ export default {
       })
       .then(res => {
         if (res.code == 200) {
-          this.tableListData = [{
-            ...res.data,
-            ...res.data.addressInfoVo,
-            id: res.data.id
-          }]
+          if (res.data) {
+            this.tableListData = [{
+              ...res.data,
+              ...res.data.addressInfoVo,
+              id: res.data.id
+            }]
+          } else {
+            this.tableListData = []
+          }
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
         }
