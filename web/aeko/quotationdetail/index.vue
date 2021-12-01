@@ -74,6 +74,7 @@
                     : scope.row.bnkTranWay
                 }}
               </p>
+              <p>{{ language("NEIRONGSHENPIZHUANGTAI", "内容审批状态") }}：{{ scope.row.logisticsQuotationStatus }}</p>
             </template>
             <template #reference>
               <!-- 针对供应商报价可跳转 -->
