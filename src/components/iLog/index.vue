@@ -69,7 +69,11 @@
 </template>
 
 <script>
-import { iDialog,iSearch,iInput,iSelect,iPagination } from 'rise'
+import iDialog from '../iDialog'
+import iSearch from '../iSearch'
+import iInput from '../iInput'
+import iSelect from '../iSelect'
+import iPagination from '../iPagination'
 export default {
 	components: { iDialog, iSearch, iInput, iSelect, iPagination },
 	props: {
