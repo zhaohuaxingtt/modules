@@ -62,14 +62,12 @@ export default {
         this.$refs.skdDevelopmentCost.getDevFeeSKD()
         this.$refs.lcMould.getMouldFee()
         this.$refs.lcDevelopmentCost.getDevFee()
-      } {
+      } else {
         this.$refs.mould.getMouldFee()
         this.$refs.developmentCost.getDevFee()
       }
     },
     getParams(type, moduleRefName, devCostRefName) {
-      console.log("bbbbbbbbb", this.$refs[type !== "SKDLC" ? "mould" : moduleRefName])
-
       return {
         quotationId: this.partInfo.quotationId,
         moduleFeeDTOList: this.$refs[type !== "SKDLC" ? "mould" : moduleRefName].tableListData.map(item => ({
