@@ -99,6 +99,11 @@ export default {
 			type: String,
 			default: '',
 		},
+		// 根据字典查询下拉key
+		optionDicKey: {
+			type: String,
+			default: ''
+		}
 	},
 	data() {
 		return {
@@ -129,6 +134,17 @@ export default {
 		},
 		appEnv() {
 			return window.sessionStorage.getItem('env') || this.env
+		},
+		dicApiPrefix() {
+			const baseMap = {
+				'': '/baseinfo/web',
+				dev: '/baseinfo/web',
+				sit: '/baseinfo/web',
+				vmsit: '/baseinfo/web',
+				uat: '/baseinfo/web',
+				production: '/baseinfo/web',
+			}
+			return baseMap[this.appEnv.toLowerCase()] || '/baseinfo/web'
 		},
 		bizLogApiPrefix() {
 			const baseMap = {
@@ -166,8 +182,32 @@ export default {
 			}
 		},
 		handleOpen() {
-			this.getOptions()
+			// 传了字典key的，默认通过字典接口查询下拉
+			if (this.optionDicKey) {
+				this.getDicOptions()
+			} else {
+				this.getOptions()
+			}
 			this.getList()
+		},
+		// 根据key查字典
+		getDicOptions() {
+			const key = this.optionDicKey || ''
+			const http = new XMLHttpRequest()
+			const url = `${this.dicApiPrefix}/selectDictByKeys?keys=${key}`
+			http.open('GET', url, true)
+			http.setRequestHeader('content-type', 'application/json')
+			http.onreadystatechange = () => {
+				if (http.readyState === 4) {
+					let data = JSON.parse(http.responseText)?.data || []
+					data = data && data[key] || []
+					this.options = data.map(o => {
+						o.value = o.name
+						return o
+					})
+				}
+			}
+			http.send()
 		},
 		getOptions() {
 			const http = new XMLHttpRequest()
