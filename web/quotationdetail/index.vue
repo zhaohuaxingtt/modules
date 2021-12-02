@@ -1,8 +1,8 @@
 <!--
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-11-29 18:40:25
+ * @LastEditors: Luoshuang
+ * @LastEditTime: 2021-12-02 11:46:36
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -33,12 +33,12 @@
       </div>
       <div class="floatright" v-else>
         <span v-if="agentQutation" class="margin-right10">
-          <iButton v-if="!disabled && !isSteel && agentQutationDisabled" @click="handleAgentQutation">{{ language("LK_DAIGONGYINGSHANGBAOJIA", "代供应商报价") }}</iButton>
-          <iButton v-if="!disabled && !agentQutationDisabled" @click="handleCancelQutation">{{ language("LK_QUXIAO", "取消") }}</iButton>
+          <iButton v-if="!disabled && !isSteel && agentQutationDisabled" @click="handleAgentQutation" v-permission.auto="QUOTATIONDETAIL_AGENTQUOTATIONBTN|报价详情-代供应商报价按钮">{{ language("LK_DAIGONGYINGSHANGBAOJIA", "代供应商报价") }}</iButton>
+          <iButton v-if="!disabled && !agentQutationDisabled" @click="handleCancelQutation" v-permission.auto="QUOTATIONDETAIL_AGENTQUOTATIONCANCELBTN|报价详情-取消按钮">{{ language("LK_QUXIAO", "取消") }}</iButton>
         </span>
         <span class="btns" v-if="!agentQutationDisabled">
-          <iButton v-if="!partInfo.isOriginprice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="quoteBatchPriceLoading" @click="handleQuoteBatchPrice">{{ language("LK_YINYONGPILIANGJIAGE", "引用批量价格") }}</iButton>
-          <iButton v-if="partInfo.isOriginprice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="cancelQuoteBatchPriceLoading" @click="handleCancelBatchPrice">{{ language("LK_QUXIAOPILIANGJIAGE", "取消批量价格") }}</iButton>
+          <iButton v-if="!partInfo.isOriginprice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="quoteBatchPriceLoading" @click="handleQuoteBatchPrice" v-permission.auto="QUOTATIONDETAIL_QUOTEBATCHPRICEBTN|报价详情-引用批量价格按钮">{{ language("LK_YINYONGPILIANGJIAGE", "引用批量价格") }}</iButton>
+          <iButton v-if="partInfo.isOriginprice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="cancelQuoteBatchPriceLoading" @click="handleCancelBatchPrice" v-permission.auto="QUOTATIONDETAIL_QUOTEBATCHPRICECANCELBTN|报价详情-取消批量价格按钮">{{ language("LK_QUXIAOPILIANGJIAGE", "取消批量价格") }}</iButton>
           <span class="saveBtn">
             <span v-if="currentTab == 'packAndShip'">
               <iButton @click="handleSave" v-if="!hidePackAndShipSave && !disabled" :loading="saveLoading">{{ language('BAOCUN', '保存') }}</iButton>
