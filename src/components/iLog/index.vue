@@ -103,6 +103,11 @@ export default {
 		optionDicKey: {
 			type: String,
 			default: ''
+		},
+		// 字典查询筛选参数，通常用于三级字典查询，根据已有的列表查询
+		optionDicKey2: {
+			type: String,
+			default: ''
 		}
 	},
 	data() {
@@ -201,10 +206,23 @@ export default {
 				if (http.readyState === 4) {
 					let data = JSON.parse(http.responseText)?.data || []
 					data = data && data[key] || []
-					this.options = data.map(o => {
+					const options = data.map(o => {
 						o.value = o.name
 						return o
 					})
+					// 需要查询三级
+					if (this.optionDicKey2) {
+						let selectOptions = options.find(o => o.code === this.optionDicKey2)
+						selectOptions = selectOptions && selectOptions.subSelectVos && selectOptions.subSelectVos.length ? selectOptions.subSelectVos : []
+						this.options = selectOptions.map(o => {
+							o.value = o.name
+							return o
+						})
+					} else {
+						// 直接取字典回来的数组
+						this.options = options
+					}
+					
 				}
 			}
 			http.send()
