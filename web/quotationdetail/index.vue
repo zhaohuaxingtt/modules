@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Luoshuang
- * @LastEditTime: 2021-12-03 09:53:56
+ * @LastEditTime: 2021-12-03 13:27:14
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -25,13 +25,13 @@
       </iSelect> 
       <!-- <span v-else class="font18 font-weight">{{ partInfo && partInfo.label }}</span> -->
       <!-------------采购员界面跳转过来的时候，如果出现当前供应商还未接受报价情况----------------->
-      <div class="floatright">
-        <div>
+      <div class="floatright" v-if='acceptQuotation'>
+        <div v-if='!acceptQuotationDisabled'>
           <iButton @click="agreePrice" v-permission.auto="QUOTATIONDETAIL_ACCEPTQUOTATIONBTN|报价详情-接受报价按钮">{{ language('JIESHOUBAOJIA', '接受报价') }}</iButton>
           <iButton @click="rejectPrice" v-permission.auto="QUOTATIONDETAIL_REJECTQUOTATIONBTN|报价详情-拒绝报价按钮">{{ language('JUJUEBAOJIA', '拒绝报价') }}</iButton>
         </div>
       </div>
-      <div class="floatright">
+      <div class="floatright" v-else>
         <span v-if="agentQutation" class="margin-right10">
           <iButton v-if="!disabled && !isSteel && agentQutationDisabled" @click="handleAgentQutation" v-permission.auto="QUOTATIONDETAIL_AGENTQUOTATIONBTN|报价详情-代供应商报价按钮">{{ language("LK_DAIGONGYINGSHANGBAOJIA", "代供应商报价") }}</iButton>
           <iButton v-if="!disabled && !agentQutationDisabled" @click="handleCancelQutation">{{ language("LK_QUXIAO", "取消") }}</iButton>
