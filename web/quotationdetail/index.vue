@@ -226,9 +226,9 @@ export default {
     }),
     trueTabs() {
       // Sprint10新增：供应商配件与附件的包装运输页面移除，报价成本汇总页面能够直接填写[原材料/散件成本][制造成本][报废成本][管理费][利润][包装费][运输费][操作费]，起步生产日期不做默认值，L2层级的[包装费][运输费][操作费]也是直接填写
-      if (this.partInfo.partProjectType === partProjTypes.PEIJIAN || this.partInfo.partProjectType === partProjTypes.FUJIAN) {
-        return this.tabs.filter(item => item.name !== 'packAndShip')
-      }
+      // if (this.partInfo.partProjectType === partProjTypes.PEIJIAN || this.partInfo.partProjectType === partProjTypes.FUJIAN) {
+      //   return this.tabs.filter(item => item.name !== 'packAndShip')
+      // } // 12/6 需要显示包装运输
       // Sprint11新增(US:CRW1-1591)：若某一零件的零件项目类型为[DB零件]，或是[一次性采购]且是DB零件，则在我的报价成本汇总页面，我可以看到DB零件的特殊页面
       // DB的报价单共有7个页签，分别是信息与要求，报价分析，降价计划，包装运输，送样进度，工装样件，报价附件与说明。
       if (this.partInfo.partProjectType === partProjTypes.DBLINGJIAN || this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || this.partInfo.priceStatus == "DB") {
