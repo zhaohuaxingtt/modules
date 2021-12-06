@@ -261,6 +261,7 @@ export default {
       list = list.filter((item) => !arrId.includes(item.id));
       const quoteList = list.map(item => ({
         id: item.id,
+        originMouldId: item.id,
         mouldId: item.moldId,
         bmNum: item.bmNum,
         bmSerialNum: item.bmSerial,

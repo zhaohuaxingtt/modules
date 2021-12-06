@@ -74,6 +74,7 @@
 import { icon, iMessage } from 'rise'
 import filters from '@/utils/filters'
 import { removeToken } from '@/utils/index.js'
+
 export default {
 	mixins: [filters],
 	props: {
@@ -149,7 +150,8 @@ export default {
 			window.sessionStorage.clear()
 			window.localStorage.clear()
 			window.location.href = process.env.VUE_APP_LOGOUT_URL
-			window.location.reload()
+
+			this.$store && this.$store.dispatch('loginOut')
 		},
 		handleProfileClick(menu) {
 			if (menu.name === 'logout') {
