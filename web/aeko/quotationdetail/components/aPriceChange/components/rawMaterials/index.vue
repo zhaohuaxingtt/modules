@@ -87,25 +87,25 @@
         <el-table-column align="center" width="110" :render-header="h => h('span', { domProps: { innerHTML: `${ language('SHULIANG', '数量') }(1..n)` }})">
           <template v-slot="scope">
             <iInput v-if="(scope.row.partCbdType == 1 || scope.row.partCbdType == 2) && !disabled" class="input-center" v-model="scope.row.quantity" :class="{ changeClass: originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId] ? (scope.row.quantity !== originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId].quantity) : false }" @input="handleInputByNumber($event, 'quantity', scope.row, 0, updateQuantity)"></iInput>
-            <span v-else :class="{ changeClass: originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId] ? (scope.row.quantity !== originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId].quantity) : false }" @input="handleInputByNumber($event, 'quantity', scope.row, 0, updateQuantity)">{{ scope.row.quantity | thousandsFilter }}</span>
+            <span v-else :class="{ changeClass: originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId] ? (scope.row.quantity !== originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId].quantity) : false }" @input="handleInputByNumber($event, 'quantity', scope.row, 0, updateQuantity)">{{ floatFixNum(scope.row.quantity) }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" width="175" prop="directMaterialCost" :render-header="h => h('span', { domProps: { innerHTML: `${ language('ZHIJIEYUANCAILIAOSANJIANCHENGBEN', '直接原材料/散件成本') }<br/>(RMB/Pc.)` }})">
-          <template slot-scope="scope">{{ floatFixNum(scope.row.directMaterialCost) | thousandsFilter }}</template>
+          <template slot-scope="scope">{{ floatFixNum(scope.row.directMaterialCost) }}</template>
         </el-table-column>
         <el-table-column :label="language('WULIAOGUANLIFEI', '物料管理费')" align="center">
           <el-table-column label="(%)" align="center" width="110">
             <template v-slot="scope">
               <iInput v-if="(scope.row.partCbdType == 1 || scope.row.partCbdType == 2) && !disabled" class="input-center" v-model="scope.row.materialManageCostRate" :class="{ changeClass: originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId] ? (scope.row.materialManageCostRate !== originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId].materialManageCostRate) : false }" @input="handleInputByNumber($event, 'materialManageCostRate', scope.row, 2, updateMaterialManageCostRate)"></iInput>
-              <span v-else :class="{ changeClass: originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId] ? (scope.row.materialManageCostRate !== originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId].materialManageCostRate) : false }">{{ scope.row.materialManageCostRate | thousandsFilter }}</span>
+              <span v-else :class="{ changeClass: originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId] ? (scope.row.materialManageCostRate !== originMap[scope.row.frontOriginMaterialId ? scope.row.frontOriginMaterialId : scope.row.originMaterialId].materialManageCostRate) : false }">{{ floatFixNum(scope.row.materialManageCostRate) }}</span>
             </template>
           </el-table-column>
           <el-table-column label="(RMB/Pc.)" align="center" width="115" prop="materialManageCost">
-            <template slot-scope="scope">{{ floatFixNum(scope.row.materialManageCost) | thousandsFilter }}</template>
+            <template slot-scope="scope">{{ floatFixNum(scope.row.materialManageCost) }}</template>
           </el-table-column>
         </el-table-column>
         <el-table-column align="center" min-width="122" prop="materialCost" :render-header="h => h('span', { domProps: { innerHTML: `${ language('YUANCAILIAOSANJIANCHENGBEN', '原材料/散件成本') }<br/>（RMB/Pc.）` }})">
-          <template slot-scope="scope">{{ floatFixNum(scope.row.materialCost) | thousandsFilter }}</template>
+          <template slot-scope="scope">{{ floatFixNum(scope.row.materialCost) }}</template>
         </el-table-column>
       </el-table>
     </div>
@@ -120,11 +120,9 @@ import iconFont from "../iconFont"
 import { floatFixNum } from "../../../data"
 import { uuidv4, originRowClass, validateChangeKeysByRawMaterials as validateChangeKeys } from "../data"
 import { handleInputByNumber } from "rise/web/quotationdetail/components/data"
-import filters from "@/utils/filters"
 
 export default {
   components: { iButton, iInput, iSelect, iconFont },
-  mixins: [ filters ],
   model: {
     prop: "tableListData",
     event: "change"

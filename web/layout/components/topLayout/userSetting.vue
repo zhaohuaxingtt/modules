@@ -148,6 +148,8 @@ export default {
 			removeToken()
 			window.sessionStorage.clear()
 			window.localStorage.clear()
+			this.$store.commit('SET_USER_INFO', {})
+			removeToken()
 			window.location.href = process.env.VUE_APP_LOGOUT_URL
 		},
 		handleProfileClick(menu) {

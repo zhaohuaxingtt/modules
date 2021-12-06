@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2020-07-22 14:56:34
- * @LastEditTime: 2021-03-25 23:15:21
+ * @LastEditTime: 2021-12-01 14:07:39
  * @LastEditors: Please set LastEditors
  * @Description: 项目默认layout
  * @FilePath: \test\src\layout\default.vue
@@ -90,12 +90,12 @@ export default {
 			menuMap: {},
 			menus_admin: [],
 			menu2IconMap: {
-				RISE_HOME: ['iconhomeweixuanzhong', 'iconhomexuanzhong'],
-				RISE_WORKBENCH: ['iconworkbenchweixuanzhong', 'iconworkbenchxuanzhong'],
+				RISE_HOME: ['iconshouyehei', 'iconshouyelan'],
+				RISE_WORKBENCH: ['iconcshei', 'iconcslan'],
 				RISE_GP: ['icona-GPtubiaohei', 'icona-GPtubiaolan'],
 				RISE_COMMON_FUNCTION: [
-					'iconcommonfunctionweixuanzhong',
-					'iconcommonfunctionxuanzhong',
+					'icontongyonggongnenghei',
+					'icontongyonggongnenglan',
 				],
 				RISE_ADMIN: ['', ''],
 			},
@@ -160,7 +160,10 @@ export default {
 				item.key = item.id
 				item.permissionKey === 'RISE_HOME'
 					? // item.url.slice(9)//
-					  (item.url = process.env.VUE_APP_HOST + item.url)
+					  (item.url = item.url =
+							(process.env.VUE_APP_HOST
+								? process.env.VUE_APP_HOST
+								: window.location.origin) + item.url)
 					: ''
 				if (
 					item.parentId &&
@@ -168,7 +171,10 @@ export default {
 					item.url.indexOf('http') === -1 &&
 					item.url.indexOf('https') === -1
 				) {
-					item.url = process.env.VUE_APP_HOST + item.url
+					item.url =
+						(process.env.VUE_APP_HOST
+							? process.env.VUE_APP_HOST
+							: window.location.origin) + item.url //item.url.slice(9)//
 				} else {
 					item.url = item.url || ''
 				}

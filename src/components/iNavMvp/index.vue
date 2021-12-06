@@ -106,7 +106,14 @@
 			routerParam: {
 				type: Boolean,
 				default: false
-			}
+			},
+			/**
+			 * 是否允许高亮点击
+			*/
+			isCurrentClick: {
+				type: Boolean,
+				default: false
+			},
 		},
 		data() {
 			return {
@@ -164,6 +171,10 @@
 							query: this.navList[this.activeIndex].query ? this.navList[this.activeIndex].query : this.query
 						})
 					}
+				}else{
+					this.isCurrentClick && this.$router.push({
+							path:item.url,
+						})
 				}
 			},
 			clickMessage(item, e) {

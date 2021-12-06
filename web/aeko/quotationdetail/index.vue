@@ -62,11 +62,7 @@
                     ? language("ZIYUN", "自运")
                     : scope.row.originBnkTranWay === "承运"
                     ? language("CHENGYUN", "承运")
-                    : language("ZIYUN", "自运") +
-                      "(" +
-                      language("HUO", "或") +
-                      language("CHENGYUN", "承运") +
-                      ")"
+                    : scope.row.originBnkTranWay
                 }}
               </p>
               <p>
@@ -75,20 +71,17 @@
                     ? language("ZIYUN", "自运")
                     : scope.row.bnkTranWay === "承运"
                     ? language("CHENGYUN", "承运")
-                    : language("ZIYUN", "自运") +
-                      "(" +
-                      language("HUO", "或") +
-                      language("CHENGYUN", "承运") +
-                      ")"
+                    : scope.row.bnkTranWay
                 }}
               </p>
+              <p>{{ language("BNKSHENPIZHUANGTAI", "BNK审批状态") }}：{{ scope.row.logisticsQuotationStatus }}</p>
             </template>
             <template #reference>
               <!-- 针对供应商报价可跳转 -->
               <div>
                 <span
                     :class="`margin-right5 ${userInfo &&userInfo.userType&&userInfo.userType == 2 ? 'link-underline' : ''}`"
-                    @click="goToBNK">{{ floatFixNum(scope.row.bnkFee) }}</span>
+                    @click="goToBNK">{{ scope.row.logisticsQuotationStatus ? floatFixNum(scope.row.bnkFee) : '' }}</span>
                 <icon v-if="scope.row.bnkFee != scope.row.originBnkFee" symbol name="iconzengjiacailiaochengben_lan"
                       class="font15 rotate180"/>
               </div>

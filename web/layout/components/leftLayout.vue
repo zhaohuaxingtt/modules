@@ -141,23 +141,23 @@ export default {
 			return this.$route.meta.top || 'RISE_WORKBENCH'
 		},
 		clickListener(e) {
-			const leftLayoutRect = document
-				.getElementsByClassName('leftLayout')[0]
-				.getBoundingClientRect()
-			const sideRect = document
-				.getElementsByClassName('meunContent')[0]
-				.getBoundingClientRect()
-			const xt = 0
-			const xb = leftLayoutRect.width + sideRect.width
-			const yt = 0
-			const yb = leftLayoutRect.height
-			if (
-				e.clientY < yt ||
-				e.clientY > yb ||
-				e.clientX < xt ||
-				e.clientX > xb
-			) {
-				this.menuVisible = false
+			const leftLayout = document.getElementsByClassName('leftLayout')
+			const side = document.getElementsByClassName('menuLayout')
+			if (leftLayout && leftLayout.length && side && side.length) {
+				const leftLayoutRect = leftLayout[0].getBoundingClientRect()
+				const sideRect = side[0].getBoundingClientRect()
+				const xt = 0
+				const xb = leftLayoutRect.width + sideRect.width
+				const yt = 0
+				const yb = leftLayoutRect.height
+				if (
+					e.clientY < yt ||
+					e.clientY > yb ||
+					e.clientX < xt ||
+					e.clientX > xb
+				) {
+					this.menuVisible = false
+				}
 			}
 		},
 		toggleSubMenu(item) {

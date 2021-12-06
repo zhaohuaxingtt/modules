@@ -99,6 +99,16 @@ export default {
 			type: String,
 			default: '',
 		},
+		// 根据字典查询下拉key
+		optionDicKey: {
+			type: String,
+			default: ''
+		},
+		// 字典查询筛选参数，通常用于三级字典查询，根据已有的列表查询
+		optionDicKey2: {
+			type: String,
+			default: ''
+		}
 	},
 	data() {
 		return {
@@ -129,6 +139,17 @@ export default {
 		},
 		appEnv() {
 			return window.sessionStorage.getItem('env') || this.env
+		},
+		dicApiPrefix() {
+			const baseMap = {
+				'': '/baseinfo/web',
+				dev: '/baseinfo/web',
+				sit: '/baseinfo/web',
+				vmsit: '/baseinfo/web',
+				uat: '/baseinfo/web',
+				production: '/baseinfo/web',
+			}
+			return baseMap[this.appEnv.toLowerCase()] || '/baseinfo/web'
 		},
 		bizLogApiPrefix() {
 			const baseMap = {
@@ -166,8 +187,45 @@ export default {
 			}
 		},
 		handleOpen() {
-			this.getOptions()
+			// 传了字典key的，默认通过字典接口查询下拉
+			if (this.optionDicKey) {
+				this.getDicOptions()
+			} else {
+				this.getOptions()
+			}
 			this.getList()
+		},
+		// 根据key查字典
+		getDicOptions() {
+			const key = this.optionDicKey || ''
+			const http = new XMLHttpRequest()
+			const url = `${this.dicApiPrefix}/selectDictByKeys?keys=${key}`
+			http.open('GET', url, true)
+			http.setRequestHeader('content-type', 'application/json')
+			http.onreadystatechange = () => {
+				if (http.readyState === 4) {
+					let data = JSON.parse(http.responseText)?.data || []
+					data = data && data[key] || []
+					const options = data.map(o => {
+						o.value = o.name
+						return o
+					})
+					// 需要查询三级
+					if (this.optionDicKey2) {
+						let selectOptions = options.find(o => o.code === this.optionDicKey2)
+						selectOptions = selectOptions && selectOptions.subSelectVos && selectOptions.subSelectVos.length ? selectOptions.subSelectVos : []
+						this.options = selectOptions.map(o => {
+							o.value = o.name
+							return o
+						})
+					} else {
+						// 直接取字典回来的数组
+						this.options = options
+					}
+					
+				}
+			}
+			http.send()
 		},
 		getOptions() {
 			const http = new XMLHttpRequest()

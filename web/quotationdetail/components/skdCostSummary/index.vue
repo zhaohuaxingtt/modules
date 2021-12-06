@@ -71,10 +71,10 @@
         <iInput v-if="!disabled" class="input" v-model="scope.row.profitSummary" @input="handleInputByNumber($event, 'profitSummary', scope.row, 2, value => { computeTotalPrice(value, 'profitSummary', scope.row) })"></iInput>
         <span v-else>{{ scope.row.profitSummary }}</span>
       </template>
-      <template #otherSummary="scope">
+      <!-- <template #otherSummary="scope">
         <iInput v-if="!disabled" class="input" v-model="scope.row.otherSummary" @input="handleInputByNumber($event, 'otherSummary', scope.row, 2, value => { computeTotalPrice(value, 'otherSummary', scope.row) })"></iInput>
         <span v-else>{{ scope.row.otherSummary }}</span>
-      </template>
+      </template> -->
     </tableList>
     <percentage lang :data="percentageData" />
   </iCard>
