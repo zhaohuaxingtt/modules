@@ -1,8 +1,8 @@
 <!--
  * @Author: Luoshuang
  * @Date: 2021-05-27 15:54:05
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-11-22 20:01:50
+ * @LastEditors: Hao,Jiang
+ * @LastEditTime: 2021-12-06 17:52:08
  * @Description: 送样进度
  * @FilePath: \front-modules\web\quotationdetail\components\sampleDeliveryProgress\index.vue
 -->
@@ -22,7 +22,7 @@
     <tableList lang :selection="false" :tableTitle="tableTitle" :tableData="tableData" :tableLoading="loading">
       <template #supplierTime="scope">
         <div class="flexWrapper">
-          <span v-if="!disabled && (['1st Tryout送样周期', 'EM送样周期'].includes(scope.row.sampleDeliverType) || isBmgpart)" :class="requiredClass()"></span>
+          <span class="flexpreffix"><span v-if="!disabled && (['1st Tryout送样周期', 'EM送样周期'].includes(scope.row.sampleDeliverType) || isBmgpart)" :class="requiredClass()"></span></span>
           <iInput v-if="!disabled" v-model="scope.row.supplierTime" @click="handleInputBySupplierTime($event, row)"/>
           <span v-else>{{ scope.row.supplierTime }}</span>
         </div>
@@ -262,13 +262,18 @@ export default {
         }
     }
 }
+.flexpreffix {
+  display: inline-block;
+  width: 10px;
+  line-height: 23px;
+  padding-right: 10px;
+}
 .required {
   display: inline-block;
   &:before {
     display: inline-block;
     content: '*';
     color: #f56c6c;
-    margin-right: 4px;
   }
 }
 
