@@ -38,7 +38,7 @@
 							trigger="hover"
 							:content="scope.row.newContent"
 							:disabled="newContentFoucus || !scope.row.newContent">
-							<iInput v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.newContent" slot="reference" class="input-center" @focus="newContentFoucus = true" @blur="newContentFoucus = false" />
+							<iInput style="width:90%" v-if="!changeSummaryDisabled && !disabled && !editDisabled" v-model="scope.row.newContent" slot="reference" class="input-center" @focus="newContentFoucus = true" @blur="newContentFoucus = false" />
 							<span v-else slot="reference">{{ scope.row.newContent | contentFilter }}</span>
 						</el-popover>
           </template>
