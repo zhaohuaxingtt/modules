@@ -161,34 +161,44 @@ export default {
 			}
 		},
 		toggleSubMenu(item) {
-			const activeMenu = item
-			if (this.menus.length > 0) {
-				if (activeMenu.subMenus) {
-					if (this.activeIndex === item.permissionKey) {
-						if (this.menuVisible) {
-							this.hideSideMenu()
+			const href = window.location.href
+			const origin = window.location.origin
+			const path = href.replace(origin, '')
+			if (
+				item.permissionKey === 'RISE_HOME' &&
+				path.indexOf('/portal') === 0 &&
+				path.indexOf('#/index') > -1
+			) {
+				this.activeIndex = 'RISE_HOME'
+				this.$emit('toggle-active', 'RISE_HOME')
+				this.showSideMenu()
+			} else {
+				const activeMenu = item
+				if (this.menus.length > 0) {
+					if (activeMenu.subMenus) {
+						if (this.activeIndex === item.permissionKey) {
+							if (this.menuVisible) {
+								this.hideSideMenu()
+							} else {
+								this.showSideMenu()
+							}
 						} else {
 							this.showSideMenu()
 						}
-					} else {
-						this.showSideMenu()
+					} else if (activeMenu.url) {
+						if (
+							activeMenu.url.indexOf('http') !== -1 ||
+							activeMenu.url.indexOf('https') !== -1
+						) {
+							activeMenu.target
+								? window.open(activeMenu.url)
+								: (location.href = activeMenu.url)
+						}
+						this.hideSideMenu()
 					}
-				} else if (activeMenu.url) {
-					if (
-						activeMenu.url.indexOf('http') !== -1 ||
-						activeMenu.url.indexOf('https') !== -1
-					) {
-						activeMenu.target
-							? window.open(activeMenu.url)
-							: (location.href = activeMenu.url)
-					}
-					// if (this.$route.path !== activeMenu.url) {
-					//   this.$router.push({ path: activeMenu.url })
-					// }
-					this.hideSideMenu()
+					this.activeIndex = item.permissionKey
+					this.$emit('toggle-active', item.permissionKey)
 				}
-				this.activeIndex = item.permissionKey
-				this.$emit('toggle-active', item.permissionKey)
 			}
 		},
 		showSideMenu() {
