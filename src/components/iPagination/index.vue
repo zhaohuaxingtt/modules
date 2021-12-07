@@ -1,6 +1,7 @@
 <template>
   <div class="i-pagination clearFloat">
-    <p class="page-info" v-if="showPageInfo">{{ $t('LK_XIANSHI') }}<span class="item">{{ total > 0 ? (currentPage - 1) * pageSize + 1 : 0 }}</span>{{ $t('LK_TIAODI') }}<span class="item">{{ total > 0 ? (currentPage * pageSize > total ? (currentPage * pageSize - (currentPage * pageSize - total)) : currentPage * pageSize) : 0 }}</span>{{ $t('LK_TIAOJILU') }}，{{ $t('LK_GONG') }}<span class="item">{{ $props.total }}</span>{{ $t('LK_TIAOJILU') }}</p>
+    <!-- <p class="page-info" v-if="showPageInfo">{{ $t('LK_XIANSHI') }}<span class="item">{{ total > 0 ? (currentPage - 1) * pageSize + 1 : 0 }}</span>{{ $t('LK_TIAODI') }}<span class="item">{{ total > 0 ? (currentPage * pageSize > total ? (currentPage * pageSize - (currentPage * pageSize - total)) : currentPage * pageSize) : 0 }}</span>{{ $t('LK_TIAOJILU') }}，{{ $t('LK_GONG') }}<span class="item">{{ $props.total }}</span>{{ $t('LK_TIAOJILU') }}</p> -->
+    <p class="page-info" v-if="showPageInfo">{{ language('显示') }}<span class="item">{{ total > 0 ? (currentPage - 1) * pageSize + 1 : 0 }}</span>{{ language('条到第') }}<span class="item">{{ total > 0 ? (currentPage * pageSize > total ? (currentPage * pageSize - (currentPage * pageSize - total)) : currentPage * pageSize) : 0 }}</span>{{ language('条记录') }}，{{ language('共') }}<span class="item">{{ $props.total }}</span>{{ language('条记录') }}</p>
     <el-pagination 
       class="pagination" 
       v-bind="$props" 
