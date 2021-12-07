@@ -22,21 +22,21 @@
 					<span
 						v-for="item in menus"
 						:key="item.id"
-						:class="{ transparent: activeMenu.includes(item.permissionKey) }"
+						:class="{
+							transparent: activeIndex === item.permissionKey,
+						}"
 						@click="toggleSubMenu(item)"
 					>
 						<icon
 							symbol
 							:name="
-								activeMenu.includes(item.permissionKey)
-									? item.activeIcon
-									: item.icon
+								activeIndex === item.permissionKey ? item.activeIcon : item.icon
 							"
 						/>
 					</span>
 				</div>
 				<div class="btn-button">
-					<img src="../assets/images/leftContent.png" alt="" />
+					<!-- <img src="~@/assets/images/leftContent.png" alt="" /> -->
 				</div>
 			</div>
 		</div>
@@ -46,13 +46,7 @@
 				name="iconcaidanzhankai"
 				:class="{ menu: true, hiddenMenu: menuVisible, delay: !menuVisible }"
 				@click.native="menuVisible = !menuVisible"
-				v-if="
-					menus
-						.map((item) => {
-							return item.permissionKey
-						})
-						.includes(activeIndex)
-				"
+				v-if="menus.map((item) => item.permissionKey).includes(activeIndex)"
 			/>
 			<div
 				:class="{
@@ -79,6 +73,7 @@
 <script>
 import { icon } from 'rise'
 export default {
+	name: 'leftLayout',
 	components: { icon },
 	props: {
 		menus: {
@@ -110,33 +105,28 @@ export default {
 	provide() {
 		return this
 	},
-	created() {
-		const rootIndex = this.getFirstMenuActive()
-
-		this.activeIndex = rootIndex
-		this.$emit('toggle-active', rootIndex)
+	watch: {
+		activeMenu() {
+			this.setDefaultActiveIndex()
+		},
 	},
 	mounted() {
 		document.addEventListener('click', (e) => {
 			this.clickListener(e)
 		})
+		this.setDefaultActiveIndex()
 	},
 	beforeDestroy() {
 		document.removeEventListener('click', (e) => {
 			this.clickListener(e)
 		})
 	},
-	watch: {
-		$route: {
-			handler: function(route) {
-				if (route.path === '/index') {
-					this.showSideMenu()
-				}
-			},
-			immediate: true,
-		},
-	},
 	methods: {
+		setDefaultActiveIndex() {
+			if (this.activeMenu && this.activeMenu.length) {
+				this.activeIndex = this.activeMenu[0]
+			}
+		},
 		getFirstMenuActive() {
 			return this.$route.meta.top || 'RISE_WORKBENCH'
 		},
@@ -233,7 +223,7 @@ export default {
 	position: fixed;
 	top: 0;
 	left: 0;
-	z-index: 999;
+	z-index: 10001;
 	padding-top: 11px;
 	padding-bottom: 30px;
 
@@ -328,11 +318,11 @@ export default {
 	.btn-button {
 		width: 70px;
 		height: 70px;
-		background: #f1f5ff;
+		// background: #f1f5ff;
 		margin: 0 auto;
 		padding: 13px;
-		border-radius: 15px;
-		cursor: pointer;
+		// border-radius: 15px;
+		// cursor: pointer;
 
 		img {
 			display: inline-block;
@@ -343,12 +333,13 @@ export default {
 }
 
 .menuLayout {
-	z-index: 998 !important;
+	z-index: 10000;
 
 	.meunContent {
 		position: absolute;
 		left: 0px;
 		top: 0px;
+		z-index: 10001;
 		height: 100%;
 		width: 386px;
 		background: #eef2fb;
