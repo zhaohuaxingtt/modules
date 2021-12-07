@@ -179,18 +179,10 @@ export default {
 			if (keys) {
 				for (let i = keys.length; i--; ) {
 					// 清除当前域名下的,例如：m.csvw.com
-					document.cookie =
-						keys[i] + '=0;path=/;expires=' + new Date(0).toUTCString()
-					document.cookie =
-						keys[i] +
-						'=0;path=/;domain=' +
-						document.domain +
-						';expires=' +
-						new Date(0).toUTCString() // 清除当前域名下的，例如 .m.csvw.com
-					document.cookie =
-						keys[i] +
-						'=0;path=/;domain=csvw.com;expires=' +
-						new Date(0).toUTCString() // 清除一级域名下的或指定的，例如 .csvw.com
+					const outDate = new Date(0).toUTCString()
+					document.cookie = `${keys[i]}=0;path=/;expires=${outDate}`
+					document.cookie = `${keys[i]}=0;path=/;domain=${document.domain};expires=${outDate}` // 清除当前域名下的，例如 .m.csvw.com
+					document.cookie = `${keys[i]}=0;path=/;domain=csvw.com;expires=${outDate}` // 清除一级域名下的或指定的，例如 .csvw.com
 				}
 			}
 		},
