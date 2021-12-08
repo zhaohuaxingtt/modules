@@ -38,6 +38,7 @@
 				style="width: 100%"
 				class="log-table"
 				v-loading="loading"
+				default-expand-all
 			>
 				<el-table-column type="expand">
 					<template slot-scope="props">
@@ -102,13 +103,13 @@ export default {
 		// 根据字典查询下拉key
 		optionDicKey: {
 			type: String,
-			default: ''
+			default: '',
 		},
 		// 字典查询筛选参数，通常用于三级字典查询，根据已有的列表查询
 		optionDicKey2: {
 			type: String,
-			default: ''
-		}
+			default: '',
+		},
 	},
 	data() {
 		return {
@@ -205,16 +206,23 @@ export default {
 			http.onreadystatechange = () => {
 				if (http.readyState === 4) {
 					let data = JSON.parse(http.responseText)?.data || []
-					data = data && data[key] || []
-					const options = data.map(o => {
+					data = (data && data[key]) || []
+					const options = data.map((o) => {
 						o.value = o.name
 						return o
 					})
 					// 需要查询三级
 					if (this.optionDicKey2) {
-						let selectOptions = options.find(o => o.code === this.optionDicKey2)
-						selectOptions = selectOptions && selectOptions.subSelectVos && selectOptions.subSelectVos.length ? selectOptions.subSelectVos : []
-						this.options = selectOptions.map(o => {
+						let selectOptions = options.find(
+							(o) => o.code === this.optionDicKey2
+						)
+						selectOptions =
+							selectOptions &&
+							selectOptions.subSelectVos &&
+							selectOptions.subSelectVos.length
+								? selectOptions.subSelectVos
+								: []
+						this.options = selectOptions.map((o) => {
 							o.value = o.name
 							return o
 						})
@@ -222,7 +230,6 @@ export default {
 						// 直接取字典回来的数组
 						this.options = options
 					}
-					
 				}
 			}
 			http.send()
