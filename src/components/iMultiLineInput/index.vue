@@ -1,6 +1,6 @@
 <template>
   <div class="iMultiLineInput">
-    <iInput type="text" v-model.trim="value" @input="handleInput">
+    <iInput type="text" v-model.trim="value" @input="handleInput" :placeholder="placeholder">
       <template slot="append">
         <el-button slot="append" @click.native="showMultiLineInputDialog">
           <icon symbol name="iconbianji" />
@@ -32,7 +32,8 @@ export default {
   },
   props: {
     value: String,
-    title: String
+    title: String,
+    placeholder: String
   },
   data() {
     return {
