@@ -363,14 +363,14 @@ export default {
       this.computeChangeTotalPrice(value, key, row)
     },
     updateChangeUnitPrice(value, key, row) {
-      if(isNaN(row.changeUnitPrice)){
+      if(isNaN(row.changeUnitPrice) || row.changeUnitPrice===''){
         row.changeUnitPrice = 0
       }
-      if (row.changeType === "减值") {
-        const value = Math.abs(row.changeUnitPrice) * -1
+      if (row.changeType === "减值" && (+row.changeUnitPrice)>0) {
+        const value = row.changeUnitPrice * -1
         this.$set(row, "changeUnitPrice", value)
-      } else {
-        this.$set(row, "changeUnitPrice", Math.abs(row.changeUnitPrice))
+      } else if(row.changeType !== "减值" && (+row.changeUnitPrice)<0) {
+        this.$set(row, "changeUnitPrice", row.changeUnitPrice * -1)
       }
       this.computeChangeTotalPrice(value, key, row)
     },
