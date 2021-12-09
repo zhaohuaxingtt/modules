@@ -333,7 +333,7 @@ export default {
     },
     handleChangeByChangeType(value, row) {
       if (row.changeType === "减值") {
-        const value = (row.changeUnitPrice ? row.changeUnitPrice : 0) * -1
+        const value = Math.abs(row.changeUnitPrice ? row.changeUnitPrice : 0) * -1
         this.$set(row, "changeUnitPrice", value)
       } else {
         this.$set(row, "changeUnitPrice", Math.abs(row.changeUnitPrice ? row.changeUnitPrice : 0))
@@ -362,8 +362,11 @@ export default {
       this.computeChangeTotalPrice(value, key, row)
     },
     updateChangeUnitPrice(value, key, row) {
+      if(isNaN(row.changeUnitPrice)){
+        row.changeUnitPrice = 0
+      }
       if (row.changeType === "减值") {
-        const value = row.changeUnitPrice * -1
+        const value = Math.abs(row.changeUnitPrice) * -1
         this.$set(row, "changeUnitPrice", value)
       } else {
         this.$set(row, "changeUnitPrice", Math.abs(row.changeUnitPrice))
