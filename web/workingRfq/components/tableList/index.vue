@@ -40,11 +40,11 @@
         </template>
       </el-table-column>
       <!----------------------需要高亮的列并且带有打开详情事件------------------------>
-      <el-table-column :key="items.key" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-else-if='items.props == activeItems' :prop="items.props" :label="items.key ? (lang ? language(items.key, items.name) : $t(items.key)) : items.name">
+      <el-table-column :key="items.key" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-else-if='items.props == activeItems' :prop="items.props" :label="`${ items.seq ? items.seq + ' ' : '' }${ items.key ? (lang ? language(items.key, items.name) : $t(items.key)) : items.name }`">
         <template slot-scope="row"><span class="openLinkText cursor" @click="openPage(row.row)">{{row.row[activeItems]}}</span></template>
       </el-table-column>
       <!----------------------需要高亮的列并且带有打开详情事件------------------------>
-      <el-table-column :key="items.key" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-else-if='items.props == "isSvwAssignPriceParts"' :prop="items.props" :label="items.key ? (lang ? language(items.key, items.name) : $t(items.key)) : items.name">
+      <el-table-column :key="items.key" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-else-if='items.props == "isSvwAssignPriceParts"' :prop="items.props" :label="`${ items.seq ? items.seq + ' ' : '' }${ items.key ? (lang ? language(items.key, items.name) : $t(items.key)) : items.name }`">
         <template slot-scope="row">
           <span v-if='notEdit'>{{row.row[items.props]?"是":"否"}}</span>
           <iSelect v-else v-model="row.row[items.props]">
@@ -63,7 +63,7 @@
           </span>
         </tempalte>
       </el-table-column>
-      <el-table-column :key="items.key" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip'  v-else :label="items.key ? groupTileTranslate(items) : items.name" :prop="items.props" :label-class-name="items.labelClassName">
+      <el-table-column :key="items.key" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip'  v-else :label="`${ items.seq ? items.seq + ' ' : '' }${ items.key ? groupTileTranslate(items) : items.name }`" :prop="items.props" :label-class-name="items.labelClassName">
         <!----------------------------存在二级表头的情况------------------------------->
         <template v-if='items.list && items.list.length > 0'>
            <template v-for="(itemss,indexs) in items.list">
@@ -208,11 +208,13 @@ export default{
      * @return {*}
      */
     groupTileTranslate(items){
-      if(items.props == 'materialSummary' || items.props == 'productionSummary' ||items.props == 'scrapSummary' ||items.props == 'manageSummary' || items.props == 'otherSummary' || items.props == 'profitSummary'){
-        return items.name +' ' + this.language(items.key, items.name)
-      }else{
-        return this.language(items.key, items.name)
-      }
+      return this.language(items.key, items.name)
+
+      // if(items.props == 'materialSummary' || items.props == 'productionSummary' ||items.props == 'scrapSummary' ||items.props == 'manageSummary' || items.props == 'otherSummary' || items.props == 'profitSummary'){
+      //   return this.language(items.key, items.name)
+      // }else{
+      //   return this.language(items.key, items.name)
+      // }
     },
     getBallPrice(a,b){
       const result = (Aprice.every(key => b[key] === null || b[key] === undefined)) ? getAallPrice(a,b, "B", b.totalPrice) : getAallPrice(a,b)

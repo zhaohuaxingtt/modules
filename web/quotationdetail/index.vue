@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-12-09 16:33:54
+ * @LastEditTime: 2021-12-09 16:37:35
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -27,13 +27,13 @@
       <!-------------采购员界面跳转过来的时候，如果出现当前供应商还未接受报价情况----------------->
       <div class="floatright" v-if='acceptQuotation'>
         <div v-if='!acceptQuotationDisabled'>
-          <iButton @click="agreePrice">{{ language('JIESHOUBAOJIA', '接受报价') }}</iButton>
-          <iButton @click="rejectPrice">{{ language('JUJUEBAOJIA', '拒绝报价') }}</iButton>
+          <iButton @click="agreePrice" v-permission.auto="QUOTATIONDETAIL_ACCEPTQUOTATIONBTN|报价详情-接受报价按钮">{{ language('JIESHOUBAOJIA', '接受报价') }}</iButton>
+          <iButton @click="rejectPrice" v-permission.auto="QUOTATIONDETAIL_REJECTQUOTATIONBTN|报价详情-拒绝报价按钮">{{ language('JUJUEBAOJIA', '拒绝报价') }}</iButton>
         </div>
       </div>
       <div class="floatright" v-else>
         <span v-if="agentQutation" class="margin-right10">
-          <iButton v-if="!disabled && !isSteel && agentQutationDisabled" @click="handleAgentQutation">{{ language("LK_DAIGONGYINGSHANGBAOJIA", "代供应商报价") }}</iButton>
+          <iButton v-if="!disabled && !isSteel && agentQutationDisabled" @click="handleAgentQutation" v-permission.auto="QUOTATIONDETAIL_AGENTQUOTATIONBTN|报价详情-代供应商报价按钮">{{ language("LK_DAIGONGYINGSHANGBAOJIA", "代供应商报价") }}</iButton>
           <iButton v-if="!disabled && !agentQutationDisabled" @click="handleCancelQutation">{{ language("LK_QUXIAO", "取消") }}</iButton>
         </span>
         <span class="btns" v-if="!agentQutationDisabled">
@@ -226,9 +226,9 @@ export default {
     }),
     trueTabs() {
       // Sprint10新增：供应商配件与附件的包装运输页面移除，报价成本汇总页面能够直接填写[原材料/散件成本][制造成本][报废成本][管理费][利润][包装费][运输费][操作费]，起步生产日期不做默认值，L2层级的[包装费][运输费][操作费]也是直接填写
-      if (this.partInfo.partProjectType === partProjTypes.PEIJIAN || this.partInfo.partProjectType === partProjTypes.FUJIAN) {
-        return this.tabs.filter(item => item.name !== 'packAndShip')
-      }
+      // if (this.partInfo.partProjectType === partProjTypes.PEIJIAN || this.partInfo.partProjectType === partProjTypes.FUJIAN) {
+      //   return this.tabs.filter(item => item.name !== 'packAndShip')
+      // } // 12/6 需要显示包装运输
       // Sprint11新增(US:CRW1-1591)：若某一零件的零件项目类型为[DB零件]，或是[一次性采购]且是DB零件，则在我的报价成本汇总页面，我可以看到DB零件的特殊页面
       // DB的报价单共有7个页签，分别是信息与要求，报价分析，降价计划，包装运输，送样进度，工装样件，报价附件与说明。
       if (this.partInfo.partProjectType === partProjTypes.DBLINGJIAN || this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || this.partInfo.priceStatus == "DB") {

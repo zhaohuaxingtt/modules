@@ -6,49 +6,50 @@
 -->
 <template>
   <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU ||  partInfo.priceStatus == 'DB'" v-loading="loading">
-    <iCard :title="url ? '' : language('CANKAOBAOZHUANG','参考包装')">
-      <iframe v-if="url" class="iframe" :src="url"></iframe>
-      <iFormGroup
-        v-else
-        :row="4"
-        inline
-        class="packAndShip-form margin-top20"
-      >
-        <iFormItem
-          v-for="item in referenceInputs"
-          :key="item.props"
-          :label="language(item.i18n, item.name) + '：'"
-        >
-          <iText></iText>
-        </iFormItem>
-      </iFormGroup>
+    <iCard v-if="url" class="packAndShip" v-loading="loading">
+      <iframe  class="iframe" :src="url"></iframe>
     </iCard>
-    <iCard :title="url ? '' : language('BAOZHUANGYAOQIU','包装要求')" class="margin-top20">
-      <iframe v-if="url" class="iframe" :src="url"></iframe>
-      <iFormGroup
-        v-else
-        :row="4"
-        inline
-        class="packAndShip-form margin-top20"
-      >
-        <iFormItem
-          v-for="item in requireInputs"
-          :key="item.props"
-          :label="language(item.i18n, item.name) + '：'"
+    <div v-else>
+      <iCard :title="url ? '' : language('CANKAOBAOZHUANG','参考包装')">
+        <iFormGroup
+          :row="4"
+          inline
+          class="packAndShip-form margin-top20"
         >
-          <iText v-if="disabled">{{ item.type === 'select' ? getName(params[item.props]) : params[item.props] }}</iText>
-          <iSelect v-else-if="item.type === 'select'" v-model="params[item.props]">
-            <el-option
-              v-for="item in selectOptions[item.selectOption]"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </iSelect>
-          <iInput v-else :value="params[item.props]" title="" type="text" @input="val => handleInput(val, params, item.props)"></iInput>
-        </iFormItem>
-      </iFormGroup>
-    </iCard>
+          <iFormItem
+            v-for="item in referenceInputs"
+            :key="item.props"
+            :label="language(item.i18n, item.name) + '：'"
+          >
+            <iText></iText>
+          </iFormItem>
+        </iFormGroup>
+      </iCard>
+      <iCard :title="url ? '' : language('BAOZHUANGYAOQIU','包装要求')" class="margin-top20">
+        <iFormGroup
+          :row="4"
+          inline
+          class="packAndShip-form margin-top20"
+        >
+          <iFormItem
+            v-for="item in requireInputs"
+            :key="item.props"
+            :label="language(item.i18n, item.name) + '：'"
+          >
+            <iText v-if="disabled">{{ item.type === 'select' ? getName(params[item.props]) : params[item.props] }}</iText>
+            <iSelect v-else-if="item.type === 'select'" v-model="params[item.props]">
+              <el-option
+                v-for="item in selectOptions[item.selectOption]"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </iSelect>
+            <iInput v-else :value="params[item.props]" title="" type="text" @input="val => handleInput(val, params, item.props)"></iInput>
+          </iFormItem>
+        </iFormGroup>
+      </iCard>
+    </div>
   </div>
   <!----------------供应商报价界面-报价页面-零件报价-包装运输---------------------------------------------------->
   <!--- 先做出[包装费][运输费][操作费]三个文本输入框（只能输入数字，可以输入小数点后四位），提供给报价成本汇总使用----->
@@ -176,9 +177,9 @@ export default {
       .then(res => {
         if (res.code == 200 && res.data) {
           if (this.userInfo.supplierId) {
-            this.url = `http://10.122.44.58/sol-bnk/pages/rise/quotes/lsp-view.jsf?partProjId=${ this.partInfo.projectPartId }&tmRfqId=${ this.partInfo.rfqId }&ppSupplierId=${ this.userInfo.supplierId }&ppSupplierUserId=${ this.userInfo.id }&token=${ res.data }`
+            this.url = `${ process.env.VUE_APP_BNK_URL }/sol-bnk/pages/rise/quotes/lsp-view.jsf?partProjId=${ this.partInfo.projectPartId }&tmRfqId=${ this.partInfo.rfqId }&ppSupplierId=${ this.userInfo.supplierId }&ppSupplierUserId=${ this.userInfo.id }&token=${ res.data }`
           } else if (this.$route.query.supplierId) {
-            this.url = `http://10.122.44.58/sol-bnk/pages/rise/quotes/lsp-employee-view.jsf?partProjId=${ this.partInfo.projectPartId }&tmRfqId=${ this.partInfo.rfqId }&ppSupplierId=${ this.$route.query.supplierId }&ppSupplierUserId=-1&token=${ res.data }`
+            this.url = `${ process.env.VUE_APP_BNK_URL }/sol-bnk/pages/rise/quotes/lsp-employee-view.jsf?partProjId=${ this.partInfo.projectPartId }&tmRfqId=${ this.partInfo.rfqId }&ppSupplierId=${ this.$route.query.supplierId }&ppSupplierUserId=-1&token=${ res.data }`
           }
           
           this.$emit("hidePackAndShipSave")

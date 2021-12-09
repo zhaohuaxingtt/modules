@@ -1,7 +1,7 @@
 <!--
  * @Author: YoHo
  * @Date: 2021-10-25 16:28:45
- * @LastEditTime: 2021-11-15 18:07:28
+ * @LastEditTime: 2021-12-01 22:21:21
  * @LastEditors: YoHo
  * @Description: 
 -->
@@ -33,11 +33,9 @@
 import tableList from "rise/web/quotationdetail/components/tableList"
 import { cbdSummaryTableTitle as tableTitle } from "../data"
 import { floatFixNum } from "../../../data"
-import filters from "@/utils/filters"
 
 export default {
   components: { tableList },
-	mixins: [ filters ],
   model: {
     prop: "tableListData"
   },
