@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-06-22 11:07:21
- * @LastEditTime: 2021-11-23 21:33:34
+ * @LastEditTime: 2021-12-09 17:48:29
  * @LastEditors: Hao,Jiang
  * @Description: In User Settings Edit
 -->
@@ -14,7 +14,7 @@
       </slot>
     </div>
     <!-- 日志弹窗 -->
-    <iLog :show.sync="showLogDialog" :extendParams="extParams" :isPage="isPage" :env="env" v-bind="$attrs"></iLog>
+    <iLog :show.sync="showLogDialog" :extendParams="extParams" :isPage="isPage" :env="env" v-bind="$attrs" @onTypeChange="onTypeChange"></iLog>
   </div>
 </template>
 
@@ -76,24 +76,35 @@ export default {
       extParams: {}
     }
   },
-  created() {
-    // 根据type 获取日志类型
-    const extParams = Object.keys(this.config).length ? this.config : config[this.type]
-    if (extParams) {
-      // 写入当前用户
-      this.credentials && (extParams.createBy_obj_ae = this.userInfo && this.userInfo.id)
-
-      if (extParams.queryParams && extParams.queryParams.length) {
-        extParams.queryParams.forEach(key => {
-          const queryString = extParams[key]
-          extParams[key] = this.$attrs[queryString] !== undefined ? this.$attrs[queryString] : this.$route.query[queryString] || ''
-        })
-        delete extParams.queryParams
-      }
-      this.extParams = extParams
+  watch: {
+    config() {
+      this.init()
     }
   },
+  created() {
+    this.init()
+  },
   methods: {
+    init() {
+      // 根据type 获取日志类型
+      const extParams = Object.keys(this.config).length ? this.config : config[this.type]
+      if (extParams) {
+        // 写入当前用户
+        this.credentials && (extParams.createBy_obj_ae = this.userInfo && this.userInfo.id)
+
+        if (extParams.queryParams && extParams.queryParams.length) {
+          extParams.queryParams.forEach(key => {
+            const queryString = extParams[key]
+            extParams[key] = this.$attrs[queryString] !== undefined ? this.$attrs[queryString] : this.$route.query[queryString] || ''
+          })
+          delete extParams.queryParams
+        }
+        this.extParams = extParams
+      }
+    },
+    onTypeChange(type) {
+			this.$emit('onTypeChange', type)
+		},
     open() {
       this.showLogDialog = true
     }

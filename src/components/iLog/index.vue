@@ -17,6 +17,7 @@
 					<el-form-item :label="'操作类型'">
 						<iSelect
 							v-model="query.type"
+							@change="onTypeChange"
 							filterable
 							placeholder="请选择（支持搜索）"
 						>
@@ -263,7 +264,7 @@ export default {
 			this.query.bizId = this.bizId
 			const extendParams = this.extendParams || {}
 			const sendData = {
-				extendFields: { ...this.query, ...extendParams },
+				extendFields: { ...extendParams, ...this.query },
 			}
 			if (this.isPage) {
 				sendData.current = this.page.currPage - 1
@@ -279,6 +280,9 @@ export default {
 			this.page.currPage = val
 			this.getList()
 		},
+		onTypeChange(type) {
+			this.$emit('onTypeChange', type)
+		}
 	},
 }
 </script>
