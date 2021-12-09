@@ -347,7 +347,9 @@ export default {
     // 计算人工成本
     computeLaborCost(originValue, originKey, row) {
       let laborCost = null
-      if((row.directLaborRate || row.directLaborRate===0)&&(row.directLaborQuantity || row.directLaborQuantity===0)&&(row.taktTime || row.taktTime===0)&&(row.taktTimeNumber || row.taktTimeNumber===0)&&(row.indirectManufacturingRate || row.indirectManufacturingRate===0)){
+      if((row.directLaborRate || row.directLaborRate===0)&&(row.directLaborQuantity || row.directLaborQuantity===0)&&(row.taktTime || row.taktTime===0)&&
+      // (row.taktTimeNumber || row.taktTimeNumber===0)&&
+      (row.indirectManufacturingRate || row.indirectManufacturingRate===0)){
         laborCost = math.chain(math.bignumber(row.directLaborRate || 0))
         .multiply(math.bignumber(row.directLaborQuantity || 0))
         .multiply(math.bignumber(row.taktTime || 0))
@@ -370,7 +372,9 @@ export default {
     // 计算设备成本
     computeDeviceCost(originValue, originKey, row) {
       let deviceCost = null
-      if((row.deviceRate || row.deviceRate===0)&&(row.taktTime || row.taktTime===0)&&(row.taktTimeNumber || row.taktTimeNumber===0)&&(row.indirectManufacturingRate || row.indirectManufacturingRate===0)){
+      if((row.deviceRate || row.deviceRate===0)&&(row.taktTime || row.taktTime===0)&&
+      // (row.taktTimeNumber || row.taktTimeNumber===0)&&
+      (row.indirectManufacturingRate || row.indirectManufacturingRate===0)){
         deviceCost = math.chain(math.bignumber(row.deviceRate || 0))
         .multiply(math.bignumber(row.taktTime || 0))
         .divide(3600)
