@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-11-29 18:40:25
+ * @LastEditTime: 2021-12-09 16:33:54
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -313,8 +313,14 @@ export default {
         tableTitle.push({props:'items'+indexs,name:r.typeDesc})
       })
       return {
-        tableTitle:tableTitle,
+        tableTitle:[...[{props:'items',name:''}],...tableTitle],
         tabelData:[
+          {'items':{
+            quotation:'当前报价',
+            bidding:'竞价结果',
+            result:'差距百分比',
+            isColor:false,
+          }},
           tabelData,
           tabelData,
           tabelData

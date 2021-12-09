@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-02-24 09:42:07
- * @LastEditTime: 2021-11-25 01:13:00
+ * @LastEditTime: 2021-12-09 16:36:04
  * @LastEditors: Please set LastEditors
  * @Description: 零件签收-table组件。
  * @FilePath: \front-supplier\src\views\rfqManageMent\workingRfq\components\tableList\index.vue
@@ -135,7 +135,7 @@
           <!---------------------------bidding---------------------------->
           <template v-else-if='items.props.indexOf("items") > -1'>
               <span v-if='scope.$index == 0'>{{(scope.row[items.props]).quotation}}</span>
-              <span v-if='scope.$index == 1'>{{(scope.row[items.props]).bidding}}</span>
+              <span v-if='scope.$index == 1'>{{fixTo2((scope.row[items.props]).bidding)}}</span>
               <span v-if='scope.$index == 2' :class="{redClass:(scope.row[items.props]).isColor}">{{(scope.row[items.props]).result}}</span>
           </template>
           <template v-else>
@@ -192,6 +192,13 @@ export default{
     }
   },
   methods:{
+    fixTo2(val){
+      if(parseFloat(val)){
+        return parseFloat(val).toFixed(2)
+      }else{
+        return ''
+      }
+    },
     isEmptyPriceCompute(keys, row) {
       return !(keys.some(key => row[key] || row[key] === 0))
     },
