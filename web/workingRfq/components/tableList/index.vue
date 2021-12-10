@@ -200,7 +200,7 @@ export default{
       }
     },
     isEmptyPriceCompute(keys, row) {
-      return !(keys.some(key => row[key] || row[key] === 0))
+      return keys.every(key => !row[key] || row[key] == 0)
     },
     /**
      * @description:组合表头翻译 
@@ -217,7 +217,9 @@ export default{
       // }
     },
     getBallPrice(a,b){
-      const result = (Aprice.every(key => b[key] === null || b[key] === undefined)) ? getAallPrice(a,b, "B", b.totalPrice) : getAallPrice(a,b)
+      console.log("(Aprice.every(key => b[key] === null || b[key] === undefined))", (Aprice.every(key => b[key] === null || b[key] === undefined)))
+
+      const result = (Aprice.every(key => !b[key] || b[key] == 0)) ? getAallPrice(a,b, "B", b.totalPrice) : getAallPrice(a,b)
       
       this.$set(b, "totalPriceBprice", result)
       return result
