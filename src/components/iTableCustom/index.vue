@@ -1,3 +1,4 @@
+/* eslint-disable vue/no-dupe-keys */
 <template>
 	<div
 		class="i-table-custom"
@@ -219,9 +220,13 @@ export default {
 	// eslint-disable-next-line vue/no-unused-components
 	components: {
 		iTableColumn,
+		// eslint-disable-next-line vue/no-unused-components
 		iButton,
+		// eslint-disable-next-line vue/no-unused-components
 		iSelect,
+		// eslint-disable-next-line vue/no-unused-components
 		iInput,
+		// eslint-disable-next-line vue/no-unused-components
 		iRadio,
 		Icon,
 		iTableHeaderSorter,
@@ -398,6 +403,7 @@ export default {
 			}
 			return this.columns.filter((e) => !this.unCols.includes(e.prop))
 		},
+		// eslint-disable-next-line vue/no-dupe-keys
 		env() {
 			return window.sessionStorage.getItem('env') || ''
 		},
@@ -906,7 +912,7 @@ export default {
 				http.open('POST', url, true)
 				http.setRequestHeader('content-type', 'application/json')
 				http.setRequestHeader('token', this.getCookie('token'))
-				http.onreadystatechange = (res) => {
+				http.onreadystatechange = () => {
 					if (http.readyState === 4 && http.status == 200) {
 						const response = JSON.parse(http.responseText)
 						if (response.code === '200') {
