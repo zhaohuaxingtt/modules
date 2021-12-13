@@ -582,7 +582,8 @@ export default {
       //   this.saveLoading = false
       // }
     },
-    handlePartChange(partNum) {
+    async handlePartChange(partNum) {
+      await this.getPartsQuotations()
       const part = this.parts.filter(item => item.value === partNum)[0]
       this.partInfo = cloneDeep(part)
       this.partNum = partNum

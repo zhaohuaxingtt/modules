@@ -13,7 +13,7 @@
     v-loading='tableLoading'
     :height="height"
     :data='tableData'
-    :empty-text="$t('LK_ZANWUSHUJU')"
+    :empty-text="language('ZANWUSHUJU', '暂无数据')"
     :class="{'moviesTable': true, 'radio': radio}"
     :cell-style="borderLeft"
     :span-method="spanMethod"
