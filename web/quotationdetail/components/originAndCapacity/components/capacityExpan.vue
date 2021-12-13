@@ -15,7 +15,7 @@
         :data='dataList'
         width="100%"
         default-expand-all
-        :empty-text="language('LK_ZANWUSHUJU','暂无数据')"
+        :empty-text="language('ZANWUSHUJU','暂无数据')"
         class="capacityTable">
         <el-table-column
           align='center'
