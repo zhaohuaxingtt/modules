@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-02-24 09:42:07
- * @LastEditTime: 2021-12-09 16:36:04
+ * @LastEditTime: 2021-12-14 22:13:31
  * @LastEditors: Please set LastEditors
  * @Description: 零件签收-table组件。
  * @FilePath: \front-supplier\src\views\rfqManageMent\workingRfq\components\tableList\index.vue
@@ -196,7 +196,7 @@ export default{
       if(parseFloat(val)){
         return parseFloat(val).toFixed(2)
       }else{
-        return ''
+        return val
       }
     },
     isEmptyPriceCompute(keys, row) {
