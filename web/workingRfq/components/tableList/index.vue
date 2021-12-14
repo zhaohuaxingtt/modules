@@ -7,7 +7,7 @@
  * @FilePath: \front-supplier\src\views\rfqManageMent\workingRfq\components\tableList\index.vue
 -->
 <template>
-  <el-table class="table" fit tooltip-effect='light' :height="height" :data='tableData' v-loading='tableLoading' @selection-change="handleSelectionChange" :empty-text="language('LK_ZANWUSHUJU', '暂无数据')" ref="moviesTable" :class="radio && 'radio'">
+  <el-table class="table" fit tooltip-effect='light' :height="height" :data='tableData' v-loading='tableLoading' @selection-change="handleSelectionChange" :empty-text="language('ZANWUSHUJU', '暂无数据')" ref="moviesTable" :class="radio && 'radio'">
     <el-table-column v-if="selection && hasList(tableTitle)" type='selection' width="55" align='center'></el-table-column>
     <el-table-column v-if='indexKey && hasList(tableTitle)' type='index' width='50' align='center' label='#'>
       <template slot-scope="scope">
