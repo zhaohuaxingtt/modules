@@ -7,7 +7,7 @@
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\tableList.vue
 -->
 <template>
-  <el-table ref="table"   :class="singleSelect ? 'singleSelectTable' : ''"  tooltip-effect="light" :height="height" :data="tableData" :cell-class-name="cellClassName" v-loading="tableLoading" @selection-change="handleSelectionChange" :empty-text="language('LK_ZANWUSHUJU', '暂无数据')" :span-method="spanMethod">
+  <el-table ref="table"   :class="singleSelect ? 'singleSelectTable' : ''"  tooltip-effect="light" :height="height" :data="tableData" :cell-class-name="cellClassName" v-loading="tableLoading" @selection-change="handleSelectionChange" :empty-text="language('ZANWUSHUJU', '暂无数据')" :span-method="spanMethod">
     <el-table-column v-if="selection" type="selection" width="55" align="center"  :fixed="fixed"></el-table-column>
     <el-table-column v-if="index" type="index" align="center" :label="indexLabel"  :fixed="fixed"></el-table-column>
     <template v-for="item in tableTitle">

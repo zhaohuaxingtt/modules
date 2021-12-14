@@ -16,7 +16,7 @@
       v-else-if="title || $slots['header-control'] || headerControl"
       >
         <span v-if="title" class="title">
-          {{ title }}
+          <span v-html='title' class="title_content" @click="emitTile()"></span>  
           <span v-if="isRequired" class="required">*</span>  
         </span>
         
@@ -75,6 +75,9 @@ export default {
     }
   },
   methods: {
+    emitTile(){
+      this.$emit('handleTitle',this)
+    },
     handleCollapse() {
       this.collapseValue = !this.collapseValue
       this.$emit('handleCollapse', this.collapseValue)

@@ -37,6 +37,7 @@ import Sortable from 'sortablejs'
 import iButton from '../iButton/index.vue'
 import iDialog from '../iDialog/index.vue'
 import icon from '../icon/index.vue'
+// eslint-disable-next-line no-unused-vars
 import _ from 'lodash'
 export default {
 	components: {
@@ -103,6 +104,7 @@ export default {
 		handleOpened() {
 			const dataSource = this.deepClone(this.data)
 			dataSource.forEach((e) => {
+				// eslint-disable-next-line no-prototype-builtins
 				if (!e.hasOwnProperty('isHidden')) {
 					e.isHidden = false
 				}
