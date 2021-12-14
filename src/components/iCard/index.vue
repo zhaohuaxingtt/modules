@@ -16,7 +16,7 @@
       v-else-if="title || $slots['header-control'] || headerControl"
       >
         <span v-if="title" class="title">
-          <span v-html='title' class="title_content" @click="$emit('handleTitle')"></span>  
+          <span v-html='title' class="title_content" @click="$emit('handleTitle',this)"></span>  
           <span v-if="isRequired" class="required">*</span>  
         </span>
         
