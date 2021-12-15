@@ -169,8 +169,8 @@ export default {
     }
   },
   filters: {
-    statusFilter(value) {
-      return value === "Y" ? "是" : "否"
+    statusFilter(value) { // true || false
+      return value ? "是" : "否"
     }
   },
   created() {
