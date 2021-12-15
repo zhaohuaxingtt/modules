@@ -110,7 +110,7 @@ export default {
       getSupplierToken({ supplierId: this.userInfo.supplierId || this.$route.query.supplierId })
       .then(res => {
         if (res.code == 200) {
-          window.open(`${ window.origin }/supplier/#/supplier/supplierDetail?supplierToken=${ res.data }&supplierType=4`,'_blank')
+          window.open(`${ window.origin }/site/#/supplier/supplierDetail?supplierToken=${ res.data }&supplierType=4`,'_blank')
         }
       })
       .catch(() => {})
