@@ -144,7 +144,7 @@ export default {
 		dicApiPrefix() {
 			const baseMap = {
 				'': '/baseApi/web',
-				dev: '/baseApi/web',
+				dev: '/baseinfo/web',
 				sit: '/baseApi/web',
 				vmsit: '/baseApi/web',
 				uat: '/baseApi/web',
