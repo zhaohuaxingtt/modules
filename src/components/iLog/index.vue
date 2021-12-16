@@ -144,12 +144,12 @@ export default {
 		},
 		dicApiPrefix() {
 			const baseMap = {
-				'': '/baseinfo/web',
+				'': '/baseApi/web',
 				dev: '/baseinfo/web',
-				sit: '/baseinfo/web',
-				vmsit: '/baseinfo/web',
-				uat: '/baseinfo/web',
-				production: '/baseinfo/web',
+				sit: '/baseApi/web',
+				vmsit: '/baseApi/web',
+				uat: '/baseApi/web',
+				production: '/baseApi/web',
 			}
 			return baseMap[this.appEnv.toLowerCase()] || '/baseinfo/web'
 		},
