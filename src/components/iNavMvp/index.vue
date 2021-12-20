@@ -205,6 +205,7 @@ export default {
 			}
 		},
 		clickMessage(item, e) {
+			return // 暂时取消跳转
 			this.$emit('message', item)
 			e.stopPropagation()
 		},
