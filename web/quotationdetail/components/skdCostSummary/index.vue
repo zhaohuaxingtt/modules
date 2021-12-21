@@ -278,11 +278,9 @@ export default {
       this.$set(row, "salesPrice", salesPrice)
     },
     visibleChange(list) {
-      const {isSkd = false} = this;
       if (this.copyParts.length) {
         iMessageBox(this.language("NINQUEDINGYAOJIANGBAOJIADANFUZHIDAOXUANZHONGDELINGJIANZHONGMA", "您确定要将报价单复制到选中的零件中吗？")).then(() => {
-           if(isSkd) this.copyPartsQuotationSkd()
-           else this.copyPartsQuotation()
+           this.copyPartsQuotationSkd()
         }).catch(() => {
           this.copyParts = []
         })
@@ -290,6 +288,8 @@ export default {
     },
     copyPartsQuotationSkd() {
       this.copyLoading = true
+      
+      const {isSkd = false} = this;
 
       copyPartsQuotationSkd({
         partNums: this.copyParts,
@@ -299,8 +299,14 @@ export default {
         const message = this.$i18n.locale === "zh" ? res.desZh : res.desEn
         
         if (res.code == 200) {
-          this.copyParts = []
-          iMessage.success(message)
+          if(!isSkd){
+            this.copyLoading = false;
+            this.copyPartsQuotation();
+          }else{
+            this.copyParts = []
+            iMessage.success(message)
+          }
+          
         } else {
           iMessage.error(message)
         }
