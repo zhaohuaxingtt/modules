@@ -5,7 +5,6 @@
       class="side-menu-link 1"
       :class="{ active: isActive, disabled: !item.url }"
       :to="{ path: item.url }"
-      :target="item.target"
       @click.native="handleRouterClick"
     >
       <icon
@@ -29,7 +28,6 @@
       v-else
       :href="itemUrl"
       :class="{ active: isActive, disabled: !item.url }"
-      :target="item.target"
       class="side-menu-link 2"
       @click.stop="handleRouterClick"
     >
