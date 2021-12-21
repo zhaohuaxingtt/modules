@@ -627,23 +627,31 @@ export default {
       this.setApriceChange()
     },
     setApriceChange() {
+      let list = []
       let cbdTotal = this.cbdSummaryTableData[0].apriceChange
-      if (!this.isChange && !this.cbdCanEdit) this.apriceChange = this.$refs.changeSummary.total
-
+      if (!this.isChange && !this.cbdCanEdit) {
+          // this.apriceChange = this.$refs.changeSummary.total
+          list = [this.apriceChange,this.$refs.changeSummary.total]
+      }
       if (!this.isChange && this.cbdCanEdit) {
-        if (this.$refs.changeSummary.tableListData.length) {
-          if(cbdTotal!=null){
-            this.apriceChange = +this.$refs.changeSummary.total > +cbdTotal ? cbdTotal : this.$refs.changeSummary.total
-          }else{
-            this.apriceChange = +this.$refs.changeSummary.total
-          }
-        } else {
-          this.apriceChange = cbdTotal
-        }
+        // if (this.$refs.changeSummary.tableListData.length) {
+        //   if(cbdTotal!=null){
+        //     this.apriceChange = +this.$refs.changeSummary.total > +cbdTotal ? cbdTotal : this.$refs.changeSummary.total
+        //   }else{
+        //     this.apriceChange = +this.$refs.changeSummary.total
+        //   }
+        // } else {
+        //   this.apriceChange = cbdTotal
+        // }
+        list = [this.apriceChange,this.$refs.changeSummary.total,cbdTotal]
       }
 
-      if (this.isChange && !this.cbdCanEdit) this.apriceChange = 0
-      this.apriceChange = this.floatNum(this.apriceChange)
+      if (this.isChange && !this.cbdCanEdit){
+        // this.apriceChange = 0
+        list = [0]
+      }
+      let apriceChange = Math.min(...list.filter(i=> i!=null))
+      this.apriceChange = this.floatNum(apriceChange)
       this.apriceChangeDisabled = !+this.apriceChange
       this.$emit("updateApriceChange", this.apriceChange)
     },
