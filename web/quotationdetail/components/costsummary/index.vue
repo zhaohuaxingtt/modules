@@ -1275,8 +1275,15 @@ export default{
         })
       } else {
         if (this.isSkdLc) {
-          if (+moment(this.$refs.skdCostSummary.skdStartProductDate) > +moment(this.allTableData.startProductDate)) throw iMessage.warn(this.language("LCQIBUSHENGCHANRIQIBUNENGXIAOYUSKDQIBUSHENGCHANRIQI", "LC起步生产日期不能小于SKD起步生产日期"))
-          if (!moment(this.allTableData.startProductDate).isAfter(moment(this.$refs.skdCostSummary.skdStartProductDate), "month")) throw iMessage.warn(this.language("SKDAFTERLCNOTMONTH", "LC起步生产日期必须是SKD起步生产日期所在月份之后的日期"))
+          if (+moment(this.$refs.skdCostSummary.skdStartProductDate) > +moment(this.allTableData.startProductDate)) {
+            this.allTableData.startProductDate = ""
+            throw iMessage.warn(this.language("SKDQIBUSHENGCHANSHIJIANBUKEWANYULCQIBUSHENGCHANSHIJIAN", "SKD起步生产时间不可晚于LC起步生产时间，请重新输入"))
+            // throw iMessage.warn(this.language("LCQIBUSHENGCHANRIQIBUNENGXIAOYUSKDQIBUSHENGCHANRIQI", "LC起步生产日期不能小于SKD起步生产日期"))
+          }
+          if (!moment(this.allTableData.startProductDate).isAfter(moment(this.$refs.skdCostSummary.skdStartProductDate), "month")) {
+            this.allTableData.startProductDate = ""
+            throw iMessage.warn(this.language("SKDAFTERLCNOTMONTH", "LC起步生产日期必须是SKD起步生产日期所在月份之后的日期，请重新输入"))
+          }
 
           return Promise.all([
             this.$refs.skdCostSummary.save(),
