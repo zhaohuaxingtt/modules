@@ -1,8 +1,8 @@
 <!--
  * @Author: Luoshuang
  * @Date: 2021-05-27 15:56:15
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-07-12 19:30:08
+ * @LastEditors: Hao,Jiang
+ * @LastEditTime: 2021-12-22 16:05:46
  * @Description: 报价备注与附件
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\remarksAndAttachment\index.vue
 -->
@@ -10,7 +10,7 @@
 <template>
   <div>
     <iCard :title="language('LK_BAOJIABEIZHU', '报价备注')" v-loading="remarkLoading">
-      <iEditor :showMenus="false" v-model="remark" :height="120" :disabled="disabled" autoHeight/>
+      <iEditor :menus=[] v-model="remark" :height="120" :disabled="disabled" autoHeight ref="editor" />
       <!-- <iInput type="textarea" :rows="6" resize="none" :placeholder="$t('LK_QINGSHURUBEIZHU')"></iInput> -->
     </iCard>
     <iCard class="sampleDelivery margin-top20">
@@ -108,6 +108,8 @@ export default {
       .then(res => {
         if (res.code == 200) {
           this.remark = res.data.remark
+          this.$refs.editor.html(this.remark)
+          
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
         }

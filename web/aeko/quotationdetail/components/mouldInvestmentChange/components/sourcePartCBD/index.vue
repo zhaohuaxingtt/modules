@@ -139,6 +139,7 @@ export default {
 	.header-control {
 		.btn {
 			display: inline-block;
+      position: static;
 		}
 	}
 

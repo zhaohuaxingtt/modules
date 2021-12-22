@@ -36,7 +36,7 @@
       </el-form>
 
       <el-button :loading="loading" class="button" @click="login">
-        {{ language('登录') }}
+        {{ language('LK_DENGLU', '登录') }}
       </el-button>
     </div>
   </div>
