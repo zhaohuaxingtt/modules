@@ -87,7 +87,7 @@ import { iCard, iFormGroup, iFormItem, iSelect, iText, iDatePicker, iInput, iMes
 import tableList from "rise/web/quotationdetail/components/tableList"
 import percentage from "./components/percentage"
 import { tableTitle } from "./components/data"
-import { getSkdCostSummary, saveSkdCostSummary, getPartsQuotationsSkd, copyPartsQuotationSkd, getIsAutoCal } from "@/api/rfqManageMent/quotationdetail"
+import { getSkdCostSummary, saveSkdCostSummary, getPartsQuotationsSkd, copyPartsQuotationSkd, getIsAutoCal,copyPartsQuotation } from "@/api/rfqManageMent/quotationdetail"
 import { handleInputByNumber } from "../data"
 import { uuidv4 } from "rise/web/aeko/quotationdetail/components/aPriceChange/components/data"
 
@@ -109,6 +109,10 @@ export default {
     showTitle: {
       type: Boolean,
       default: false
+    },
+    isSkd:{
+      type:Boolean,
+      default:false,
     }
   },
   data() {
@@ -281,7 +285,7 @@ export default {
     visibleChange(list) {
       if (this.copyParts.length) {
         iMessageBox(this.language("NINQUEDINGYAOJIANGBAOJIADANFUZHIDAOXUANZHONGDELINGJIANZHONGMA", "您确定要将报价单复制到选中的零件中吗？")).then(() => {
-          this.copyPartsQuotationSkd()
+           this.copyPartsQuotationSkd()
         }).catch(() => {
           this.copyParts = []
         })
@@ -289,12 +293,39 @@ export default {
     },
     copyPartsQuotationSkd() {
       this.copyLoading = true
+      
+      const {isSkd = false} = this;
 
       copyPartsQuotationSkd({
         partNums: this.copyParts,
         quotationId: this.partInfo.quotationId
       })
       .then(res => {
+        const message = this.$i18n.locale === "zh" ? res.desZh : res.desEn
+        
+        if (res.code == 200) {
+          if(!isSkd){
+            this.copyLoading = false;
+            this.copyPartsQuotation();
+          }else{
+            this.copyParts = []
+            iMessage.success(message)
+          }
+          
+        } else {
+          iMessage.error(message)
+        }
+      })
+      .finally(() => this.copyLoading = false)
+    },
+
+    //LC
+    copyPartsQuotation(){
+      this.copyLoading = true
+      copyPartsQuotation({
+        partNums: this.copyParts,
+        quotationId: this.partInfo.quotationId
+      }).then(res => {
         const message = this.$i18n.locale === "zh" ? res.desZh : res.desEn
         
         if (res.code == 200) {

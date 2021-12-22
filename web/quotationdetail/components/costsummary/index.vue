@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-04-23 15:34:10
- * @LastEditTime: 2021-11-25 12:02:34
+ * @LastEditTime: 2021-12-21 17:10:12
  * @LastEditors: Please set LastEditors
  * @Description: 报价成本汇总界面          
                   1）对于用户来说，在报价详情页通用的功能键包括“保存”、“下载”和“上传报价”
@@ -14,11 +14,11 @@
 
 <template>
   <div v-if="isSkd">
-    <skdCostSummary ref="skdCostSummary" :partInfo="partInfo" :disabled="disabled" />
+    <skdCostSummary :isSkd="true" ref="skdCostSummary" :partInfo="partInfo" :disabled="disabled" />
   </div>
   <div v-else>
     <div v-if="isSkdLc" class="margin-bottom20">
-      <skdCostSummary ref="skdCostSummary" :partInfo="partInfo" :disabled="disabled" showTitle />
+      <skdCostSummary :isSkd="false" ref="skdCostSummary" :partInfo="partInfo" :disabled="disabled" showTitle />
     </div>
     <!---partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU----->
     <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || partInfo.priceStatus == 'DB'">
@@ -1275,8 +1275,15 @@ export default{
         })
       } else {
         if (this.isSkdLc) {
-          if (+moment(this.$refs.skdCostSummary.skdStartProductDate) > +moment(this.allTableData.startProductDate)) throw iMessage.warn(this.language("LCQIBUSHENGCHANRIQIBUNENGXIAOYUSKDQIBUSHENGCHANRIQI", "LC起步生产日期不能小于SKD起步生产日期"))
-          if (!moment(this.allTableData.startProductDate).isAfter(moment(this.$refs.skdCostSummary.skdStartProductDate), "month")) throw iMessage.warn(this.language("SKDAFTERLCNOTMONTH", "LC起步生产日期必须是SKD起步生产日期所在月份之后的日期"))
+          if (+moment(this.$refs.skdCostSummary.skdStartProductDate) > +moment(this.allTableData.startProductDate)) {
+            this.allTableData.startProductDate = ""
+            throw iMessage.warn(this.language("SKDQIBUSHENGCHANSHIJIANBUKEWANYULCQIBUSHENGCHANSHIJIAN", "SKD起步生产时间不可晚于LC起步生产时间，请重新输入"))
+            // throw iMessage.warn(this.language("LCQIBUSHENGCHANRIQIBUNENGXIAOYUSKDQIBUSHENGCHANRIQI", "LC起步生产日期不能小于SKD起步生产日期"))
+          }
+          if (!moment(this.allTableData.startProductDate).isAfter(moment(this.$refs.skdCostSummary.skdStartProductDate), "month")) {
+            this.allTableData.startProductDate = ""
+            throw iMessage.warn(this.language("SKDAFTERLCNOTMONTH", "LC起步生产日期必须是SKD起步生产日期所在月份之后的日期，请重新输入"))
+          }
 
           return Promise.all([
             this.$refs.skdCostSummary.save(),
