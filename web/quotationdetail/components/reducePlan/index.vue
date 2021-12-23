@@ -11,7 +11,7 @@
 				<span class="tip margin-left10">{{ language("JIANGJIAJISUANYIJINGWAICHUCHANGJIAWEIZHUN", "降价计算以境外出厂价为准") }}</span>
 			</span>
             <span v-else-if="isSkdLc">
-				<span class="tip margin-left10">{{ language("SKDBUFENYIJINGWAICHUCHANGJIAWEIZHUN", "SKD部分以境外出厂价为准") }}，{{ language("LCBUFENYIAJIAWEIZHUN", "LC部分以A价为准") }}</span>
+				<span class="tip margin-left10">{{ language("SKDBUFENYICHUCHANGJIAWEIZHUN", "SKD部分以出厂价为准") }}，{{ language("LCBUFENYIAJIAWEIZHUN", "LC部分以A价为准") }}</span>
 			</span>
 			<span v-else>
 				<span v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || partInfo.priceStatus == 'DB'">
