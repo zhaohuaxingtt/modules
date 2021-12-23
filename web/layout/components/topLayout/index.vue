@@ -16,7 +16,7 @@
         :userInfo="userInfo"
         :menus="menus"
         :activeMenu="activeMenu"
-        @click-menu="$emit('click-menu')"
+        @click-menu="clickMenu"
       />
       <div class="language" @click="handleChangeLang">
         <icon
@@ -96,6 +96,14 @@ export default {
     this.socketVm && this.socketVm.close()
   },
   methods: {
+    clickMenu(val){
+      if(val == 'logout'){
+        this.$emit('click-menu',val)
+      }else{
+        this.$emit('click-menu')
+      }
+            
+    },
     //模拟退出登录方法
     loginOut() {
       removeToken()

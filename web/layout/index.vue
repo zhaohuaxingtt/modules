@@ -1,7 +1,7 @@
 <!--
  * @Author: yuszhou
  * @Date: 2020-07-22 14:56:34
- * @LastEditTime: 2021-12-01 14:07:39
+ * @LastEditTime: 2021-12-06 19:43:33
  * @LastEditors: Please set LastEditors
  * @Description: 项目默认layout
  * @FilePath: \test\src\layout\default.vue
@@ -12,7 +12,7 @@
 			:menus="menus_admin"
 			:active-menu="activeMenu"
 			@click-menu="handleClickAdminMenu"
-		></topLayout>
+		/>
 		<leftLayout
 			ref="leftLayout"
 			:menus="menus"
@@ -34,48 +34,41 @@
 		</leftLayout>
 		<div class="app-content" :class="{ keepAlive: $route.meta.keepAlive }">
 			<keep-alive>
-				<router-view v-if="$route.meta.keepAlive" :key="$route.fullPath">
-				</router-view>
+				<router-view v-if="$route.meta.keepAlive" :key="$route.fullPath" />
 			</keep-alive>
 			<router-view v-if="!$route.meta.keepAlive" :key="$route.fullPath" />
 			<div
 				v-if="menuModelVisible"
-				class="app-menu-model"
+				class="app-menu-madel"
 				@click="hideSideMenu"
 			></div>
 		</div>
-		<div class="btn-button" @click="handleShow">
-			<!-- <img src="~@/assets/images/leftContent.png" alt="" /> -->
-			<img :src="!contentShowFlag ? popurIcon : activePopurIcon" alt="" />
-		</div>
-		<div class="povper-content" v-show="contentShowFlag">
-			<div v-for="(list, index) in popoverList" :key="index">
-				<div class="item-content" @click="handleClick(list)">
-					<div>
-						<img src="./assets/images/partLifyCycle.svg" class="img" />
-					</div>
-					<div class="text">{{ list.name }}</div>
-				</div>
-			</div>
-			<!-- <div class="item-content">零件寿命周期</div>
-      <div class="item-content">外部数据查询</div>
-      <div class="item-content" >用户助手</div> -->
-		</div>
+		<RightBottom
+			:contentShowFlag="contentShowFlag"
+			@handleSelect="handleSelect"
+			@handleShow="handleShow"
+		/>
+		<layoutNotify ref="popupNotify" />
 	</div>
 </template>
 <script>
 import topLayout from './components/topLayout/'
 import LeftLayout from './components/leftLayout'
+import RightBottom from './components/rightBottom.vue'
 import sideMenu from './components/sideMenu'
 import myModules from './components/myModules'
 import { arrayToTree, treeToArray } from '@/utils'
-import { popoverList } from './components/data.js'
-
-import popurIcon from './assets/images/leftContent.png'
-import activePopurIcon from './assets/images/active-popur.svg'
+import layoutNotify from './components/notify'
 
 export default {
-	components: { topLayout, LeftLayout, sideMenu, myModules },
+	components: {
+		topLayout,
+		LeftLayout,
+		sideMenu,
+		myModules,
+		layoutNotify,
+		RightBottom,
+	},
 	props: {
 		menus: {
 			type: Array,
@@ -100,17 +93,9 @@ export default {
 				RISE_ADMIN: ['', ''],
 			},
 			menuModelVisible: false,
-			popoverList,
 			contentShowFlag: false,
 			activeMenu: [],
-			popurIcon,
-			activePopurIcon,
 		}
-	},
-	watch: {
-		'$route.path'() {
-			this.setActiveMenu()
-		},
 	},
 	computed: {
 		// eslint-disable-next-line no-undef
@@ -130,6 +115,11 @@ export default {
 			return []
 		},
 	},
+	watch: {
+		'$route.path'() {
+			this.setActiveMenu()
+		},
+	},
 	created() {
 		/* this.$nextTick(()=>{
       this.$refs.popupNotify.getPopupItemList()
@@ -138,15 +128,38 @@ export default {
 		this.menus && this.menus.length ? this.getMenus() : this.getMenuList()
 		this.setActiveMenu()
 	},
+	mounted() {
+		document.body.addEventListener('click', () => {
+			this.contentShowFlag = false
+		})
+	},
 	methods: {
 		setActiveMenu() {
-			const meta = this.$route.meta
-			if (meta) {
+			const { meta, matched } = this.$route
+			if (meta && meta.activeMenu && meta.activeMenu.length) {
 				this.activeMenu = meta.activeMenu || []
+			} else {
+				let parentMeta = []
+				matched.forEach((e) => {
+					const matchedMeta = e.meta
+					if (
+						matchedMeta.activeMenu &&
+						matchedMeta.activeMenu.length &&
+						!parentMeta.length
+					) {
+						parentMeta = matchedMeta.activeMenu
+					}
+				})
+				this.activeMenu = parentMeta
 			}
 		},
-		handleShow() {
-			this.contentShowFlag = !this.contentShowFlag
+		handleShow(va) {
+			this.contentShowFlag = !va
+		},
+		handleSelect(list) {
+			console.log(list, 'llll')
+			let activeMenu = this.$route.meta?.activeMenu || []
+			this.$router.push({ name: list.key, params: { currentMenu: activeMenu } })
 		},
 		getMenus() {
 			const menuMap = this.getMenusMap(this.menuList)
@@ -174,7 +187,7 @@ export default {
 					item.url =
 						(process.env.VUE_APP_HOST
 							? process.env.VUE_APP_HOST
-							: window.location.origin) + item.url //item.url.slice(9)//
+							: window.location.origin) + item.url
 				} else {
 					item.url = item.url || ''
 				}
@@ -231,9 +244,16 @@ export default {
 			this.menuModelVisible = val
 		},
 		handleClick(list) {
-			this.$router.push(list.path)
+			this.$router.push({
+				name: list.key,
+				params: { currentUrl: window.location.href },
+			})
+			// this.$router.push(list.path)
 		},
-		handleClickAdminMenu() {
+		handleClickAdminMenu(val) {
+			if (val == 'logout') {
+				this.$refs.popupNotify.clearNotify(val)
+			}
 			console.log('点击了admin 菜单')
 			this.$refs.leftLayout.activeIndex = ''
 		},
@@ -253,8 +273,8 @@ export default {
 	}
 	.povper-content {
 		position: fixed;
-		bottom: 40px;
-		right: 120px;
+		bottom: 120px;
+		right: 50px;
 		background-color: #fff;
 		border-radius: 10%;
 		box-shadow: 10px 10px 5px #e0e4ec;
@@ -262,6 +282,7 @@ export default {
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
+		z-index: 999;
 		.item-content {
 			display: flex;
 			flex-direction: row;
@@ -284,13 +305,14 @@ export default {
 		position: fixed;
 		bottom: 40px;
 		right: 50px;
+		z-index: 999;
 
 		img {
-			height: 50px;
-			width: 50px;
+			height: 60px;
+			width: 60px;
 		}
 	}
-	.app-menu-model {
+	.app-menu-madel {
 		position: absolute;
 		width: 100%;
 		height: 100%;
