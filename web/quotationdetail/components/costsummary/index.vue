@@ -1368,6 +1368,21 @@ export default{
     // 删除行ByRawMaterial
     handleDelByRawMaterial() {
       this.allTableData.rawMaterial.records = this.allTableData.rawMaterial.records.filter(item => !this.multipleSelectionByRawMaterial.includes(item))
+    
+      if (this.allTableData.level == 2) {
+        this.handleInputByRawMaterialL2()
+        this.handleInputByMakeCostL2()
+        this.handleInputByDiscardCostL2()
+        this.handleInputByManageFeeL2()
+        this.handleInputByProfitL2()
+      }
+        
+      if (this.allTableData.level == 3) {
+        this.handleInputByRawMaterialL3()
+        this.handleInputByMakeCostL3()
+        this.handleInputByManageFeeL3()
+        this.handleInputByProfitL3()
+      }
     },
 
     handleSelectionChangeByMakeCost(list) {
@@ -1382,14 +1397,31 @@ export default{
     // 删除行ByMakeCost
     handleDelByMakeCost() {
       this.allTableData.makeCost.records = this.allTableData.makeCost.records.filter(item => !this.multipleSelectionByMakeCost.includes(item))
+      
+      if (this.allTableData.level == 2) {
+        this.handleInputByRawMaterialL2()
+        this.handleInputByMakeCostL2()
+        this.handleInputByDiscardCostL2()
+        this.handleInputByManageFeeL2()
+        this.handleInputByProfitL2()
+      }
+        
+      if (this.allTableData.level == 3) {
+        this.handleInputByRawMaterialL3()
+        this.handleInputByMakeCostL3()
+        this.handleInputByManageFeeL3()
+        this.handleInputByProfitL3()
+      }
     },
 
     // L2计算
     handleInputByRawMaterialL2(value, row) {
-      this.$set(row, "indirectMaterialCost", math.evaluate(`${ row.unitPrice || 0 } * ${ row.quantity || 0 }`).toFixed(2))
-      this.$set(row, "materialManageCost", math.evaluate(`${ row.indirectMaterialCost || 0 } * (${ row.materialManageCostRate || 0 } / 100)`).toFixed(2))
-      this.$set(row, "materialCost", math.evaluate(`${ row.indirectMaterialCost || 0 } + ${ row.materialManageCost || 0 }`).toFixed(2))
-
+      if (row) {
+        this.$set(row, "indirectMaterialCost", math.evaluate(`${ row.unitPrice || 0 } * ${ row.quantity || 0 }`).toFixed(2))
+        this.$set(row, "materialManageCost", math.evaluate(`${ row.indirectMaterialCost || 0 } * (${ row.materialManageCostRate || 0 } / 100)`).toFixed(2))
+        this.$set(row, "materialCost", math.evaluate(`${ row.indirectMaterialCost || 0 } + ${ row.materialManageCost || 0 }`).toFixed(2))
+      }
+      
       this.materialSummaryL2 = 0 // 头表原材料/散件
       this.materialSummaryL2ByFalse = 0 // 原材料/散件 by SVW指定价格散件为否
 
@@ -1406,9 +1438,11 @@ export default{
     },
 
     handleInputByMakeCostL2(value, row) {
-      this.$set(row, "indirectManufacturingAmount", math.evaluate(`(${ row.deviceRate || 0 } + ${ row.directLaborRate || 0 } * ${ row.directLaborQuantity || 0 }) * ${ row.taktTime || 0 } / 3600 / ${ row.taktTimeNumber ? row.taktTimeNumber : 1 } * (${ row.indirectManufacturingRate || 0 } / 100)`).toFixed(2))
-      this.$set(row, "laborCost", math.evaluate(`${ row.directLaborRate || 0 } * ${ row.directLaborQuantity || 0 } * ${ row.taktTime || 0 } / 3600 / ${ row.taktTimeNumber ? row.taktTimeNumber : 1 } * (1 + (${ row.indirectManufacturingRate || 0 } / 100))`).toFixed(2))
-      this.$set(row, "deviceCost", math.evaluate(`${ row.deviceRate || 0 } * ${ row.taktTime || 0 } / 3600 / ${ row.taktTimeNumber ? row.taktTimeNumber : 1 } * (1 + (${ row.indirectManufacturingRate || 0 } / 100))`).toFixed(2))
+      if (row) {
+        this.$set(row, "indirectManufacturingAmount", math.evaluate(`(${ row.deviceRate || 0 } + ${ row.directLaborRate || 0 } * ${ row.directLaborQuantity || 0 }) * ${ row.taktTime || 0 } / 3600 / ${ row.taktTimeNumber ? row.taktTimeNumber : 1 } * (${ row.indirectManufacturingRate || 0 } / 100)`).toFixed(2))
+        this.$set(row, "laborCost", math.evaluate(`${ row.directLaborRate || 0 } * ${ row.directLaborQuantity || 0 } * ${ row.taktTime || 0 } / 3600 / ${ row.taktTimeNumber ? row.taktTimeNumber : 1 } * (1 + (${ row.indirectManufacturingRate || 0 } / 100))`).toFixed(2))
+        this.$set(row, "deviceCost", math.evaluate(`${ row.deviceRate || 0 } * ${ row.taktTime || 0 } / 3600 / ${ row.taktTimeNumber ? row.taktTimeNumber : 1 } * (1 + (${ row.indirectManufacturingRate || 0 } / 100))`).toFixed(2))
+      }
     
       this.laborCostSummaryL2 = 0 // 人工成本
       this.deviceCostSummaryL2 = 0 // 设备成本
@@ -1426,7 +1460,9 @@ export default{
     },
 
     handleInputByDiscardCostL2(value, row) {
-      this.$set(row, "amount", math.evaluate(`(${ this.materialSummaryL2 || 0 } + ${ this.laborCostSummaryL2 || 0 } + ${ this.deviceCostSummaryL2 || 0 }) / (1 - (${ row.ratio || 0 } / 100)) - (${ this.materialSummaryL2 || 0 } + ${ this.laborCostSummaryL2 || 0 } + ${ this.deviceCostSummaryL2 || 0 })`).toFixed(2))
+      if (row) {
+        this.$set(row, "amount", math.evaluate(`(${ this.materialSummaryL2 || 0 } + ${ this.laborCostSummaryL2 || 0 } + ${ this.deviceCostSummaryL2 || 0 }) / (1 - (${ row.ratio || 0 } / 100)) - (${ this.materialSummaryL2 || 0 } + ${ this.laborCostSummaryL2 || 0 } + ${ this.deviceCostSummaryL2 || 0 })`).toFixed(2))
+      }
     
       this.scrapSummaryL2 = 0 // 报废成本
 
@@ -1445,17 +1481,21 @@ export default{
     },
 
     handleInputByProfitL2(value, row) {
-      this.$set(row, "amount", math.evaluate(`(${ row.ratio || 0 } / 100) * (${ math.add(this.laborCostSummaryL2, this.deviceCostSummaryL2) || 0 } + ${ this.materialSummaryL2ByFalse || 0 })`).toFixed(2))
+      if (row) {
+        this.$set(row, "amount", math.evaluate(`(${ row.ratio || 0 } / 100) * (${ math.add(this.laborCostSummaryL2, this.deviceCostSummaryL2) || 0 } + ${ this.materialSummaryL2ByFalse || 0 })`).toFixed(2))
+      }
     
       this.$set(this.topTableData.tableData[0], "profitSummary", math.add(math.bignumber(this.allTableData.profit[0].amount || 0), 0).toFixed(2))
     },
 
     // L3计算
     handleInputByRawMaterialL3(value, row) {
-      this.$set(row, "directMaterialCost", math.evaluate(`(${ row.unitPrice || 0 } * ${ row.roughWeight || 0 }) - (${ row.roughWeight || 0 } - ${ row.suttleWeight || 0 }) * ${ row.recycleUnitPrice || 0 }`).toFixed(2))
-      this.$set(row, "lossCost", math.evaluate(`${ row.directMaterialCost || 0 } / (1 - ${ row.lossCostRate || 0 } / 100) - ${ row.directMaterialCost || 0 }`).toFixed(2))
-      this.$set(row, "indirectMaterialCost", math.evaluate(`${ row.indirectMaterialCostRatio || 0 } / 100 * (${ row.unitPrice || 0 } * ${ row.roughWeight || 0 } + ${ row.lossCost || 0 })`).toFixed(2))
-      this.$set(row, "materialCost", math.evaluate(`${ row.directMaterialCost || 0 } + ${ row.lossCost || 0 } + ${ row.earlierLogisticsCost || 0 } + ${ row.indirectMaterialCost || 0 }`).toFixed(2))
+      if (row) {
+        this.$set(row, "directMaterialCost", math.evaluate(`(${ row.unitPrice || 0 } * ${ row.roughWeight || 0 }) - (${ row.roughWeight || 0 } - ${ row.suttleWeight || 0 }) * ${ row.recycleUnitPrice || 0 }`).toFixed(2))
+        this.$set(row, "lossCost", math.evaluate(`${ row.directMaterialCost || 0 } / (1 - ${ row.lossCostRate || 0 } / 100) - ${ row.directMaterialCost || 0 }`).toFixed(2))
+        this.$set(row, "indirectMaterialCost", math.evaluate(`${ row.indirectMaterialCostRatio || 0 } / 100 * (${ row.unitPrice || 0 } * ${ row.roughWeight || 0 } + ${ row.lossCost || 0 })`).toFixed(2))
+        this.$set(row, "materialCost", math.evaluate(`${ row.directMaterialCost || 0 } + ${ row.lossCost || 0 } + ${ row.earlierLogisticsCost || 0 } + ${ row.indirectMaterialCost || 0 }`).toFixed(2))
+      }
 
       let materialSummary = 0 // 头表原材料/散件
       let scrapSummary = 0 // 报废成本
@@ -1500,10 +1540,12 @@ export default{
     },
 
     handleInputByMakeCostL3(value, row) {
-      this.$set(row, "directProduceCost", math.evaluate(`(${ row.perHourMachineCost || 0 } + ${ row.perHourLaborCost || 0 } * ${ row.workerCount || 0 }) * ${ row.perProduceTime } / 3600 / ${ row.perCycleCount ? row.perCycleCount : 1 }`).toFixed(2))
-      this.$set(row, "lossCost", math.evaluate(`${ row.directProduceCost || 0 } / (1 - ${ row.lossCostRate || 0 } / 100) - ${ row.directProduceCost || 0 }`).toFixed(2))
-      this.$set(row, "indirectProduceCost", math.evaluate(`(${ row.directProduceCost || 0 } + ${ row.lossCost || 0 } + ${ row.produceSwitchCost || 0 }) * (${ row.indirectProduceCostRate || 0 } / 100)`).toFixed(2))
-      this.$set(row, "totalCost", math.evaluate(`${ row.directProduceCost || 0 } + ${ row.lossCost || 0 } + ${ row.produceSwitchCost || 0 } + ${ row.indirectProduceCost || 0 }`).toFixed(2))
+      if (row) {
+        this.$set(row, "directProduceCost", math.evaluate(`(${ row.perHourMachineCost || 0 } + ${ row.perHourLaborCost || 0 } * ${ row.workerCount || 0 }) * ${ row.perProduceTime } / 3600 / ${ row.perCycleCount ? row.perCycleCount : 1 }`).toFixed(2))
+        this.$set(row, "lossCost", math.evaluate(`${ row.directProduceCost || 0 } / (1 - ${ row.lossCostRate || 0 } / 100) - ${ row.directProduceCost || 0 }`).toFixed(2))
+        this.$set(row, "indirectProduceCost", math.evaluate(`(${ row.directProduceCost || 0 } + ${ row.lossCost || 0 } + ${ row.produceSwitchCost || 0 }) * (${ row.indirectProduceCostRate || 0 } / 100)`).toFixed(2))
+        this.$set(row, "totalCost", math.evaluate(`${ row.directProduceCost || 0 } + ${ row.lossCost || 0 } + ${ row.produceSwitchCost || 0 } + ${ row.indirectProduceCost || 0 }`).toFixed(2))
+      }
     
       let productionSummary = 0 // 头表制造成本
       let scrapSummary = 0 // 报废成本
@@ -1526,7 +1568,7 @@ export default{
       if (math.evaluate(`${ this.summaryData.materialSummary || 0 } + ${ this.summaryData.productionSummary || 0 }`) === "0") {
         this.$set(this.allTableData.discardCost[0], "ratio", 0)
       } else {
-        this.$set(this.allTableData.discardCost[0], "ratio", math.evaluate(`${ this.allTableData.discardCost[0].amount } / (${ this.summaryData.materialSummary || 0 } + ${ this.summaryData.productionSummary || 0 })`).toFixed(2))
+        this.$set(this.allTableData.discardCost[0], "ratio", math.evaluate(`${ this.allTableData.discardCost[0].amount || 0 } / (${ this.summaryData.materialSummary || 1 } + ${ this.summaryData.productionSummary || 0 })`).toFixed(2))
       }
 
       this.$set(this.allTableData.manageFee[1], "amount", math.evaluate(`${ this.summaryData.productionSummary } * (${ this.allTableData.manageFee[1].ratio } / 100)`).toFixed(2))
@@ -1547,8 +1589,10 @@ export default{
     },
 
     handleInputByManageFeeL3(value, row) {
-      this.$set(row, "amount", math.evaluate(`${ this.summaryData.productionSummary } * (${ row.ratio || 0 } / 100)`).toFixed(2))
-      this.$set(row, "blockAmount", math.evaluate(`${ row.amount || 0 } * 1`).toFixed(2))
+      if (row) {
+        this.$set(row, "amount", math.evaluate(`${ this.summaryData.productionSummary } * (${ row.ratio || 0 } / 100)`).toFixed(2))
+        this.$set(row, "blockAmount", math.evaluate(`${ row.amount || 0 } * 1`).toFixed(2))
+      }
 
       const manageSummary = this.allTableData.manageFee.reduce((acc, cur) => {
         return math.add(acc, math.bignumber(cur.amount || 0))
@@ -1557,8 +1601,10 @@ export default{
     },
 
     handleInputByProfitL3(value, row) {
-      this.$set(row, "amount", math.evaluate(`${ this.summaryData.productionSummary } * (${ row.ratio || 0 } / 100)`).toFixed(2))
-      this.$set(row, "blockAmount", math.evaluate(`${ row.amount || 0 } * 1`).toFixed(2))
+      if (row) {
+        this.$set(row, "amount", math.evaluate(`${ this.summaryData.productionSummary } * (${ row.ratio || 0 } / 100)`).toFixed(2))
+        this.$set(row, "blockAmount", math.evaluate(`${ row.amount || 0 } * 1`).toFixed(2))
+      }
 
       const profitSummary = this.allTableData.profit.reduce((acc, cur) => {
         return math.add(acc, math.bignumber(cur.amount || 0))
