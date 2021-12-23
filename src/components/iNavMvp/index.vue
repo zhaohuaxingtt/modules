@@ -1,7 +1,7 @@
 <!--
 * @author:shujie
 * @Date: 2021-2-25 16:13:25
- * @LastEditors:  
+ * @LastEditors: Please set LastEditors
 * @Description: mvp顶部导航栏
  -->
 <template>
@@ -138,6 +138,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		reversePosit:{ // 三级菜单高亮判断
+			type:Boolean,
+			default:false
+		}
 	},
 	data() {
 		return {
@@ -150,10 +154,18 @@ export default {
 		//由于当前组件存在于业务组件中，他的选中只需要在加载的时候去路由上取值和当前的list对比即可
 		if (this.routerPage) {
 			for (let i = 0, item; (item = this.list[i++]); ) {
+			if (this.reversePosit) { // 逆向
+				if (new RegExp(`${ item.activePath }$`).test(this.$route.path)) {
+				this.activeIndex = --i;
+				break;
+			}
+			}else{
 				if (this.$route.path.indexOf(item.activePath) > -1) {
 					this.activeIndex = --i
 					break
 				}
+			}
+				
 			}
 		}
 	},
@@ -161,10 +173,19 @@ export default {
 		'$route.path'(nv) {
 			if (this.routerPage) {
 				for (let i = 0, item; (item = this.navList[i++]); ) {
-					if (nv.indexOf(item.activePath) > -1) {
-						this.activeIndex = --i
-						break
+					if (this.reversePosit) { // 逆向
+						if (new RegExp(`${ item.activePath }$`).test(this.$route.path)) {
+							this.activeIndex = --i;
+							break;
+						}
+					}else{
+						if (nv.indexOf(item.activePath) > -1) {
+							this.activeIndex = --i
+							break
+						}
 					}
+
+					
 				}
 			}
 		},
