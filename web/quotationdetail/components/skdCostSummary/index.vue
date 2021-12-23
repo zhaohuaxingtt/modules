@@ -36,7 +36,7 @@
         </iSelect>
       </iFormItem>
       <iFormItem v-if="exchangeRate" :label="language('HUILV', '汇率')">
-        <span>{{ exchangeRate }} {{ currency }}=1.00 RMB</span>
+        <span>1.00 {{ currency }}={{ exchangeRate }} RMB</span>
       </iFormItem>
     </iFormGroup>
     <tableList
@@ -140,8 +140,13 @@ export default {
     percentageData() {
       const data = this.tableListData[0]
       return {
-        overseasFactoryPrice: data.overseasFactoryPrice,
-        overseasPrice: math.add(math.bignumber(data.overseasBnkPrice || 0), math.bignumber(data.tariff || 0)).toFixed(2),
+        overseasFactoryPrice:math.multiply( math.bignumber(data.overseasFactoryPrice || 0 ) , math.bignumber(this.exchangeRate || 0 )).toFixed(2),
+        overseasPrice: 
+        math.chain(math.bignumber(data.overseasBnkPrice || 0))
+        .multiply(math.bignumber(this.exchangeRate || 0 ))
+        .add(math.bignumber(data.tariff || 0))
+        .done()
+        .toFixed(2),
         domesticFreight: data.domesticFreight,
         manageSummary: data.manageSummary,
         otherSummary: data.otherSummary,
