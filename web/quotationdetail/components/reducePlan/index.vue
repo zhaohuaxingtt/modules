@@ -8,7 +8,7 @@
 		<div class="header margin-bottom20">
 			<span class="title">{{ language('LK_JIANGJIAJIHUA', '降价计划') }}</span>
 			<span v-if="isSkd">
-				<span class="tip margin-left10">{{ language("JIANGJIAJISUANYIJINGWAICHUCHANGJIAWEIZHUN", "降价计算以境外出厂价为准") }}</span>
+				<span class="tip margin-left10">{{ language("JIANGJIAJISUANYICHUCHANGJIAWEIZHUN", "降价计算以出厂价为准") }}</span>
 			</span>
             <span v-else-if="isSkdLc">
 				<span class="tip margin-left10">{{ language("SKDBUFENYICHUCHANGJIAWEIZHUN", "SKD部分以出厂价为准") }}，{{ language("LCBUFENYIAJIAWEIZHUN", "LC部分以A价为准") }}</span>
