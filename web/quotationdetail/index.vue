@@ -163,7 +163,7 @@ export default {
       fsNum: "",
       partNum: "",
       parts: [],
-      partInfoItems,
+      partInfoItems:partInfoItems('modelNameZh'),
       currentTab: "infoAndReq",
       tabs: [
         { label: "信息与要求", name: "infoAndReq", key: "LK_XINXIYUYAOQIU", components: [ "infoAndReq" ] },
@@ -427,6 +427,8 @@ export default {
       .then(res => {
         if (res.code == 200) {
           let currentPart = {}
+          res.data[0].cartypes === null?this.partInfoItems = partInfoItems('modelNameZh'):this.partInfoItems = partInfoItems('cartypes')
+          res.data[0].cartypes !== null? res.data[0].cartypes = res.data[0].cartypes.map(val=>val.name).join(','):''
           this.parts = 
             Array.isArray(res.data) ? 
             res.data.map(item => {
