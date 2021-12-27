@@ -596,8 +596,8 @@ export default {
         //   if (typeof component.init === "function") component.init()
         // })
 
-        const component = this.$refs[this.currentTab][0]
-        if (typeof component.init === "function") component.init("redraw")
+        // const component = this.$refs[this.currentTab][0]
+        // if (typeof component.init === "function") component.init("redraw")
       })
       
       this.getStates()
