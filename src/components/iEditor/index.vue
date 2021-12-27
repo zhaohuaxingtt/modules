@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import Editor from 'wangeditor'
+import Editor from '/utils/wangEditor.min'
 
 // 校验valueType
 const validateValueType = function (valueType) {
@@ -129,30 +129,18 @@ export default {
 				? false
 				: this.uploadImgShowBase64,
 			onchangeTimeout: this.delay,
-			onchange: () => {
-				// this.editor.txt &&
-				// validateValueType(this.valueType) &&
-
-				if (validateValueType(this.valueType)) {
-					this.$emit('input', this[`${this.valueType.toLowerCase()}`]())
-				}
-			},
-			onblur: () => {
-				// this.editor.txt &&
-				// validateValueType(this.valueType) &&
-
-				if (validateValueType(this.valueType)) {
-					this.$emit('blur', this[`${this.valueType.toLowerCase()}`]())
-				}
-			},
-			onfocus: () => {
-				// this.editor.txt &&
-				// validateValueType(this.valueType) &&
-
-				if (validateValueType(this.valueType)) {
-					this.$emit('focus', this[`${this.valueType.toLowerCase()}`]())
-				}
-			}
+			onchange: () =>
+				this.editor.txt &&
+				validateValueType(this.valueType) &&
+				this.$emit('input', this[`${this.valueType.toLowerCase()}`]()),
+			onblur: () =>
+				this.editor.txt &&
+				validateValueType(this.valueType) &&
+				this.$emit('blur', this[`${this.valueType.toLowerCase()}`]()),
+			onfocus: () =>
+				this.editor.txt &&
+				validateValueType(this.valueType) &&
+				this.$emit('focus', this[`${this.valueType.toLowerCase()}`]()),
 		}
 
 		// eslint-disable-next-line
