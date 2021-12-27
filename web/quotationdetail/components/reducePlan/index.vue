@@ -31,7 +31,7 @@
 				<span v-else class="tip margin-left10">降价计算以A价为准</span>
 			</span>
 		</div>
-		<tableList :tableTitle="tableTitle" v-if='partInfo.quotationId' :partInfo='partInfo'  :tableData="tableData" :reducePlanedit="!disabled && !isOriginprice" @rateChange="handleRateChange" :lcStartProductDate="lcStartProductDate" />
+		<tableList :tableTitle="tableTitle" v-if='partInfo.quotationId' :partInfo='partInfo'  :tableData="tableData" :reducePlanedit="!disabled && !isOriginprice" @rateChange="handleRateChange" @dateFocus="dateFocus" :lcStartProductDate="lcStartProductDate" />
 	</iCard>
 </template>
 
@@ -89,7 +89,9 @@ export default {
             computedBasic: '01',
             skdAPrice: "0",
             lcAPrice: "0",
-            lcStartProductDate: ""
+            lcStartProductDate: "",
+            currentKey: "",
+            currentDate: ""
         }                
     },
     created(){
@@ -156,8 +158,14 @@ export default {
          * @param {*}
          * @return {*}
          */        
-        handleRateChange() {
+        handleRateChange(value, key, data) {
             if (this.isSkdLc) {
+                if ((moment(this.currentDate).format("YYYY-MM") === moment(this.lcStartProductDate).format("YYYY-MM")) && key === this.currentKey) {
+                    if (moment(value, "YYYY-MM") !== moment(this.lcStartProductDate, "YYYY-MM")) {
+                        this.$set(data, "priceReduceRate", "0.0000")
+                    }
+                }
+
                 this.tableData = this.computeSkdLc(this.skdAPrice, this.lcAPrice, this.tableData)
             } else {
                 this.tableData = this.computeReducePrice(this.computedBasic === '01' ? this.aprice : this.bprice, this.tableData)
@@ -170,8 +178,6 @@ export default {
          * @return {*}
          */        
         async init() {
-            // 258869949
-            //this.partInfo.quotationId
             this.loading = true
 
             if (!this.isSkdLc) {
@@ -216,6 +222,10 @@ export default {
             
             this.loading = false   
         },
+        dateFocus(value, key) {
+            this.currentKey = key
+            this.currentDate = value
+        },
         computeSkdLc(baseSkdAprice, baseLcAprice, data) {
             let aprice = 0
             const lcStartProductDate = this.lcStartProductDate ? +moment(this.lcStartProductDate).startOf("month") : -1
@@ -246,12 +256,18 @@ export default {
                         ).toFixed(2)
                     } else {
                         cur.reducedPrice = math.bignumber(baseLcAprice).toFixed(2)
-                        cur.priceReduceRate = math.chain(math.bignumber((acc.length ? acc.slice(-1)[0].reducedPrice : aprice) || 0))
-                            .subtract(math.bignumber(cur.reducedPrice || 0))
-                            .divide(math.bignumber((acc.length ? acc.slice(-1)[0].reducedPrice : aprice) || 0))
-                            .multiply(100)
-                            .done()
-                            .toFixed(4)
+                        
+                        const price = acc.length ? acc.slice(-1)[0].reducedPrice : aprice
+                        if (+price) {
+                            cur.priceReduceRate = math.chain(math.bignumber((acc.length ? acc.slice(-1)[0].reducedPrice : aprice) || 0))
+                                .subtract(math.bignumber(cur.reducedPrice || 0))
+                                .divide(math.bignumber((acc.length ? acc.slice(-1)[0].reducedPrice : aprice) || 1))
+                                .multiply(100)
+                                .done()
+                                .toFixed(4)
+                        } else {
+                            cur.priceReduceRate = "0.0000"
+                        }
                     }
 
                     cur.reducedPriceShow = cur.reducedPrice
