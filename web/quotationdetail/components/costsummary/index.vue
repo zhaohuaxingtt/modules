@@ -1568,7 +1568,7 @@ export default{
       if (math.evaluate(`${ this.summaryData.materialSummary || 0 } + ${ this.summaryData.productionSummary || 0 }`) === "0") {
         this.$set(this.allTableData.discardCost[0], "ratio", 0)
       } else {
-        this.$set(this.allTableData.discardCost[0], "ratio", math.evaluate(`${ this.allTableData.discardCost[0].amount || 0 } / (${ this.summaryData.materialSummary || 1 } + ${ this.summaryData.productionSummary || 0 })`).toFixed(2))
+        this.$set(this.allTableData.discardCost[0], "ratio", math.evaluate(`${ this.allTableData.discardCost[0].amount || 0 } / (${ +this.summaryData.materialSummary ? this.summaryData.materialSummary : 1 } + ${ this.summaryData.productionSummary || 0 })`).toFixed(2))
       }
 
       this.$set(this.allTableData.manageFee[1], "amount", math.evaluate(`${ this.summaryData.productionSummary } * (${ this.allTableData.manageFee[1].ratio } / 100)`).toFixed(2))
