@@ -17,8 +17,7 @@ import Editor from 'wangeditor'
 
 // 校验valueType
 const validateValueType = function (valueType) {
-	if (typeof valueType === 'string') valueType = valueType.toLowerCase()
-	return ['html', 'text', 'json'].indexOf(valueType) > -1
+	return ['html', 'text', 'json'].includes(typeof valueType === 'string' ? valueType.toLowerCase() : valueType)
 }
 
 // menu
@@ -130,18 +129,30 @@ export default {
 				? false
 				: this.uploadImgShowBase64,
 			onchangeTimeout: this.delay,
-			onchange: () =>
-				this.editor.txt &&
-				validateValueType(this.valueType) &&
-				this.$emit('input', this[`${this.valueType.toLowerCase()}`]()),
-			onblur: () =>
-				this.editor.txt &&
-				validateValueType(this.valueType) &&
-				this.$emit('blur', this[`${this.valueType.toLowerCase()}`]()),
-			onfocus: () =>
-				this.editor.txt &&
-				validateValueType(this.valueType) &&
-				this.$emit('focus', this[`${this.valueType.toLowerCase()}`]()),
+			onchange: () => {
+				// this.editor.txt &&
+				// validateValueType(this.valueType) &&
+
+				if (validateValueType(this.valueType)) {
+					this.$emit('input', this[`${this.valueType.toLowerCase()}`]())
+				}
+			},
+			onblur: () => {
+				// this.editor.txt &&
+				// validateValueType(this.valueType) &&
+
+				if (validateValueType(this.valueType)) {
+					this.$emit('blur', this[`${this.valueType.toLowerCase()}`]())
+				}
+			},
+			onfocus: () => {
+				// this.editor.txt &&
+				// validateValueType(this.valueType) &&
+
+				if (validateValueType(this.valueType)) {
+					this.$emit('focus', this[`${this.valueType.toLowerCase()}`]())
+				}
+			}
 		}
 
 		// eslint-disable-next-line
