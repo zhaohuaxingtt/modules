@@ -158,6 +158,8 @@ export default {
       this.tableListData.push({})
     },
     handleDel() {
+      if (!this.multipleSelection.length) return iMessage.warn(this.language("QINGXUANZEXUYAOSHANCHUDEHANGSHUJU", "请选择需要删除的行数据"))
+
       this.tableListData = this.tableListData.filter(item => !this.multipleSelection.includes(item))
     },
     async validateForm() {
