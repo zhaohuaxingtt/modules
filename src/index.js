@@ -34,6 +34,7 @@ import iUpload from './components/iUpload'
 import iDownload from './components/iDownload'
 import iDropdown from './components/iDropdown'
 import iLog from './components/iLog'
+import iUserLog from './components/iUserLog'
 import iSelectCustom from './components/iSelectCustom'
 import iTableHeaderSorter from './components/iTableHeaderSorter'
 import iTable from "./components/iTable"
@@ -69,7 +70,8 @@ const components = [
   iSelectCustom,
   iTableHeaderSorter,
   iTable,
-  iMultiLineInput
+  iMultiLineInput,
+  iUserLog
 ]
 const install = function(Vue) {
   components.map(component => {
@@ -111,5 +113,6 @@ export {
   iSelectCustom,
   iTableHeaderSorter,
   iTable,
-  iMultiLineInput
+  iMultiLineInput,
+  iUserLog
 }
