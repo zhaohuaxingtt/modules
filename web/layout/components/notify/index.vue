@@ -6,8 +6,8 @@
 
 <script>
 import notifyDialog from './notifyDialog.vue'
-import { getPopupList ,changeCheckedSta} from '../../api'
-import { getgetPopupSocketMessage } from '@/api/mail'
+import { getPopupList ,changeCheckedSta, getgetPopupSocketMessage} from '../../api'
+ 
 export default {
   name: 'layoutNotify',
   components: {
@@ -41,7 +41,7 @@ export default {
     })
   },
   beforeDestroy() {
-    this.closePopupSocket()
+    this.closePopupSocket && this.closePopupSocket()
   },
   created(){
     this.getLatest()
