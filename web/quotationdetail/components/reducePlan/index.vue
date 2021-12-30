@@ -192,7 +192,7 @@ export default {
                     this.aprice = res.data.aprice || 0
                     this.bprice = res.data.bprice || 0
                     if (this.computedBasic === '01' && (!res.data.aprice || res.data.aprice == 0)) {
-                        iMessage.warn(this.language("AJIABUCUNZAIHUOWEILING", "A价不存在或为0"))
+                        iMessage.warn(this.language("AJIABUCUNZAIHUOWEILING", "出厂价不存在或为0"))
                     }
                     if (this.computedBasic === '02' && (!res.data.bprice || res.data.bprice == 0)) {
                         iMessage.warn(this.language("BJIABUCUNZAIHUOWEILING", "B价不存在或为0"))
@@ -207,7 +207,7 @@ export default {
             } else {
                 const res = await getLtcPlanSkcLc(this.partInfo.quotationId)
                 if (res.code == 200) {
-                    if (!res.data.lcAPrice || !res.data.skdAPrice) await iMessage.error(`${ this.language("AJIABUCUNZAIHUOWEILING", "A价不存在或为0") }`)
+                    if (!res.data.lcAPrice || res.data.lcAPrice == "0.00" || !res.data.skdAPrice || res.data.skdAPrice == "0.00") await iMessage.error(`${ this.language("AJIABUCUNZAIHUOWEILING", "出厂价不存在或为0") }`)
                     if (!res.data.lcStartProductDate) await iMessage.error(this.language("LCQIBUSHENGCHANRIQIWEIKONG", "LC起步生产日期为空"))
                     this.computedBasic = '01'
                     this.lcStartProductDate = res.data.lcStartProductDate

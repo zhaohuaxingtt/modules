@@ -14,7 +14,7 @@
       <span class="margin-left10">
         <span class="tip">{{language('LK_YISHANGSONGYANGZHOUQIYIDINGDINASHIJIANWEIQISHIRI','备注：以上送样周期，均以定点时间为起始日')}}</span>
         <el-radio-group class="margin-left20" v-model="priceType" @change="tableData = tableDataCache[$event]">
-          <el-radio label="LC">LC</el-radio>
+          <el-radio label="LC">LC{{ !isSkd && !isSkdLc ? `（${ language("BITIAN", "必填") }）` : "" }}</el-radio>
           <el-radio label="SKD">SKD{{ isSkd || isSkdLc ? `（${ language("BITIAN", "必填") }）` : "" }}</el-radio>
         </el-radio-group>
       </span>
