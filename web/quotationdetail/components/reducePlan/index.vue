@@ -203,6 +203,7 @@ export default {
                     this.tableData = this.computeReducePrice(this.computedBasic === '01' ? this.aprice : this.bprice, res.data.pricePlanInfoVOS)
                 } else {
                     iMessage.error(this.$i18n.locale === "zh" ? res?.desZh : res?.desEn)
+                    this.tableData = []
                 }
             } else {
                 const res = await getLtcPlanSkcLc(this.partInfo.quotationId)
@@ -217,6 +218,7 @@ export default {
                     this.tableData = this.computeSkdLc(this.skdAPrice, this.lcAPrice, res.data.pricePlanInfoVOS)
                 } else {
                     iMessage.error(this.$i18n.locale === "zh" ? res?.desZh : res?.desEn)
+                    this.tableData = []
                 }
             }
             
