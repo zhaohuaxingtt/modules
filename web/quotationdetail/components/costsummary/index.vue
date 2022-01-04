@@ -880,6 +880,18 @@ export default{
             this.topTableData = this.translateDataTopData(cloneDeep(this.allTableData), data)
             this.$refs.components && typeof this.$refs.components.partsQuotationss == "function" && this.$refs.components.partsQuotationss(this.partInfo.rfqId,this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId,this.partInfo.round,this.allTableData.level)
             // this.allpagefrom.quotationId,
+
+            this.summaryData.materialSummary = 
+              Array.isArray(this.allTableData.rawMaterial.records) ?
+              this.allTableData.rawMaterial.records.reduce((acc, cur) => math.add(acc, math.bignumber(cur.materialCost || 0)), 0).toFixed(2) :
+              "0.00"
+
+            this.summaryData.productionSummary = 
+              Array.isArray(this.allTableData.makeCost.records) ?
+              this.allTableData.makeCost.records.reduce((acc, cur) => math.add(acc, math.bignumber(cur.totalCost || 0)), 0).toFixed(2) :
+              "0.00"
+
+
             this.findFiles()
 
             this.getCategoryDetail("MATERIAL")
@@ -1590,7 +1602,12 @@ export default{
 
     handleInputByManageFeeL3(value, row) {
       if (row) {
-        this.$set(row, "amount", math.evaluate(`${ this.summaryData.productionSummary } * (${ row.ratio || 0 } / 100)`).toFixed(2))
+        if (this.allTableData.manageFee.indexOf(row) === 0) {
+          this.$set(row, "amount", math.evaluate(`${ this.summaryData.materialSummary || 0 } * (${ row.ratio || 0 } / 100)`).toFixed(2))
+        } else {
+          this.$set(row, "amount", math.evaluate(`${ this.summaryData.productionSummary || 0 } * (${ row.ratio || 0 } / 100)`).toFixed(2))
+        }
+        
         this.$set(row, "blockAmount", math.evaluate(`${ row.amount || 0 } * 1`).toFixed(2))
       }
 
@@ -1602,7 +1619,12 @@ export default{
 
     handleInputByProfitL3(value, row) {
       if (row) {
-        this.$set(row, "amount", math.evaluate(`${ this.summaryData.productionSummary } * (${ row.ratio || 0 } / 100)`).toFixed(2))
+        if (this.allTableData.profit.indexOf(row) === 0) {
+          this.$set(row, "amount", math.evaluate(`${ this.summaryData.materialSummary || 0 } * (${ row.ratio || 0 } / 100)`).toFixed(2))
+        } else {
+          this.$set(row, "amount", math.evaluate(`${ this.summaryData.productionSummary || 0 } * (${ row.ratio || 0 } / 100)`).toFixed(2))
+        }
+        
         this.$set(row, "blockAmount", math.evaluate(`${ row.amount || 0 } * 1`).toFixed(2))
       }
 
