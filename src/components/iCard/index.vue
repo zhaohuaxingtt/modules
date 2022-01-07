@@ -18,6 +18,7 @@
         <span v-if="title" class="title">
           <span v-html='title' class="title_content" @click="emitTile()"></span>  
           <span v-if="isRequired" class="required">*</span>  
+          <slot name="subInfo"></slot>
         </span>
         
         <div>
