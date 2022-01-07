@@ -19,16 +19,17 @@
 				</span>
 				<!-----------配件报价的降价计划可以选择基于A价或B价，---------------------------------------------->
 				<span v-else-if="partInfo.partProjectType === partProjTypes.PEIJIAN"  class="tip margin-left15">
-					<span class="margin-right15">计算基准：</span>
+                    <span  class="tip margin-left10">降价计算以A价为准</span>
+					<!-- <span class="margin-right15">计算基准：</span>
 					<el-radio-group v-model="computedBasic" @change="handleABChange" :disabled="disabled || isOriginprice">
 						<el-radio label="01">A价</el-radio>
 						<el-radio label="02">B价</el-radio>
-					</el-radio-group>
+					</el-radio-group> -->
 				</span>
-				<!-----------附件的降价计划只能基于B价，---------------------------------------------->
-				<span v-else-if="partInfo.partProjectType === partProjTypes.FUJIAN" class="tip margin-left10">降价计算以B价为准</span>
+				<!-- ---------附件的降价计划只能基于B价，-------------------------------------------- -->
+				<!-- <span v-else-if="partInfo.partProjectType === partProjTypes.FUJIAN" class="tip margin-left10">降价计算以B价为准</span> -->
 				<!-------------正常流程FS零件只基于A价------------------------------------------>
-				<span v-else class="tip margin-left10">降价计算以A价为准</span>
+				<span class="tip margin-left10">降价计算以A价为准</span>
 			</span>
 		</div>
 		<tableList :tableTitle="tableTitle" v-if='partInfo.quotationId' :partInfo='partInfo'  :tableData="tableData" :reducePlanedit="!disabled && !isOriginprice" @rateChange="handleRateChange" @dateFocus="dateFocus" :lcStartProductDate="lcStartProductDate" />
@@ -203,6 +204,7 @@ export default {
                     this.tableData = this.computeReducePrice(this.computedBasic === '01' ? this.aprice : this.bprice, res.data.pricePlanInfoVOS)
                 } else {
                     iMessage.error(this.$i18n.locale === "zh" ? res?.desZh : res?.desEn)
+                    this.tableData = []
                 }
             } else {
                 const res = await getLtcPlanSkcLc(this.partInfo.quotationId)
@@ -217,6 +219,7 @@ export default {
                     this.tableData = this.computeSkdLc(this.skdAPrice, this.lcAPrice, res.data.pricePlanInfoVOS)
                 } else {
                     iMessage.error(this.$i18n.locale === "zh" ? res?.desZh : res?.desEn)
+                    this.tableData = []
                 }
             }
             
