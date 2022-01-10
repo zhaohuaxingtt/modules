@@ -123,8 +123,7 @@ export default {
       this.$set(row, "addionalMouldCost", numberProcessor(value, 2))
     },
     handleInputByAddionalMouldLife(value, row) {
-      const limit = this.isAeko ? 0 : 2;
-      this.$set(row, "addionalMouldLife", numberProcessor(value, limit))
+      this.$set(row, "addionalMouldLife", numberProcessor(value, 0))
     },
     // 保存工装样件，父组件通过ref调用
     save(type) {
