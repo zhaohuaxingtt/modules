@@ -7,6 +7,7 @@
 <template>
 	<div
 		class="nav flex-align-center"
+		ref="navMvp"
 		:class="[
 			center && 'justify-center',
 			right && 'justify-right',
@@ -16,6 +17,7 @@
 		<div
 			v-for="(item, index) in navList"
 			:key="index"
+			:id="`navItem_${ item.permissionKey }`"
 			@click="change(item, index)"
 			v-permission.auto="`${item[permissionKey]}|${item[permissionName]}`"
 		>
@@ -168,6 +170,18 @@ export default {
 				
 			}
 		}
+	},
+	mounted() {
+		this.navList.some(item => {
+			if (location.hash === this.$router.resolve({ path: item.url }).href && !this.$store.state.permission.whiteBtnList[item.permissionKey]) {
+				const nextCurrent = this.navList.find(nextItem => this.$store.state.permission.whiteBtnList[nextItem.permissionKey])
+
+				if (nextCurrent) {
+					this.$router.replace({ path: nextCurrent.url })
+					return true
+				}
+			}
+		})
 	},
 	watch: {
 		'$route.path'(nv) {
