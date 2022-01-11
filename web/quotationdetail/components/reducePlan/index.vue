@@ -124,15 +124,15 @@ export default {
          * @param {*}
          * @return {*}
          */        
-        handleABChange() {
-            if (this.computedBasic === '01' && !this.aprice) {
-                iMessage.warn(this.language("AJIABUCUNZAIERROR", "A价不存在，无法根据A价计算降价后的价格"))
-            }
-            if (this.computedBasic === '02' && !this.bprice) {
-                iMessage.warn(this.language("BJIABUCUNZAIERROR", "B价不存在，无法根据B价计算降价后的价格"))
-            }
-            this.tableData = this.computeReducePrice(this.computedBasic === '01' ? this.aprice : this.bprice, this.tableData)
-        },
+        // handleABChange() {
+        //     if (this.computedBasic === '01' && !this.aprice) {
+        //         iMessage.warn(this.language("AJIABUCUNZAIERROR", "A价不存在，无法根据A价计算降价后的价格"))
+        //     }
+        //     if (this.computedBasic === '02' && !this.bprice) {
+        //         iMessage.warn(this.language("BJIABUCUNZAIERROR", "B价不存在，无法根据B价计算降价后的价格"))
+        //     }
+        //     this.tableData = this.computeReducePrice(this.computedBasic === '01' ? this.aprice : this.bprice, this.tableData)
+        // },
         /**
          * @Description: 计算降价后的价格
          * @Author: Luoshuang
@@ -169,7 +169,8 @@ export default {
 
                 this.tableData = this.computeSkdLc(this.skdAPrice, this.lcAPrice, this.tableData)
             } else {
-                this.tableData = this.computeReducePrice(this.computedBasic === '01' ? this.aprice : this.bprice, this.tableData)
+                // this.computedBasic === '01' ? this.aprice : this.bprice
+                this.tableData = this.computeReducePrice(this.aprice, this.tableData)
             }
         },
         /**
@@ -192,16 +193,17 @@ export default {
                     }
                     this.aprice = res.data.aprice || 0
                     this.bprice = res.data.bprice || 0
-                    if (this.computedBasic === '01' && (!res.data.aprice || res.data.aprice == 0)) {
+                    if ((this.computedBasic === '01' || this.computedBasic === '02') && (!res.data.aprice || res.data.aprice == 0)) {
                         iMessage.warn(this.language("AJIABUCUNZAIHUOWEILING", "出厂价不存在或为0"))
                     }
-                    if (this.computedBasic === '02' && (!res.data.bprice || res.data.bprice == 0)) {
-                        iMessage.warn(this.language("BJIABUCUNZAIHUOWEILING", "B价不存在或为0"))
-                    }
+                    // if (this.computedBasic === '02' && (!res.data.bprice || res.data.bprice == 0)) {
+                    //     iMessage.warn(this.language("BJIABUCUNZAIHUOWEILING", "B价不存在或为0"))
+                    // }
                     if (['3','4','5','6','7'].includes(this.computedBasic) && (!res.data.bprice || res.data.bprice == 0)) {
                         iMessage.error(this.basic+this.language('BUCUNZAIHUOWEIO','不存在或为0'))
                     }
-                    this.tableData = this.computeReducePrice(this.computedBasic === '01' ? this.aprice : this.bprice, res.data.pricePlanInfoVOS)
+                    // this.computedBasic === '01' ? this.aprice : this.bprice
+                    this.tableData = this.computeReducePrice(this.aprice, res.data.pricePlanInfoVOS)
                 } else {
                     iMessage.error(this.$i18n.locale === "zh" ? res?.desZh : res?.desEn)
                     this.tableData = []
