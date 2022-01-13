@@ -14,7 +14,7 @@ export const originTableTitle = [
   { props: "province", name: "省份", tooltip: true, key: "LK_SHENGFEN" },
   { props: "city", name: "城市", tooltip: true, key: "LK_CHENGSHI" },
   { props: "address", name: "地址", tooltip: true, key: "LK_DIZHI" },
-  { props: "postcode", name: "邮编", tooltip: true, key: "LK_YOUBIAN" },
+  { props: "postCode", name: "邮编", tooltip: true, key: "LK_YOUBIAN" },
   { props: "isNominate", name: "是否定点", tooltip: true, key: "LK_SHIFOUDINGDIAN" },
   { props: "effectFlag", name: "是否生效", tooltip: true, key: "LK_SHIFOUSHENGXIAO" }
 ]
