@@ -71,6 +71,18 @@
         <iInput v-if="!disabled" class="input" v-model="scope.row.profitSummary" @input="handleInputByNumber($event, 'profitSummary', scope.row, 2, value => { computeTotalPrice(value, 'profitSummary', scope.row) })"></iInput>
         <span v-else>{{ scope.row.profitSummary }}</span>
       </template>
+      <template #packageCost="scope">
+        <iInput v-if="!disabled && bnkValid" class="input" v-model="scope.row.packageCost" @input="handleInputByNumber($event, 'packageCost', scope.row, 2, value => { computeSalesPrice(value, 'packageCost', scope.row) })"></iInput>
+        <span v-else>{{ scope.row.packageCost }}</span>
+      </template>
+      <template #transportCost="scope">
+        <iInput v-if="!disabled && bnkValid" class="input" v-model="scope.row.transportCost" @input="handleInputByNumber($event, 'transportCost', scope.row, 2, value => { computeSalesPrice(value, 'transportCost', scope.row) })"></iInput>
+        <span v-else>{{ scope.row.transportCost }}</span>
+      </template>
+      <template #operateCost="scope">
+        <iInput v-if="!disabled && bnkValid" class="input" v-model="scope.row.operateCost" @input="handleInputByNumber($event, 'operateCost', scope.row, 2, value => { computeSalesPrice(value, 'operateCost', scope.row) })"></iInput>
+        <span v-else>{{ scope.row.operateCost }}</span>
+      </template>
       <!-- <template #otherSummary="scope">
         <iInput v-if="!disabled" class="input" v-model="scope.row.otherSummary" @input="handleInputByNumber($event, 'otherSummary', scope.row, 2, value => { computeTotalPrice(value, 'otherSummary', scope.row) })"></iInput>
         <span v-else>{{ scope.row.otherSummary }}</span>
@@ -90,6 +102,7 @@ import { tableTitle } from "./components/data"
 import { getSkdCostSummary, saveSkdCostSummary, getPartsQuotationsSkd, copyPartsQuotationSkd, getIsAutoCal,copyPartsQuotation } from "@/api/rfqManageMent/quotationdetail"
 import { handleInputByNumber } from "../data"
 import { uuidv4 } from "rise/web/aeko/quotationdetail/components/aPriceChange/components/data"
+import { bnkValid } from "rise/web/quotationdetail/components/costsummary/components/data"
 
 export default {
   components: { iCard, iFormGroup, iFormItem, iSelect, iText, iDatePicker, iInput, tableList, percentage },
@@ -162,6 +175,9 @@ export default {
 
       return this.currency
     },
+    bnkValid() {
+      return bnkValid(this.partInfo.partProjectType)
+    }
   },
   created() {
     this.supplierId = this.$route.query.supplierId || this.userInfo.supplierId
