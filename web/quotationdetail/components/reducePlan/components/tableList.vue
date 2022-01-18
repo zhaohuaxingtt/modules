@@ -44,7 +44,10 @@
                         />
                         <span v-else :class="{ lcPrice: titleItem.key == 'priceReduceRate' && getIsLcStartProductDate(item.yearMonths) }">{{item[titleItem.key]}}</span>
                     </template>
-                    <span v-else>{{item[titleItem.key]}}</span>
+                    <span v-else>
+                        <span v-if="titleItem.key === 'yearMonths'">{{ item[titleItem.key] | ymFormat }}</span>
+                        <span v-else>{{item[titleItem.key]}}</span>
+                    </span>
                 </p>
             </div>
         </div>
@@ -89,6 +92,11 @@ export default {
     data(){
         return{
             moment:moment,
+        }
+    },
+    filters: {
+        ymFormat(date) {
+            return moment(date).format("YYYY-MM")
         }
     },
     methods: {
