@@ -11,7 +11,7 @@ import {_getMathNumber} from '@/utils'
 import {partProjTypes} from '@/config'
 
 // 是否关联bnk
-const bnkValid = function(type) {
+export const bnkValid = function(type) {
   const exclusions = [
     partProjTypes.GANGCAIPILIANGCAIGOU, // 钢材批量采购
     partProjTypes.GANGCAIYICIXINGCAIGOU, // 钢材一次性采购
@@ -44,7 +44,7 @@ export function tableTilel1Fn(level, partType,partname){
     // 供应商配件与附件的包装运输页面移除，报价成本汇总页面能够直接填写[原材料/散件成本][制造成本][报废成本][管理费][利润][包装费][运输费][操作费]，
     {props:'packageCost',name:'包装费',key: 'LK_BAOZHUANGFEI',tooltip:false,width:'',type: bnkValid(partname) ? 'input': '', inputType: 'decimal' },
     {props:'transportCost',name:'运输费',key: 'LK_YUNSHUFEI',tooltip:false,width:'',type: bnkValid(partname) ? 'input': '', inputType: 'decimal' },
-    {props:'operateCost',name:'操作费',key: 'LK_CAOZUOFEI',tooltip:false,width:'',type: partname === partProjTypes.PEIJIAN || partname === partProjTypes.FUJIAN ? 'input': '', inputType: 'decimal' },
+    {props:'operateCost',name:'操作费',key: 'LK_CAOZUOFEI',tooltip:false,width:'', type: bnkValid(partname) ? 'input': '', inputType: 'decimal' },
     {props:'totalPriceBprice',name:'B价',key: 'LK_BJIA',tooltip:false,width:'' },
   ]
 }
