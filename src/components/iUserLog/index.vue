@@ -1,5 +1,5 @@
 <template>
-  <div class="material-dialog">
+  <div class="material-dialog2">
     <iDialog
       title="业务用户日志"
       :visible.sync="isShow"
@@ -299,7 +299,7 @@ export default {
   padding-bottom: 30px;
 }
 
-.material-dialog {
+.material-dialog2 {
   // .card {
   //   box-shadow: none;
 
