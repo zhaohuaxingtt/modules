@@ -59,7 +59,7 @@
       <el-table
         :data="tableData"
         style="width: 100%"
-        class="log-table"
+        :class="{'log-table':!isPage}"
         default-expand-all
         v-loading="loading"
       >
@@ -117,10 +117,10 @@ export default {
         return 0
       }
     },
-	menuId:{
-		type:[ Number, String],
-		default:""
-	},
+    menuId:{
+      type:[ Number, String],
+      default:""
+    },
     show: [Boolean],
     isPage: {
       type: Boolean, // 是否分页
@@ -300,13 +300,13 @@ export default {
 }
 
 .material-dialog {
-  .card {
-    box-shadow: none;
+  // .card {
+  //   box-shadow: none;
 
-    .cardBody {
-      padding: 0;
-    }
-  }
+  //   .cardBody {
+  //     padding: 0;
+  //   }
+  // }
 
   .log-table {
     padding-bottom: 35px;
