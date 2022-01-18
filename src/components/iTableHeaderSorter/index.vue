@@ -10,7 +10,7 @@
 			<div
 				class="flex-align-center header-col drop-item"
 				v-for="(item, index) in dataSource"
-				:key="index"
+				:key="`${item.prop}_${index}`"
 				:id="item.prop"
 				:data-id="item.i18n ? language(item.i18n) : item.label"
 				:class="{ draggable: !item.type }"

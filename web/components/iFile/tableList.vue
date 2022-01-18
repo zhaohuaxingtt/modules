@@ -6,6 +6,7 @@
  * @Description: table组件
 -->
 <template>
+<div class="iFileTableList">
   <el-table
     fit
     tooltip-effect='light'
@@ -33,9 +34,9 @@
       </template>
     </el-table-column>
 
-    <template v-for="(items,index) in tableTitle">
+    <template v-for="(items,index) in header">
       <!----------------------需要高亮的列并且带有打开详情事件------------------------>
-      <el-table-column :key="index" align='center' :width="items.width" :min-width="items.minWidth ? items.minWidth.toString():''" :show-overflow-tooltip='items.tooltip' v-if='items.props == activeItems' :prop="items.props" :label="lang ? language(items.key, items.name) : $t(items.key)">
+      <el-table-column :key="`${items.props}_${index}`" align='center' :width="items.width" :min-width="items.minWidth ? items.minWidth.toString():''" :show-overflow-tooltip='items.tooltip' v-if='items.props == activeItems' :prop="items.props" :label="lang ? language(items.key, items.name) : $t(items.key)">
         <!-- slot header -->
         <template slot="header">
           <div class="slotHeader" :class="{headerRequiredLeft: items._headerRequiredLeft, headerRequiredRight:items._headerRequiredRight }">
@@ -57,7 +58,7 @@
       <el-table-column
         v-else
         align='center'
-        :key="index"
+        :key="`${items.props}_${index}`"
         :width="items.width"
         :min-width="items.minWidth ? items.minWidth.toString():''"
         :show-overflow-tooltip='items.tooltip'
@@ -81,9 +82,25 @@
       </el-table-column>
     </template>
   </el-table>
+  <!-- iTableHeaderSorter -->
+  <iTableHeaderSorter
+      v-if="enabletableHeadersetting"
+      :data="tableSettingColumns"
+      :show.sync="settingVisible"
+      :value="'value'"
+      :label="'label'"
+      :visiableKey="'hidden'"
+      @callback="handleSaveSetting"
+      @reset="handleResetSetting"
+    />
+</div>
+
 </template>
 <script>
+import {cloneDeep} from 'lodash'
 import {icon} from "rise"
+// import iTableHeaderSorter from './iTableHeaderSort'
+import {iTableHeaderSorter} from "rise"
 export default{
   props:{
     /**
@@ -172,9 +189,28 @@ export default{
      * @return {*}
      */    
     spanMethod: { type: Function },
+    enabletableHeadersetting: {type: Boolean, default: false},
   },
   inject:['vm'],
-  components:{icon},
+  components:{iTableHeaderSorter, icon},
+  data() {
+    return {
+      settingVisible: false,
+      header: this.tableTitle,
+      cacheNewHeader: this.tableTitle,
+    }
+  },
+  computed: {
+    tableSettingColumns() {
+      const tableSettingColumns = cloneDeep(this.header)
+      return tableSettingColumns.map(o => {
+        !o.prop && o.props && (o.prop = o.props)
+        !o.label && o.name && (o.label = o.name)
+        o.i18n = o.i18n || o.key
+        return o
+      })
+    }
+  },
   methods:{
     /**
      * @description: 单选的实现
@@ -241,11 +277,40 @@ export default{
     borderLeft({row, columnIndex}){
       const style = `border-left:2px solid #1660F1;`
       return columnIndex === 0 && row.selectedBorder === true ? style : ''
-    }
+    },
+    renewTableHeader() {
+      const data = cloneDeep(this.cacheNewHeader)
+      const header = cloneDeep(data).filter(o => !o.isHidden)
+      this.header = header.map(o => {
+        !o.prop && o.props && (o.prop = o.props)
+        !o.label && o.name && (o.label = o.name)
+        o.i18n = o.i18n || o.key
+        return o
+      })
+    },
+    handleSaveSetting(data) {
+      // console.log('handleSaveSetting',data)
+      this.cacheNewHeader = cloneDeep(data)
+      if (this.$attrs.handleSaveSetting && typeof this.$attrs.handleSaveSetting === 'function') {
+        this.$attrs.handleSaveSetting({data, done: this.renewTableHeader})
+      }
+    },
+    handleResetSetting(data) {
+      console.log('handleSaveSetting',data)
+      this.cacheNewHeader = this.tableTitle
+      if (this.$attrs.handleResetSetting && typeof this.$attrs.handleResetSetting === 'function') {
+        this.$attrs.handleResetSetting({data: this.cacheNewHeader, done: this.renewTableHeader})
+      }
+    },
   }
 }
 </script>
 <style lang='scss' scoped>
+.iFileTableList {
+  ::v-deep.el-table__body-wrapper {
+    height: auto!important;
+  }
+}
   .openLinkText{
     color:$color-blue;
     &.underline {

@@ -72,6 +72,7 @@
             </template>
             <iText slot="reference">{{ exchangeRates.map(item => `${ item.currencyCode }:${ item.originCurrencyCode } = ${ item.exchangeRate }`).join(", ") }}</iText>
           </el-popover>
+          <iText v-else-if="item.props === 'cartypes'">{{ Array.isArray(partInfo[item.props]) ? partInfo[item.props].map(item => item.name).join(",") : "" }}</iText>
           <iText v-else>{{ partInfo[item.props] }}</iText>
         </iFormItem>
       </iFormGroup>
@@ -428,7 +429,7 @@ export default {
         if (res.code == 200) {
           let currentPart = {}
           res.data[0].cartypes === null?this.partInfoItems = partInfoItems('modelNameZh'):this.partInfoItems = partInfoItems('cartypes')
-          res.data[0].cartypes !== null? res.data[0].cartypes = res.data[0].cartypes.map(val=>val.name).join(','):''
+          // res.data[0].cartypes !== null? res.data[0].cartypes = res.data[0].cartypes.map(val=>val.name).join(','):''
           this.parts = 
             Array.isArray(res.data) ? 
             res.data.map(item => {

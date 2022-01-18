@@ -1,5 +1,5 @@
 import axios from '@/utils/axios'
-
+import { getSocket } from '@/utils/webSocket'
 const requestPopup = axios(process.env.VUE_APP_MAIL)
 const requestUSER = axios(process.env.VUE_APP_USER_CENTER)
 
@@ -36,5 +36,17 @@ export function changeCheckedSta(data){
       url:`/popup/detail/${userId}/${popupId}`,
       method:'GET',
       // params:data
+  })
+}
+
+
+//获取弹窗实时消息
+export const getPopupSocket = () =>
+process.env.VUE_APP_SOCKET + 'popup/'+
+JSON.parse(sessionStorage.getItem('userInfo')).accountId
+
+export const getgetPopupSocketMessage = onMessage =>{
+  return getSocket(getPopupSocket, message => {
+    onMessage(message)
   })
 }

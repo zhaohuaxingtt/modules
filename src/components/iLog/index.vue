@@ -237,7 +237,7 @@ export default {
 		},
 		getOptions() {
 			const http = new XMLHttpRequest()
-			const url = `${this.bizLogApiPrefix}/operationLog/listOperationType`
+			const url = `${this.bizLogApiPrefix}/operationLog/listOperation`
 			http.open('POST', url, true)
 			http.setRequestHeader('content-type', 'application/json')
 			http.onreadystatechange = () => {
@@ -289,7 +289,7 @@ export default {
 		},
 		onTypeChange(type) {
 			this.$emit('onTypeChange', type)
-		}
+		},
 	},
 }
 </script>

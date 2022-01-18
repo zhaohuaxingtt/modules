@@ -163,7 +163,7 @@ export default{
      * @return {*}
      */    
     translateTableTileData(lev){
-      this.tableTilel1 = tableTilel1Fn(lev, this.partType,this.partProjectType)
+      this.tableTilel1 = tableTilel1Fn(lev, this.partType, this.partProjectType)
     },
     /**
      * @description: 1.变换cbd层级。变换界面展示，影响界面：L1 除了汇总，只留cbd。 L2 替换表头展示的2.x L3:暂时没提供模板。

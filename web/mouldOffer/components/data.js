@@ -20,7 +20,7 @@ export const moduleCostTableTitle = [
   { props: 'supplierPartNameList', name: '零部件名称', tooltip: true, width: 90, key: "LK_LINGBUJIANMINGCHENG", tipsKey: "LK_LINGBUJIANMINGCHENGTIPS", tips: "<p style='text-align: center'>散件名称</p>" },
   { props: 'supplierPartCodeList', name: '零部件零件号', tooltip: true, width: 110, key: "LK_LINGBUJIANLINGJIANHAO", tipsLang: true, tipsKey: "LK_LINGBUJIANLINGJIANHAOTIPS", tips: "<p style='text-align: center'>散件零件号<br/>(若无，则用总成号)</p>" },
   { props: 'quantity', name: '数量', width: 70, tooltip: true, key: "LK_SHULIANG", tipsLang: true, tipsKey: "LK_SHULIANGTIPS", tips: "<p style='text-align: center'>必须为整数</p>" },
-  { props: 'assetUnitPrice', name: '资产单价', tooltip: true, width: 90, key: "LK_ZICHANDANJIA", tipsLang: true, tipsKey: "LK_ZICHANDANJIATIPS2", tips: "<p style='text-align: center'>不含税价格，<br/>并且保留两位小数</p>" },
+  { props: 'assetUnitPrice', name: '资产单价', tooltip: true, width: 90, key: "LK_ZICHANDANJIA", tipsLang: true, tipsKey: "ZICHANBIANDONGDANJIATIPS", tips: "<p style='text-align: center'>不含税价格，<br/>并且保留两位小数</p>" },
   { props: 'totalPrice', name: '资产总额', tooltip: true, key: "LK_ZICHANZONGE" },
   { props: 'isShared', name: '是否分摊', width: 110, tooltip: true, key: "LK_SHIFOUFENTAN" }
 ]

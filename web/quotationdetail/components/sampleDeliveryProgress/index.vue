@@ -14,7 +14,7 @@
       <span class="margin-left10">
         <span class="tip">{{language('LK_YISHANGSONGYANGZHOUQIYIDINGDINASHIJIANWEIQISHIRI','备注：以上送样周期，均以定点时间为起始日')}}</span>
         <el-radio-group class="margin-left20" v-model="priceType" @change="tableData = tableDataCache[$event]">
-          <el-radio label="LC">LC</el-radio>
+          <el-radio label="LC">LC{{ !isSkd && !isSkdLc ? `（${ language("BITIAN", "必填") }）` : "" }}</el-radio>
           <el-radio label="SKD">SKD{{ isSkd || isSkdLc ? `（${ language("BITIAN", "必填") }）` : "" }}</el-radio>
         </el-radio-group>
       </span>
@@ -23,7 +23,7 @@
       <template #supplierTime="scope">
         <div class="flexWrapper">
           <span class="flexpreffix"><span v-if="!disabled && (['1st Tryout送样周期', 'EM送样周期'].includes(scope.row.sampleDeliverType) || isBmgpart)" :class="requiredClass()"></span></span>
-          <iInput v-if="!disabled" v-model="scope.row.supplierTime" @click="handleInputBySupplierTime($event, row)"/>
+          <iInput v-if="!disabled" v-model="scope.row.supplierTime" @input="handleInputBySupplierTime($event, scope.row)"/>
           <span v-else>{{ scope.row.supplierTime }}</span>
         </div>
       </template>
@@ -230,7 +230,9 @@ export default {
         
     },
     handleInputBySupplierTime(value, row) {
-      row.supplierTime = numberProcessor(value, 2)
+      this.$set(row, "supplierTime", numberProcessor(value, 0))
+
+      if (+row.supplierTime > 53) this.$set(row, "supplierTime", "53")
     },
     requiredClass() {
       if (this.isSkd || this.isSkdLc) {
