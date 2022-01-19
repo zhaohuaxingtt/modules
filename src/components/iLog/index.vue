@@ -250,9 +250,10 @@ export default {
 		getList() {
 			this.loading = true
 			const http = new XMLHttpRequest()
-			const url = `${this.bizLogApiPrefix}/operationLog/${
-				this.isPage ? 'findOperaLogs' : 'listOperaLogs'
-			}`
+			const url = `${this.bizLogApiPrefix}/operationLog/findRecordLogs`	// 接口调整，统一使用分页
+			// const url = `${this.bizLogApiPrefix}/operationLog/${
+			// 	this.isPage ? 'findOperaLogs' : 'listOperaLogs'
+			// }`
 
 			http.open('POST', url, true)
 			http.setRequestHeader('content-type', 'application/json')
