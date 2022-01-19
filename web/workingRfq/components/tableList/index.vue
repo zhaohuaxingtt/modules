@@ -72,6 +72,13 @@
         </tempalte>
       </el-table-column>
       <el-table-column :key="items.key" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip'  v-else :label="`${ items.seq ? items.seq + ' ' : '' }${ items.key ? groupTileTranslate(items) : items.name }`" :prop="items.props" :label-class-name="items.labelClassName">
+        <template slot="header" >
+          <el-tooltip effect="light"  :content="`${ items.seq ? items.seq + ' ' : '' }${ items.key ? groupTileTranslate(items) : items.name }`">
+            <span>
+              {{`${ items.seq ? items.seq + ' ' : '' }${ items.key ? groupTileTranslate(items) : items.name }`}}
+            </span>
+          </el-tooltip>
+        </template>
         <!----------------------------存在二级表头的情况------------------------------->
         <template v-if='items.list && items.list.length > 0'>
            <template v-for="(itemss,indexs) in items.list">
@@ -91,6 +98,13 @@
               </el-table-column>
               <el-table-column v-else :key="indexs" align='center' :width="itemss.width" :show-overflow-tooltip='itemss.tooltip'  :label="itemss.key ? (lang ? language(itemss.key, itemss.name) : $t(itemss.key)) : itemss.name" :prop="itemss.props">
                   <!----------------------------如果是展示select 或者input------------------------>
+                  <template slot="header">
+                    <el-tooltip :content="itemss.key ? (lang ? language(itemss.key, itemss.name) : $t(itemss.key)) : itemss.name" effect='light'>
+                      <span class="labelHader">
+                        {{itemss.key ? (lang ? language(itemss.key, itemss.name) : $t(itemss.key)) : itemss.name}}
+                      </span>
+                    </el-tooltip>
+                  </template>
                   <tempalte slot-scope="scope">
                     <template v-if='itemss.type == "select"'>
                       <iSelect v-model="scope.row[itemss.props]" v-if='!notEdit'>
@@ -307,6 +321,7 @@ export default{
     display: none;
   }
 }
+
 .flexVerticalCenter {
   display: flex;
   align-items: center;
@@ -319,7 +334,11 @@ export default{
   ::v-deep td .cell {
     width: 100%!important;
   }
-
+   .labelHader{
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
   ::v-deep .el-input,
   .el-select,
   .el-autocomplete  {
