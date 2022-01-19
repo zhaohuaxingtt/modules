@@ -1,8 +1,8 @@
 /*
  * @Author: ldh
  * @Date: 2021-04-23 09:16:55
- * @LastEditors:  
- * @LastEditTime: 2021-10-27 19:09:43
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-01-19 13:20:13
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\data.js
  */
@@ -47,12 +47,12 @@ export const developmentCostInfos = [
 ]
 
 export const developmentCostTableTitle = [
-  { props: "item", name: "开发费项目", tooltip: true, key: "LK_KAIFAFEIXIANGMU" },
-  { props: "itemDescription", name: "描述", tooltip: true, width: 400, key: "LK_MIAOSHU" },
-  { props: "unitPrice", name: "单价", tooltip: true, key: "LK_DANJIA" },
-  { props: "quantity", name: "数量", tooltip: true, key: "LK_SHULIANG" },
-  { props: "total", name: "总金额", tooltip: true, key: "LK_ZONGJINE" },
-  { props: 'isShared', name: '是否分摊', width: 110, tooltip: true, key: "LK_SHIFOUFENTAN" }
+  { props: "item", name: "开发费项目", tooltip: true, key: "LK_KAIFAFEIXIANGMU",require:true },
+  { props: "itemDescription", name: "描述", tooltip: true, width: 400, key: "LK_MIAOSHU",require:true },
+  { props: "unitPrice", name: "单价", tooltip: true, key: "LK_DANJIA",require:true },
+  { props: "quantity", name: "数量", tooltip: true, key: "LK_SHULIANG",require:true },
+  { props: "total", name: "总金额", tooltip: true, key: "LK_ZONGJINE",require:true },
+  { props: 'isShared', name: '是否分摊', width: 110, tooltip: true, key: "LK_SHIFOUFENTAN",require:true }
 ]
 
 export const statesFilter = function(val) {
