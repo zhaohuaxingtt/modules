@@ -6,7 +6,7 @@ export const getNominateDisabled = function(data) {
 
     switch(data.designateType) {
     case "MEETING": // 上会
-        const disabledCodes = ["FREERE", "M_CHECK_INPROCESS", "M_CHECK_FAIL", "NOMINATE"] // 冻结, M审批中, M退回, 定点
+        const disabledCodes = ["FREERE", "M_CHECK_INPROCESS", "M_CHECK_PASS", "M_CHECK_FAIL", "NOMINATE"] // 冻结, M审批中, M审批通过, M退回, 定点
         if (isPriceConsistent) return disabledCodes.concat(["PASS", "CHECK_INPROCESS", "CHECK_PASS", "CHECK_FAIL"]).includes(applicationStatus) // 通过一致性校验 已通过, 复核中, 复核通过, 复核未通过
 
         return disabledCodes.includes(applicationStatus)
