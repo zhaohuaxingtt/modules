@@ -577,8 +577,18 @@ export default {
     async handleDownload() {
       this.downloadLoading = true
 
+      let moduleIds = [];
+      if((this.modules.length == 1 && this.modules[0] == '')|| this.modules.length == 0){
+        moduleIds = [1,2,3,4,5,6];
+      }else{
+        this.allModuleOptions.forEach((item)=>{
+          if((this.modules).includes(item.value)){ moduleIds.push(parseInt(item.code))} 
+        })
+      }
+      
       await exportQuotation({
-        quotationId: this.partInfo.quotationId
+        quotationId: this.partInfo.quotationId,
+        moduleIds,
       })
 
       this.downloadLoading = false
