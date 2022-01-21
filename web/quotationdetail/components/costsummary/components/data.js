@@ -29,12 +29,12 @@ export const bnkValid = function(type) {
 
 export function tableTilel1Fn(level, partType,partname){
   return [
-    {props:'materialSummary',seq: `${level}.1`,name:`原材料/散件成本（RMB/Pc.）`,key: 'LK_YUANCRMBPC',tooltip:true,width:'150',type:'input', inputType: 'decimal'},
-    {props:'productionSummary',seq: `${level}.2`, name:`制造成本`,key: 'LK_ZHIZHAOCB',tooltip:false,width:'',type:'input', inputType: 'decimal'},
-    {props:'scrapSummary',seq: `${level}.3`, name:`报废成本`,key: 'LK_BAOFEICHENGBEN',tooltip:false,width:'',type:'input', inputType: 'decimal'},
-    {props:'manageSummary',seq: `${level}.4`, name:`管理费`,key: 'LK_GUANLIFEI',tooltip:false,width:'',type:'input', inputType: 'decimal'},
+    {props:'materialSummary',seq: `${level}.1`,name:`原材料/散件成本（RMB/Pc.）`,key: 'LK_YUANCRMBPC',tooltip:true,width:'150', type: (level == 2 || level == 3) ? '' : 'input', inputType: 'decimal'},
+    {props:'productionSummary',seq: `${level}.2`, name:`制造成本`,key: 'LK_ZHIZHAOCB',tooltip:false,width:'', type: (level == 2 || level == 3) ? '' : 'input', inputType: 'decimal'},
+    {props:'scrapSummary',seq: `${level}.3`, name:`报废成本`,key: 'LK_BAOFEICHENGBEN',tooltip:false,width:'', type: (level == 2 || level == 3) ? '' : 'input', inputType: 'decimal'},
+    {props:'manageSummary',seq: `${level}.4`, name:`管理费`,key: 'LK_GUANLIFEI',tooltip:false,width:'', type: (level == 2 || level == 3) ? '' : 'input', inputType: 'decimal'},
     {props:'otherSummary',seq: `${level}.5`, name:`其他费用`,key: 'LK_QITAFEIYONG',tooltip:false,width:'' },
-    {props:'profitSummary',seq: `${level}.6`, name:`利润`,key: 'LK_LIRUN',tooltip:false,width:'',type:'input', inputType: 'decimal'},
+    {props:'profitSummary',seq: `${level}.6`, name:`利润`,key: 'LK_LIRUN',tooltip:false,width:'', type: (level == 2 || level == 3) ? '' : 'input', inputType: 'decimal'},
     {props:'totalPrice',name:'A价',key: 'LK_AJIA',tooltip:false,width:'' },
     // 若某一零件的零件类型为[加工装配费]，我可以看到汇总表头上多显示两列：[LC件管理费率][CKD件管理费率]
     ...(partType === 'S' ? [
