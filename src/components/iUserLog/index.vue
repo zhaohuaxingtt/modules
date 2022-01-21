@@ -313,7 +313,7 @@ export default {
   }
 
   .el-table__body-wrapper {
-    height: 400px;
+    height: 350px;
     overflow-y: auto;
     border-bottom: 1px solid #eee;
   }
