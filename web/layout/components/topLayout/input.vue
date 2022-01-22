@@ -8,7 +8,7 @@
 -->
 <template>
   <iInput class="search" :placeholder="placeholder" v-model="keywords" @keyup.enter.native="handleSearch">
-    <icon symbol class="icon" slot="prefix" name="iconsousudingbu" />
+    <icon symbol class="icon" slot="prefix" name="iconsousudingbu" @click.native="handleSearch"/>
   </iInput>
 </template>
 
@@ -70,6 +70,7 @@ export default {
   .icon {
     height: 100%;
     margin-right: 20px;
+    cursor:pointer;
     font-size: 22px;
   }
 

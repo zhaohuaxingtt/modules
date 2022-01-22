@@ -30,6 +30,7 @@
       <iMailTrigger />
     </div>
     <notify ref="notify" v-if="!drawerVisible" />
+    <profile :visible.sync="profileVisible" />
   </div>
 </template>
 <script>
@@ -41,6 +42,7 @@ import { getCountInMail } from '@/api/layout/topLayout'
 import { removeToken } from '@/utils/index.js'
 import iMailTrigger from '../mail/trigger.vue'
 import iUserSetting from './userSetting.vue'
+import profile from '../profile'
 export default {
   mixins: [filters],
   components: {
@@ -48,7 +50,8 @@ export default {
     icon,
     notify,
     iMailTrigger,
-    iUserSetting
+    iUserSetting,
+    profile
   },
   props: {
     menus: {
@@ -79,7 +82,8 @@ export default {
         notice: [],
         message: []
       },
-      isClose: true
+      isClose: true,
+      profileVisible: false
     }
   },
   computed: {
@@ -96,13 +100,15 @@ export default {
     this.socketVm && this.socketVm.close()
   },
   methods: {
-    clickMenu(val){
-      if(val == 'logout'){
-        this.$emit('click-menu',val)
-      }else{
+    clickMenu(val) {
+      if (val == 'logout') {
+        this.$emit('click-menu', val)
+      } else {
         this.$emit('click-menu')
       }
-            
+      if (val === 'profile') {
+        this.showProfile()
+      }
     },
     //模拟退出登录方法
     loginOut() {
@@ -136,6 +142,9 @@ export default {
     },
     afterClear() {
       this.getCountInMail()
+    },
+    showProfile() {
+      this.profileVisible = true
     }
   }
 }
