@@ -3,10 +3,8 @@
     :visible.sync="show"
     :title="papgeTitle"
     @close="closeDialog"
-    :loading='loading'
     :show-close='false'
     :width="dialogWidth"
-    :height='dialogHeight'
     :class="{'black-style':detail.popupStyle == '2'}"
   >
       <div class="" :class="{'center-style':detail.popupStyle == '1','main':detail.popupStyle == '0','right-style':detail.popupStyle == '2'}">
@@ -15,16 +13,18 @@
               <img v-show="!detail.picUrl" src="../../assets/images/popupPic.png" alt="" class="left-image" />
           </div>
           <div class="right">
-              <div class="right-title" :class="{'link-text':detail.linkUrl}" @click="toNewPage">
-                  <!-- <h2 > -->
-                      {{detail.title}}
-                <!-- </h2> -->
+              <div class="right-content">
+                    <div class="right-title" :class="{'link-text':detail.linkUrl}" @click="toNewPage">
+                        <!-- <h2 > -->
+                            {{detail.title}}
+                        <!-- </h2> -->
+                    </div>
+                    <div class="content" :class="{'text-left':detail.wordAlign == 0,'text-center':detail.wordAlign==1,'text-right':detail.wordAlign == 2}">
+                        <el-input type="textarea" v-model="detail.content" disabled></el-input>
+                    </div>
+                    <div class="publishTime"><i class="el-icon-time"><span class="publishTime-content">{{detail.publishTime}}</span></i></div>
+                    <iButton @click="sureMessage" class="btn">{{language('确认')}}</iButton>
               </div>
-              <div class="content" :class="{'text-left':detail.wordAlign == 0,'text-center':detail.wordAlign==1,'text-right':detail.wordAlign == 2}">
-                  <el-input type="textarea" v-model="detail.content" disabled></el-input>
-              </div>
-              <div class="publishTime"><i class="el-icon-time"><span class="publishTime-content">{{detail.publishTime}}</span></i></div>
-              <iButton @click="closeDialog" class="btn">{{language('确认')}}</iButton>
           </div>
       </div>
   </iDialog>
@@ -32,6 +32,7 @@
 
 <script>
 import {iDialog,iButton} from 'rise'
+import {changeCheckedSta} from '../../api'
 export default {
     name:'detailDialog',
     components:{iDialog,iButton},
@@ -46,7 +47,8 @@ export default {
                     linkUrl:'',
                     publishTime:'',
                     popupStyle:'',
-                    wordAlign:'0'
+                    wordAlign:'0',
+                    popupId:''
                 }
             }
         },
@@ -76,7 +78,26 @@ export default {
         },
         closeDialog(){
             this.$emit('update:show',false)
+            this.$emit('is-sure',false)
+        },
+        sureMessage(){
+            const data = {
+                userId:JSON.parse(sessionStorage.getItem('userInfo')).accountId,
+                popupId:this.detail.popupId
+            }
+            changeCheckedSta(data).then(res=>{
+                if(res.code == 200){
+                    this.$emit('update:show',false)
+                    this.$emit('is-sure',true)
+                }else{
+                    this.$message.error(res.desZh)
+                     this.$emit('update:show',false)
+                    this.$emit('is-sure',false)
+                }
+            })
+            
         }
+
     }
 }
 </script>
@@ -132,37 +153,45 @@ export default {
         height: 100%;
         margin-left:52%;
         top: -40px;
-        .btn{
-            position: absolute;
-            bottom: 0;
-        }
-        .publishTime{
-            position: absolute;
-            display: inline-block;
-            bottom: 60px;
-            color: #1660F1;
-            .publishTime-content{
-                color: #666666;
-                margin-left: 20px;
-                font-size: 16px;
+        .right-content{
+            display: flex;
+            flex-direction: column;
+            .btn{
+                // position: absolute;
+                // bottom: 0;
+                width: 100px;
+            }
+            .publishTime{
+                // position: absolute;
+                display: inline-block;
+                // bottom: 60px;
+                color: #1660F1;
+                margin: 20px 0;
+                .publishTime-content{
+                    color: #666666;
+                    margin-left: 20px;
+                    font-size: 16px;
+                }
+            }
+            .right-title{
+                font-size: 20px;
+                font-weight: bold;
+                width: 106%;
+            }
+            .content{
+                // position: absolute;
+                // top: 70px;
+                width: 106%;
+                margin-top: 20px;
+                line-height: 24px;
+                height: 280px;
+                overflow: auto;
+                ::v-deep .el-textarea__inner{
+                    padding: 0;
+                }
             }
         }
-        .right-title{
-            font-size: 20px;
-            font-weight: bold;
-            width: 106%;
-        }
-        .content{
-            position: absolute;
-            top: 70px;
-            width: 106%;
-            line-height: 24px;
-            max-height: 280px;
-            overflow: auto;
-            ::v-deep .el-textarea__inner{
-                padding: 0;
-            }
-        }
+        
     }
 }
 .center-style{
@@ -183,40 +212,49 @@ export default {
         }
     }
     .right{
-        margin-top:20%;
+        margin-top:140px;
         text-align: center;
-        height: 60%;
+        height: 62%;
         display: flex;
         flex-direction: column;
         align-items: center;
-        .right-title{
-            font-size: 20px;
-            font-weight: bold;
-            width: 110%;
-            margin-bottom: 20px;
-        }
-        .content,
-        .publishTime,
-        .btn
-        {
-            margin-bottom: 20px;
-        }
-        .content{
-            line-height: 24px;
-            height: 150px;
-            width: 800px;
-            overflow: auto;
-        }
-        .publishTime{
-            width: 250px;
-            padding: 5px;
-            color: #1660F1;
-            // border: solid rgb(229, 229, 229) 1px;
-            .publishTime-content{
-                margin-left: 20px;
-                color: #1B1D21;
+        width: 104%;
+        .right-content{
+            width: 100%;
+            .right-title{
+                font-size: 20px;
+                font-weight: bold;
+                text-align: center;
+                width: 100%;
+                margin-bottom: 20px;
+            }
+            .content,
+            .publishTime,
+            .btn
+            {
+                margin-bottom: 20px;
+            }
+            .content{
+                line-height: 24px;
+                height: 140px;
+                width: 100%;
+                overflow: auto;
+                ::v-deep .el-textarea__inner{
+                    padding: 0;
+                }
+            }
+            .publishTime{
+                // width: 250px;
+                padding: 5px;
+                color: #1660F1;
+                // border: solid rgb(229, 229, 229) 1px;
+                .publishTime-content{
+                    margin-left: 20px;
+                    color: #1B1D21;
+                }
             }
         }
+        
     }
 }
 .right-style{
@@ -245,39 +283,49 @@ export default {
         height: 100%;
         margin-left: 52%;
         top: -40px;
-        .right-title{
-            font-size: 20px;
-            font-weight: bold;
-            width: 106%;
-        }
-        .content,
-        .btn{
-            position: absolute;
-            bottom: 0;
-        }
-        .publishTime{
-            position: absolute;
-            display: inline-block;
-            bottom: 60px;
-            color: #1660F1;
-            .publishTime-content{
-                color: #FFFFFF;
-                margin-left: 20px;
-                font-size: 16px;
+        .right-content{
+            display: flex;
+            flex-direction: column;
+            .right-title{
+                font-size: 20px;
+                font-weight: bold;
+                width: 106%;
+            }
+            // .content,
+            // .btn{
+            //     position: absolute;
+            //     bottom: 0;
+            // }
+            .publishTime{
+                // position: absolute;
+                display: inline-block;
+                margin: 20px 0;
+                // bottom: 60px;
+                color: #1660F1;
+                .publishTime-content{
+                    color: #FFFFFF;
+                    margin-left: 20px;
+                    font-size: 16px;
+                }
+            }
+            .content{
+                // position: absolute;
+                // top: 70px;
+                margin-top: 20px;
+                width: 106%;
+                color: #888888;
+                line-height: 24px;
+                height: 280px;
+                overflow: auto;
+                ::v-deep .el-textarea__inner{
+                    padding: 0;
+                }
+            }
+            .btn{
+                width: 100px;
             }
         }
-        .content{
-            position: absolute;
-            top: 70px;
-            width: 110%;
-            color: #888888;
-            line-height: 24px;
-            max-height: 280px;
-            overflow: auto;
-            ::v-deep .el-textarea__inner{
-                padding: 0;
-            }
-        }
+        
     }
 }
 

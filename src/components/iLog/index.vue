@@ -37,7 +37,7 @@
 			<el-table
 				:data="tableData"
 				style="width: 100%"
-				class="log-table"
+				:class="{'log-table':!isPage}"
 				v-loading="loading"
 				default-expand-all
 			>
@@ -250,9 +250,10 @@ export default {
 		getList() {
 			this.loading = true
 			const http = new XMLHttpRequest()
-			const url = `${this.bizLogApiPrefix}/operationLog/${
-				this.isPage ? 'findOperaLogs' : 'listOperaLogs'
-			}`
+			const url = `${this.bizLogApiPrefix}/operationLog/findRecordLogs`	// 接口调整，统一使用分页
+			// const url = `${this.bizLogApiPrefix}/operationLog/${
+			// 	this.isPage ? 'findOperaLogs' : 'listOperaLogs'
+			// }`
 
 			http.open('POST', url, true)
 			http.setRequestHeader('content-type', 'application/json')

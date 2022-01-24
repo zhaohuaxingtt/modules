@@ -1,5 +1,5 @@
 <template>
-  <div class="material-dialog">
+  <div class="material-dialog2">
     <iDialog
       title="业务用户日志"
       :visible.sync="isShow"
@@ -59,7 +59,7 @@
       <el-table
         :data="tableData"
         style="width: 100%"
-        class="log-table"
+        :class="{'log-table':!isPage}"
         default-expand-all
         v-loading="loading"
       >
@@ -106,7 +106,7 @@ import iInput from '../iInput'
 import iSelect from '../iSelect'
 import iPagination from '../iPagination'
 import iDatePicker from '../iDatePicker'
-
+import moment from 'moment';
 export default {
   name:"iUserLog",
   components: { iDialog, iSearch, iInput, iSelect, iPagination, iDatePicker },
@@ -117,14 +117,22 @@ export default {
         return 0
       }
     },
-	menuId:{
-		type:[ Number, String],
-		default:""
-	},
+    menuId:{
+      type:[ Number, String],
+      default:""
+    },
     show: [Boolean],
     isPage: {
       type: Boolean, // 是否分页
       default: false
+    },
+    isDate: {
+      type: Boolean, // 是否默认时间查询
+      default: true
+    },
+    days:{  //默认时间天数
+        type:Number,
+        default:90
     },
     extendParams: {
       type: Object,
@@ -238,6 +246,13 @@ export default {
 		}
 		this.query.bizId = this.bizId
 		this.query.menuId = this.menuId
+        if(this.isDate){
+            let end = moment().format('YYYY-MM-DD')
+            let start = moment(new Date(end).getTime() - (this.days * 24 * 3600 * 1000)).format("YYYY-MM-DD")
+            this.date = [start, end]
+            this.query.createDate_gt = start
+            this.query.createDate_le = end
+        }
 		this.getOptions()
 		this.getList()
     },
@@ -299,21 +314,21 @@ export default {
   padding-bottom: 30px;
 }
 
-.material-dialog {
-  .card {
-    box-shadow: none;
+.material-dialog2 {
+  // .card {
+  //   box-shadow: none;
 
-    .cardBody {
-      padding: 0;
-    }
-  }
+  //   .cardBody {
+  //     padding: 0;
+  //   }
+  // }
 
   .log-table {
     padding-bottom: 35px;
   }
 
   .el-table__body-wrapper {
-    height: 400px;
+    height: 350px;
     overflow-y: auto;
     border-bottom: 1px solid #eee;
   }
