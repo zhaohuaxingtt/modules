@@ -1,5 +1,5 @@
 <template>
-  <div class="material-dialog">
+  <div class="material-dialog2">
     <iDialog
       title="业务用户日志"
       :visible.sync="isShow"
@@ -59,7 +59,7 @@
       <el-table
         :data="tableData"
         style="width: 100%"
-        class="log-table"
+        :class="{'log-table':!isPage}"
         default-expand-all
         v-loading="loading"
       >
@@ -117,10 +117,10 @@ export default {
         return 0
       }
     },
-	menuId:{
-		type:[ Number, String],
-		default:""
-	},
+    menuId:{
+      type:[ Number, String],
+      default:""
+    },
     show: [Boolean],
     isPage: {
       type: Boolean, // 是否分页
@@ -314,21 +314,21 @@ export default {
   padding-bottom: 30px;
 }
 
-.material-dialog {
-  .card {
-    box-shadow: none;
+.material-dialog2 {
+  // .card {
+  //   box-shadow: none;
 
-    .cardBody {
-      padding: 0;
-    }
-  }
+  //   .cardBody {
+  //     padding: 0;
+  //   }
+  // }
 
   .log-table {
     padding-bottom: 35px;
   }
 
   .el-table__body-wrapper {
-    height: 400px;
+    height: 350px;
     overflow-y: auto;
     border-bottom: 1px solid #eee;
   }

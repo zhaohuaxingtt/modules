@@ -3,6 +3,7 @@
     placement="bottom"
     trigger="click"
     :popper-class="'setting-popover'"
+    v-model="visible"
     @show="handleShow"
     @hide="handleHide"
   >
@@ -20,8 +21,7 @@
           :class="{
             'flex-between-center-center': true,
             menu: true,
-            active: $route.path === menu.url,
-            disabled: menu.name !== 'logout'
+            active: $route.path === menu.path
           }"
         >
           <span>{{ menu.title }}</span>
@@ -126,14 +126,17 @@ export default {
         },
         {
           title: _self.$t('setting'),
-          name: 'setting'
+          name: 'setting',
+          url: '/portal/#/setting',
+          path: '/setting'
         },
         {
           title: _self.$t('LK_TUICHUDENGLU'),
           name: 'logout'
         }
       ],
-      menus_admin: []
+      menus_admin: [],
+      visible: false
     }
   },
   methods: {
@@ -156,9 +159,13 @@ export default {
     handleProfileClick(menu) {
       if (menu.name === 'logout') {
         this.logout()
+      } else if (menu.name === 'setting') {
+        window.location.href = '/portal/#/setting'
       } else {
-        iMessage.success('coming soon')
+        // iMessage.success('coming soon')
+        this.$emit('click-menu', menu.name)
       }
+      this.visible = false
     },
     handleRedirect(menu) {
       if (!menu.url) {
@@ -178,6 +185,7 @@ export default {
           this.$router.push(menu.url)
         }
       }
+      this.visible = false
     },
     removeToken() {
       const keys = document.cookie.match(/[^ =;]+(?==)/g)

@@ -38,7 +38,7 @@
         </iSelect>
       </i-form-item>
       <i-form-item class="rightFloat">
-        <el-checkbox v-if='!disabled' v-model="allTableData.editFlag" v-show="allTableData.level > 1">{{ language('LK_SHOUDONGSHURU', '手动输入')}}</el-checkbox>
+        <!-- <el-checkbox v-if='!disabled' v-model="allTableData.editFlag" v-show="allTableData.level > 1">{{ language('LK_SHOUDONGSHURU', '手动输入')}}</el-checkbox> --> <!-- 开放此处，需要先确认CRW-2590 -->
         <iButton @click="downloadFile" :loading='downLoadLoding'>{{ language('LK_XIAZAICBD', '下载CBD')}}</iButton>
         <el-upload
           v-if='!disabled' 
@@ -63,7 +63,7 @@
     <!--------------------------------------------------------->
     <!----------------------表格百分比-------------------------->
     <!--------------------------------------------------------->
-    <tableList lang :tableTitle='tableTilel1' :notEdit='disabled ? true : (allTableData.level == 1 ? false : !allTableData.editFlag)' :tableData='tableData.tableData' :isSteel="isSteel" :roundIsOnlineBidding='roundIsOnlineBidding' class="margin-top10"></tableList>
+    <tableList lang :tableTitle='tableTilel1' :notEdit='disabled' :tableData='tableData.tableData' :isSteel="isSteel" :roundIsOnlineBidding='roundIsOnlineBidding' class="margin-top10"></tableList>
     <persent lang v-if='!tableData.persent.every(items=>items == 0)' :persentList='tableData.persent' :realDataList='tableData.tableData'></persent>
   </iCard>
 </template>

@@ -71,65 +71,72 @@
         </div>
       </template>
       <tableList :lang="true" height="100%" class="table" :tableData="tableListData" :tableTitle="tableTitle" @handleSelectionChange="handleSelectionChange">
+        <template #priceType="scope">
+          <span v-if="(disabled && !dgysBj) || !isSkdLc(scope.row)">{{ scope.row.priceType }}</span>
+          <iSelect v-else v-model="scope.row.priceType">
+            <el-option label="LC" value="LC"></el-option>
+            <el-option label="SKD" value="SKD"></el-option>
+          </iSelect>
+        </template>
         <template #stuffType="scope">
-          <iInput v-if="!disabled" v-model="scope.row.stuffType" />
+          <iInput v-if="!disabled && dgysBj" v-model="scope.row.stuffType" />
           <span v-else>{{ scope.row.stuffType }}</span>
         </template>
         <template #mouldType="scope">
-          <iInput v-if="!disabled" v-model="scope.row.mouldType" @input="handleInputByMouldType($event, scope.row)" />
+          <iInput v-if="!disabled && dgysBj" v-model="scope.row.mouldType" @input="handleInputByMouldType($event, scope.row)" />
           <span v-else>{{ scope.row.mouldType }}</span>
         </template>
         <template #assetTypeCode="scope">
-          <iSelect v-if="!disabled" v-model="scope.row.assetTypeCode">
+          <iSelect v-if="!disabled && dgysBj" v-model="scope.row.assetTypeCode">
             <el-option v-for="assetType in assetTypeCodeOptions" :key="assetType.value" :label="assetType.label" :value="assetType.value"></el-option>
           </iSelect>
           <span v-else>{{ scope.row.assetTypeCode }}</span>
         </template>
         <template #assembledPartName="scope">
-          <iInput v-if="!disabled" v-model="scope.row.assembledPartName" @input="handleInputByAssembledPartName($event, scope.row)" />
+          <iInput v-if="!disabled && dgysBj" v-model="scope.row.assembledPartName" @input="handleInputByAssembledPartName($event, scope.row)" />
           <span v-else>{{ scope.row.assembledPartName }}</span>
         </template>
         <template #assembledPartCode="scope">
-          <iSelect v-if="!disabled" v-model="scope.row.assembledPartCode" @change="handleChangeByAssembledPartCode($event, scope.row)">
+          <iSelect v-if="!disabled && dgysBj" v-model="scope.row.assembledPartCode" @change="handleChangeByAssembledPartCode($event, scope.row)">
             <el-option v-for="partNumObj in partNums" :key="partNumObj.value" :label="partNumObj.label" :value="partNumObj.value"></el-option>
           </iSelect>
           <span v-else>{{ scope.row.assembledPartCode }}</span>
         </template>
         <template #modeTotalLife="scope">
-          <iInput v-if="!disabled" v-model="scope.row.modeTotalLife" @input="handleInputByModeTotalLife($event, scope.row)"/>
+          <iInput v-if="!disabled && dgysBj" v-model="scope.row.modeTotalLife" @input="handleInputByModeTotalLife($event, scope.row)"/>
           <span v-else>{{ scope.row.modeTotalLife }}</span>
         </template>
         <template #assembledPartPrjCode="scope">
-          <iSelect v-if="!disabled" v-model="scope.row.assembledPartPrjCode" @change="handleChangeByAssembledPartPrjCode($event, scope.row)">
+          <iSelect v-if="!disabled && dgysBj" v-model="scope.row.assembledPartPrjCode" @change="handleChangeByAssembledPartPrjCode($event, scope.row)">
             <el-option v-for="fsNumObj in scope.row.assembledPartCode ? partNumMap[scope.row.assembledPartCode] : fsNums" :key="fsNumObj.value" :label="fsNumObj.label" :value="fsNumObj.value"></el-option>
           </iSelect>
           <span v-else>{{ scope.row.assembledPartPrjCode }}</span>
         </template>
         <template #supplierPartNameList="scope">
-          <iInput v-if="!disabled" v-model="scope.row.supplierPartNameList" @input="handleInputBySupplierPartNameList($event, scope.row)" />
+          <iInput v-if="!disabled && dgysBj" v-model="scope.row.supplierPartNameList" @input="handleInputBySupplierPartNameList($event, scope.row)" />
           <span v-else>{{ scope.row.supplierPartNameList }}</span>
         </template>
         <template #supplierPartCodeList="scope">
-          <iInput v-if="!disabled" v-model="scope.row.supplierPartCodeList" />
+          <iInput v-if="!disabled && dgysBj" v-model="scope.row.supplierPartCodeList" />
           <span v-else>{{ scope.row.supplierPartCodeList }}</span>
         </template>
         <template #quantity="scope">
-          <iInput v-if="!disabled" v-model="scope.row.quantity" @input="handleInputByQuantity($event, scope.row)" />
+          <iInput v-if="!disabled && dgysBj" v-model="scope.row.quantity" @input="handleInputByQuantity($event, scope.row)" />
           <span v-else>{{ scope.row.quantity }}</span>
         </template>
         <template #assetUnitPrice="scope">
-          <iInput v-if="!disabled" v-model="scope.row.assetUnitPrice" @input="handleInputByAssetUnitPrice($event, scope.row)" />
+          <iInput v-if="!disabled && dgysBj" v-model="scope.row.assetUnitPrice" @input="handleInputByAssetUnitPrice($event, scope.row)" />
           <span v-else>{{ scope.row.assetUnitPrice }}</span>
         </template>
         <template #isShared="scope">
-          <iSelect v-if="!disabled" v-model="scope.row.isShared" @change="updateTotal">
+          <iSelect v-if="!disabled && dgysBj" v-model="scope.row.isShared" @change="updateTotal">
             <el-option label="是" :value="1"></el-option>
             <el-option label="否" :value="0"></el-option>
           </iSelect>
           <span v-else>{{ scope.row.isShared | numberStatusFilter }}</span>
         </template>
       </tableList>
-      <div v-if="!disabled" class="totalCount margin-top30">{{ language('LK_XIANSHI', '显示') }}<span class="count">{{ Array.isArray(tableListData) ? (tableListData.length > 0 ? 1 : 0) : 0 }}</span>{{ language('LK_TIAODI', '条到第') }}<span class="count">{{ Array.isArray(tableListData) ? tableListData.length : 0 }}</span>{{ language('LK_TIAOJILU', '条记录') }}，{{ language('LK_GONG', '共') }}<span class="count">{{ Array.isArray(tableListData) ? tableListData.length : 0 }}</span>{{ language("LK_TIAOJILU", "条记录") }}</div>
+      <div v-if="!disabled && dgysBj" class="totalCount margin-top30">{{ language('LK_XIANSHI', '显示') }}<span class="count">{{ Array.isArray(tableListData) ? (tableListData.length > 0 ? 1 : 0) : 0 }}</span>{{ language('LK_TIAODI', '条到第') }}<span class="count">{{ Array.isArray(tableListData) ? tableListData.length : 0 }}</span>{{ language('LK_TIAOJILU', '条记录') }}，{{ language('LK_GONG', '共') }}<span class="count">{{ Array.isArray(tableListData) ? tableListData.length : 0 }}</span>{{ language("LK_TIAOJILU", "条记录") }}</div>
       <iPagination
         v-else
         v-update
@@ -143,7 +150,7 @@
         :layout="page.layout"
         :total="page.totalCount" />
     </div>
-    <relatingParts :supplierId='supplierId' :dialogVisible="relatingPartsVisible" @changeVisible="changeRelatingPartsVisible" :partInfo="partInfo" :disabled="disabled" />
+    <relatingParts :supplierId='supplierId' :dialogVisible="relatingPartsVisible" @changeVisible="changeRelatingPartsVisible" :partInfo="partInfo" :disabled="disabled || !dgysBj" />
   </iCard>
 </template>
 
@@ -224,7 +231,7 @@ export default {
         rfqId: this.partInfo.rfqId,
         round: this.partInfo.currentRounds,
         currPage: this.page.currPage,
-        pageSize: this.disabled ? this.page.pageSize : 999999,
+        pageSize: this.disabled || !dgysBj ? this.page.pageSize : 999999,
         supplierId:this.supplierId
       })
       .then(res => {
@@ -345,7 +352,8 @@ export default {
         mouldId: "",
         fixedAssetsName: "",
         assembledPartPrjCode: this.partInfo.fsNum,
-        carModeCode: this.partInfo.carTypeNames
+        carModeCode: this.partInfo.carTypeNames,
+        priceType: ""
       })
     },
     handleDel() {
@@ -406,6 +414,13 @@ export default {
     handleChangeByAssembledPartPrjCode(fsNum, row) {
       const fsObj = this.fsNums.filter(item => item.fsnrGsnrNum === fsNum)[0]
       this.$set(row, "quotationId", fsObj.quotationId)
+
+      if (fsObj.priceType === "SKDLC") {
+        this.$set(row, "priceType", "LC")
+      } else {
+        this.$set(row, "priceType", fsObj.priceType)
+      }
+
       if (!row.assembledPartCode) {
         this.$set(row, "assembledPartCode", fsObj.partNum)
         this.$set(row, "assembledPartName", fsObj.partName)
@@ -460,6 +475,22 @@ export default {
       ).toFixed(2)
     },
     getFee(){},
+    // 判断是否是SKDLC
+    isSkdLc(row) {
+      if (row.assembledPartPrjCode) {
+        const fsObj = this.fsNums.find(item => item.fsnrGsnrNum === row.assembledPartPrjCode)
+
+        if (fsObj) {
+          if (fsObj.priceType === "SKDLC") return true
+
+          return false
+        }
+
+        return false
+      } else {
+        return false
+      }
+    }
   }
 }
 </script>
