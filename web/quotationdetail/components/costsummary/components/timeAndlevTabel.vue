@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-23 15:38:31
- * @LastEditTime: 2022-01-24 15:26:36
+ * @LastEditTime: 2022-01-25 02:03:22
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\costsummary\components\timeAndlevTabel.vue
@@ -147,7 +147,7 @@ export default{
     }),
     isSourcing(){
       try {
-        return this.$router.query.sourcing
+        return this.$route.query.sourcing
       } catch (error) {
         return false
       }
