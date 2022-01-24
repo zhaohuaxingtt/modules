@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2021-06-22 11:07:21
- * @LastEditTime: 2021-12-09 17:48:29
- * @LastEditors: Hao,Jiang
+ * @LastEditTime: 2022-01-18 15:24:48
+ * @LastEditors: YoHo
  * @Description: In User Settings Edit
 -->
 <template>
@@ -14,13 +14,14 @@
       </slot>
     </div>
     <!-- 日志弹窗 -->
-    <iLog :show.sync="showLogDialog" :extendParams="extParams" :isPage="isPage" :env="env" v-bind="$attrs" @onTypeChange="onTypeChange"></iLog>
+    <iUserLog :show.sync="showLogDialog" :extendParams="extParams" :isPage="isPage" :env="env" v-bind="$attrs" @onTypeChange="onTypeChange" v-if="isUser"></iUserLog>
+    <iLog :show.sync="showLogDialog" :extendParams="extParams" :isPage="isPage" :env="env" v-bind="$attrs" @onTypeChange="onTypeChange" v-else></iLog>
   </div>
 </template>
 
 <script>
 import Vuex from 'vuex'
-import { iLog, icon } from 'rise';
+import { iLog, iUserLog, icon } from 'rise';
 import config from './config'
 
 export default {
@@ -52,6 +53,15 @@ export default {
 			default: false,
 		},
     /**
+     * @description: 表格是否使用iUserLog组件
+     * @param {*}
+     * @return {*}
+     */    
+    isUser: {
+			type: Boolean,
+			default: false,
+		},
+    /**
      * @description: 是否获取当前用户
      * @param {*}
      * @return {*}
@@ -61,7 +71,7 @@ export default {
 			default: false,
 		},
   },
-  components: { iLog, icon },
+  components: { iLog, iUserLog, icon },
   computed: {
     ...Vuex.mapState({
       userInfo: state => state.permission.userInfo,

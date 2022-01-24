@@ -880,6 +880,18 @@ export default{
             this.topTableData = this.translateDataTopData(cloneDeep(this.allTableData), data)
             this.$refs.components && typeof this.$refs.components.partsQuotationss == "function" && this.$refs.components.partsQuotationss(this.partInfo.rfqId,this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId,this.partInfo.round,this.allTableData.level)
             // this.allpagefrom.quotationId,
+
+            this.summaryData.materialSummary = 
+              Array.isArray(this.allTableData.rawMaterial.records) ?
+              this.allTableData.rawMaterial.records.reduce((acc, cur) => math.add(acc, math.bignumber(cur.materialCost || 0)), 0).toFixed(2) :
+              "0.00"
+
+            this.summaryData.productionSummary = 
+              Array.isArray(this.allTableData.makeCost.records) ?
+              this.allTableData.makeCost.records.reduce((acc, cur) => math.add(acc, math.bignumber(cur.totalCost || 0)), 0).toFixed(2) :
+              "0.00"
+
+
             this.findFiles()
 
             this.getCategoryDetail("MATERIAL")
@@ -1235,31 +1247,69 @@ export default{
         })
       }
 
-      if (this.partInfo.partProjectType === partProjTypes.PEIJIAN || this.partInfo.partProjectType === partProjTypes.FUJIAN) {
-        return Promise.all([this.postCostSummary(), this.saveBzfreeAndYunshuFree()])
-          .then(([res1, res2]) => {
-            let flag = true
-            if (res1.code == 200) {
-              flag = true
-              this.updateCbdLevel(this.allTableData.level)
-              this.init()
-            } else {
-              iMessage.error(this.$i18n.locale === "zh" ? res1.desZh : res1.desEn)
-            }
+      if (
+        this.partInfo.partProjectType === partProjTypes.GANGCAIPILIANGCAIGOU || 
+        this.partInfo.partProjectType === partProjTypes.GANGCAIYICIXINGCAIGOU || 
+        this.partInfo.partProjectType === partProjTypes.YICIXINGCAIGOU || 
+        this.partInfo.partProjectType === partProjTypes.GONGXUWEIWAI || 
+        this.partInfo.partProjectType === partProjTypes.ZHANGJIALINGJIAN || 
+        this.partInfo.partProjectType === partProjTypes.PEIJIAN || 
+        this.partInfo.partProjectType === partProjTypes.FUJIAN
+      ) {
+        if (this.isSkdLc) {
+          if (+moment(this.$refs.skdCostSummary.skdStartProductDate) > +moment(this.allTableData.startProductDate)) {
+            this.allTableData.startProductDate = ""
+            throw iMessage.warn(this.language("SKDQIBUSHENGCHANSHIJIANBUKEWANYULCQIBUSHENGCHANSHIJIAN", "SKD起步生产时间不可晚于LC起步生产时间，请重新输入"))
+            // throw iMessage.warn(this.language("LCQIBUSHENGCHANRIQIBUNENGXIAOYUSKDQIBUSHENGCHANRIQI", "LC起步生产日期不能小于SKD起步生产日期"))
+          }
+          if (!moment(this.allTableData.startProductDate).isAfter(moment(this.$refs.skdCostSummary.skdStartProductDate), "month")) {
+            this.allTableData.startProductDate = ""
+            throw iMessage.warn(this.language("SKDAFTERLCNOTMONTH", "LC起步生产日期必须是SKD起步生产日期所在月份之后的日期，请重新输入"))
+          }
 
-            if (res2.code == 200) {
-              flag = true
-              if (res1.code != 200) this.init()
-            } else {
-              iMessage.error(this.$i18n.locale === "zh" ? res1.desZh : res1.desEn)
-            }
-
-            if (flag) {
+          return Promise.all([
+            this.$refs.skdCostSummary.save(),
+            this.postCostSummary(),
+            this.saveBzfreeAndYunshuFree()
+          ])
+          .then(([res1, res2, res3]) => {
+            if (res1 && res1.code == 200 && res2 && res2.code == 200 && res3 && res3.code == 200) {
               if (type !== "submit") {
-                iMessage.success(this.$i18n.locale === "zh" ? (res1 ? res1.desZh : res2.desZh) : (res1 ? res1.desEn : res2.desEn)) 
+                iMessage.success(this.$i18n.locale === "zh" ? res1.desZh : res1.desEn)
+                this.init()
               }
-            } else throw [res1, res2]
+
+              this.updateCbdLevel(this.allTableData.level)
+            } else {
+              iMessage.error(this.language("CAOZUOSHIBAI", "操作失败"))
+            }
           })
+        } else {
+          return Promise.all([this.postCostSummary(), this.saveBzfreeAndYunshuFree()])
+            .then(([res1, res2]) => {
+              let flag = true
+              if (res1.code == 200) {
+                flag = true
+                this.updateCbdLevel(this.allTableData.level)
+                this.init()
+              } else {
+                iMessage.error(this.$i18n.locale === "zh" ? res1.desZh : res1.desEn)
+              }
+
+              if (res2.code == 200) {
+                flag = true
+                if (res1.code != 200) this.init()
+              } else {
+                iMessage.error(this.$i18n.locale === "zh" ? res1.desZh : res1.desEn)
+              }
+
+              if (flag) {
+                if (type !== "submit") {
+                  iMessage.success(this.$i18n.locale === "zh" ? (res1 ? res1.desZh : res2.desZh) : (res1 ? res1.desEn : res2.desEn)) 
+                }
+              } else throw [res1, res2]
+            })
+        }
       } else if (this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || this.partInfo.partProjectType === partProjTypes.DBLINGJIAN || this. partInfo.priceStatus == 'DB'){
         return this.updateCostSummaryDB().then(res => {
           if (res?.result) {
@@ -1590,7 +1640,12 @@ export default{
 
     handleInputByManageFeeL3(value, row) {
       if (row) {
-        this.$set(row, "amount", math.evaluate(`${ this.summaryData.productionSummary } * (${ row.ratio || 0 } / 100)`).toFixed(2))
+        if (this.allTableData.manageFee.indexOf(row) === 0) {
+          this.$set(row, "amount", math.evaluate(`${ this.summaryData.materialSummary || 0 } * (${ row.ratio || 0 } / 100)`).toFixed(2))
+        } else {
+          this.$set(row, "amount", math.evaluate(`${ this.summaryData.productionSummary || 0 } * (${ row.ratio || 0 } / 100)`).toFixed(2))
+        }
+        
         this.$set(row, "blockAmount", math.evaluate(`${ row.amount || 0 } * 1`).toFixed(2))
       }
 
@@ -1602,7 +1657,12 @@ export default{
 
     handleInputByProfitL3(value, row) {
       if (row) {
-        this.$set(row, "amount", math.evaluate(`${ this.summaryData.productionSummary } * (${ row.ratio || 0 } / 100)`).toFixed(2))
+        if (this.allTableData.profit.indexOf(row) === 0) {
+          this.$set(row, "amount", math.evaluate(`${ this.summaryData.materialSummary || 0 } * (${ row.ratio || 0 } / 100)`).toFixed(2))
+        } else {
+          this.$set(row, "amount", math.evaluate(`${ this.summaryData.productionSummary || 0 } * (${ row.ratio || 0 } / 100)`).toFixed(2))
+        }
+        
         this.$set(row, "blockAmount", math.evaluate(`${ row.amount || 0 } * 1`).toFixed(2))
       }
 

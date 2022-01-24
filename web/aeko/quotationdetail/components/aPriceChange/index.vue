@@ -223,17 +223,17 @@ export default {
             res.data.map(item => {
               switch(item.code) {
                 case "1":
-                  return { code: item.code, seq: "2.1", key: "原材料/散件", label: "原材料/散件", value: "material", permissionKey: "AEKO_QUOTATION_CBD_VIEW_YUANCAILIAOSANJIAN|原材料/散件" }
+                  return { code: item.code, seq: "2.1", key: "原材料/散件", label: "原材料/散件", value: "material", permissionKey: "AEKO_QUOTATION_CBD_VIEW_YUANCAILIAOSANJIAN|原材料/散件",downloadKey:1, }
                 case "2":
-                  return { code: item.code, seq: "2.2", key: "ZHIZAOCHENGBEN", label: "制造成本", value: "production", permissionKey: "AEKO_QUOTATION_CBD_VIEW_ZHIZAOCHENGBEN|制造成本" }
+                  return { code: item.code, seq: "2.2", key: "ZHIZAOCHENGBEN", label: "制造成本", value: "production", permissionKey: "AEKO_QUOTATION_CBD_VIEW_ZHIZAOCHENGBEN|制造成本",downloadKey:2, }
                 case "3":
-                  return { code: item.code, seq: "2.3", key: "BAOFEICHENGBEN", label: "报废成本", value: "scrap", permissionKey: "AEKO_QUOTATION_CBD_VIEW_BAOFEICHENGBEN|报废成本" }
+                  return { code: item.code, seq: "2.3", key: "BAOFEICHENGBEN", label: "报废成本", value: "scrap", permissionKey: "AEKO_QUOTATION_CBD_VIEW_BAOFEICHENGBEN|报废成本",downloadKey:3, }
                 case "4":
-                  return { code: item.code, seq: "2.4", key: "GUANLIFEI", label: "管理费", value: "manage", permissionKey: "AEKO_QUOTATION_CBD_VIEW_GUANLIFEI|管理费" }
+                  return { code: item.code, seq: "2.4", key: "GUANLIFEI", label: "管理费", value: "manage", permissionKey: "AEKO_QUOTATION_CBD_VIEW_GUANLIFEI|管理费",downloadKey:4, }
                 case "6":
-                  return { code: item.code, seq: "2.5", key: "QITAFEIYONG", label: "其他费用", value: "other" }
+                  return { code: item.code, seq: "2.5", key: "QITAFEIYONG", label: "其他费用", value: "other",downloadKey:5, }
                 case "5":
-                  return { code: item.code, seq: "2.6", key: "LIRUN", label: "利润", value: "profit", permissionKey: "AEKO_QUOTATION_CBD_VIEW_LIRUN|利润" }
+                  return { code: item.code, seq: "2.6", key: "LIRUN", label: "利润", value: "profit", permissionKey: "AEKO_QUOTATION_CBD_VIEW_LIRUN|利润",downloadKey:6, }
                 default:
                   return {}
               }
@@ -577,8 +577,18 @@ export default {
     async handleDownload() {
       this.downloadLoading = true
 
+      let moduleIds = [5]; // 其他费用是默认显示的
+      if((this.modules.length == 1 && this.modules[0] == '')|| this.modules.length == 0){
+        moduleIds = [1,2,3,4,5,6];
+      }else{
+        this.allModuleOptions.forEach((item)=>{
+          if((this.modules).includes(item.value)){moduleIds.push(item.downloadKey)} 
+        })
+      }
+      
       await exportQuotation({
-        quotationId: this.partInfo.quotationId
+        quotationId: this.partInfo.quotationId,
+        moduleIds,
       })
 
       this.downloadLoading = false

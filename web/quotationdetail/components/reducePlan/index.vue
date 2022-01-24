@@ -19,16 +19,17 @@
 				</span>
 				<!-----------配件报价的降价计划可以选择基于A价或B价，---------------------------------------------->
 				<span v-else-if="partInfo.partProjectType === partProjTypes.PEIJIAN"  class="tip margin-left15">
-					<span class="margin-right15">计算基准：</span>
+                    <span  class="tip margin-left10">降价计算以A价为准</span>
+					<!-- <span class="margin-right15">计算基准：</span>
 					<el-radio-group v-model="computedBasic" @change="handleABChange" :disabled="disabled || isOriginprice">
 						<el-radio label="01">A价</el-radio>
 						<el-radio label="02">B价</el-radio>
-					</el-radio-group>
+					</el-radio-group> -->
 				</span>
-				<!-----------附件的降价计划只能基于B价，---------------------------------------------->
-				<span v-else-if="partInfo.partProjectType === partProjTypes.FUJIAN" class="tip margin-left10">降价计算以B价为准</span>
+				<!-- ---------附件的降价计划只能基于B价，-------------------------------------------- -->
+				<!-- <span v-else-if="partInfo.partProjectType === partProjTypes.FUJIAN" class="tip margin-left10">降价计算以B价为准</span> -->
 				<!-------------正常流程FS零件只基于A价------------------------------------------>
-				<span v-else class="tip margin-left10">降价计算以A价为准</span>
+				<span class="tip margin-left10">降价计算以A价为准</span>
 			</span>
 		</div>
 		<tableList :tableTitle="tableTitle" v-if='partInfo.quotationId' :partInfo='partInfo'  :tableData="tableData" :reducePlanedit="!disabled && !isOriginprice" @rateChange="handleRateChange" @dateFocus="dateFocus" :lcStartProductDate="lcStartProductDate" />
@@ -123,15 +124,15 @@ export default {
          * @param {*}
          * @return {*}
          */        
-        handleABChange() {
-            if (this.computedBasic === '01' && !this.aprice) {
-                iMessage.warn(this.language("AJIABUCUNZAIERROR", "A价不存在，无法根据A价计算降价后的价格"))
-            }
-            if (this.computedBasic === '02' && !this.bprice) {
-                iMessage.warn(this.language("BJIABUCUNZAIERROR", "B价不存在，无法根据B价计算降价后的价格"))
-            }
-            this.tableData = this.computeReducePrice(this.computedBasic === '01' ? this.aprice : this.bprice, this.tableData)
-        },
+        // handleABChange() {
+        //     if (this.computedBasic === '01' && !this.aprice) {
+        //         iMessage.warn(this.language("AJIABUCUNZAIERROR", "A价不存在，无法根据A价计算降价后的价格"))
+        //     }
+        //     if (this.computedBasic === '02' && !this.bprice) {
+        //         iMessage.warn(this.language("BJIABUCUNZAIERROR", "B价不存在，无法根据B价计算降价后的价格"))
+        //     }
+        //     this.tableData = this.computeReducePrice(this.computedBasic === '01' ? this.aprice : this.bprice, this.tableData)
+        // },
         /**
          * @Description: 计算降价后的价格
          * @Author: Luoshuang
@@ -168,7 +169,8 @@ export default {
 
                 this.tableData = this.computeSkdLc(this.skdAPrice, this.lcAPrice, this.tableData)
             } else {
-                this.tableData = this.computeReducePrice(this.computedBasic === '01' ? this.aprice : this.bprice, this.tableData)
+                // this.computedBasic === '01' ? this.aprice : this.bprice
+                this.tableData = this.computeReducePrice(this.aprice, this.tableData)
             }
         },
         /**
@@ -191,23 +193,25 @@ export default {
                     }
                     this.aprice = res.data.aprice || 0
                     this.bprice = res.data.bprice || 0
-                    if (this.computedBasic === '01' && (!res.data.aprice || res.data.aprice == 0)) {
-                        iMessage.warn(this.language("AJIABUCUNZAIHUOWEILING", "A价不存在或为0"))
+                    if ((this.computedBasic === '01' || this.computedBasic === '02') && (!res.data.aprice || res.data.aprice == 0)) {
+                        iMessage.warn(this.language("AJIABUCUNZAIHUOWEILING", "出厂价不存在或为0"))
                     }
-                    if (this.computedBasic === '02' && (!res.data.bprice || res.data.bprice == 0)) {
-                        iMessage.warn(this.language("BJIABUCUNZAIHUOWEILING", "B价不存在或为0"))
-                    }
+                    // if (this.computedBasic === '02' && (!res.data.bprice || res.data.bprice == 0)) {
+                    //     iMessage.warn(this.language("BJIABUCUNZAIHUOWEILING", "B价不存在或为0"))
+                    // }
                     if (['3','4','5','6','7'].includes(this.computedBasic) && (!res.data.bprice || res.data.bprice == 0)) {
                         iMessage.error(this.basic+this.language('BUCUNZAIHUOWEIO','不存在或为0'))
                     }
-                    this.tableData = this.computeReducePrice(this.computedBasic === '01' ? this.aprice : this.bprice, res.data.pricePlanInfoVOS)
+                    // this.computedBasic === '01' ? this.aprice : this.bprice
+                    this.tableData = this.computeReducePrice(this.aprice, res.data.pricePlanInfoVOS)
                 } else {
                     iMessage.error(this.$i18n.locale === "zh" ? res?.desZh : res?.desEn)
+                    this.tableData = []
                 }
             } else {
                 const res = await getLtcPlanSkcLc(this.partInfo.quotationId)
                 if (res.code == 200) {
-                    if (!res.data.lcAPrice || !res.data.skdAPrice) await iMessage.error(`${ this.language("AJIABUCUNZAIHUOWEILING", "A价不存在或为0") }`)
+                    if (!res.data.lcAPrice || res.data.lcAPrice == "0.00" || !res.data.skdAPrice || res.data.skdAPrice == "0.00") await iMessage.error(`${ this.language("AJIABUCUNZAIHUOWEILING", "出厂价不存在或为0") }`)
                     if (!res.data.lcStartProductDate) await iMessage.error(this.language("LCQIBUSHENGCHANRIQIWEIKONG", "LC起步生产日期为空"))
                     this.computedBasic = '01'
                     this.lcStartProductDate = res.data.lcStartProductDate
@@ -217,6 +221,7 @@ export default {
                     this.tableData = this.computeSkdLc(this.skdAPrice, this.lcAPrice, res.data.pricePlanInfoVOS)
                 } else {
                     iMessage.error(this.$i18n.locale === "zh" ? res?.desZh : res?.desEn)
+                    this.tableData = []
                 }
             }
             

@@ -56,16 +56,15 @@
 			</el-col>
 			<!-- </template> -->
 		</el-row>
+		<myFavorite />
 	</div>
 </template>
 
 <script>
 import { iInput } from 'rise'
-// import Sortable from 'sortablejs'
-// import iSortable from '@/utils/iSortable'
-// import { updateBatchModules } from '@/api/home'
+import myFavorite from './myFavorite'
 export default {
-	components: { iInput },
+	components: { iInput, myFavorite },
 	data() {
 		return {
 			start: false,
@@ -84,22 +83,7 @@ export default {
 			},
 		}
 	},
-	mounted() {
-		// this.$nextTick(() => {
-		//   iSortable(document.getElementById('sideModules'), {
-		//     group: {
-		//       name: 'myModules',
-		//       put: false // Do not allow items to be put into this list
-		//     },
-		//     overlap: false,
-		//     animation: 150,
-		//     ghostClass:
-		//       'my-modules-drop-ghost,el-col-24,el-col-xs-24,el-col-sm-12,el-col-md-8,el-col-lg-6,el-col-xl-6',
-		//     onStart: (event) => this.handleDragStart(event),
-		//     onRemove: (event) => this.handleDragEnd(event)
-		//   })
-		// })
-	},
+	mounted() {},
 	computed: {
 		// eslint-disable-next-line no-undef
 		...Vuex.mapState({
@@ -121,54 +105,6 @@ export default {
 	methods: {
 		getList() {
 			this.$store.dispatch('getModules')
-		},
-		handleDragStart(event) {
-			this.startIndex = event.oldIndex
-			console.log('onStart', event)
-
-			// this.start = true
-		},
-		async handleDragEnd(event) {
-			console.log('onEnd', event)
-			const item = this.filterList[event.oldIndex]
-			item.value = false
-			const cards = _.cloneDeep(this.list)
-			const index = cards.findIndex((e) => e.id === item.id)
-			cards.splice(index, 1)
-			cards.splice(event.newIndex, 0, item)
-			const newCards = cards.map((e, i) => {
-				e.orderNum = i
-				return e
-			})
-			// const res = await updateBatchModules(newCards)
-			// if (res.result) {
-			//   this.getList()
-			// }
-
-			/* this.start = false
-      const obj = document
-        .getElementsByClassName('card-container')[0]
-        .getBoundingClientRect()
-      const xt = obj.x
-      const xb = obj.x + obj.width
-      const yt = obj.y
-      const yb = obj.y + obj.height
-      const item = this.list.find(li => {
-        return li.id == (e.target.id || e.target.offsetParent.id)
-      })
-      console.log('item', item)
-      if (
-        e.clientY < yt ||
-        e.clientY > yb ||
-        e.clientX < xt ||
-        e.clientX > xb
-      ) {
-        item.value = false
-        const res = await updateModules(item)
-        if (res.code === '200' && res.data) {
-          this.getList()
-        }
-      } */
 		},
 		handleInput() {
 			const list = _.cloneDeep(this.list)
@@ -195,6 +131,9 @@ export default {
 	position: relative;
 	padding: 0 32px;
 	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
 	> .others {
 		position: absolute;
 		top: -60px;
@@ -214,12 +153,13 @@ export default {
 	}
 	.card-container {
 		padding: 15px 0;
-		margin: 10px 0 0 0;
-		min-height: 300px;
-		height: 600px;
+		margin: 10px 0 0 0; /* 
+    min-height: 300px;
+    height: 600px; */
+		flex: 2;
 		overflow: auto;
 		> div {
-			height: 235px;
+			min-height: 150px;
 		}
 		&.empty-container {
 			// text-align: center;

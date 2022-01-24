@@ -1,8 +1,8 @@
 /*
  * @Author: ldh
  * @Date: 2021-04-23 09:16:55
- * @LastEditors:  
- * @LastEditTime: 2021-10-27 19:09:43
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-01-19 13:20:13
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\data.js
  */
@@ -26,7 +26,7 @@ export const mouldTableTitle = [
   { props: "supplierPartNameList", name: "散件名称", tooltip: true, width: 90, key: "LK_SANJIANMINGCHENG", tipsLang: true, tipsKey: "LK_SANJIANMINGCHENGTIPS", tips: "一次件总成零件号" },
   { props: "supplierPartCodeList", name: "散件零件号", tooltip: true, width: 110, key: "LK_SANJIANLINGJIANHAO", tipsLang: true, tipsKey: "LK_SANJIANLINGJIANHAOTIPS", tips: "<p style='text-align: center'>散件零件号<br/>(若无，则用总成号)</p>" },
   { props: "quantity", name: "数量", width: 70, tooltip: true, key: "LK_SHULIANG", tipsLang: true, tipsKey: "LK_SHULIANGTIPS", tips: "<p style='text-align: center'>必须为整数</p>" },
-  { props: "assetUnitPrice", name: "资产单价", tooltip: true, width: 90, key: "LK_ZICHANDANJIA", tipsLang: true, tipsKey: "LK_ZICHANDANJIATIPS2", tips: "<p style='text-align: center'>不含税价格，<br/>并且保留四位小数</p>" },
+  { props: "assetUnitPrice", name: "资产单价", tooltip: true, width: 90, key: "LK_ZICHANDANJIA", tipsLang: true, tipsKey: "ZICHANBIANDONGDANJIATIPS", tips: "<p style='text-align: center'>不含税价格，<br/>并且保留两位小数</p>" },
   { props: "totalPrice", name: "资产总额", tooltip: true, key: "LK_ZICHANZONGE" },
   { props: "isShared", name: "是否分摊", width: 110, tooltip: true, key: "LK_SHIFOUFENTAN" }
 ]
@@ -47,12 +47,12 @@ export const developmentCostInfos = [
 ]
 
 export const developmentCostTableTitle = [
-  { props: "item", name: "开发费项目", tooltip: true, key: "LK_KAIFAFEIXIANGMU" },
-  { props: "itemDescription", name: "描述", tooltip: true, width: 400, key: "LK_MIAOSHU" },
-  { props: "unitPrice", name: "单价", tooltip: true, key: "LK_DANJIA" },
-  { props: "quantity", name: "数量", tooltip: true, key: "LK_SHULIANG" },
-  { props: "total", name: "总金额", tooltip: true, key: "LK_ZONGJINE" },
-  { props: 'isShared', name: '是否分摊', width: 110, tooltip: true, key: "LK_SHIFOUFENTAN" }
+  { props: "item", name: "开发费项目", tooltip: true, key: "LK_KAIFAFEIXIANGMU",require:true },
+  { props: "itemDescription", name: "描述", tooltip: true, width: 400, key: "LK_MIAOSHU",require:true },
+  { props: "unitPrice", name: "单价", tooltip: true, key: "LK_DANJIA",require:true },
+  { props: "quantity", name: "数量", tooltip: true, key: "LK_SHULIANG",require:true },
+  { props: "total", name: "总金额", tooltip: true, key: "LK_ZONGJINE",require:true },
+  { props: 'isShared', name: '是否分摊', width: 110, tooltip: true, key: "LK_SHIFOUFENTAN",require:true }
 ]
 
 export const statesFilter = function(val) {

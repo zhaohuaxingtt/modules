@@ -7,6 +7,7 @@
 <template>
 	<div
 		class="nav flex-align-center"
+		ref="navMvp"
 		:class="[
 			center && 'justify-center',
 			right && 'justify-right',
@@ -16,6 +17,7 @@
 		<div
 			v-for="(item, index) in navList"
 			:key="index"
+			:id="`navItem_${ item.permissionKey }`"
 			@click="change(item, index)"
 			v-permission.auto="`${item[permissionKey]}|${item[permissionName]}`"
 		>
@@ -169,6 +171,18 @@ export default {
 			}
 		}
 	},
+	mounted() {
+		this.navList.some(item => {
+			if (location.hash === this.$router.resolve({ path: item.url }).href && !this.$store.state.permission.whiteBtnList[item.permissionKey]) {
+				const nextCurrent = this.navList.find(nextItem => this.$store.state.permission.whiteBtnList[nextItem.permissionKey])
+
+				if (nextCurrent) {
+					this.$router.replace({ path: nextCurrent.url })
+					return true
+				}
+			}
+		})
+	},
 	watch: {
 		'$route.path'(nv) {
 			if (this.routerPage) {
@@ -269,6 +283,7 @@ export default {
 				height: 18px;
 				line-height: 18px;
 				background: #1660f1;
+				vertical-align: middle;
 			}
 		}
 	}
@@ -286,6 +301,10 @@ export default {
 	justify-content: flex-end;
 }
 .lev1 {
+	& > div {
+		padding: 4px 0;
+	}
+	
 	.name {
 		font-size: 18px !important;
 		position: relative;
@@ -313,6 +332,25 @@ export default {
 			opacity: 1;
 			width: 100%;
 			z-index: 999;
+		}
+	}
+
+	.badge {
+		position: absolute !important;
+		right: 48px !important;
+		top: 0 !important;
+		transform: translate(100%, 0);
+		font-size: 12px !important;
+		vertical-align: middle;
+		height: 0;
+
+		::v-deep .el-badge__content {
+			font-size: 12px !important;
+			box-sizing: border-box;
+			height: 18px !important;
+			line-height: 18px !important;
+			min-width: 18px !important;
+			font-family: 'Arial', 'Microsoft YaHei';
 		}
 	}
 }

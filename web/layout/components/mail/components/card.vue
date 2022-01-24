@@ -150,6 +150,11 @@ export default {
       return text.replace(regex, '')
     }
   },
+  watch:{
+    'item.content'(){
+      this.getContentRows()
+    }
+  },
   data() {
     return {
       time: '',

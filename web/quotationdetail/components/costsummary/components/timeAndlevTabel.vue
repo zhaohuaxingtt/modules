@@ -38,7 +38,7 @@
         </iSelect>
       </i-form-item>
       <i-form-item class="rightFloat">
-        <el-checkbox v-if='!disabled' v-model="allTableData.editFlag" v-show="allTableData.level > 1">{{ language('LK_SHOUDONGSHURU', '手动输入')}}</el-checkbox>
+        <!-- <el-checkbox v-if='!disabled' v-model="allTableData.editFlag" v-show="allTableData.level > 1">{{ language('LK_SHOUDONGSHURU', '手动输入')}}</el-checkbox> --> <!-- 开放此处，需要先确认CRW-2590 -->
         <iButton @click="downloadFile" :loading='downLoadLoding'>{{ language('LK_XIAZAICBD', '下载CBD')}}</iButton>
         <el-upload
           v-if='!disabled' 
@@ -63,7 +63,7 @@
     <!--------------------------------------------------------->
     <!----------------------表格百分比-------------------------->
     <!--------------------------------------------------------->
-    <tableList lang :tableTitle='tableTilel1' :notEdit='disabled ? true : (allTableData.level == 1 ? false : !allTableData.editFlag)' :tableData='tableData.tableData' :isSteel="isSteel" :roundIsOnlineBidding='roundIsOnlineBidding' class="margin-top10"></tableList>
+    <tableList lang :tableTitle='tableTilel1' :notEdit='disabled' :tableData='tableData.tableData' :isSteel="isSteel" :roundIsOnlineBidding='roundIsOnlineBidding' class="margin-top10"></tableList>
     <persent lang v-if='!tableData.persent.every(items=>items == 0)' :persentList='tableData.persent' :realDataList='tableData.tableData'></persent>
   </iCard>
 </template>
@@ -163,7 +163,7 @@ export default{
      * @return {*}
      */    
     translateTableTileData(lev){
-      this.tableTilel1 = tableTilel1Fn(lev, this.partType,this.partProjectType)
+      this.tableTilel1 = tableTilel1Fn(lev, this.partType, this.partProjectType)
     },
     /**
      * @description: 1.变换cbd层级。变换界面展示，影响界面：L1 除了汇总，只留cbd。 L2 替换表头展示的2.x L3:暂时没提供模板。
