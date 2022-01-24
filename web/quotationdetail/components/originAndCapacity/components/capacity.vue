@@ -24,7 +24,7 @@
       <div>
         <tableList lang class="table" index :tableData="tableListData" :tableTitle="tableTitle" @handleSelectionChange="handleSelectionChange">
           <template #leadTime="scope">
-            <el-input v-if="!disabled" v-model="scope.row.leadTime"></el-input>
+            <el-input v-if="!disabled" v-model="scope.row.leadTime" maxlength="8"></el-input>
             <span v-else>{{ scope.row.leadTime }}</span>
           </template>
           <template #workDayWeek="scope">
@@ -32,15 +32,15 @@
             <span v-else>{{ scope.row.workDayWeek }}</span>
           </template>
           <template #weekDailyShift="scope">
-            <el-input v-if="!disabled" v-model="scope.row.weekDailyShift"></el-input>
+            <el-input v-if="!disabled" v-model="scope.row.weekDailyShift" maxlength="8"></el-input>
             <span v-else>{{ scope.row.weekDailyShift }}</span>
           </template>
           <template #weekManufactureCapability="scope">
-            <el-input v-if="!disabled" v-model="scope.row.weekManufactureCapability"></el-input>
+            <el-input v-if="!disabled" v-model="scope.row.weekManufactureCapability" maxlength="8"></el-input>
             <span v-else>{{ scope.row.weekManufactureCapability }}</span>
           </template>
           <template #maxWeekManufactureCapability="scope">
-            <el-input v-if="!disabled" v-model="scope.row.maxWeekManufactureCapability"></el-input>
+            <el-input v-if="!disabled" v-model="scope.row.maxWeekManufactureCapability" maxlength="8"></el-input>
             <span v-else>{{ scope.row.maxWeekManufactureCapability }}</span>
           </template>
           <template #maxWorkDayYear="scope">
