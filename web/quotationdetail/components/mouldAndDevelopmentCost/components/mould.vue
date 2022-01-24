@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 00:21:08
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-11-25 00:29:28
+ * @LastEditTime: 2022-01-24 23:48:48
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\mould.vue
 -->
@@ -79,7 +79,7 @@
             <span v-else>{{ scope.row.assetUnitPrice }}</span>
           </template>
           <template #isShared="scope">
-            <iSelect v-if="!disabled" v-model="scope.row.isShared" :disabled='partInfo.roundsType == "biddingRound"' @change="updateTotal">
+            <iSelect v-if="!disabled" v-model="scope.row.isShared" :disabled='partInfo.roundsType == "biddingRound"' @change="updateTotal($event,scope)">
               <el-option label="是" :value="1"></el-option>
               <el-option label="否" :value="0"></el-option>
             </iSelect>
@@ -364,7 +364,8 @@ export default {
       this.updateTotal()
     },
     // 更新成本
-    updateTotal() {
+    updateTotal(e,scope) {
+      scope?scope.row.isShared = e:''
       let totalInvestmentCost = 0
       let shareInvestmentFee = 0
       this.tableListData.forEach(item => {

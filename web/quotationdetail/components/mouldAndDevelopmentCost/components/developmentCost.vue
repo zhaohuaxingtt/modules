@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 00:21:17
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-11-25 01:38:59
+ * @LastEditTime: 2022-01-24 23:49:05
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\developmentCost.vue
 -->
@@ -49,7 +49,7 @@
             <sapn>{{scope.row.total | thousandsFilter }}</sapn>
           </template>
           <template #isShared="scope">
-            <iSelect v-if="!disabled&&!editDisabled" :disabled='partInfo.roundsType == "biddingRound"' v-model="scope.row.isShared" @change="updateTotal">
+            <iSelect v-if="!disabled&&!editDisabled" :disabled='partInfo.roundsType == "biddingRound"' v-model="scope.row.isShared" @change="updateTotal($event,scope)">
               <el-option label="是" :value="1"></el-option>
               <el-option label="否" :value="0"></el-option>
             </iSelect>
@@ -238,7 +238,8 @@ export default {
 
       this.updateTotal()
     },
-    updateTotal() {
+    updateTotal(e,scope) {
+      scope?scope.row.isShared = e:''
       let devFee = 0
       let shareDevFee = 0
       this.tableListData.forEach(item => {
