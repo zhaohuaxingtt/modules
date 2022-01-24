@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-23 15:38:31
- * @LastEditTime: 2021-11-24 20:39:56
+ * @LastEditTime: 2022-01-24 15:26:36
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\costsummary\components\timeAndlevTabel.vue
@@ -38,7 +38,7 @@
         </iSelect>
       </i-form-item>
       <i-form-item class="rightFloat">
-        <!-- <el-checkbox v-if='!disabled' v-model="allTableData.editFlag" v-show="allTableData.level > 1">{{ language('LK_SHOUDONGSHURU', '手动输入')}}</el-checkbox> --> <!-- 开放此处，需要先确认CRW-2590 -->
+        <el-checkbox v-if='!disabled && isSourcing' v-model="allTableData.editFlag" v-show="allTableData.level > 1">{{ language('LK_SHOUDONGSHURU', '手动输入')}}</el-checkbox> <!-- 开放此处，需要先确认CRW-2590 -->
         <iButton @click="downloadFile" :loading='downLoadLoding'>{{ language('LK_XIAZAICBD', '下载CBD')}}</iButton>
         <el-upload
           v-if='!disabled' 
@@ -145,6 +145,13 @@ export default{
     ...Vuex.mapState({
       userInfo: state => state.permission.userInfo,
     }),
+    isSourcing(){
+      try {
+        return this.$router.query.sourcing
+      } catch (error) {
+        return false
+      }
+    }
   },
   methods:{
     fileSuccess(res){
