@@ -4,13 +4,12 @@
 		:visible.sync="isShow"
 		width="30%"
 		class="table-header-modal"
-		:before-close="handleBeforeClose"
 	>
 		<div class="header-wrapper" ref="header-wrapper">
 			<div
 				class="flex-align-center header-col drop-item"
 				v-for="(item, index) in dataSource"
-				:key="`${item.prop}_${index}`"
+				:key="index"
 				:id="item.prop"
 				:data-id="item.i18n ? language(item.i18n) : item.label"
 				:class="{ draggable: !item.type }"
@@ -40,6 +39,7 @@ import icon from '../icon/index.vue'
 // eslint-disable-next-line no-unused-vars
 import _ from 'lodash'
 export default {
+	name: 'iTableHeaderSort',
 	components: {
 		iButton,
 		iDialog,
@@ -74,10 +74,6 @@ export default {
 		this.handleOpened()
 	},
 	methods: {
-		handleBeforeClose(done) {
-			this.handleReset()
-			done()
-		},
 		handleSave() {
 			const elements = document.querySelectorAll('.drop-item')
 			const newData = []
@@ -94,17 +90,17 @@ export default {
 			this.$emit('callback', newData)
 		},
 		handleCancel() {
-			this.handleReset()
+			this.dataSource = this.deepClone(this.originalData)
 			this.isShow = false
 		},
 		handleReset() {
 			this.dataSource = this.deepClone(this.originalData)
-			// this.$emit('reset')
+			this.$emit('reset')
+			this.isShow = false
 		},
 		handleOpened() {
 			const dataSource = this.deepClone(this.data)
 			dataSource.forEach((e) => {
-				// eslint-disable-next-line no-prototype-builtins
 				if (!e.hasOwnProperty('isHidden')) {
 					e.isHidden = false
 				}
@@ -121,7 +117,7 @@ export default {
 			})
 		},
 		deepClone(data) {
-			var t = this.getType(data),
+			let t = this.getType(data),
 				o,
 				i,
 				ni

@@ -1,32 +1,30 @@
 <template>
   <div class="popupContent">
-    <notifyDialog v-show="showDialog" :show.sync="showDialog" :detail="detail" />
+    <notifyDialog v-show="showDialog" :show.sync="showDialog" :detail="detail" @is-sure='isSure'/>
   </div>
 </template>
 
 <script>
 import notifyDialog from './notifyDialog.vue'
-import { getPopupList ,changeCheckedSta, getgetPopupSocketMessage} from '../../api'
- 
+import { getPopupList } from '../../api'
+import { getgetPopupSocketMessage } from '@/api/mail'
 export default {
   name: 'layoutNotify',
   components: {
     notifyDialog
   },
-  // props:{
-  //   login:{
-  //     type:String,
-  //     default:''
-  //   }
-  // },
   data() {
     return {
       showDialog: false,
       detail: {
-        title: '',
-        content: '',
-        picUrl: '',
-        linkUrl: ''
+        title:'',
+        content:'',
+        picUrl:'',
+        linkUrl:'',
+        publishTime:'',
+        popupStyle:'',
+        wordAlign:'0',
+        popupId:''
       },
       popupDataList: [],
       closeItemList: [],
@@ -35,48 +33,42 @@ export default {
     }
   },
   mounted() {
-    
     this.closePopupSocket = getgetPopupSocketMessage((res) => {
       this.debounce(3000)
     })
   },
   beforeDestroy() {
-    this.closePopupSocket && this.closePopupSocket()
+    this.closePopupSocket()
   },
   created(){
     this.getLatest()
     
   },
   methods: {
-    openDialog(index) {
-      const data = {
-        userId:JSON.parse(sessionStorage.getItem('userInfo')).accountId,
-        popupId:this.popupDataList[index].id || JSON.parse(this.popupDataList[index].param).popupId
+    isSure(val){
+      if(val == true){
+        this.clearNotify()
       }
-      changeCheckedSta(data).then((res)=>{
-        if(res.code == 200){
-          const data = res.data
-          const y = data.publishTime.slice(0,4)
-          const M = data.publishTime.slice(5,7)
-          const d = data.publishTime.slice(8,10)
-          const h = data.publishTime.slice(11,13)
-          const m = data.publishTime.slice(14,16)
-          let time = `${y}年${M}月${d}日 ${h}时${m}分`
-          this.detail = {
-            title: data.popupName,
-            content: data.content,
-            picUrl: data.picUrl,
-            linkUrl: data.linkUrl,
-            popupStyle:data.popupStyle,
-            publishTime:time,
-            wordAlign:data.wordAlign
-          }
-          this.showDialog = true
-          this.clearNotify()
-        }else{
-          this.$message.error(res.desZh)
-        }
-      })
+    },
+    openDialog(index) {
+      this.isChecked = false
+      const y = this.popupDataList[index].publishTime.slice(0,4)
+      const M = this.popupDataList[index].publishTime.slice(5,7)
+      const d = this.popupDataList[index].publishTime.slice(8,10)
+      const h = this.popupDataList[index].publishTime.slice(11,13)
+      const m = this.popupDataList[index].publishTime.slice(14,16)
+      const time = `${y}年${M}月${d}日 ${h}时${m}分`
+      this.detail={
+        title:this.popupDataList[index].popupName,
+        content:this.popupDataList[index].content,
+        picUrl:this.popupDataList[index].picUrl,
+        linkUrl:this.popupDataList[index].linkUrl,
+        publishTime:time,
+        popupStyle:this.popupDataList[index].popupStyle,
+        wordAlign:this.popupDataList[index].wordAlign,
+        popupId:this.popupDataList[index].id
+      }
+      this.showDialog = true
     },
     //防抖
     debounce(delay){
@@ -84,24 +76,20 @@ export default {
       this.timer = setTimeout(()=>{
         this.iniNotify('pushNew')
       },delay)
-      
     },
     getLatest(){
-
-      console.log(this.closeItemList, this.popupDataList, '====')
       const accountId = JSON.parse(sessionStorage.getItem('userInfo')).accountId
       getPopupList(accountId).then((res) => {
         if (res.code == 200) {
           let popupDataList = res.data
           this.popupDataList = popupDataList.reverse()
-            this.iniNotify()
+          this.iniNotify()
         } else {
           this.$message.error(res.desZh)
         }
       })
     },
-    clearNotify(isLogout){
-      console.log('clear',this.closeItemList);
+    clearNotify(val){
       if(this.closeItemList){
         this.closeItemList.forEach((ele) => {
           if(ele.notify){
@@ -111,9 +99,10 @@ export default {
       }
       this.closeItemList = []
       this.popupDataList = []
-      if(isLogout != 'logout'){
+      if(val != 'logout'){
         this.getLatest()
       }
+      
     },
     iniNotify(pushNew){
       let _this = this
@@ -122,7 +111,6 @@ export default {
       } else{
         this.popupDataList.forEach((ele, index) => {
           setTimeout(()=>{
-              // console.log('-----');
               this.closeItemList[index] = { 
               'notify': this.$notify({
                 duration: 0,
@@ -154,10 +142,9 @@ export default {
                 onClose(){
                 },
               }),
-            'times':0
+            // 'times':0
             }
-          }
-             ,1)
+          },1)
         })
       }
     }

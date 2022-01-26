@@ -1,8 +1,8 @@
 <!--
  * @Author: haojiang
  * @Date: 2021-02-24 09:42:07
- * @LastEditTime: 2021-11-11 15:01:01
- * @LastEditors: Hao,Jiang
+ * @LastEditTime: 2022-01-26 10:37:42
+ * @LastEditors: Please set LastEditors
  * @Description: table组件
 -->
 <template>
@@ -38,11 +38,11 @@
       <!----------------------需要高亮的列并且带有打开详情事件------------------------>
       <el-table-column :key="`${items.props}_${index}`" align='center' :width="items.width" :min-width="items.minWidth ? items.minWidth.toString():''" :show-overflow-tooltip='items.tooltip' v-if='items.props == activeItems' :prop="items.props" :label="lang ? language(items.key, items.name) : $t(items.key)">
         <!-- slot header -->
-        <template slot="header">
+        <!-- <template slot="header">
           <div class="slotHeader" :class="{headerRequiredLeft: items._headerRequiredLeft, headerRequiredRight:items._headerRequiredRight }">
             {{lang ? language(items.key, items.name) : $t(items.key)}}
           </div>
-        </template>
+        </template> -->
         <!-- slot content -->
         <template slot-scope="row">
            <span class="flexRow">
@@ -66,11 +66,11 @@
         :prop="items.props"
         :class-name="items.tree ? 'tree' : ''">
         <!-- slot header -->
-        <template slot="header">
+        <!-- <template slot="header">
           <div class="slotHeader" :class="{headerRequiredLeft: items._headerRequiredLeft, headerRequiredRight:items._headerRequiredRight }">
             {{lang ? language(items.key, items.name) : $t(items.key)}}
           </div>
-        </template>
+        </template> -->
         <!-- slot content -->
         <template slot-scope="scope">
           <span :class="{normal: true, child: scope.row.children}">

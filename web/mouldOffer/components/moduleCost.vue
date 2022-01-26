@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 15:20:44
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-07-14 11:46:55
+ * @LastEditTime: 2021-12-29 20:43:28
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\mouldOffer\components\moduleCost.vue
 -->
@@ -157,7 +157,7 @@
 <script>
 /* eslint-disable no-undef */
 
-import { iCard, iButton, iInput, iSelect, iMessage, iPagination } from "rise"
+import { iCard, iButton, iInput, iSelect, iMessage, iPagination,iMessageBox } from "rise"
 import tableList from "../../quotationdetail/components/tableList"
 import { moduleCostTableTitle as tableTitle } from "./data"
 import relatingParts from '../../quotationdetail/components/relatingParts'
@@ -364,29 +364,29 @@ export default {
       this.tableListData = this.tableListData.filter(item => !this.multipleSelection.includes(item))
     },
     handleSave() {
-      this.saveLoading = true
-
-      saveModuleFee({
-        rfqId: this.partInfo.rfqId,
-        round: this.partInfo.currentRounds,
-        supplierId:this.supplierId,
-        mouldCbdBaseDTO: this.tableListData.map(item => ({
-          quotationId: item.quotationId,
-          mouldCbdBaseDTO: {
-            ...item
-          }
-        }))
+      iMessageBox(this.language('XIUGAIMUJUFEIYONGSFJX','修改模具费用会使对应零件的报价状态再次变为草稿，请问是否继续？')).then(r=>{
+          this.saveLoading = true
+          saveModuleFee({
+            rfqId: this.partInfo.rfqId,
+            round: this.partInfo.currentRounds,
+            supplierId:this.supplierId,
+            mouldCbdBaseDTO: this.tableListData.map(item => ({
+              quotationId: item.quotationId,
+              mouldCbdBaseDTO: {
+                ...item
+              }
+            }))
+          })
+          .then(res => {
+            if (res.code == 200) {
+              iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+            } else {
+              iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+            }
+            this.saveLoading = false
+          })
+          .catch(() => this.saveLoading = false)
       })
-      .then(res => {
-        if (res.code == 200) {
-          iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
-        } else {
-          iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
-        }
-
-        this.saveLoading = false
-      })
-      .catch(() => this.saveLoading = false)
     },
     // 零件号选择
     handleChangeByAssembledPartCode(partNum, row) {

@@ -1,4 +1,3 @@
-/* eslint-disable vue/no-dupe-keys */
 <template>
 	<div
 		class="i-table-custom"
@@ -10,28 +9,29 @@
 		:style="{ minHeight: minHeight }"
 	>
 		<el-table
+			v-loading="loading"
+			ref="theCustomTable"
 			tooltip-effect="light"
+			fit
 			:height="height"
 			:max-height="maxHeight"
-			:data="realTableData"
-			v-loading="loading"
+			:data="virtualList ? virtualTableData : realTableData"
 			:row-key="rowKey || 'uniqueId'"
 			:highlight-current-row="highlightCurrentRow"
-			:empty-text="$t('LK_ZANWUSHUJU')"
-			ref="theCustomTable"
+			:empty-text="language('ZANWUSHUJU', '暂无数据')"
 			:row-class-name="getRowClassNameDefault"
 			:row-style="getRowStyle"
 			:cell-class-name="getCellClassName"
+			:span-method="getSpanMethod"
+			:stripe="stripe"
+			:header-cell-class-name="handleHeaderCellClassName"
+			:border="border"
 			@selection-change="handleSelectionChange"
 			@select="handleSelect"
 			@select-all="handleAllSelect"
 			@current-change="handleCurrentChange"
 			@cell-click="handleCellClick"
 			@sort-change="handleSortChange"
-			fit
-			:span-method="getSpanMethod"
-			:stripe="stripe"
-			:header-cell-class-name="handleHeaderCellClassName"
 			@row-click="rowClick"
 		>
 			<template v-for="(item, index) in tableVisibleColumns">
@@ -40,7 +40,9 @@
 					v-if="['selection', 'index'].includes(item.type)"
 					:reserve-selection="item.reserveSelection || false"
 					:type="item.type"
-					:label="item.i18n ? $t(item.i18n) : item.label"
+					:label="
+						item.i18n ? language(item.i18n, item.label) : language(item.label)
+					"
 					:width="item.width || '50'"
 					:min-width="item.minWidth"
 					:align="item.align || 'center'"
@@ -49,24 +51,10 @@
 				/>
 				<el-table-column
 					:key="index"
-					v-else-if="item.type === 'setting'"
-					:width="item.width || '30'"
-					:min-width="item.minWidth"
-					:align="item.align || 'center'"
-					:fixed="item.fixed"
-				>
-					<template slot="header">
-						<div class="table-setting" @click="openSetting">
-							<icon symbol name="iconzidingyi" />
-						</div>
-					</template>
-				</el-table-column>
-				<el-table-column
-					:key="index"
 					v-else-if="['customSelection'].includes(item.type)"
 					reserve-selection
 					:type="item.type"
-					:label="item.i18n ? $t(item.i18n) : item.label"
+					:label="item.i18n ? language(item.i18n, item.label) : item.label"
 					:width="item.width || '50'"
 					:min-width="item.minWidth || '50'"
 					:align="item.align || 'center'"
@@ -87,6 +75,7 @@
 							:indeterminate="scope.row.isIndeterminate"
 							:disabled="scope.row.disabledChecked"
 							@change="(val) => handleCheckedRow(val, scope.row)"
+							class="custom-checkbox"
 						>
 						</el-checkbox>
 					</template>
@@ -95,7 +84,7 @@
 					:key="index"
 					v-else-if="['fullIndex'].includes(item.type)"
 					:type="item.type"
-					:label="item.i18n ? $t(item.i18n) : item.label"
+					:label="item.i18n ? language(item.i18n, item.label) : item.label"
 					:width="item.width || '50'"
 					:align="item.align || 'center'"
 					:selectable="handleSelectable"
@@ -112,16 +101,14 @@
 					:type="item.type"
 					:align="item.align || 'center'"
 					:header-align="item.headerAlign"
-					:show-overflow-tooltip="false"
+					:show-overflow-tooltip="item.tooltip"
 					:prop="item.prop"
-					:label="item.i18n ? $t(item.i18n) : item.label"
-					:sortable="item.sortable"
-					:sort-method="item.sortMethod"
-					:sort-by="item.sortBy"
-					:sort-orders="item.sortOrders"
+					:label="item.i18n ? language(item.i18n, item.label) : item.label"
 					:width="item.width ? item.width.toString() : ''"
 					:min-width="item.minWidth ? item.minWidth.toString() : ''"
 					:fixed="item.fixed"
+					:sortable="item.sortable || false"
+					:sort-method="item.sortMethod"
 				>
 					<template slot-scope="scope">
 						<template v-if="item.children">
@@ -134,13 +121,14 @@
 								:header-align="subItem.headerAlign"
 								:show-overflow-tooltip="subItem.tooltip"
 								:prop="subItem.prop"
-								:label="subItem.i18n ? $t(subItem.i18n) : subItem.label"
+								:label="
+									subItem.i18n
+										? language(subItem.i18n, subItem.label)
+										: subItem.label
+								"
 								:width="subItem.width ? subItem.width.toString() : ''"
 								:min-width="subItem.minWidth ? subItem.minWidth.toString() : ''"
-								:sortable="subItem.sortable"
-								:sort-method="item.sortMethod"
-								:sort-by="item.sortBy"
-								:sort-orders="item.sortOrders"
+								:sortable="subItem.sortable || false"
 							>
 								<i-table-column
 									v-if="subItem.customRender || subItem.type === 'expanded'"
@@ -157,11 +145,11 @@
 							</el-table-column>
 						</template>
 						<div
+							v-else
 							:class="{ 'custom-cell-tooltip': item.tooltip }"
 							@mouseenter="customMouseenter"
 							@mouseleave="customMouseleave"
 							@click="handleEmit(item, scope.row)"
-							v-else
 						>
 							<i-table-column
 								v-if="item.customRender || item.type === 'expanded'"
@@ -191,6 +179,7 @@
 			@reset="handleResetSetting"
 		/>
 		<el-tooltip
+			open-delay="3000"
 			effect="light"
 			placement="top"
 			ref="customTableTooltip"
@@ -214,23 +203,26 @@ import iButton from '../iButton/index.vue'
 import iSelect from '../iSelect/index.vue'
 import iInput from '../iInput/index.vue'
 import iRadio from '../iRadio/index.vue'
-import iMessage from '../iMessage'
-import iTableHeaderSorter from '../iTableHeaderSorter'
+
+import iTableHeaderSorter from '../iTableHeaderSorter/index.vue'
+import {
+	virtualListMixin,
+	settingMixin,
+	tooltipMixin,
+	customSelectionMixin,
+} from './mixins'
 export default {
-	// eslint-disable-next-line vue/no-unused-components
+	name: 'iTableCustom',
 	components: {
 		iTableColumn,
-		// eslint-disable-next-line vue/no-unused-components
 		iButton,
-		// eslint-disable-next-line vue/no-unused-components
 		iSelect,
-		// eslint-disable-next-line vue/no-unused-components
 		iInput,
-		// eslint-disable-next-line vue/no-unused-components
 		iRadio,
 		Icon,
 		iTableHeaderSorter,
 	},
+	mixins: [virtualListMixin, settingMixin, tooltipMixin, customSelectionMixin],
 	props: {
 		permissionKey: {
 			type: String,
@@ -282,7 +274,7 @@ export default {
 		// 是不是级联选择
 		cascade: {
 			type: Boolean,
-			default: false,
+			default: true,
 		},
 		// 使用自定义选择框
 		customSelection: {
@@ -293,6 +285,15 @@ export default {
 		emitHalfSelection: {
 			type: Boolean,
 			default: true,
+		},
+		// 使用自定义选择框选项
+		customSelectionOption: {
+			type: Object,
+			default: function() {
+				return {
+					checkStrictly: false, // 在显示复选框的情况下，是否严格的遵循父子不互相关联的做法，默认为 false, false: 关联，true: 不关联
+				}
+			},
 		},
 		// 子元素数量是否显示
 		childNumVisible: {
@@ -336,14 +337,28 @@ export default {
 			type: String,
 			default: '',
 		},
+		virtualList: {
+			type: Boolean,
+			default: false,
+		},
+		border: {
+			type: Boolean,
+			default: true,
+		},
+		// 默认展开的级别
+		defaultExpandLevel: {
+			type: Number,
+		},
 	},
 	computed: {
+		// 根据visible筛选是否要显示的数据
 		realTableData() {
 			if (this.tableData) {
 				return this.tableData.filter((e) => e.visible)
 			}
 			return []
 		},
+		// 是否默认全选
 		isDefaultCheckedAll() {
 			if (!this.customSelection) {
 				return false
@@ -371,53 +386,6 @@ export default {
 			const mergeKeys = [...new Set([...dataKeys, ...defaultCheckedKeys])]
 			return mergeKeys.length === defaultCheckedKeys.length
 		},
-		unCols() {
-			// 列权限控制，返回无权限的字段列表
-			if (!this.permissionKey) {
-				return []
-			}
-			const columnPermissions = sessionStorage.getItem('columnConfig')
-			if (columnPermissions) {
-				const currentColumnPermission = JSON.parse(columnPermissions)[
-					this.permissionKey
-				]
-				if (currentColumnPermission) {
-					return currentColumnPermission.unCols
-				}
-			}
-			return []
-		},
-		tableVisibleColumns() {
-			// 表格的列
-			if (this.tableColumns.length) {
-				return this.tableColumns.filter(
-					(e) => !e.isHidden && !this.unCols.includes(e.prop)
-				)
-			}
-			return this.columns.filter((e) => !this.unCols.includes(e.prop))
-		},
-		tableSettingColumns() {
-			// 表格自由列表设置列
-			if (this.tableColumns.length) {
-				return this.tableColumns.filter((e) => !this.unCols.includes(e.prop))
-			}
-			return this.columns.filter((e) => !this.unCols.includes(e.prop))
-		},
-		// eslint-disable-next-line vue/no-dupe-keys
-		env() {
-			return window.sessionStorage.getItem('env') || ''
-		},
-		usercenterApiPrefix() {
-			const baseMap = {
-				'': '/usercenterApi',
-				dev: '/usercenterApi',
-				sit: '/usercenterApi',
-				vmsit: '/usercenterApi',
-				uat: '/usercenterApi',
-				production: '/usercenterApi',
-			}
-			return baseMap[this.env.toLowerCase()] || '/usercenterApi'
-		},
 	},
 	data() {
 		return {
@@ -430,6 +398,8 @@ export default {
 			settingVisible: false,
 			tooltipContent: '',
 			settingId: '',
+			emitLabel: [],
+			isCustomSelection: false,
 		}
 	},
 	watch: {
@@ -437,16 +407,32 @@ export default {
 			this.getTableData()
 		},
 		defaultSelectedRows() {
-			this.setDefaultDefaultCheckedKeys()
+			this.setDefaultCheckedKeys()
 			this.getTableData()
 		},
 	},
 	created() {
-		if (this.permissionKey) {
-			this.querySetting()
-		}
-		this.setDefaultDefaultCheckedKeys()
+		this.setDefaultCheckedKeys()
 		this.getTableData()
+	},
+	mounted() {
+		if (
+			this.tableVisibleColumns &&
+			this.tableVisibleColumns.length &&
+			this.tableVisibleColumns[0].type == 'customSelection'
+		) {
+			this.isCustomSelection = true
+			const customSelectionLabel = this.tableVisibleColumns.map((item) => {
+				return item.label
+			})
+			this.emitLabel = [...customSelectionLabel, ...this.emitLabel]
+		} else {
+			this.emitLabel = this.tableVisibleColumns.map((ele) => {
+				if (ele.emit) {
+					return ele.label
+				}
+			})
+		}
 	},
 	methods: {
 		handleHeaderCellClassName({ columnIndex }) {
@@ -457,7 +443,8 @@ export default {
 				}
 			}
 		},
-		setDefaultDefaultCheckedKeys() {
+		// 设置默认选择项
+		setDefaultCheckedKeys() {
 			if (this.defaultSelectedRows) {
 				this.defaultCheckedKeys = this.getDefaultSelectedKeys(
 					this.defaultSelectedRows || []
@@ -474,8 +461,11 @@ export default {
 			this.$emit('handle-current-change', val)
 		},
 		handleSelectionChange(val) {
-			this.selectedRows = val
-			this.$emit('handle-selection-change', val)
+			// 20211130 原生的selection
+			if (!this.customSelection) {
+				this.selectedRows = val
+				this.$emit('handle-selection-change', val)
+			}
 		},
 		handleEmit(item, row) {
 			if (item.emit) {
@@ -483,10 +473,19 @@ export default {
 			}
 		},
 		getTableData() {
+			this.virtualListConfig.total = this.data.length
+			this.virtualListConfig.pages = Math.ceil(this.data.length / 20)
 			if (this.treeExpand) {
 				this.tableData = this.getTreeTableData(this.data)
+				/****************** 20211130 如果有默认的，先emit */
+				/* if (this.defaultSelectedRows) {
+          this.selectedRows = this.tableData.filter((e) =>
+            this.defaultCheckedKeys.includes(e[this.rowKey])
+          )
+        } */
+				/******************* end *********************/
 			} else {
-				this.tableData = this.data
+				this.tableData = this.data ? this.data : []
 				this.tableData.forEach((e, index) => {
 					e.uniqueId = index + ''
 					e.visible = true
@@ -508,6 +507,16 @@ export default {
 
 			if (this.customSelection) {
 				this.checkedAll = this.isDefaultCheckedAll
+				/********** 211130 判断是不是要半选顶部复选框 start ***************/
+				if (this.defaultCheckedKeys && !this.checkedAll) {
+					const checkedRootNums = this.data.filter((e) =>
+						this.defaultCheckedKeys.includes(e[this.rowKey])
+					)
+					if (checkedRootNums.length) {
+						this.indeterminateAll = true
+					}
+				}
+				/***************** end ****************************************/
 			}
 		},
 		getTreeTableData(data, parentKey, res) {
@@ -521,12 +530,24 @@ export default {
 				if (hasChild && (!row[childrenKey] || row[childrenKey].length === 0)) {
 					hasChild = false
 				}
-				const visible = uniqueId.includes('-') ? this.defaultExpand : true
+				const level = uniqueId.split('-').length
+				// 展开
+				let expanded = this.defaultExpand
+				if (expanded && this.defaultExpandLevel) {
+					expanded = level < this.defaultExpandLevel
+				}
+
+				// 显示隐藏
+				let visible = uniqueId.includes('-') ? this.defaultExpand : true
+				if (visible && this.defaultExpandLevel) {
+					visible = level <= this.defaultExpandLevel
+				}
+
 				const resItem = {
 					uniqueId,
 					isLeaf: !hasChild,
-					expanded: this.defaultExpand,
-					visible: visible,
+					expanded,
+					visible,
 					parentUniqueId: parentKey,
 					childNum: (hasChild && row[childrenKey].length) || 0,
 				}
@@ -545,6 +566,16 @@ export default {
 						resItem.checked = false
 					}
 					resItem.isIndeterminate = false
+					/********** 211130 判断是不是要半选复选框 start ***************/
+					if (hasChild && resItem.childNum) {
+						const notCheckedNums = row[childrenKey].filter(
+							(e) => !this.defaultCheckedKeys.includes(e[this.rowKey])
+						).length
+						if (notCheckedNums !== resItem.childNum) {
+							resItem.isIndeterminate = true
+						}
+					}
+					/***************** end ********************************/
 					// 设置已选中值
 					if (this.defaultSelectedRows) {
 						if (this.defaultCheckedKeys.includes(row[this.rowKey])) {
@@ -567,6 +598,16 @@ export default {
 			return res
 		},
 		handleCellClick(row, column) {
+			// console.log(row,column,'=====');
+			if (!this.emitLabel.includes(column.label)) {
+				if (this.isCustomSelection) {
+					console.log('QWQ')
+					// this.handleToggleSelectedRow(true,row)
+				} else {
+					console.log('T-T')
+					this.$refs.theCustomTable.toggleRowSelection(row)
+				}
+			}
 			if (this.treeExpand) {
 				if (this.treeExpand.expandKey === column.property) {
 					row.expanded = !row.expanded
@@ -610,6 +651,7 @@ export default {
 			}
 		},
 		toggleRowSelection(row, selected) {
+			// row.flag = selected
 			let toggleRow = row
 			if (this.rowKey) {
 				const filterRow = this.realTableData.filter(
@@ -689,7 +731,7 @@ export default {
 			this.$emit('select-all', selection)
 		},
 		getRowClassNameDefault({ row, rowIndex }) {
-			let rowClass = ''
+			let rowClass = `row-${row.uniqueId}`
 			if (this.rowClassName) {
 				rowClass = this.rowClassName({ row, rowIndex })
 			}
@@ -750,126 +792,6 @@ export default {
 				(e) => e.uniqueId.indexOf(row.uniqueId + '-') === 0
 			)
 		},
-		/*-----------------------------------------------------------------------------------------
-    ---------------------------------------下面是自定义级联复选框的------------------------------
-    ------------------------------------------------------------------------------------------*/
-		handleCheckedAll(val) {
-			this.tableData.forEach((e) => {
-				e.checked = val
-				e.isIndeterminate = false
-			})
-			this.indeterminateAll = false
-
-			const returnData = val ? this.tableData : []
-			this.$emit('handle-selection-change', returnData, {
-				checked: val,
-				checkedAll: val,
-				rows: this.tableData,
-			})
-		},
-		handleCheckedRow(val, row) {
-			const childs = this.getChildRows(row)
-			if (childs.length > 0) {
-				childs.forEach((e) => {
-					e.checked = val
-					e.isIndeterminate = false
-				})
-			}
-			if (!val) {
-				row.isIndeterminate = false
-			}
-			// 如果是取消选中
-			this.setParentChecked(row.parentUniqueId)
-
-			// 头部全选反选
-			const checkedData = this.tableData.filter((e) => e.checked)
-			this.indeterminateAll =
-				checkedData.length > 0 && checkedData.length !== this.tableData.length
-			this.checkedAll = checkedData.length === this.tableData.length
-			const returnProptities = {
-				checked: val,
-				isCheckedAll: false,
-				row,
-			}
-			if (this.emitHalfSelection) {
-				this.$emit(
-					'handle-selection-change',
-					this.tableData.filter((e) => e.checked),
-					returnProptities
-				)
-			} else {
-				this.$emit(
-					'handle-selection-change',
-					this.tableData.filter((e) => e.checked && !e.isIndeterminate),
-					returnProptities
-				)
-			}
-		},
-		// 手动设置选中状态
-		handleToggleSelectedRow(val, row) {
-			const filterRow = this.tableData.filter(
-				(e) => e[this.rowKey] === row[this.rowKey]
-			)
-			if (filterRow.length > 0) {
-				filterRow[0].checked = val
-				this.handleCheckedRow(val, row)
-			}
-		},
-		handleToggleSelectedAll(val) {
-			// this.handleCheckedAll(val)
-			this.tableData.forEach((e) => {
-				e.checked = val
-				e.isIndeterminate = false
-			})
-			this.indeterminateAll = false
-			this.checkedAll = val
-		},
-		// 设置父级反选
-		setParentChecked(parentUniqueId) {
-			if (parentUniqueId) {
-				const parentFilters = this.tableData.filter(
-					(e) => e.uniqueId === parentUniqueId
-				)
-				if (parentFilters.length > 0) {
-					const parent = parentFilters[0]
-					//  所有子集
-					const parentAllChild = this.tableData.filter(
-						(e) => e.parentUniqueId === parentUniqueId
-					)
-					// 包括半选和全选
-					const parentAllChildChecked = this.tableData.filter(
-						(e) => e.parentUniqueId === parentUniqueId && e.checked
-					)
-					// 只是半选
-					const parentAllChildIndeterminate = parentAllChildChecked.filter(
-						(e) => e.isIndeterminate
-					)
-					const childLength = parentAllChild.length
-					const CheckedLength = parentAllChildChecked.length
-					const IndeterminateLength = parentAllChildIndeterminate.length
-					if (CheckedLength > 0) {
-						if (CheckedLength === childLength) {
-							parent.checked = true
-							parent.isIndeterminate = false
-						}
-						if (CheckedLength < childLength) {
-							parent.checked = true
-							parent.isIndeterminate = true
-						}
-						if (
-							IndeterminateLength > 0 &&
-							IndeterminateLength < CheckedLength
-						) {
-							parent.isIndeterminate = true
-						}
-					} else {
-						parent.isIndeterminate = false
-						parent.checked = false
-					}
-					this.setParentChecked(parent.parentUniqueId)
-				}
-			}
-		},
 		getSpanMethod(val) {
 			if (this.spanMethod) {
 				return this.spanMethod(val)
@@ -887,102 +809,6 @@ export default {
 			}
 			return res
 		},
-		/******************* 记忆列表 ********************/
-		getCookie(name) {
-			const strCookie = document.cookie //获取cookie字符串
-			const arrCookie = strCookie.split('; ') //分割
-			//遍历匹配
-			for (let i = 0; i < arrCookie.length; i++) {
-				if (arrCookie[i].indexOf(`${name}=`) === 0) {
-					return arrCookie[i].replace(`${name}=`, '')
-				}
-			}
-			return ''
-		},
-		openSetting() {
-			this.settingVisible = true
-		},
-		handleSaveSetting(val) {
-			const userInfo = window.sessionStorage.getItem('userInfo') || ''
-			if (userInfo) {
-				const userData = JSON.parse(userInfo)
-				const accountId = userData?.accountId
-				const http = new XMLHttpRequest()
-				const url = `${this.usercenterApiPrefix}/web/configUserListMemory`
-				http.open('POST', url, true)
-				http.setRequestHeader('content-type', 'application/json')
-				http.setRequestHeader('token', this.getCookie('token'))
-				http.onreadystatechange = () => {
-					if (http.readyState === 4 && http.status == 200) {
-						const response = JSON.parse(http.responseText)
-						if (response.code === '200') {
-							this.tableColumns = val.length ? val : this.columns
-							iMessage.success('保存成功')
-						} else {
-							iMessage.error('保存失败')
-						}
-					}
-				}
-				const requestData = {
-					accountId: accountId,
-					listConfig: JSON.stringify(val),
-					permissionKey: this.permissionKey,
-				}
-				if (this.settingId) {
-					requestData.id = this.settingId
-				}
-				http.send(JSON.stringify(requestData))
-			}
-		},
-		handleResetSetting() {
-			this.handleSaveSetting([])
-		},
-		querySetting() {
-			const http = new XMLHttpRequest()
-			const url = `${this.usercenterApiPrefix}/web/getUserListMemory`
-			http.open('POST', url, true)
-			http.setRequestHeader('content-type', 'application/json')
-			http.setRequestHeader('token', this.getCookie('token'))
-			http.onreadystatechange = () => {
-				if (http.readyState === 4 && http.status == 200) {
-					const response = JSON.parse(http.responseText).data
-					if (response && response.length > 0) {
-						this.tableColumns = JSON.parse(response[0].listConfig)
-						this.settingId = response[0].id
-					} else {
-						this.tableColumns = this.columns
-					}
-				} else {
-					this.tableColumns = this.columns
-				}
-			}
-			const requestData = {
-				permissionKey: this.permissionKey,
-			}
-			http.send(JSON.stringify(requestData))
-			// }
-		},
-		/******************气泡框 Start****************** */
-
-		customMouseenter($event) {
-			const ele = $event.toElement
-
-			const clientWidth = ele.clientWidth
-			const scrollWidth = ele.scrollWidth
-			if (clientWidth < scrollWidth) {
-				this.tooltipContent = ele.innerText || ele.textContent
-				const tooltip = this.$refs.customTableTooltip
-				tooltip.referenceElm = ele
-				tooltip.show()
-			}
-		},
-		customMouseleave() {
-			const tooltip = this.$refs.customTableTooltip
-			if (tooltip) {
-				tooltip.hide()
-			}
-		},
-		/******************气泡框 end****************** */
 	},
 }
 </script>
@@ -1034,6 +860,14 @@ export default {
 	.el-table__header-wrapper th.is-required > div.cell::after {
 		content: '*';
 		color: #d00;
+	}
+	.el-table__row {
+		.el-table_1_column_1 {
+			.cell {
+				padding-right: 10px;
+				//  background: chartreuse;
+			}
+		}
 	}
 }
 ::v-deep.i-table-custom {
@@ -1113,5 +947,15 @@ export default {
 }
 .custom-table-popper-content {
 	max-width: 1200px;
+}
+
+.i-table-custom {
+	::v-deep .el-table--border th {
+		border-right: 1px solid #ffffff !important;
+	}
+
+	::v-deep .el-table--border td {
+		border-right: 0 !important;
+	}
 }
 </style>
