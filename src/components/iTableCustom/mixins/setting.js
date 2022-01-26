@@ -1,3 +1,4 @@
+import iMessage from '../../iMessage'
 export default {
 	computed: {
 		unCols() {
