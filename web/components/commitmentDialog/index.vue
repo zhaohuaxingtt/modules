@@ -104,7 +104,6 @@ export default {
   methods: {
     getNoticeDetail() {
       this.loading = true
-      console.log('111111111111111');
       // RFQ 询价承诺书
       // CARBON 碳减排承诺书
       getNoticeDetail({
@@ -148,6 +147,7 @@ export default {
           this.confirmLoading = false
         })
       } else{
+        this.$emit("reject")
         this.status = false
         this.confirmLoading = false
       }
