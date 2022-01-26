@@ -41,7 +41,7 @@ export default {
 		} = props
 		if (column.type && column.type === 'expanded') {
 			const { uniqueId, expanded, childNum, isLeaf } = scope.row
-			const paddingLeft = (uniqueId.split('-').length - 1) * 20
+			const paddingLeft = uniqueId && (uniqueId.split('-').length - 1) * 20
 			const iconClass = expanded
 				? 'arrow-icon el-icon-caret-top'
 				: 'arrow-icon el-icon-caret-bottom'
@@ -66,23 +66,23 @@ export default {
 				</div>
 			)
 		}
-		if (column.openNewPage) {
-			return (
-				<div class="custom-render ">
-					{customRender
-						? customRender(h, scope, column, extraData)
-						: scope.row[prop]}
-					<div class="showIcon">
-						<Icon symbol class="show " name="icontiaozhuananniu" />
-						<Icon
-							symbol
-							class="active"
-							name="icontiaozhuanxuanzhongzhuangtai"
-						/>
-					</div>
-				</div>
-			)
-		}
+		// if (column.openNewPage) {
+		//   return (
+		//     <div class="custom-render ">
+		//       {customRender
+		//         ? customRender(h, scope, column, extraData)
+		//         : scope.row[prop]}
+		//       <div class="showIcon">
+		//         <Icon symbol class="show " name="icontiaozhuananniu" />
+		//         <Icon
+		//           symbol
+		//           class="active"
+		//           name="icontiaozhuanxuanzhongzhuangtai"
+		//         />
+		//       </div>
+		//     </div>
+		//   )
+		// }
 		return (
 			<span class="render">
 				{customRender
@@ -116,7 +116,7 @@ export default {
 	font-size: 12px;
 	position: relative;
 	margin-right: 5px;
-
+	letter-spacing: 0;
 	> span {
 		top: 0;
 		left: 50%;
@@ -124,41 +124,47 @@ export default {
 		position: absolute;
 		width: 100%;
 		text-align: center;
+		zoom: 0.8;
 	}
 }
-.custom-render {
-	position: relative;
-	text-align: center;
-	text-overflow: ellipsis;
-	overflow: hidden;
-	padding-right: 20px;
-	/* min-height: 20px; */
-	.showIcon {
-		position: absolute;
-		top: 50%;
-		right: 0px;
-		cursor: pointer;
-		transform: translateY(-50%);
-		.active {
-			display: none;
-		}
-		.show {
-			display: block;
-		}
-		.icon {
-			font-size: 14px;
-			height: 14px;
-			width: 14px;
-		}
-	}
-	.showIcon:hover {
-		cursor: pointer;
-		.show {
-			display: none;
-		}
-		.active {
-			display: block;
-		}
-	}
-}
+// .custom-render {
+//   position: relative;
+//   text-align: center;
+//   text-overflow: ellipsis;
+//   overflow: hidden;
+//   padding-right: 20px;
+//   /* min-height: 20px; */
+//   .showIcon {
+//     position: absolute;
+//     top: 50%;
+//     right: 0px;
+//     cursor: pointer;
+//     transform: translateY(-50%);
+//     .active {
+//       display: none;
+//     }
+//     .show {
+//       display: block;
+//     }
+//     .icon {
+//       font-size: 14px;
+//       height: 14px;
+//       width: 14px;
+//     }
+//   }
+//   .showIcon:hover {
+//     cursor: pointer;
+//     .show {
+//       display: none;
+//     }
+//     .active {
+//       display: block;
+//     }
+//   }
+// }
+// .textContent{
+//     width: calc(100% - 20px);
+//     overflow: hidden;
+//     text-overflow: ellipsis;
+//   }
 </style>
