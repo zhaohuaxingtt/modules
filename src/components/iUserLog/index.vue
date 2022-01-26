@@ -106,7 +106,6 @@ import iInput from '../iInput'
 import iSelect from '../iSelect'
 import iPagination from '../iPagination'
 import iDatePicker from '../iDatePicker'
-import moment from 'moment';
 export default {
   name:"iUserLog",
   components: { iDialog, iSearch, iInput, iSelect, iPagination, iDatePicker },
@@ -247,8 +246,8 @@ export default {
 		this.query.bizId = this.bizId
 		this.query.menuId = this.menuId
         if(this.isDate){
-            let end = moment().format('YYYY-MM-DD')
-            let start = moment(new Date(end).getTime() - (this.days * 24 * 3600 * 1000)).format("YYYY-MM-DD")
+            let end = new Date().toLocaleDateString()
+            let start = new Date(new Date(end).getTime() - (this.days * 24 * 3600 * 1000)).toLocaleDateString()
             this.date = [start, end]
             this.query.createDate_gt = start
             this.query.createDate_le = end
