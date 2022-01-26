@@ -12,7 +12,7 @@ export const  partInfoItems =(isGS) => [
   { props: "rfqId", name: "RFQ编号", key: "RFQBIANHAO" },
   { props: "supplier", name: "RFQ供应商", key: "LK_RFQGONGYINGSHANG" },
   { props: "round", name: "报价轮次", key: "LK_BAOJIALUNCI" },
-  { props: "currentRoundisGSsEndTime", name: "报价截至时间", key: "LK_BAOJIAJIEZHISHIJIAN" },
+  { props: "currentRoundsEndTime", name: "报价截至时间", key: "LK_BAOJIAJIEZHISHIJIAN" },
   { props: "partNum", name: "零件号", key: "LK_LINGJIANHAO" },
   { props: "partNameZh", name: "零件名（中）", key: "LK_LINGJIANMINGZHONG" },
   { props: "partNameDe", name: "零件名（德）", key: "LK_LINGJIANMINGDE" },

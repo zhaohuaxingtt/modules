@@ -104,7 +104,7 @@ export default {
   methods: {
     getNoticeDetail() {
       this.loading = true
-      
+      console.log('111111111111111');
       // RFQ 询价承诺书
       // CARBON 碳减排承诺书
       getNoticeDetail({
@@ -125,29 +125,32 @@ export default {
     // 1 接受 / 0 拒绝
     handleConfirm(status = 0) {
       this.confirmLoading = true
-
-      signNotice({
-        status,
-        supplierId: this.supplierId,
-        type: this.type
-      })
-      .then(res => {
-        if (res.code == 200) {
-          const message = this.$i18n.locale === "zh" ? res.desZh : res.desEn
-
-          iMessage.success(message)
-
-          if (status === 1) this.$emit("accept") 
-          else this.$emit("reject")
-          
-          this.status = false
-        } else {
-          iMessage.error(message)
-        }
-      })
-      .finally(() => {
+      if (status === 1) {
+        signNotice({
+          status,
+          supplierId: this.supplierId,
+          type: this.type
+        })
+        .then(res => {
+          if (res.code == 200) {
+            const message = this.$i18n.locale === "zh" ? res.desZh : res.desEn
+  
+            iMessage.success(message)
+  
+            this.$emit("accept") 
+            
+            this.status = false
+          } else {
+            iMessage.error(message)
+          }
+        })
+        .finally(() => {
+          this.confirmLoading = false
+        })
+      } else{
+        this.status = false
         this.confirmLoading = false
-      })
+      }
     }
   }
 };
