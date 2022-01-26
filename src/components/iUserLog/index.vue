@@ -79,9 +79,18 @@
 					label="操作内容"
 					prop="content"
 					width="250"
-					show-overflow-tooltip
 					align="center"
-				/>
+                    show-overflow-tooltip
+				>
+                    <!-- <el-popover
+                        title=""
+                        width="500"
+                        trigger="hover"
+                        content={row.content}>
+                        
+                        <div slot="reference" style="width: 100%;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">{row.content}</div>
+                    </el-popover> -->
+                </el-table-column>
 				<el-table-column
 					label="请求时间"
 					prop="rqTime"
@@ -244,11 +253,11 @@ export default {
 				createDate_le: '',
 				id: '',
 			}
+			this.date = ""
 			if (this.disabledBiz) {
 				this.query.bizId = this.bizId
 				this.query.menuId = this.menuId
 			}
-			this.date = null
 			if (this.isPage) {
 				this.page.currPage = 1
 			}
@@ -264,7 +273,7 @@ export default {
 				createDate_le: '',
 				id: '',
 			}
-			this.date = null
+			this.date = ""
 		},
 		handleOpen() {
 			if (this.bizId) {
@@ -319,8 +328,12 @@ export default {
 				this.loading = false
 			}
 			const extendParams = this.extendParams || {}
+            let data = JSON.parse(JSON.stringify(this.query))
+            data.createDate_gt = this.query.createDate_gt ? `${this.query.createDate_gt.split(" ")[0]} 00:00:00` : ""
+            data.createDate_le = this.query.createDate_le ? `${this.query.createDate_le.split(" ")[0]} 23:59:59` : ""
+
 			const sendData = {
-				extendFields: { ...this.query, ...extendParams },
+				extendFields: { ...data, ...extendParams },
 			}
 			if (this.isPage) {
 				sendData.current = this.page.currPage - 1
@@ -342,6 +355,9 @@ export default {
 <style lang="scss">
 .pagination-box {
 	padding-bottom: 30px;
+}
+.el-tooltip__popper.is-dark{
+  z-index: 9999 !important;
 }
 
 .material-dialog2 {
