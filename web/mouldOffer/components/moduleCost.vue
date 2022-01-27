@@ -231,7 +231,7 @@ export default {
         rfqId: this.partInfo.rfqId,
         round: this.partInfo.currentRounds,
         currPage: this.page.currPage,
-        pageSize: this.disabled || !dgysBj ? this.page.pageSize : 999999,
+        pageSize: this.disabled || !this.dgysBj ? this.page.pageSize : 999999,
         supplierId:this.supplierId
       })
       .then(res => {
