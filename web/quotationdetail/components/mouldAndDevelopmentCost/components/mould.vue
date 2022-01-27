@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 00:21:08
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-01-24 23:48:48
+ * @LastEditTime: 2022-01-27 22:41:05
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\mould.vue
 -->
@@ -301,8 +301,13 @@ export default {
       mouldIdIndexes.sort((a, b) => b - a)
       const index = mouldIdIndexes[0] ? (mouldIdIndexes[0] >= 10 ? (mouldIdIndexes[0] + 1) + "" : "0" + (mouldIdIndexes[0] + 1)) : "01"
 
+      const { partInfo={} } = this;
       this.tableListData.push({
-        mouldId: `${ this.partInfo.rfqId }_${ this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId }_${ this.partInfo.partNum }_T${ index }`,
+        mouldId: `${ this.partInfo.rfqId }_${ 
+          // this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId 
+          // 依据优先级顺序：供应商SAP号>供应商SVW号>供应商临时号
+          partInfo.sapCode || partInfo.svwCode || partInfo.svwTempCode || ''
+        }_${ this.partInfo.partNum }_T${ index }`,
         fixedAssetsName: "",
         assembledPartPrjCode: this.partInfo.fsNum,
         carModeCode: this.partInfo.modelNameZh,
