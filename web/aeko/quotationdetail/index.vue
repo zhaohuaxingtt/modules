@@ -77,11 +77,10 @@
               <p>{{ language("BNKSHENPIZHUANGTAI", "BNK审批状态") }}：{{ scope.row.logisticsQuotationStatus }}</p>
             </template>
             <template #reference>
-              <!-- 针对供应商报价可跳转 -->
-              <div>
+              <!-- 针对供应商报价可跳转 点击icon也可以跳转 -->
+              <div @click="goToBNK">
                 <span
-                    :class="`margin-right5 ${userInfo &&userInfo.userType&&userInfo.userType == 2 ? 'link-underline' : ''}`"
-                    @click="goToBNK">{{ scope.row.logisticsQuotationStatus ? floatFixNum(scope.row.bnkFee) : '' }}</span>
+                    :class="`margin-right5 ${userInfo &&userInfo.userType&&userInfo.userType == 2 ? 'link-underline' : ''}`">{{ scope.row.logisticsQuotationStatus ? floatFixNum(scope.row.bnkFee) : '' }}</span>
                 <icon v-if="scope.row.bnkFee != scope.row.originBnkFee" symbol name="iconzengjiacailiaochengben_lan"
                       class="font15 rotate180"/>
               </div>
