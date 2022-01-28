@@ -202,6 +202,7 @@ export default {
 	methods: {
 		handleRedirect() {
 			if (!this.item.url) {
+				this.$emit('readCallback', { tab: this.tab })
 				console.log('url为空')
 			} else {
 				this.$emit('hide-drawer')
@@ -233,7 +234,6 @@ export default {
 			} else {
 				const result = await readMailById({ ids: this.item.id })
 				if (result?.code === '200') {
-					// this.$emit('readCallback', { tab: this.tab })
 					this.handleRedirect()
 				}
 			}
