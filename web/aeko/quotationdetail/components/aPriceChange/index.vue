@@ -662,7 +662,7 @@ export default {
         // this.apriceChange = 0
         list = [0]
       }
-      let apriceChange = Math.min(...list.filter(i=> i!=null))
+      let apriceChange = Math.min(...list)
       this.apriceChange = this.floatNum(apriceChange)
       this.apriceChangeDisabled = !+this.apriceChange
       this.$emit("updateApriceChange", this.apriceChange)
