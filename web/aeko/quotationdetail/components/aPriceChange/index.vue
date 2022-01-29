@@ -285,6 +285,7 @@ export default {
           this.apriceChange = res.data.apriceChange
           this.apriceChangeDisabled = !+this.apriceChange
           this.sourceApriceChange = this.apriceChange
+          this.initApriceChange = this.apriceChange
           this.setCbdSummarySelected(res.data.cbdSummarySelected)
           this.rawMaterialsTableData = Array.isArray(res.data.rawMaterialList) ? res.data.rawMaterialList : []
           this.manufacturingCostTableData = Array.isArray(res.data.makeCostList) ? res.data.makeCostList : []
@@ -311,6 +312,7 @@ export default {
     },
     handleInputByApriceChange(value) {
       this.apriceChange = numberProcessor(value, 4, true)
+      this.initApriceChange = this.apriceChange
     },
     handleChangeByModules(modules) {
       this.moduleMap = {}
@@ -641,7 +643,7 @@ export default {
       let cbdTotal = this.cbdSummaryTableData[0].apriceChange
       if (!this.isChange && !this.cbdCanEdit) {
           // this.apriceChange = this.$refs.changeSummary.total
-          list = [this.apriceChange,this.$refs.changeSummary.total]
+          list = [this.initApriceChange,this.$refs.changeSummary.total]
       }
       if (!this.isChange && this.cbdCanEdit) {
         // if (this.$refs.changeSummary.tableListData.length) {
@@ -653,7 +655,7 @@ export default {
         // } else {
         //   this.apriceChange = cbdTotal
         // }
-        list = [this.apriceChange,this.$refs.changeSummary.total,cbdTotal]
+        list = [this.initApriceChange,this.$refs.changeSummary.total,cbdTotal]
       }
 
       if (this.isChange && !this.cbdCanEdit){
