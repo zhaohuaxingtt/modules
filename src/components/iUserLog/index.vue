@@ -41,17 +41,17 @@
 						<i-input :placeholder="'请输入'" v-model="query.id" />
 					</el-form-item>
 					<el-form-item :label="'时间筛选'">
-						<iDatePicker
+						<el-date-picker
 							v-model="date"
 							:start-placeholder="language('开始日期')"
 							:end-placeholder="language('结束日期')"
 							type="daterange"
-							format="yyyy-MM-dd"
 							range-separator="至"
 							value-format="yyyy-MM-dd"
+							class="p-date"
 							style="width:320px"
-							clearable
 							@change="dateChange"
+							clearable
 						/>
 					</el-form-item>
 				</el-form>
@@ -141,11 +141,10 @@ import iSearch from '../iSearch/index.vue'
 import iInput from '../iInput/index.vue'
 import iSelect from '../iSelect/index.vue'
 import iPagination from '../iPagination/index.vue'
-import iDatePicker from '../iDatePicker/index.vue'
 
 export default {
 	name: 'iUserLog',
-	components: { iDialog, iSearch, iInput, iSelect, iPagination, iDatePicker },
+	components: { iDialog, iSearch, iInput, iSelect, iPagination },
 	props: {
 		bizId: {
 			type: Number,
@@ -378,5 +377,10 @@ export default {
 		overflow-y: auto;
 		border-bottom: 1px solid #eee;
 	}
+}
+.p-date{
+	height: 35px;
+	border-color: transparent;
+	box-shadow: 0 0 0.1875rem rgb(0 38 98 / 15%)
 }
 </style>

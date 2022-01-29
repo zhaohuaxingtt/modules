@@ -387,7 +387,7 @@ export const titlebfcbByL3 = [
   {props:'typeName',name:'管理费',key: 'LK_GUANLIFEI',tooltip:false,width:''},
   {props:'ratio',name:'比例（%）',key: 'LK_BILI',tooltip:false,width:'',type:'input', inputType: 'decimal'},
   {props:'amount',name:'金额（RMB/Pc.）',key: 'LK_JINERMB',tooltip:false,width:''},
-  {props:'blockAmount',name:'模块金额（RMB/block）',key: 'LK_MUKUAIJINERMBBLOCK',tooltip:false,width:''},
+  // {props:'blockAmount',name:'模块金额（RMB/block）',key: 'LK_MUKUAIJINERMBBLOCK',tooltip:false,width:''},
 ]
 
 /**
@@ -411,7 +411,7 @@ export const titlebfcbByL3 = [
   {props:'typeName',name:'利润',key: 'LK_LIRUN',tooltip:false,width:''},
   {props:'ratio',name:'比例（%）',key: 'LK_BILI',tooltip:false,width:'',type:'input', inputType: 'decimal'},
   {props:'amount',name:'金额（RMB/Pc.）',key: 'LK_JINERMB',tooltip:false,width:''},
-  {props:'blockAmount',name:'模块金额（RMB/block）',key: 'LK_MUKUAIJINERMBBLOCK',tooltip:false,width:''},
+  // {props:'blockAmount',name:'模块金额（RMB/block）',key: 'LK_MUKUAIJINERMBBLOCK',tooltip:false,width:''},
 ]
 
 export const tableTitleDB = [

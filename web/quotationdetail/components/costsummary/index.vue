@@ -1088,14 +1088,14 @@ export default{
                     cbdId: baseData.levelThreeSumVO.cbdId,
                     typeName: "材料管理和销售费用",
                     amount: "0",
-                    blockAmount: "0",
+                    // blockAmount: "0",
                     ratio: "0"
                   },
                   {
                     cbdId: baseData.levelThreeSumVO.cbdId,
                     typeName: "制造管理和销售费用",
                     amount: "0",
-                    blockAmount: "0",
+                    // blockAmount: "0",
                     ratio: "0"
                   }
                 ],
@@ -1128,14 +1128,14 @@ export default{
                     cbdId: baseData.levelThreeSumVO.cbdId,
                     typeName: "材料利润",
                     amount: "0",
-                    blockAmount: "0",
+                    // blockAmount: "0",
                     ratio: "0"
                   },
                   {
                     cbdId: baseData.levelThreeSumVO.cbdId,
                     typeName: "制造利润",
                     amount: "0",
-                    blockAmount: "0",
+                    // blockAmount: "0",
                     ratio: "0"
                   }
                 ],
@@ -1573,10 +1573,10 @@ export default{
       }
 
       this.$set(this.allTableData.manageFee[0], "amount", math.evaluate(`${ this.summaryData.materialSummary } * (${ this.allTableData.manageFee[0].ratio } / 100)`).toFixed(2))
-      this.$set(this.allTableData.manageFee[0], "blockAmount", math.evaluate(`${ this.allTableData.manageFee[0].amount } * 1`).toFixed(2))
+      // this.$set(this.allTableData.manageFee[0], "blockAmount", math.evaluate(`${ this.allTableData.manageFee[0].amount } * 1`).toFixed(2))
 
       this.$set(this.allTableData.profit[0], "amount", math.evaluate(`${ this.summaryData.materialSummary } * (${ this.allTableData.profit[0].ratio } / 100)`).toFixed(2))
-      this.$set(this.allTableData.profit[0], "blockAmount", math.evaluate(`${ this.allTableData.profit[0].amount } * 1`).toFixed(2))
+      // this.$set(this.allTableData.profit[0], "blockAmount", math.evaluate(`${ this.allTableData.profit[0].amount } * 1`).toFixed(2))
     
       const manageSummary = this.allTableData.manageFee.reduce((acc, cur) => {
         return math.add(acc, math.bignumber(cur.amount || 0))
@@ -1622,10 +1622,10 @@ export default{
       }
 
       this.$set(this.allTableData.manageFee[1], "amount", math.evaluate(`${ this.summaryData.productionSummary } * (${ this.allTableData.manageFee[1].ratio } / 100)`).toFixed(2))
-      this.$set(this.allTableData.manageFee[1], "blockAmount", math.evaluate(`${ this.allTableData.manageFee[1].amount } * 1`).toFixed(2))
+      // this.$set(this.allTableData.manageFee[1], "blockAmount", math.evaluate(`${ this.allTableData.manageFee[1].amount } * 1`).toFixed(2))
 
       this.$set(this.allTableData.profit[1], "amount", math.evaluate(`${ this.summaryData.materialSummary } * (${ this.allTableData.profit[1].ratio } / 100)`).toFixed(2))
-      this.$set(this.allTableData.profit[1], "blockAmount", math.evaluate(`${ this.allTableData.profit[1].amount } * 1`).toFixed(2))
+      // this.$set(this.allTableData.profit[1], "blockAmount", math.evaluate(`${ this.allTableData.profit[1].amount } * 1`).toFixed(2))
     
       const manageSummary = this.allTableData.manageFee.reduce((acc, cur) => {
         return math.add(acc, math.bignumber(cur.amount || 0))
@@ -1646,7 +1646,7 @@ export default{
           this.$set(row, "amount", math.evaluate(`${ this.summaryData.productionSummary || 0 } * (${ row.ratio || 0 } / 100)`).toFixed(2))
         }
         
-        this.$set(row, "blockAmount", math.evaluate(`${ row.amount || 0 } * 1`).toFixed(2))
+        // this.$set(row, "blockAmount", math.evaluate(`${ row.amount || 0 } * 1`).toFixed(2))
       }
 
       const manageSummary = this.allTableData.manageFee.reduce((acc, cur) => {
@@ -1663,7 +1663,7 @@ export default{
           this.$set(row, "amount", math.evaluate(`${ this.summaryData.productionSummary || 0 } * (${ row.ratio || 0 } / 100)`).toFixed(2))
         }
         
-        this.$set(row, "blockAmount", math.evaluate(`${ row.amount || 0 } * 1`).toFixed(2))
+        // this.$set(row, "blockAmount", math.evaluate(`${ row.amount || 0 } * 1`).toFixed(2))
       }
 
       const profitSummary = this.allTableData.profit.reduce((acc, cur) => {
