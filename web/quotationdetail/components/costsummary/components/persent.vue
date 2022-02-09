@@ -46,7 +46,7 @@ export default{
     width: 100%;
     overflow: hidden;
     margin-top: 20px;
-    max-height: 70px;
+    // max-height: 70px;
     display: flex;
     li{
       padding-right: 5px;
