@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-06-22 11:07:21
- * @LastEditTime: 2022-01-18 15:24:48
+ * @LastEditTime: 2022-02-09 10:16:32
  * @LastEditors: YoHo
  * @Description: In User Settings Edit
 -->
@@ -14,8 +14,8 @@
       </slot>
     </div>
     <!-- 日志弹窗 -->
-    <iUserLog :show.sync="showLogDialog" :extendParams="extParams" :isPage="isPage" :env="env" v-bind="$attrs" @onTypeChange="onTypeChange" v-if="isUser"></iUserLog>
-    <iLog :show.sync="showLogDialog" :extendParams="extParams" :isPage="isPage" :env="env" v-bind="$attrs" @onTypeChange="onTypeChange" v-else></iLog>
+    <iUserLog :show.sync="showLogDialog" :extendParams="extParams" :isPage="isPage" :env="env" v-bind="$attrs" v-on="$listeners" @onTypeChange="onTypeChange" v-if="isUser"></iUserLog>
+    <iLog :show.sync="showLogDialog" :extendParams="extParams" :isPage="isPage" :env="env" v-bind="$attrs"  v-on="$listeners" @onTypeChange="onTypeChange" v-else></iLog>
   </div>
 </template>
 

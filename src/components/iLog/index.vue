@@ -187,6 +187,7 @@ export default {
 				type: '',
 				creator: '',
 			}
+			this.$emit('close')
 		},
 		handleOpen() {
 			// 传了字典key的，默认通过字典接口查询下拉

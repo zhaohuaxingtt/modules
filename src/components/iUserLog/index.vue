@@ -273,6 +273,7 @@ export default {
 				id: '',
 			}
 			this.date = ""
+			this.$emit('close')
 		},
 		handleOpen() {
 			if (this.bizId) {
