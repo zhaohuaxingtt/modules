@@ -43,8 +43,8 @@
 					<el-form-item :label="'时间筛选'">
 						<el-date-picker
 							v-model="date"
-							:start-placeholder="language('开始日期')"
-							:end-placeholder="language('结束日期')"
+							start-placeholder="开始日期"
+							end-placeholder="结束日期"
 							type="daterange"
 							range-separator="至"
 							value-format="yyyy-MM-dd"
