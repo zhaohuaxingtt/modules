@@ -80,16 +80,17 @@
 					prop="content"
 					width="250"
 					align="center"
-                    show-overflow-tooltip
 				>
-                    <!-- <el-popover
+				<template slot-scope="{row}">
+					<el-popover
                         title=""
                         width="500"
                         trigger="hover"
-                        content={row.content}>
-                        
-                        <div slot="reference" style="width: 100%;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">{row.content}</div>
-                    </el-popover> -->
+                        :content="row.content">
+                        <div slot="reference" style="width: 100%;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">{{row.content}}</div>
+                    </el-popover>
+				</template>
+                    
                 </el-table-column>
 				<el-table-column
 					label="请求时间"
