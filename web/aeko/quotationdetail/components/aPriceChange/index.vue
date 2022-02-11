@@ -662,7 +662,13 @@ export default {
         // this.apriceChange = 0
         list = [0]
       }
-      let apriceChange = Math.min(...list)
+      // 排除null数据
+      let apriceChange = 0
+      let arr = list.filter(i=> i!=null)
+      if(arr.length){
+        apriceChange = Math.min(...arr)
+      }
+      // let apriceChange = Math.min(...list.filter(i=> i!=null))
       this.apriceChange = this.floatNum(apriceChange)
       this.apriceChangeDisabled = !+this.apriceChange
       this.$emit("updateApriceChange", this.apriceChange)
