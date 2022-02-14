@@ -21,6 +21,7 @@
             </iFormGroup>
           </div>
           <div class="control">
+            <iButton @click="edittableHeader">{{ language("LK_SHEZHITOUBU", "设置头部")}}</iButton>
             <iButton @click="jump" v-if='whenCourcerLogin && !disabled'>{{ language('LK_TIAOZHUANZHIRFQMUJUBAOJIA', '跳转至RFQ模具报价') }}</iButton>
             <iButton @click="changeRelatingPartsVisible(true)" v-if="!disabled">{{ language('LK_GUANLIANLINGJIAN', '关联零件') }}</iButton>
             <!--------------在任何状态下，下载按钮可以被看见，供用户下载---------------->
@@ -43,7 +44,16 @@
         </div>
       </template>
       <div>
-        <tableList lang class="table" :tableData="tableListData" :tableTitle="tableTitle" @handleSelectionChange="handleSelectionChange">
+        <tableList 
+        lang 
+        ref="tableList"
+        class="table" 
+        :tableData="tableListData" 
+        :tableTitle="tableTitle" 
+        @handleSelectionChange="handleSelectionChange"
+        :handleSaveSetting="handleSaveSetting"
+        :handleResetSetting="handleResetSetting"
+        >
           <template #stuffType="scope">
             <iInput v-if="!disabled" v-model="scope.row.stuffType" />
             <span v-else>{{ scope.row.stuffType }}</span>
@@ -107,7 +117,7 @@
 <script>
 /* eslint-disable no-undef */
 import { iCard, iButton, iFormGroup, iFormItem, iInput, iSelect, iText, iMessage } from "rise"
-import tableList from "../../tableList"
+import tableList from "@/components/iTableSort";
 import { mouldCostInfos, mouldTableTitle as tableTitle, assetTypeCodeOptions, statesFilter } from "./data"
 import { cloneDeep } from "lodash"
 import relatingParts from '../../relatingParts'
@@ -384,6 +394,15 @@ export default {
       // 跳转至RFQ模具报价
      const router = this.$router.resolve({path: '/supplier/rfqManageMent/mouldOffer', query: { rfqId: this.partInfo.rfqId }})
      window.open(router.href,'_blank')
+    },
+    handleResetSetting({data, done} = data) {
+      done(data)
+    },
+     handleSaveSetting({data, done} = data) {
+      done(data)
+    },
+    edittableHeader() {
+      this.$refs.tableList.settingVisible = true
     }
   }
 }

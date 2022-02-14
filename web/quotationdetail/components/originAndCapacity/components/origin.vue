@@ -9,11 +9,23 @@
 <template>
   <div class="origin">
     <iCard :title="language('LK_GONGYINGSHANGSHENGCHANDI', '供应商生产地')">
-      <template v-if="!disabled" #header-control>
-        <iButton @click="selectOrigin">{{ language('LK_XUANZESHENGCHANGONGCHANG', '选择生产工厂') }}</iButton>
+      <template #header-control>
+        <iButton @click="edittableHeader">{{ language("LK_SHEZHITOUBU", "设置头部")}}</iButton>
+        <template  v-if="!disabled">
+          <iButton @click="selectOrigin">{{ language('LK_XUANZESHENGCHANGONGCHANG', '选择生产工厂') }}</iButton>
+        </template>
       </template>
       <div>
-        <tableList lang class="table" :selection="false" index :tableData="tableListData" :tableTitle="tableTitle">
+        <tableList 
+        ref="tableList"
+        lang class="table" 
+        :selection="false" 
+        index 
+        :tableData="tableListData" 
+        :tableTitle="tableTitle"
+        :handleSaveSetting="handleSaveSetting"
+        :handleResetSetting="handleResetSetting"
+        >
           <template #isNominate="scope">
             <span>{{ scope.row.isNominate | boolFilter }}</span>
           </template>
@@ -30,7 +42,7 @@
 <script>
 import { iCard, iButton, iMessage } from "rise"
 import originDialog from "./originDialog"
-import tableList from "../../tableList"
+import tableList from "@/components/iTableSort";
 import { originTableTitle as tableTitle } from "./data"
 import { getSupplierPartLocation, saveSupplierPartAddLocation } from "@/api/rfqManageMent/quotationdetail"
 import filters from "@/utils/filters";
@@ -113,6 +125,15 @@ export default {
       //   }
       // })
       // .catch(() => {})
+    },
+     handleResetSetting({data, done} = data) {
+      done(data)
+    },
+     handleSaveSetting({data, done} = data) {
+      done(data)
+    },
+    edittableHeader() {
+      this.$refs.tableList.settingVisible = true
     }
   }
 }

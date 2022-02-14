@@ -20,15 +20,28 @@
               </iFormItem>
             </iFormGroup>
           </div>
-          <div v-if="!disabled&&!editDisabled" class="control">
-            <iButton v-if="isAeko" @click="save" :loading="saveLoading">{{ language('BAOCUN','保存') }}</iButton>
-            <iButton @click="handleAdd">{{ language('LK_TIANJIAHANG', '添加行') }}</iButton>
-            <iButton @click="handleDel">{{ language('LK_SHANCHUHANG', '删除行') }}</iButton>
+          <div class="control">
+              <iButton @click="edittableHeader">{{ language("LK_SHEZHITOUBU", "设置头部")}}</iButton>
+            <template  v-if="!disabled&&!editDisabled" >
+              <iButton v-if="isAeko" @click="save" :loading="saveLoading">{{ language('BAOCUN','保存') }}</iButton>
+              <iButton @click="handleAdd">{{ language('LK_TIANJIAHANG', '添加行') }}</iButton>
+              <iButton @click="handleDel">{{ language('LK_SHANCHUHANG', '删除行') }}</iButton>
+            </template>
           </div>
         </div>
       </template>
       <div>
-        <tableList lang class="table" index :tableData="tableListData" :tableTitle="tableTitle" @handleSelectionChange="handleSelectionChange">
+        <tableList 
+        ref="tableList"
+        lang 
+        class="table" 
+        index 
+        :tableData="tableListData" 
+        :tableTitle="tableTitle" 
+        @handleSelectionChange="handleSelectionChange"
+        :handleSaveSetting="handleSaveSetting"
+        :handleResetSetting="handleResetSetting"
+        >
           <template #item="scope">
             <iInput v-if="!disabled&&!editDisabled" v-model="scope.row.item" />
             <span v-else>{{ scope.row.item }}</span>
@@ -76,7 +89,7 @@
 <script>
 /* eslint-disable no-undef */
 import { iCard, iButton, iFormGroup, iFormItem, iInput, iSelect, iText, iMessage } from "rise"
-import tableList from "../../tableList"
+import tableList from "@/components/iTableSort"
 import { developmentCostInfos, developmentCostTableTitle as tableTitle, statesFilter } from "./data"
 import { cloneDeep } from "lodash"
 import { getDevFee, getDevFeeSKD } from "@/api/rfqManageMent/quotationdetail"
@@ -261,6 +274,15 @@ export default {
     },
     updateSaveLoading(value = false) {
       this.saveLoading = value
+    },
+    handleResetSetting({data, done} = data) {
+      done(data)
+    },
+    handleSaveSetting({data, done} = data) {
+      done(data)
+    },
+    edittableHeader() {
+      this.$refs.tableList.settingVisible = true
     }
   }
 }
