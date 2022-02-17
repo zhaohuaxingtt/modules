@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2021-04-23 15:34:54
- * @LastEditTime: 2021-09-10 15:04:48
- * @LastEditors: Hao,Jiang
+ * @LastEditTime: 2022-02-17 12:46:30
+ * @LastEditors: YoHo
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\components\costsummary\components\data.js
  */
@@ -37,7 +37,7 @@ export function tableTilel1Fn(level, partType,partname){
     {props:'profitSummary',seq: `${level}.6`, name:`利润`,key: 'LK_LIRUN',tooltip:false,width:'', type: (level == 2 || level == 3) ? '' : 'input', inputType: 'decimal'},
     {props:'totalPrice',name:'A价',key: 'LK_AJIA',tooltip:false,width:'' },
     // 若某一零件的零件类型为[加工装配费]，我可以看到汇总表头上多显示两列：[LC件管理费率][CKD件管理费率]
-    ...(partType === 'S' ? [
+    ...(partType === 'L' ? [
       {props:'lcManageRate',name:'LC件管理费率',key: 'LK_LCJIANGUANLIFEILV',tooltip:false,width:'',type:'inputRate' },
       {props:'ckdManageRate',name:'CKD件管理费率',key: 'LK_CKDJIANGUANLIFEILV',tooltip:false,width:'',type:'inputRate' },
     ] : []),
