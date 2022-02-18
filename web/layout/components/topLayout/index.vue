@@ -27,7 +27,7 @@
         />
         <icon symbol v-else class="icon" name="iconzhongyingwenzhuanhuanying" />
       </div>
-      <iMailTrigger />
+      <iMailTrigger ref="iMail"/>
     </div>
     <notify ref="notify" v-if="!drawerVisible" />
     <profile :visible.sync="profileVisible" />
@@ -102,7 +102,15 @@ export default {
   methods: {
     clickMenu(val) {
       if (val == 'logout') {
+        this.$refs.iMail.handleHideDrawer()
         this.$emit('click-menu', val)
+        this.$nextTick(()=>{
+          removeToken()
+          window.sessionStorage.clear()
+          window.localStorage.clear()
+          this.$store.commit('SET_USER_INFO', {})
+          window.location.href = process.env.VUE_APP_LOGOUT_URL
+        })
       } else {
         this.$emit('click-menu')
       }

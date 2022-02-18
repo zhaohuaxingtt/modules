@@ -70,7 +70,6 @@
 <script>
 import { icon, iMessage } from 'rise'
 import filters from '@/utils/filters'
-import { removeToken } from '@/utils/index.js'
 
 export default {
 	mixins: [filters],
@@ -153,11 +152,6 @@ export default {
 		//模拟退出登录方法
 		logout() {
 			this.$emit('click-menu', 'logout')
-			removeToken()
-			window.sessionStorage.clear()
-			window.localStorage.clear()
-			this.$store.commit('SET_USER_INFO', {})
-			window.location.href = process.env.VUE_APP_LOGOUT_URL
 		},
 		handleProfileClick(menu) {
 			if (menu.name === 'logout') {
