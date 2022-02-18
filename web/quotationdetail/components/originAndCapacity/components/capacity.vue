@@ -15,14 +15,27 @@
             <span class="title">{{ language('LK_SHENGCHANNENGLI', '生产能力') }}</span>
             <span class="tip margin-left10">{{ language('LK_SHENGCHANNENGLITIPS', '上汽大众产能信息: 供应商针对此次询价车型承诺给上汽大众的产能') }}</span>
           </div>
-          <div v-if="!disabled" class="control">
-            <iButton @click="handleAdd">{{ language('LK_TIANJIAHANG', '添加行') }}</iButton>
-            <iButton @click="handleDel">{{ language('LK_SHANCHUHANG', '删除行') }}</iButton>
+          <div  class="control">
+            <iButton @click="edittableHeader">{{ language("LK_SHEZHITOUBU", "设置头部")}}</iButton>
+            <template v-if="!disabled">
+              <iButton @click="handleAdd">{{ language('LK_TIANJIAHANG', '添加行') }}</iButton>
+              <iButton @click="handleDel">{{ language('LK_SHANCHUHANG', '删除行') }}</iButton>
+            </template>
           </div>
         </div>
       </template>
       <div>
-        <tableList lang class="table" index :tableData="tableListData" :tableTitle="tableTitle" @handleSelectionChange="handleSelectionChange">
+        <tableList 
+        ref="tableList"
+        lang 
+        class="table" 
+        index 
+        :tableData="tableListData" 
+        :tableTitle="tableTitle" 
+        @handleSelectionChange="handleSelectionChange"
+        :handleSaveSetting="handleSaveSetting"
+        :handleResetSetting="handleResetSetting"
+        >
           <template #leadTime="scope">
             <el-input v-if="!disabled" v-model="scope.row.leadTime" maxlength="8"></el-input>
             <span v-else>{{ scope.row.leadTime }}</span>
@@ -91,7 +104,7 @@
 
 <script>
 import { iCard, iButton, iMessage, iDatePicker } from "rise"
-import tableList from "../../tableList"
+import tableList from "@/components/iTableSort"
 import { capacityTableTitle as tableTitle } from "../components/data"
 import { getSupplierPlantCaps, saveSupplierPlantCap } from "@/api/rfqManageMent/quotationdetail"
 import filters from "@/utils/filters"
@@ -221,6 +234,15 @@ export default {
       } catch(e) {
         return iMessage.error(e)
       }
+    },
+    handleResetSetting({data, done} = data) {
+      done(data)
+    },
+     handleSaveSetting({data, done} = data) {
+      done(data)
+    },
+    edittableHeader() {
+      this.$refs.tableList.settingVisible = true
     }
   }
 }
