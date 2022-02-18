@@ -41,6 +41,9 @@
 					<el-form-item :label="'日志编号'">
 						<i-input :placeholder="'请输入'" v-model="query.id" />
 					</el-form-item>
+          <el-form-item :label="'关键查看记录'">
+						<el-checkbox v-model="query.isSee" :disabled="recordFlag">{{language('显示关键查看记录')}}</el-checkbox>
+					</el-form-item>
 					<el-form-item :label="'时间筛选'">
 						<el-date-picker
 							v-model="date"
@@ -54,9 +57,6 @@
 							@change="dateChange"
 							clearable
 						/>
-					</el-form-item>
-          <el-form-item :label="'关键查看记录'">
-						<el-checkbox v-model="query.isSee" :disabled="recordFlag">{{language('显示关键查看记录')}}</el-checkbox>
 					</el-form-item>
 				</el-form>
 			</i-search>
