@@ -41,7 +41,7 @@
 					<el-form-item :label="'日志编号'">
 						<i-input :placeholder="'请输入'" v-model="query.id" />
 					</el-form-item>
-          <el-form-item :label="'关键查看记录'">
+          <el-form-item :label="'关键查看记录'" v-if="recordShow">
 						<el-checkbox v-model="query.isSee" :disabled="recordFlag">{{language('显示关键查看记录')}}</el-checkbox>
 					</el-form-item>
 					<el-form-item :label="'时间筛选'">
@@ -186,6 +186,10 @@ export default {
 			type: String,
 			default: '',
 		},
+    recordShow: {
+      type: Boolean, // 是否默认显示关键查看记录
+			default: false,
+    }
 	},
 	data() {
 		return {
@@ -337,9 +341,9 @@ export default {
 			}
 			const extendParams = this.extendParams || {}
       this.query.isSee = this.query.isSee ? 1 : 0
-            let data = JSON.parse(JSON.stringify(this.query))
-            data.createDate_gt = this.query.createDate_gt ? `${this.query.createDate_gt.split(" ")[0]} 00:00:00` : ""
-            data.createDate_le = this.query.createDate_le ? `${this.query.createDate_le.split(" ")[0]} 23:59:59` : ""
+      let data = JSON.parse(JSON.stringify(this.query))
+      data.createDate_gt = this.query.createDate_gt ? `${this.query.createDate_gt.split(" ")[0]} 00:00:00` : ""
+      data.createDate_le = this.query.createDate_le ? `${this.query.createDate_le.split(" ")[0]} 23:59:59` : ""
 
 			const sendData = {
 				extendFields: { ...data, ...extendParams },
