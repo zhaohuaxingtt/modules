@@ -15,6 +15,7 @@
 							filterable
 							clearable
 							placeholder="请选择（支持搜索）"
+              @change="handleOperationTypes"
 						>
 							<el-option
 								v-for="item in options"
@@ -53,6 +54,9 @@
 							@change="dateChange"
 							clearable
 						/>
+					</el-form-item>
+          <el-form-item :label="'关键查看记录'">
+						<el-checkbox v-model="query.isSee" :disabled="recordFlag">{{language('显示关键查看记录')}}</el-checkbox>
 					</el-form-item>
 				</el-form>
 			</i-search>
@@ -194,6 +198,7 @@ export default {
 				createDate_gt: '',
 				createDate_le: '',
 				id: '',
+        isSee: ''
 			},
 			options: [],
 			page: {
@@ -206,6 +211,7 @@ export default {
 			loading: false,
 			date: null,
 			disabledBiz: false,
+      recordFlag: false
 		}
 	},
 	computed: {
@@ -252,6 +258,7 @@ export default {
 				createDate_gt: '',
 				createDate_le: '',
 				id: '',
+        isSee: ''
 			}
 			this.date = ""
 			if (this.disabledBiz) {
@@ -329,6 +336,7 @@ export default {
 				this.loading = false
 			}
 			const extendParams = this.extendParams || {}
+      this.query.isSee = this.query.isSee ? 1 : 0
             let data = JSON.parse(JSON.stringify(this.query))
             data.createDate_gt = this.query.createDate_gt ? `${this.query.createDate_gt.split(" ")[0]} 00:00:00` : ""
             data.createDate_le = this.query.createDate_le ? `${this.query.createDate_le.split(" ")[0]} 23:59:59` : ""
@@ -350,6 +358,14 @@ export default {
 			this.page.currPage = val
 			this.getList()
 		},
+    handleOperationTypes(v) {
+			if (v === '170') {
+				this.query.isSee = false
+				this.recordFlag = true
+			} else {
+				this.recordFlag = false
+			}
+		}
 	},
 }
 </script>
