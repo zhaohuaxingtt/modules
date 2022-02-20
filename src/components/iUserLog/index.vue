@@ -186,10 +186,10 @@ export default {
 			type: String,
 			default: '',
 		},
-    recordShow: {
-      type: Boolean, // 是否默认显示关键查看记录
-			default: false,
-    }
+		recordShow: {
+			type: Boolean, // 是否默认显示关键查看记录
+			default: true,
+		}
 	},
 	data() {
 		return {
