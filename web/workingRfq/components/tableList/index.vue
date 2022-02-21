@@ -52,7 +52,7 @@
           </iSelect>
         </template>
       </el-table-column>
-      <el-table-column :key="items.key" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-else-if='items.props == "specialDeviceCost"' :prop="items.props" :label="`${ items.seq ? items.seq + ' ' : '' }${ items.key ? (lang ? language(items.key, items.name) : $t(items.key)) : items.name }`">
+      <el-table-column :key="items.key" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-else-if='items.props == "specialDeviceCost" && items.type === "select"' :prop="items.props" :label="`${ items.seq ? items.seq + ' ' : '' }${ items.key ? (lang ? language(items.key, items.name) : $t(items.key)) : items.name }`">
         <template slot-scope="row">
           <span v-if='notEdit'>{{row.row[items.props]?"是":"否"}}</span>
           <iSelect v-else v-model="row.row[items.props]">
