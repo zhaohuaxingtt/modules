@@ -41,7 +41,7 @@
 					<el-form-item :label="'日志编号'">
 						<i-input :placeholder="'请输入'" v-model="query.id" />
 					</el-form-item>
-          <el-form-item :label="'关键查看记录'" v-if="recordShow">
+					<el-form-item :label="'关键查看记录'" v-if="recordShow">
 						<el-checkbox v-model="query.isSee" :disabled="recordFlag">{{language('显示关键查看记录')}}</el-checkbox>
 					</el-form-item>
 					<el-form-item :label="'时间筛选'">
@@ -146,6 +146,7 @@ import iSearch from '../iSearch/index.vue'
 import iInput from '../iInput/index.vue'
 import iSelect from '../iSelect/index.vue'
 import iPagination from '../iPagination/index.vue'
+import moment from 'moment';
 
 export default {
 	name: 'iUserLog',
@@ -202,7 +203,7 @@ export default {
 				createDate_gt: '',
 				createDate_le: '',
 				id: '',
-        isSee: ''
+				isSee: ''
 			},
 			options: [],
 			page: {
@@ -242,7 +243,20 @@ export default {
 			return baseMap[this.appEnv.toLowerCase()] || '/api'
 		},
 	},
+	created() {
+		this.restForm()
+	},
 	methods: {
+		restForm() {
+			return new Promise((resolve) => {
+				let end = moment().format('YYYY-MM-DD')
+				let start = moment(new Date(end).getTime() - (30 * 24 * 3600 * 1000)).format("YYYY-MM-DD") 		//30天
+				this.date = [start, end]
+				this.query.createDate_gt = start
+				this.query.createDate_le = end
+				resolve()
+			})
+		},
 		dateChange(date) {
 			this.query.createDate_gt = date ? date[0] : ''
 			this.query.createDate_le = date ? date[1] : ''
@@ -253,7 +267,8 @@ export default {
 			}
 			this.getList()
 		},
-		reset() {
+		async reset() {
+			await this.restForm()
 			this.query = {
 				type: '',
 				creator: '',
@@ -262,9 +277,9 @@ export default {
 				createDate_gt: '',
 				createDate_le: '',
 				id: '',
-        isSee: ''
+				isSee: ''
 			}
-			this.date = ""
+			// this.date = ""
 			if (this.disabledBiz) {
 				this.query.bizId = this.bizId
 				this.query.menuId = this.menuId
@@ -274,7 +289,8 @@ export default {
 			}
 			this.getList()
 		},
-		handleClose() {
+		async handleClose() {
+			await this.restForm()
 			this.query = {
 				type: '',
 				creator: '',
@@ -284,7 +300,7 @@ export default {
 				createDate_le: '',
 				id: '',
 			}
-			this.date = ""
+			// this.date = ""
 			this.$emit('close')
 		},
 		handleOpen() {
