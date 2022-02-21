@@ -15,7 +15,7 @@
 							filterable
 							clearable
 							placeholder="请选择（支持搜索）"
-              @change="handleOperationTypes"
+							@change="handleOperationTypes"
 						>
 							<el-option
 								v-for="item in options"
@@ -42,7 +42,9 @@
 						<i-input :placeholder="'请输入'" v-model="query.id" />
 					</el-form-item>
 					<el-form-item :label="'关键查看记录'" v-if="recordShow">
-						<el-checkbox v-model="query.isSee" :disabled="recordFlag">{{language('显示关键查看记录')}}</el-checkbox>
+						<el-checkbox v-model="query.isSee" :disabled="recordFlag">{{
+							language('显示关键查看记录')
+						}}</el-checkbox>
 					</el-form-item>
 					<el-form-item :label="'时间筛选'">
 						<el-date-picker
@@ -85,17 +87,22 @@
 					width="250"
 					align="center"
 				>
-				<template slot-scope="{row}">
-					<el-popover
-                        title=""
-                        width="500"
-                        trigger="hover"
-                        :content="row.content">
-                        <div slot="reference" style="width: 100%;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">{{row.content}}</div>
-                    </el-popover>
-				</template>
-                    
-                </el-table-column>
+					<template slot-scope="{ row }">
+						<el-popover
+							title=""
+							width="500"
+							trigger="hover"
+							:content="row.content"
+						>
+							<div
+								slot="reference"
+								style="width: 100%;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"
+							>
+								{{ row.content }}
+							</div>
+						</el-popover>
+					</template>
+				</el-table-column>
 				<el-table-column
 					label="请求时间"
 					prop="rqTime"
@@ -146,7 +153,7 @@ import iSearch from '../iSearch/index.vue'
 import iInput from '../iInput/index.vue'
 import iSelect from '../iSelect/index.vue'
 import iPagination from '../iPagination/index.vue'
-import moment from 'moment';
+// import moment from 'moment';
 
 export default {
 	name: 'iUserLog',
@@ -190,7 +197,7 @@ export default {
 		recordShow: {
 			type: Boolean, // 是否默认显示关键查看记录
 			default: true,
-		}
+		},
 	},
 	data() {
 		return {
@@ -203,7 +210,7 @@ export default {
 				createDate_gt: '',
 				createDate_le: '',
 				id: '',
-				isSee: ''
+				isSee: '',
 			},
 			options: [],
 			page: {
@@ -216,7 +223,7 @@ export default {
 			loading: false,
 			date: null,
 			disabledBiz: false,
-      recordFlag: false
+			recordFlag: false,
 		}
 	},
 	computed: {
@@ -250,7 +257,9 @@ export default {
 		restForm() {
 			return new Promise((resolve) => {
 				let end = moment().format('YYYY-MM-DD')
-				let start = moment(new Date(end).getTime() - (30 * 24 * 3600 * 1000)).format("YYYY-MM-DD") 		//30天
+				let start = moment(
+					new Date(end).getTime() - 30 * 24 * 3600 * 1000
+				).format('YYYY-MM-DD') //30天
 				this.date = [start, end]
 				this.query.createDate_gt = start
 				this.query.createDate_le = end
@@ -277,7 +286,7 @@ export default {
 				createDate_gt: '',
 				createDate_le: '',
 				id: '',
-				isSee: ''
+				isSee: '',
 			}
 			// this.date = ""
 			if (this.disabledBiz) {
@@ -356,10 +365,14 @@ export default {
 				this.loading = false
 			}
 			const extendParams = this.extendParams || {}
-      this.query.isSee = this.query.isSee ? 1 : 0
-      let data = JSON.parse(JSON.stringify(this.query))
-      data.createDate_gt = this.query.createDate_gt ? `${this.query.createDate_gt.split(" ")[0]} 00:00:00` : ""
-      data.createDate_le = this.query.createDate_le ? `${this.query.createDate_le.split(" ")[0]} 23:59:59` : ""
+			this.query.isSee = this.query.isSee ? 1 : 0
+			let data = JSON.parse(JSON.stringify(this.query))
+			data.createDate_gt = this.query.createDate_gt
+				? `${this.query.createDate_gt.split(' ')[0]} 00:00:00`
+				: ''
+			data.createDate_le = this.query.createDate_le
+				? `${this.query.createDate_le.split(' ')[0]} 23:59:59`
+				: ''
 
 			const sendData = {
 				extendFields: { ...data, ...extendParams },
@@ -378,14 +391,14 @@ export default {
 			this.page.currPage = val
 			this.getList()
 		},
-    handleOperationTypes(v) {
+		handleOperationTypes(v) {
 			if (v === '170') {
 				this.query.isSee = false
 				this.recordFlag = true
 			} else {
 				this.recordFlag = false
 			}
-		}
+		},
 	},
 }
 </script>
@@ -393,8 +406,8 @@ export default {
 .pagination-box {
 	padding-bottom: 30px;
 }
-.el-tooltip__popper.is-dark{
-  z-index: 9999 !important;
+.el-tooltip__popper.is-dark {
+	z-index: 9999 !important;
 }
 
 .material-dialog2 {
@@ -416,9 +429,9 @@ export default {
 		border-bottom: 1px solid #eee;
 	}
 }
-.p-date{
+.p-date {
 	height: 35px;
 	border-color: transparent;
-	box-shadow: 0 0 0.1875rem rgb(0 38 98 / 15%)
+	box-shadow: 0 0 0.1875rem rgb(0 38 98 / 15%);
 }
 </style>
