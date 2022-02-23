@@ -230,8 +230,8 @@ export default {
       getAllMouldFee({
         rfqId: this.partInfo.rfqId,
         round: this.partInfo.currentRounds,
-        currPage: this.page.currPage,
-        pageSize: this.disabled || !this.dgysBj ? this.page.pageSize : 999999,
+        current: this.page.currPage,
+        size: this.disabled || !this.dgysBj ? this.page.pageSize : 999999,
         supplierId:this.supplierId
       })
       .then(res => {
