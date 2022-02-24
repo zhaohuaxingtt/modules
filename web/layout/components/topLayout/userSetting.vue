@@ -11,7 +11,7 @@
 			<div class="title flex-align-center">
 				<icon symbol class="icon" name="iconSetting" />
 				<!-- <span class="margin-left10">{{ $t('topLayout.setting.personal') | capitalizeFilter }}</span> -->
-				<span class="margin-left10">个人设置</span>
+				<span class="margin-left10">{{ language('个人设置') }}</span>
 			</div>
 			<div>
 				<div
@@ -24,14 +24,14 @@
 						active: $route.path === menu.path,
 					}"
 				>
-					<span>{{ menu.title }}</span>
+					<span>{{ language(menu.title) }}</span>
 				</div>
 			</div>
 			<div v-if="menus_admin.length">
 				<div class="title flex-align-center">
 					<icon symbol class="icon" name="iconguanliyuanshezhi" />
 					<!-- <span class="margin-left10">{{ $t('topLayout.setting.admin') | capitalizeFilter }}</span> -->
-					<span class="margin-left10">管理端</span>
+					<span class="margin-left10">{{ language('管理端') }}</span>
 				</div>
 				<div>
 					<div
@@ -49,7 +49,7 @@
 						}"
 						:url="menu.url"
 					>
-						<span>{{ menu.title }}</span>
+						<span>{{ language(menu.title) }}</span>
 					</div>
 				</div>
 			</div>
