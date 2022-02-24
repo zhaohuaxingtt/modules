@@ -55,7 +55,7 @@
 							clearable
 						/>
 					</el-form-item>
-					<el-form-item :label="''" v-if="recordShow">
+					<el-form-item :label="language('')" v-if="recordShow" style="marginTop: 22px; marginLeft: 150px">
 						<el-checkbox v-model="query.isSee" :disabled="recordFlag">{{
 							language('显示关键查看记录')
 						}}</el-checkbox>
