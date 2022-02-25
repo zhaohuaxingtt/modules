@@ -127,13 +127,13 @@ export default {
 					name: 'profile',
 				},
 				{
-					title: _self.$t('setting'),
+					title: '设置',
 					name: 'setting',
 					url: '/portal/#/setting',
 					path: '/setting',
 				},
 				{
-					title: _self.$t('LK_TUICHUDENGLU'),
+					title: '退出登录',
 					name: 'logout',
 				},
 			],
