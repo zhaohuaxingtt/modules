@@ -41,7 +41,7 @@
 					<el-form-item :label="'日志编号'">
 						<i-input :placeholder="'请输入'" v-model="query.id" />
 					</el-form-item>
-					<el-form-item :label="'时间筛选'">
+					<el-form-item :label="'时间筛选'" style="width:300px">
 						<el-date-picker
 							v-model="date"
 							start-placeholder="开始日期"
@@ -50,15 +50,13 @@
 							range-separator="至"
 							value-format="yyyy-MM-dd"
 							class="p-date"
-							style="width:320px"
+							style="width:300px"
 							@change="dateChange"
 							clearable
 						/>
 					</el-form-item>
-					<el-form-item :label="language('')" v-if="recordShow" style="marginTop: 22px; marginLeft: 150px">
-						<el-checkbox v-model="query.isSee" :disabled="recordFlag">{{
-							language('显示关键查看记录')
-						}}</el-checkbox>
+					<el-form-item :label="language('')" v-if="recordShow" style="marginTop: 22px; line-height: 35px">
+						<el-checkbox v-model="query.isSee" :disabled="recordFlag">显示关键查看记录</el-checkbox>
 					</el-form-item>
 				</el-form>
 			</i-search>
@@ -433,5 +431,9 @@ export default {
 	height: 35px;
 	border-color: transparent;
 	box-shadow: 0 0 0.1875rem rgb(0 38 98 / 15%);
+	align-items: baseline !important;
+	&.el-date-editor .el-range-separator{
+		width: 26px;
+	}
 }
 </style>
