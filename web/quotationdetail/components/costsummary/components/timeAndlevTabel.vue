@@ -64,7 +64,7 @@
     <!----------------------表格百分比-------------------------->
     <!--------------------------------------------------------->
     <tableList lang :tableTitle='tableTilel1' :notEdit='disabled' :tableData='tableData.tableData' :isSteel="isSteel" :roundIsOnlineBidding='roundIsOnlineBidding' class="margin-top10"></tableList>
-    <persent lang v-if='!tableData.persent.every(items=>items == 0)' :persentList='tableData.persent' :realDataList='tableData.tableData'></persent>
+    <persent lang v-if='Array.isArray(tableData.persent) && !tableData.persent.every(items=>items == 0)' :persentList='tableData.persent' :realDataList='tableData.tableData'></persent>
   </iCard>
 </template>
 <script>
