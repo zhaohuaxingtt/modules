@@ -142,8 +142,8 @@
         v-else
         v-update
         class="pagination margin-top30"
-        @size-change="handleSizeChange($event, getData)"
-        @current-change="handleCurrentChange($event, getData)"
+        @size-change="handleSizeChange($event, getAllMouldFee)"
+        @current-change="handleCurrentChange($event, getAllMouldFee)"
         background
         :current-page="page.currPage"
         :page-sizes="page.pageSizes"
