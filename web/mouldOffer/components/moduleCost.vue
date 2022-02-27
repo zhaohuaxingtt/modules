@@ -61,6 +61,7 @@
             </el-upload>
             <iButton @click="handleAdd">{{ language('LK_TIANJIAHANG', '添加行') }}</iButton>
             <iButton @click="handleDel">{{ language('LK_SHANCHUHANG', '删除行') }}</iButton>
+            <iButton @click="handleCancel">{{ language('QUXIAO', '取消') }}</iButton>
             <iButton @click="handleSave" :loading="saveLoading">{{ language('LK_BAOCUN', '保存') }}</iButton>
             </template>
             <!-- <iButton>提交</iButton> -->
@@ -201,7 +202,8 @@ export default {
       fromPage:'',
       supplierId:'',
       supplierList:[],
-      titleKey:''
+      titleKey:'',
+      sourceTableListData: []
     }
   },
   computed: {
@@ -239,6 +241,7 @@ export default {
           if (res.data.mouldCbdEntityList) {
             if (Array.isArray(res.data.mouldCbdEntityList.records)) {
               this.tableListData = Array.isArray(res.data.mouldCbdEntityList.records) ? res.data.mouldCbdEntityList.records : []
+              this.sourceTableListData = _.cloneDeep(this.tableListData)
               this.page.totalCount = res.data.mouldCbdEntityList.total || 0
             }
           }
@@ -387,6 +390,17 @@ export default {
           })
           .catch(() => this.saveLoading = false)
       })
+    },
+    handleCancel() {
+      if (!_.isEqual(this.sourceTableListData, this.tableListData)) {
+        iMessageBox(this.language("DISCARDCHANGE", "内容已经发生变化，是否确定要放弃修改？"))
+        .then(() => {
+          this.dgysBj = false
+          this.tableListData = []
+        })
+      } else {
+        this.dgysBj = false
+      }
     },
     // 零件号选择
     handleChangeByAssembledPartCode(partNum, row) {
