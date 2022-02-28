@@ -38,7 +38,8 @@
 
 <script>
 import { iCard, iButton, icon, iMessage } from "rise"
-import tableList from "rise/web/quotationdetail/components/tableList"
+// import tableList from "rise/web/quotationdetail/components/tableList"
+import tableList from "rise/web/components/iTableSort/index.vue";
 import { statesFilter } from "rise/web/quotationdetail/components/mouldAndDevelopmentCost/components/data"
 import {assetTypeCodeOptions, sourcePartCBDTableTitle as tableTitle} from "../data"
 import { floatFixNum } from "../../../data"

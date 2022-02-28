@@ -14,7 +14,7 @@
         <el-table-column :label="language('ZHIZAOCHENGBEN', '制造成本')" align="center">
           <el-table-column type="selection" align="center" width="55" v-if="!disabled"></el-table-column>
           <el-table-column label="#" prop="index" align="center" width="55" ></el-table-column>
-          <el-table-column :label="language('ZHIZAOGONGXU', '制造工序')" align="center" width="132">
+          <el-table-column :label="language('ZHIZAOGONGXU', '制造工序')" align="center" width="120">
             <template v-slot="scope">
               <div class="manufacturingMethodColumn">
                 <iconFont v-if="scope.row.partCbdType == 2" class="iconFont" />
@@ -26,13 +26,13 @@
             </template>
           </el-table-column>
         </el-table-column>
-        <el-table-column align="center" width="145" :render-header="h => h('span', { domProps: { innerHTML: `${ language('DUIYINGYUANCAILIAOSANJIAN', '对应原材料/散件') }<br/>(Ref.-ID)` }})">
+        <el-table-column align="center" width="140" :render-header="h => h('span', { domProps: { innerHTML: `${ language('DUIYINGYUANCAILIAOSANJIAN', '对应原材料/散件') }<br/>(Ref.-ID)` }})">
           <template v-slot="scope">
             <iInput v-if="(scope.row.partCbdType == 1 || scope.row.partCbdType == 2) && !disabled" class="input-center" v-model="scope.row.material" :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.material !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].material) : false }"></iInput>
             <span v-else :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.material !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].material) : false }">{{ scope.row.material }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" width="125" :render-header="h => h('span', { domProps: { innerHTML: `${ language('SHEBEIMINGCHENGXINGHAO', '设备名称/型号') }<br/>(Ref.-Name)` }})">
+        <el-table-column align="center" width="120" :render-header="h => h('span', { domProps: { innerHTML: `${ language('SHEBEIMINGCHENGXINGHAO', '设备名称/型号') }<br/>(Ref.-Name)` }})">
           <template v-slot="scope">
             <iInput v-if="(scope.row.partCbdType == 1 || scope.row.partCbdType == 2) && !disabled" class="input-center" v-model="scope.row.machineName" :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.machineName !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].machineName) : false }"></iInput>
             <span v-else :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.machineName !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].machineName) : false }">{{ scope.row.machineName }}</span>
@@ -45,7 +45,7 @@
             <span v-else :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.specialDeviceCost !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].specialDeviceCost) : false }" @input="handleInputByNumber($event, 'specialDeviceCost', scope.row, 2)">{{ floatFixNum(scope.row.specialDeviceCost) }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" width="90" :render-header="h => h('span', { domProps: { innerHTML: `${ language('SHENGCHANJIEPAI', '生产节拍') }<br/>（Sec.）` }})">
+        <el-table-column align="center" width="85" :render-header="h => h('span', { domProps: { innerHTML: `${ language('SHENGCHANJIEPAI', '生产节拍') }<br/>（Sec.）` }})">
           <template v-slot="scope">
             <iInput v-if="(scope.row.partCbdType == 1 || scope.row.partCbdType == 2) && !disabled" class="input-center" v-model="scope.row.taktTime" :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.taktTime !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].taktTime) : false }" @input="handleInputByNumber($event, 'taktTime', scope.row, 2, updateTaktTime)"></iInput>
             <span v-else :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.taktTime !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].taktTime) : false }">{{ scope.row.taktTime }}</span>
@@ -58,7 +58,7 @@
           </template>
         </el-table-column>
         <el-table-column :label="language('RENGONGCHENGBEN', '人工成本')" align="center">
-          <el-table-column align="center" width="123" :render-header="h => h('span', { domProps: { innerHTML: `${ language('ZHIJIERENGONGFEILV', '直接人工费率') }<br/>(RMB/Hour)` }})">
+          <el-table-column align="center" width="115" :render-header="h => h('span', { domProps: { innerHTML: `${ language('ZHIJIERENGONGFEILV', '直接人工费率') }<br/>(RMB/Hour)` }})">
             <template v-slot="scope">
               <iInput v-if="(scope.row.partCbdType == 1 || scope.row.partCbdType == 2) && !disabled" class="input-center" v-model="scope.row.directLaborRate" :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.directLaborRate !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].directLaborRate) : false }" @input="handleInputByNumber($event, 'directLaborRate', scope.row, 2, updateDirectLaborRate)"></iInput>
               <span v-else :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.directLaborRate !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].directLaborRate) : false }">{{ floatFixNum(scope.row.directLaborRate) }}</span>

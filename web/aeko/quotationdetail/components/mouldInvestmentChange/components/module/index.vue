@@ -113,7 +113,8 @@
 
 <script>
 import {iCard, iButton, icon, iFormGroup, iFormItem, iSelect, iInput, iText, iMessageBox,} from "rise"
-import tableList from "rise/web/quotationdetail/components/tableList"
+// import tableList from "rise/web/quotationdetail/components/tableList"
+import tableList from "rise/web/components/iTableSort/index.vue";
 import {moduleTableTitle as tableTitle, assetTypeCodeOptions, mouldCostInfos} from "../data"
 import {floatFixNum} from "../../../data"
 import {statesFilter} from "rise/web/quotationdetail/components/mouldAndDevelopmentCost/components/data"

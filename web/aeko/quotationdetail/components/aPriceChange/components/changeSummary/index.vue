@@ -357,6 +357,9 @@ export default {
 	}
 
 	.isChangeCheckbox {
+		::v-deep .el-checkbox__inner{
+			border: 1px solid #50565D;
+		}
 		::v-deep .el-checkbox__label {
 			padding-left: 10px;
 			font-size: 16px;
