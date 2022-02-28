@@ -57,6 +57,12 @@ export default {
     iButton
   },
   mixins: [pageMixins],
+  computed: {
+    // eslint-disable-next-line no-undef
+    ...Vuex.mapState({
+      userInfo: state => state.permission.userInfo,
+    }),
+  },
   props: {
     dialogVisible: {type: Boolean, default: false},
     partInfo: {type: Object},
@@ -141,6 +147,8 @@ export default {
     },
     // 保存表格编辑内容
     handleEditSave() {
+      if (!this.tableData || !this.tableData.length) return
+
       const params = {
         rfqId: this.partInfo.rfqId,
         mouldPartList: this.tableData
