@@ -99,5 +99,12 @@ export default {
     .tableInput{
       width: 70%;
     }
+    ::v-deep.card{
+      box-shadow: none;
+      .cardBody{
+        padding: 0;
+      }
+    }
+
   }
 </style>
