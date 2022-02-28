@@ -314,7 +314,7 @@ export default{
 
         try {
           const total = getAallPrice(this.Aprice,val[0])
-          this.topTableData.persent = getPersent(total,this.Aprice,val[0])
+          this.topTableData.persent = getPersent(total,this.Aprice,val[0]) || []
         } catch (error) {
           this.topTableData.persent = []
         }
@@ -1179,7 +1179,7 @@ export default{
         if (!this.isSteel && !this.roundIsOnlineBidding) { //钢材和onlinebidding是默认展示的totalPrice 不需要计算
           const total = getAallPrice(this.Aprice,a)
           // data['tableData'][0]['totalPrice'] = total
-          data['persent'] = getPersent(total,this.Aprice,a)
+          data['persent'] = getPersent(total,this.Aprice,a) || []
 
           if (!this.Aprice.some(key => data['tableData'][0][key] || data['tableData'][0][key] === 0)) {
             this.$set(data['tableData'][0], "totalPrice", this.sourceResponseData.aprice)
@@ -1189,7 +1189,7 @@ export default{
             }
           }
         } else {
-          data['persent'] = getPersent(data['tableData'][0]['totalPrice'],this.Aprice,a)
+          data['persent'] = getPersent(data['tableData'][0]['totalPrice'],this.Aprice,a) || []
         }
 
         console.log("data", data)
