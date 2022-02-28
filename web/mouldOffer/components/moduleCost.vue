@@ -382,6 +382,7 @@ export default {
           })
           .then(res => {
             if (res.code == 200) {
+              this.getAllMouldFee()
               iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
             } else {
               iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
@@ -396,7 +397,7 @@ export default {
         iMessageBox(this.language("DISCARDCHANGE", "内容已经发生变化，是否确定要放弃修改？"))
         .then(() => {
           this.dgysBj = false
-          this.tableListData = []
+          this.tableListData = _.cloneDeep(this.sourceTableListData)
         })
       } else {
         this.dgysBj = false
