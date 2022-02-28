@@ -8,8 +8,8 @@
  */
 export const moduleCostTableTitle = [
   { props: 'mouldId', name: '模具ID', tooltip: true, key: "LK_MUJUID" },
-  { props: 'fixedAssetsName', name: '固定资产名称', tooltip: true, width: 135, key: "LK_GUDINGZICHANMINGCHENG", tipsLang: true, tipsKey: "LK_GUDINGZICHANMINGCHENGTIPS", tips: "<p style='text-align: center'>由“零件总成名称”、“零部件名称”、<br/>“工模具种类”组成</p>" },
-  { props: 'assembledPartPrjCode', name: 'FS No.', width: 150, tooltip: true, key: "LK_FSNO" },
+  { props: 'fixedAssetsName', name: '固定资产名称', tooltip: true, width: 180, key: "LK_GUDINGZICHANMINGCHENG", tipsLang: true, tipsKey: "LK_GUDINGZICHANMINGCHENGTIPS", tips: "<p style='text-align: center'>由“零件总成名称”、“零部件名称”、<br/>“工模具种类”组成</p>" },
+  { props: 'assembledPartPrjCode', name: 'FS No.', width: 100, tooltip: true, key: "LK_FSNO" },
   { props: 'priceType', name: '价格类型', width: 90, tooltip: true, key: "JIAGELEIXING" },
   { props: 'stuffType', name: '工艺类型', tooltip: true, width: 100, key: "LK_GONGYILEIXING", tipsLang: true, tipsKey: "LK_GONGYILEIXINGTIPS", tips: "如注塑，冲压，电镀等" },
   { props: 'mouldType', name: '工模具种类', tooltip: true, width: 115, key: "LK_GONGMUJUZHONGLEI", tipsLang: true, tipsKey: "LK_GONGMUJUZHONGLEITIPS", tips: "如：热流道注塑模" },
