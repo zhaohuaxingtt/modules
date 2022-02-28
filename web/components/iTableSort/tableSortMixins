@@ -1,0 +1,21 @@
+/*
+ * @Author: wentliao
+ * @Date: 2022-01-24 14:10:38
+ * @Description: 
+ */
+ export const tableSortMixins = {
+   data(){
+     return {}
+   },
+   methods:{
+    edittableHeader() {
+        this.$refs.tableList.settingVisible = true
+      },
+      handleResetSetting({data, done} = data) {
+        done(data)
+      },
+      handleSaveSetting({data, done} = data) {
+        done(data)
+      },
+   }
+ }

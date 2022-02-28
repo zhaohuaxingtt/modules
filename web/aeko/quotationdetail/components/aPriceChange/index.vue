@@ -1,9 +1,18 @@
 <template>
   <div class="aPriceChange">
     <iCard :title="language('BIANDONGZHI', '变动值')">
-      <template #header-control>
-        <iButton v-if="sourceApriceChange != apriceChange && !disabled && !editDisabled && !apriceChangeDisabled"  :loading="saveChangeLoading" @click="saveAPriceChange">{{ language("BAOCUN", "保存") }}</iButton>
+      <template #header>
+        <div class="title">
+          <span>{{ language("BIANDONGZHI", "变动值") }}</span>
+          <span class="tip margin-left12">{{ language("DANWEI", "单位") }}：RMB/Pc.</span>
+        </div>
+        <div class="header-control" v-if="!editDisabled">
+          <iButton v-if="sourceApriceChange != apriceChange && !disabled && !editDisabled && !apriceChangeDisabled"  :loading="saveChangeLoading" @click="saveAPriceChange">{{ language("BAOCUN", "保存") }}</iButton>
+        </div>
       </template>
+      <!-- <template #header-control>
+        <iButton v-if="sourceApriceChange != apriceChange && !disabled && !editDisabled && !apriceChangeDisabled"  :loading="saveChangeLoading" @click="saveAPriceChange">{{ language("BAOCUN", "保存") }}</iButton>
+      </template> -->
       <div class="aPriceChangeMode">
         <div class="margin-top20">
           <div class="input" v-permission.auto="AEKO_QUOTATION_CBD_INPUT_AJIABIANDONGHANFENTAN|A价变动_含分摊">
@@ -39,26 +48,28 @@
       </template>
       <div class="body" v-loading="loading">
         <div class="aPriceChangeModule" v-permission.auto="AEKO_QUOTATION_CBD_SELECT_CBDXUTIAOZHENGBUFEN|CBD需调整部分">
-          <span class="label">{{ language("CBDXUTIAOZHENGBUFEN", "CBD需调整部分") }}:</span>
-          <iSelect 
-            v-permission.auto="AEKO_QUOTATION_CBD_SELECT_CBDXUYAOTIAOZHENGBUFEN|CBD需调整部分"
-            multiple
-            v-model="modules"
-            :placeholder="language('QINGXUANZE','请选择')"
-            :disabled="disabled || cbdDisabled || editDisabled || !cbdCanEdit"
-            @change="handleChangeByModules">
-            <el-option
-              value=""
-              :label="language('ALL', '全部') | capitalizeFilter"
-            ></el-option>
-            <el-option
-              v-for="item in moduleOptions"
-              v-permission.dynamic.auto="item.permissionKey"
-              :key="item.value"
-              :label="`${ item.seq } ${ language(item.key, item.label) }`"
-              :value="item.value"
-            ></el-option>
-          </iSelect>
+          <div>
+            <span class="label">{{ language("CBDXUTIAOZHENGBUFEN", "CBD需调整部分") }}:</span>
+            <iSelect 
+              v-permission.auto="AEKO_QUOTATION_CBD_SELECT_CBDXUYAOTIAOZHENGBUFEN|CBD需调整部分"
+              multiple
+              v-model="modules"
+              :placeholder="language('QINGXUANZE','请选择')"
+              :disabled="disabled || cbdDisabled || editDisabled || !cbdCanEdit"
+              @change="handleChangeByModules">
+              <el-option
+                value=""
+                :label="language('ALL', '全部') | capitalizeFilter"
+              ></el-option>
+              <el-option
+                v-for="item in moduleOptions"
+                v-permission.dynamic.auto="item.permissionKey"
+                :key="item.value"
+                :label="`${ item.seq } ${ language(item.key, item.label) }`"
+                :value="item.value"
+              ></el-option>
+            </iSelect>
+          </div>
         </div>
         <cbdSummary class="margin-top20" v-model="cbdSummaryTableData" v-permission.auto="AEKO_QUOTATION_CBD_VIEW_BIANDONGZHICBDHUIZONG|变动值CBD汇总" @updateApriceChange="updateApriceChange" :isFetch="isFetch" @updateIsFetch="isFetch=$event" />
         <div v-if="!loading">
@@ -819,15 +830,15 @@ export default {
   .aPriceChangeMode {
     display: flex;
     align-items: center;
-    
+    width: 100%;
     .input {
       // margin-left: 50px;
-      width: 366px;
+      width: 100%;
       display: flex;
       align-items: center;
 
       .label {
-        width: 126px;
+        flex: 1;
         margin-right: 20px;
       }
 
@@ -888,10 +899,10 @@ export default {
     margin-top: 20px;
     display: flex;
     align-items: center;
-    width: 509px;
+    width: 100%;
 
     .label {
-      width: 123px;
+      flex: 1;
       margin-right: 20px;
     }
 
