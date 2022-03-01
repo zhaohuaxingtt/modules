@@ -16,7 +16,7 @@
 						: 'iconxunyuandingdianweixuanzhong'
 				"
 			/>
-			<span>{{ language(item.title, item.title) }}</span>
+			<span>{{ language(item.title) }}</span>
 			<icon
 				symbol
 				class="icon floatright margin-top32"
@@ -40,7 +40,7 @@
 						: 'iconxunyuandingdianweixuanzhong'
 				"
 			/>
-			<span>{{ language(item.title, item.title) }}</span>
+			<span>{{ language(item.title) }}</span>
 			<icon
 				symbol
 				class="icon floatright margin-top32"
@@ -90,6 +90,10 @@ export default {
 	},
 	methods: {
 		handleRouterClick() {
+			window.sessionStorage.setItem(
+				'seconedPerminssionKey',
+				this.item.permissionKey
+			)
 			this.$emit('hide-side-menu')
 		},
 	},
