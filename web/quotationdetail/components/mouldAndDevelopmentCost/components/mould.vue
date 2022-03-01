@@ -24,7 +24,7 @@
             <iButton @click="jump" v-if='whenCourcerLogin && !disabled'>{{ language('LK_TIAOZHUANZHIRFQMUJUBAOJIA', '跳转至RFQ模具报价') }}</iButton>
             <iButton @click="changeRelatingPartsVisible(true)" v-if="!disabled">{{ language('LK_GUANLIANLINGJIAN', '关联零件') }}</iButton>
             <!--------------在任何状态下，下载按钮可以被看见，供用户下载---------------->
-            <iButton v-if="!isSkd" @click="handleDownload">{{ language('LK_XIAZAIMUJUCBD', '下载模具CBD') }}</iButton>
+            <iButton v-if="!isSkd" @click="handleDownload(isSkd ? 'SKD' : 'LC')">{{ language('LK_XIAZAIMUJUCBD', '下载模具CBD') }}</iButton>
             <el-upload 
               v-if="!disabled && !isSkd"
               class="uploadBtn" 
@@ -284,12 +284,13 @@ export default {
     handleSelectionChange(list) {
       this.multipleSelection = list
     },
-    handleDownload() {
+    handleDownload(priceType) {
       cbdDownloadFile({
         rfqId: this.partInfo.rfqId,
         partNum: this.partInfo.partNum,
         round: this.partInfo.round,
-        supplierId: this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId
+        supplierId: this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId,
+        priceType
       })
     },
     handleAdd() {
