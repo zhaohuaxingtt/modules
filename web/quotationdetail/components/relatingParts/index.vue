@@ -111,7 +111,7 @@ export default {
         rfqId: this.partInfo.rfqId,
         current: currPage,
         size: pageSize,
-        supplierId: this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId
+        supplierId: (this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId) || this.supplierId
       }
       this.tableLoading = true
 
