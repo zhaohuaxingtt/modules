@@ -110,11 +110,11 @@ export default {
       }
 
       this.downloadLoading = true
-      await downloadBnkFile(this.multipleSelection.map(item => ({ ids: item.id })))
+      await downloadBnkFile(this.multipleSelection.map(item => ({ ids: item.id })), this.multipleSelection.length === 1 ? this.multipleSelection[0].fileTruename : "")
       this.downloadLoading = false
     },
     handlePreview(row) {
-      downloadBnkFile([{ ids: row.id }])
+      downloadBnkFile([{ ids: row.id }], row.fileTruename)
     },
     handleSizeChange(size) {
       this.page.currPage = 1
