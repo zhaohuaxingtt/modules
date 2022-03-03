@@ -1,5 +1,5 @@
 import iMessage from '../../iMessage'
-import getResCode from '@/resCode.js'
+import getResCode from '../../../resCode'
 export default {
 	computed: {
 		unCols() {

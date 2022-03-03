@@ -76,7 +76,7 @@ import iSearch from '../iSearch'
 import iInput from '../iInput'
 import iSelect from '../iSelect'
 import iPagination from '../iPagination'
-import getResCode from '@/resCode.js'
+import getResCode from '../../resCode'
 export default {
 	components: { iDialog, iSearch, iInput, iSelect, iPagination },
 	props: {

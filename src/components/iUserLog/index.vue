@@ -157,7 +157,7 @@ import iSearch from '../iSearch/index.vue'
 import iInput from '../iInput/index.vue'
 import iSelect from '../iSelect/index.vue'
 import iPagination from '../iPagination/index.vue'
-import getResCode from '@/resCode.js'
+import getResCode from '../../resCode'
 // import moment from 'moment';
 
 export default {

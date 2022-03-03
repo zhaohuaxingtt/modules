@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import getResCode from '@/resCode.js'
+import getResCode from '../../resCode'
 export default {
 	props: {
 		fileIds: {
