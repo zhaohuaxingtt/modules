@@ -1464,6 +1464,31 @@ export default{
       }
     },
 
+    forceComputeByL2() {
+      if (this.allTableData.level == 2) {
+        this.materialSummaryL2 = 0 // 头表原材料/散件
+        this.materialSummaryL2ByFalse = 0 // 原材料/散件 by SVW指定价格散件为否
+
+        this.allTableData.rawMaterial.records.forEach(item => {
+          this.materialSummaryL2 = math.add(this.materialSummaryL2, math.bignumber(item.materialCost || 0)) // 计算头表原材料/散件
+          this.materialSummaryL2ByFalse = item.isSvwAssignPriceParts ? this.materialSummaryL2ByFalse : math.add(this.materialSummaryL2ByFalse, math.bignumber(item.materialCost || 0))
+        })
+
+        this.$set(this.topTableData.tableData[0], "materialSummary", this.materialSummaryL2.toFixed(2))
+
+
+        this.laborCostSummaryL2 = 0 // 人工成本
+        this.deviceCostSummaryL2 = 0 // 设备成本
+
+        this.allTableData.makeCost.records.forEach(item => {
+          this.laborCostSummaryL2 = math.add(this.laborCostSummaryL2, math.bignumber(item.laborCost || 0)) // 计算人工成本
+          this.deviceCostSummaryL2 = math.add(this.deviceCostSummaryL2, math.bignumber(item.deviceCost || 0)) // 计算设备成本
+        })
+
+        this.$set(this.topTableData.tableData[0], "productionSummary", math.add(this.laborCostSummaryL2, this.deviceCostSummaryL2).toFixed(2))
+      }
+    },
+
     // L2计算
     handleInputByRawMaterialL2(value, row) {
       if (row) {
@@ -1510,6 +1535,8 @@ export default{
     },
 
     handleInputByDiscardCostL2(value, row) {
+      this.forceComputeByL2()
+
       if (row) {
         this.$set(row, "amount", math.evaluate(`(${ this.materialSummaryL2 || 0 } + ${ this.laborCostSummaryL2 || 0 } + ${ this.deviceCostSummaryL2 || 0 }) / (1 - (${ row.ratio || 0 } / 100)) - (${ this.materialSummaryL2 || 0 } + ${ this.laborCostSummaryL2 || 0 } + ${ this.deviceCostSummaryL2 || 0 })`).toFixed(2))
       }
@@ -1524,6 +1551,8 @@ export default{
     },
 
     handleInputByManageFeeL2(value, row) {
+      this.forceComputeByL2()
+
       this.$set(this.allTableData.manageFee[0], "amount", math.evaluate(`${ this.materialSummaryL2ByFalse || 0 } * (${ this.allTableData.manageFee[0].ratio || 0 } / 100)`).toFixed(2))
       this.$set(this.allTableData.manageFee[1], "amount", math.evaluate(`(${ math.add(this.laborCostSummaryL2, this.deviceCostSummaryL2) || 0 }) * (${ this.allTableData.manageFee[1].ratio || 0 } / 100)`).toFixed(2))
     
@@ -1531,6 +1560,8 @@ export default{
     },
 
     handleInputByProfitL2(value, row) {
+      this.forceComputeByL2()
+
       if (row) {
         this.$set(row, "amount", math.evaluate(`(${ row.ratio || 0 } / 100) * (${ math.add(this.laborCostSummaryL2, this.deviceCostSummaryL2) || 0 } + ${ this.materialSummaryL2ByFalse || 0 })`).toFixed(2))
       }
