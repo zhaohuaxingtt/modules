@@ -27,6 +27,7 @@
       @handleInput='handleInput'
       @handleAutocompleteSelect='handleAutocompleteSelect'
       @autocompleteSelect='autocompleteSelect'
+      @handleChangeByIsSvwAssignPriceParts="$emit('handleChangeByIsSvwAssignPriceParts')"
     ></tableList>
     <!------------------------------------------------------------------------>
     <!--                  表格分页                                          --->

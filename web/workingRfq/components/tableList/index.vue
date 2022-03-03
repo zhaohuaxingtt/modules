@@ -47,7 +47,7 @@
       <el-table-column :key="items.key" align='center' :width="items.width" :show-overflow-tooltip='items.tooltip' v-else-if='items.props == "isSvwAssignPriceParts"' :prop="items.props" :label="`${ items.seq ? items.seq + ' ' : '' }${ items.key ? (lang ? language(items.key, items.name) : $t(items.key)) : items.name }`">
         <template slot-scope="row">
           <span v-if='notEdit'>{{row.row[items.props]?"是":"否"}}</span>
-          <iSelect v-else v-model="row.row[items.props]">
+          <iSelect v-else v-model="row.row[items.props]" @change="$emit('handleChangeByIsSvwAssignPriceParts')">
             <el-option :value="options.value" v-for='(options,optionIndex) in items.options' :key='optionIndex' :label='options.label'></el-option>
           </iSelect>
         </template>

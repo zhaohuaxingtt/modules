@@ -48,7 +48,8 @@
         @handleSelectChange="handleSelectChangeByRawMaterial"
         @handleSelectionChange="handleSelectionChangeByRawMaterial"
         @handleInput="handleInputByRawMaterialL2"
-        @handleAutocompleteSelect="handleAutocompleteSelectByRawMaterial">
+        @handleAutocompleteSelect="handleAutocompleteSelectByRawMaterial"
+        @handleChangeByIsSvwAssignPriceParts="handleChangeByIsSvwAssignPriceParts">
         <template #header-control>
           <div v-if="!disabled && !isOriginprice">
             <iButton @click="handleAddByRawMaterial">{{ language("LK_TIANJIAHANG", "添加行") }}</iButton>
@@ -74,7 +75,8 @@
         @handleSelectChange="handleSelectChangeByRawMaterial"
         @handleSelectionChange="handleSelectionChangeByRawMaterial"
         @handleInput="handleInputByRawMaterialL3"
-        @handleAutocompleteSelect="handleAutocompleteSelectByRawMaterial">>
+        @handleAutocompleteSelect="handleAutocompleteSelectByRawMaterial"
+        @handleChangeByIsSvwAssignPriceParts="handleChangeByIsSvwAssignPriceParts">
         <template #header-control>
           <div v-if="!disabled && !isOriginprice">
             <iButton @click="handleAddByRawMaterial">{{ language("LK_TIANJIAHANG", "添加行") }}</iButton>
@@ -1451,9 +1453,6 @@ export default{
       if (this.allTableData.level == 2) {
         this.handleInputByRawMaterialL2()
         this.handleInputByMakeCostL2()
-        this.handleInputByDiscardCostL2()
-        this.handleInputByManageFeeL2()
-        this.handleInputByProfitL2()
       }
         
       if (this.allTableData.level == 3) {
@@ -1486,6 +1485,20 @@ export default{
         })
 
         this.$set(this.topTableData.tableData[0], "productionSummary", math.add(this.laborCostSummaryL2, this.deviceCostSummaryL2).toFixed(2))
+      }
+    },
+
+    handleChangeByIsSvwAssignPriceParts() {
+      if (this.allTableData.level == 2) {
+        this.handleInputByRawMaterialL2()
+        this.handleInputByMakeCostL2()
+      }
+      
+      if (this.allTableData.level == 3) {
+        this.handleInputByRawMaterialL3()
+        this.handleInputByMakeCostL3()
+        this.handleInputByManageFeeL3()
+        this.handleInputByProfitL3()
       }
     },
 
