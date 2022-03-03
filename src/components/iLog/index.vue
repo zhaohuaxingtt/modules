@@ -37,7 +37,7 @@
 			<el-table
 				:data="tableData"
 				style="width: 100%"
-				:class="{'log-table':!isPage}"
+				:class="{ 'log-table': !isPage }"
 				v-loading="loading"
 				default-expand-all
 			>
@@ -76,6 +76,7 @@ import iSearch from '../iSearch'
 import iInput from '../iInput'
 import iSelect from '../iSelect'
 import iPagination from '../iPagination'
+import getResCode from '@/resCode.js'
 export default {
 	components: { iDialog, iSearch, iInput, iSelect, iPagination },
 	props: {
@@ -205,6 +206,7 @@ export default {
 			const url = `${this.dicApiPrefix}/selectDictByKeys?keys=${key}`
 			http.open('GET', url, true)
 			http.setRequestHeader('content-type', 'application/json')
+			http.setRequestHeader('resCode', getResCode('/selectDictByKeys'))
 			http.onreadystatechange = () => {
 				if (http.readyState === 4) {
 					let data = JSON.parse(http.responseText)?.data || []
@@ -241,6 +243,10 @@ export default {
 			const url = `${this.bizLogApiPrefix}/operationLog/listOperation`
 			http.open('POST', url, true)
 			http.setRequestHeader('content-type', 'application/json')
+			http.setRequestHeader(
+				'resCode',
+				getResCode('/operationLog/listOperation')
+			)
 			http.onreadystatechange = () => {
 				if (http.readyState === 4) {
 					this.options = JSON.parse(http.responseText)?.data || []
@@ -251,13 +257,17 @@ export default {
 		getList() {
 			this.loading = true
 			const http = new XMLHttpRequest()
-			const url = `${this.bizLogApiPrefix}/operationLog/findRecordLogs`	// 接口调整，统一使用分页
+			const url = `${this.bizLogApiPrefix}/operationLog/findRecordLogs` // 接口调整，统一使用分页
 			// const url = `${this.bizLogApiPrefix}/operationLog/${
 			// 	this.isPage ? 'findOperaLogs' : 'listOperaLogs'
 			// }`
 
 			http.open('POST', url, true)
 			http.setRequestHeader('content-type', 'application/json')
+			http.setRequestHeader(
+				'resCode',
+				getResCode('/operationLog/findRecordLogs')
+			)
 			http.onreadystatechange = () => {
 				if (http.readyState === 4) {
 					this.loading = false

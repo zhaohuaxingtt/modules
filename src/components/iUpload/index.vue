@@ -12,7 +12,7 @@
 			:data="extraData"
 			:accept="
 				fileTypes
-					.map(type => {
+					.map((type) => {
 						return `.${type}`
 					})
 					.join(',')
@@ -34,13 +34,14 @@
 </template>
 
 <script>
+import getResCode from '@/resCode.js'
 export default {
 	props: {
 		fileIds: {
 			type: Array,
 			default: function() {
 				return []
-			}
+			},
 		},
 		extraData: {
 			type: Array,
@@ -49,9 +50,9 @@ export default {
 					applicationName: 'rise-dev',
 					type: '1',
 					businessId: '01',
-					isTemp: 0
+					isTemp: 0,
 				}
-			}
+			},
 		},
 		fileTypes: {
 			type: Array,
@@ -99,16 +100,17 @@ export default {
 					'jar',
 					'ceb',
 					'wps',
-					'ttf'
+					'ttf',
 				]
-			}
-		}
+			},
+		},
 	},
 	mounted() {
 		const http = new XMLHttpRequest()
 		const url = `/fileud/batchSelectByIds`
 		http.open('POST', url, true)
 		http.setRequestHeader('content-type', 'application/json')
+		http.setRequestHeader('resCode', getResCode('/fileud/batchSelectByIds'))
 		http.onreadystatechange = () => {
 			if (http.readyState === 4) {
 				console.log('http', JSON.parse(http.responseText))
@@ -122,7 +124,7 @@ export default {
 	data() {
 		return {
 			uploadURL: '/fileud/udSingleFile',
-			fileList: []
+			fileList: [],
 		}
 	},
 	methods: {
@@ -143,7 +145,7 @@ export default {
 		},
 		handelProgress(event, file, fileList) {
 			console.log('progress', event, file, fileList)
-		}
-	}
+		},
+	},
 }
 </script>

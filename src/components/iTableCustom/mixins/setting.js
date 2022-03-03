@@ -1,4 +1,5 @@
 import iMessage from '../../iMessage'
+import getResCode from '@/resCode.js'
 export default {
 	computed: {
 		unCols() {
@@ -90,6 +91,10 @@ export default {
 				http.open('POST', url, true)
 				http.setRequestHeader('content-type', 'application/json')
 				http.setRequestHeader('token', this.getCookie('token'))
+				http.setRequestHeader(
+					'resCode',
+					getResCode('/web/configUserListMemory')
+				)
 				http.onreadystatechange = (res) => {
 					if (http.readyState === 4 && http.status == 200) {
 						const response = JSON.parse(http.responseText)
@@ -125,6 +130,7 @@ export default {
 			http.open('POST', url, true)
 			http.setRequestHeader('content-type', 'application/json')
 			http.setRequestHeader('token', this.getCookie('token'))
+			http.setRequestHeader('resCode', getResCode('/web/getUserListMemory'))
 			http.onreadystatechange = () => {
 				if (http.readyState === 4 && http.status == 200) {
 					const response = JSON.parse(http.responseText).data
