@@ -55,8 +55,14 @@
 							clearable
 						/>
 					</el-form-item>
-					<el-form-item :label="language('')" v-if="recordShow" style="marginTop: 22px; line-height: 35px">
-						<el-checkbox v-model="query.isSee" :disabled="recordFlag">显示关键查看记录</el-checkbox>
+					<el-form-item
+						:label="language('')"
+						v-if="recordShow"
+						style="marginTop: 22px; line-height: 35px"
+					>
+						<el-checkbox v-model="query.isSee" :disabled="recordFlag"
+							>显示关键查看记录</el-checkbox
+						>
 					</el-form-item>
 				</el-form>
 			</i-search>
@@ -151,6 +157,7 @@ import iSearch from '../iSearch/index.vue'
 import iInput from '../iInput/index.vue'
 import iSelect from '../iSelect/index.vue'
 import iPagination from '../iPagination/index.vue'
+import getResCode from '../../resCode'
 // import moment from 'moment';
 
 export default {
@@ -336,6 +343,10 @@ export default {
 			const url = `${this.bizLogApiPrefix}/operationLog/listOperation`
 			http.open('POST', url, true)
 			http.setRequestHeader('content-type', 'application/json')
+			http.setRequestHeader(
+				'resCode',
+				getResCode('/operationLog/listOperation')
+			)
 			http.onreadystatechange = () => {
 				if (http.readyState === 4) {
 					this.options = JSON.parse(http.responseText)?.data || []
@@ -350,6 +361,10 @@ export default {
 
 			http.open('POST', url, true)
 			http.setRequestHeader('content-type', 'application/json')
+			http.setRequestHeader(
+				'resCode',
+				getResCode('/operationLog/findRecordLogs')
+			)
 			http.onreadystatechange = () => {
 				if (http.readyState === 4) {
 					if (this.isPage) {
@@ -432,7 +447,7 @@ export default {
 	border-color: transparent;
 	box-shadow: 0 0 0.1875rem rgb(0 38 98 / 15%);
 	align-items: baseline !important;
-	&.el-date-editor .el-range-separator{
+	&.el-date-editor .el-range-separator {
 		width: 26px;
 	}
 }
