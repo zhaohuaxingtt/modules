@@ -2,8 +2,15 @@ export default function getResCode(requestUrl) {
 	const url = getUrl(requestUrl)
 	let userName = ''
 	if (!userName) {
-		const userInfo = window.sessionStorage.getItem('userInfo') || {}
-		userName = userInfo?.userName || ''
+		const useInfo = window.sessionStorage.getItem('userInfo') || ''
+		if (useInfo) {
+			try {
+				const userInfo = JSON.parse(useInfo) || {}
+				userName = userInfo?.userName || ''
+			} catch (err) {
+				console.log(err)
+			}
+		}
 	}
 	if (userName && url) {
 		return toBase64([userName, url, ''].join('@@@'))
