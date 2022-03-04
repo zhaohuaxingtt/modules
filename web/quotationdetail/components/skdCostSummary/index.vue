@@ -225,10 +225,18 @@ export default {
             })) :
             []
 
-          this.computeSalesPrice("", "", this.tableListData[0])
           this.skdStartProductDate = res.data.skdStartProductDate
           this.currency = res.data.currency || "RMB"
           this.isAutoCal = res.data.isAutoCal
+          const quotationExt = res.data.quotationExt || {}
+
+          if (["overseasFactoryPrice", "overseasBnkPrice", "tariff", "domesticFreight", "manageSummary", "profitSummary", "otherSummary"].every(key => !res.data[key] && res.data[key] !== 0)) {
+            this.$set(this.tableListData[0], "totalPrice", quotationExt.skdAPrice || "0.00")
+            this.$set(this.tableListData[0], "salesPrice", quotationExt.skdBPrice || "0.00")
+            return
+          }
+
+          this.computeSalesPrice("", "", this.tableListData[0])
           this.handleChangeByCurrency()
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
