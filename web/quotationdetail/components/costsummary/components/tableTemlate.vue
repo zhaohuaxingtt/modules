@@ -12,7 +12,8 @@
     <template #header-control>
       <slot name='header-control'></slot>
     </template>
-    <tableList 
+    <tableList
+      lang
       :tableIndexString='tableIndexString'
       :tableData='tableData'
       :tableTitle="tableTile" 
@@ -21,9 +22,12 @@
       :selection='selection'
       :notEdit='notEdit'
       :filterProps="filterProps"
+      @handleSelectChange='handleSelectChange'
       @handleSelectionChange='handleSelectionChange'
       @handleInput='handleInput'
-      @handleInputByRate='handleInputByRate'
+      @handleAutocompleteSelect='handleAutocompleteSelect'
+      @autocompleteSelect='autocompleteSelect'
+      @handleChangeByIsSvwAssignPriceParts="$emit('handleChangeByIsSvwAssignPriceParts')"
     ></tableList>
     <!------------------------------------------------------------------------>
     <!--                  表格分页                                          --->
@@ -103,6 +107,12 @@ export default{
     handleInputByRate(value, row, key) {
       this.$emit("handleInputByRate", value, row, key)
     },
+    handleSelectChange(value, row, key) {
+      this.$emit("handleSelectChange", value, row, key)
+    },
+    handleAutocompleteSelect(value, row, key) {
+      this.$emit("handleAutocompleteSelect", value, row, key)
+    }
   }
 }
 </script>

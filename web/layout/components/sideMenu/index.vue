@@ -5,10 +5,15 @@
       v-for="(item, index) in menus"
       :key="index"
       :class="{ item: true, active: item.active }"
+      :parent-urls="parentUrls"
     >
       <item-link
         :item="item"
-        :menu-map="menuMap"
+        :isActive="
+          activeMenu &&
+          activeMenu.length > 1 &&
+          activeMenu[1] === item.permissionKey
+        "
         @hide-side-menu="$emit('hide-side-menu')"
       />
     </li>
@@ -25,16 +30,21 @@ export default {
       type: Array,
       default: () => []
     },
-    menuMap: {
-      type: Object,
-      default: function() {
+    activeMenu: {
+      type: Array,
+      default: function () {
         return []
       }
     }
   },
   computed: {
     menus() {
-      return this.sideMenus.filter(e => !e.hidden)
+      return this.sideMenus.filter((e) => !e.hidden)
+    }
+  },
+  data() {
+    return {
+      parentUrls: []
     }
   }
 }

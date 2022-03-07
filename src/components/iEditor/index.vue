@@ -13,12 +13,11 @@
 </template>
 
 <script>
-import Editor from 'wangeditor'
+import Editor from '/utils/wangEditor.min'
 
 // 校验valueType
 const validateValueType = function (valueType) {
-	if (typeof valueType === 'string') valueType = valueType.toLowerCase()
-	return ['html', 'text', 'json'].indexOf(valueType) > -1
+	return ['html', 'text', 'json'].includes(typeof valueType === 'string' ? valueType.toLowerCase() : valueType)
 }
 
 // menu

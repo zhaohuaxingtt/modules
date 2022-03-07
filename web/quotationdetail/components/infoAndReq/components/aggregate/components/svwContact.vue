@@ -9,10 +9,10 @@
 <template>
   <div class="svwContact">
     <div class="header">
-      <span class="title">{{ $t('LK_SHANGQIDAZHONGLIANXIREN') }}</span>
+      <span class="title">{{ language('LK_SHANGQIDAZHONGLIANXIREN', '上汽大众联系人') }}</span>
     </div>
     <div class="body margin-top30">
-      <tableList class="table" :selection="false" :tableData="data" :tableTitle="tableTitle" />
+      <tableList lang class="table" :selection="false" :tableData="data" :tableTitle="tableTitle" />
     </div>
   </div>
 </template>

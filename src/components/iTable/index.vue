@@ -11,13 +11,15 @@ TableBody.methods.handleClick = function(event, row) {
   // }
 
   const selectionColumn = this.table.columns.find(column => column.type === 'selection')
-  if (selectionColumn) {
+  // 判断点击是不是在输入框上
+  const isElInput = event.target && event.target.className === 'el-input__inner'
+  if (selectionColumn && !isElInput) {
     if ((typeof selectionColumn.selectable === "function" && selectionColumn.selectable(row, this.store.states.data.indexOf(row))) || !selectionColumn.selectable) {
       this.table.toggleRowSelection(row)
       this.table.$emit("select", (this.store.states.selection || []).slice(), row)
     }
   }
-
+  
   this.store.commit("setCurrentRow", row)
   this.handleEvent(event, row, "click")
 }

@@ -1,17 +1,17 @@
 <!--
  * @Author: ldh
  * @Date: 2021-04-22 12:34:50
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-09-07 15:58:35
+ * @LastEditors: Hao,Jiang
+ * @LastEditTime: 2021-11-11 15:02:08
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\tableList.vue
 -->
 <template>
-  <el-table ref="table" class="table" tooltip-effect="light" :height="height" :data="tableData" :cell-class-name="cellClassName" v-loading="tableLoading" @selection-change="handleSelectionChange" :empty-text="$t('LK_ZANWUSHUJU')">
-    <el-table-column v-if="selection" type="selection" width="40" align="center"></el-table-column>
-    <el-table-column v-if="index" type="index" align="center" :label="indexLabel"></el-table-column>
+  <el-table ref="table"   :class="singleSelect ? 'singleSelectTable' : ''"  tooltip-effect="light" :height="height" :data="tableData" :cell-class-name="cellClassName" v-loading="tableLoading" @selection-change="handleSelectionChange" :empty-text="language('ZANWUSHUJU', '暂无数据')" :span-method="spanMethod">
+    <el-table-column v-if="selection" type="selection" width="55" align="center"  :fixed="fixed"></el-table-column>
+    <el-table-column v-if="index" type="index" align="center" :label="indexLabel"  :fixed="fixed"></el-table-column>
     <template v-for="item in tableTitle">
-      <el-table-column :key="item.updateKey || item.props" align="center" :label="`${ item.seq ? item.seq + ' ' : '' }${ item.key ? (lang ? language(item.key, item.name) : $t(item.key)) : item.name }`" :prop="item.props" :show-overflow-tooltip="item.tooltip" :width="item.width" :min-width="item.minWidth" :render-header="item.renderHeader">
+      <el-table-column :key="item.updateKey || item.props" align="center" :label="`${ item.seq ? item.seq + ' ' : '' }${ item.key ? (lang ? language(item.key, item.name) : $t(item.key)) : item.name }`" :prop="item.props" :show-overflow-tooltip="item.tooltip" :width="item.width" :min-width="item.minWidth" :render-header="item.renderHeader" :fixed="item.fixed">
         <template v-if="$scopedSlots[item.props] || $slots[item.props]" v-slot="scope">
           <slot :name="item.props" v-bind="scope" ></slot>
           <!-- :\$index="scope.$index" :row="scope.row" -->
@@ -75,7 +75,12 @@ export default {
     lang: {
       type: Boolean,
       default: false
-    }
+    },
+    fixed: {
+      type: Boolean,
+      default: false
+    },
+    spanMethod: { type: Function },
   },
   methods: {
     handleSelectionChange(list){
@@ -93,5 +98,11 @@ export default {
 }
 .require {
   color: red;
+}
+
+.singleSelectTable {
+  ::v-deep .el-table__header-wrapper .el-checkbox {
+    display: none;
+  }
 }
 </style>

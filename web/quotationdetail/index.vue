@@ -2,14 +2,14 @@
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-09-27 17:39:57
+ * @LastEditTime: 2021-12-14 21:58:58
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
 <template> 
   <iPage class="quotation">
     <div class="margin-bottom20 clearFloat">
-      <span v-if="!fix" class="font18 font-weight">{{ $t('LK_QIEHUANLINGJIAN') }}：</span>
+      <span v-if="!fix" class="font18 font-weight">{{ language('LK_QIEHUANLINGJIAN', '切换零件') }}：</span>
       <!---------------------------------------无论任何情况下，就算是查看详情，也可以切换其他零件-------------------->
       <iSelect class="part" popper-class="partSelect" v-model="fsNum" placeholder="" @change="handlePartChange">
         <el-option
@@ -27,20 +27,27 @@
       <!-------------采购员界面跳转过来的时候，如果出现当前供应商还未接受报价情况----------------->
       <div class="floatright" v-if='acceptQuotation'>
         <div v-if='!acceptQuotationDisabled'>
-          <iButton @click="agreePrice">接受报价</iButton>
-          <iButton @click="rejectPrice">拒绝报价</iButton>
+          <iButton @click="agreePrice" v-permission.auto="QUOTATIONDETAIL_ACCEPTQUOTATIONBTN|报价详情-接受报价按钮">{{ language('JIESHOUBAOJIA', '接受报价') }}</iButton>
+          <iButton @click="rejectPrice" v-permission.auto="QUOTATIONDETAIL_REJECTQUOTATIONBTN|报价详情-拒绝报价按钮">{{ language('JUJUEBAOJIA', '拒绝报价') }}</iButton>
         </div>
       </div>
       <div class="floatright" v-else>
         <span v-if="agentQutation" class="margin-right10">
-          <iButton v-if="!disabled && !isSteel && agentQutationDisabled" @click="handleAgentQutation">{{ $t("LK_DAIGONGYINGSHANGBAOJIA") }}</iButton>
-          <iButton v-if="!disabled && !agentQutationDisabled" @click="handleCancelQutation">{{ $t("LK_QUXIAO") }}</iButton>
+          <iButton v-if="!disabled && !isSteel && agentQutationDisabled" @click="handleAgentQutation" v-permission.auto="QUOTATIONDETAIL_AGENTQUOTATIONBTN|报价详情-代供应商报价按钮">{{ language("LK_DAIGONGYINGSHANGBAOJIA", "代供应商报价") }}</iButton>
+          <iButton v-if="!disabled && !agentQutationDisabled" @click="handleCancelQutation">{{ language("LK_QUXIAO", "取消") }}</iButton>
         </span>
-        <span v-if="!agentQutationDisabled">
-          <iButton v-if="!partInfo.isOriginprice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="quoteBatchPriceLoading" @click="handleQuoteBatchPrice">{{ $t("LK_YINYONGPILIANGJIAGE") }}</iButton>
-          <iButton v-if="partInfo.isOriginprice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="cancelQuoteBatchPriceLoading" @click="handleCancelBatchPrice">{{ $t("LK_QUXIAOPILIANGJIAGE") }}</iButton>
-          <iButton @click="handleSave" v-if="currentTab != 'infoAndReq' && !disabled" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
-          <iButton @click="handleSubmit" v-if="!disabled" :loading="submitLoading">{{ $t('LK_TIJIAO') }}</iButton>
+        <span class="btns" v-if="!agentQutationDisabled">
+          <iButton v-if="!partInfo.isOriginprice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="quoteBatchPriceLoading" @click="handleQuoteBatchPrice">{{ language("LK_YINYONGPILIANGJIAGE", "引用批量价格") }}</iButton>
+          <iButton v-if="partInfo.isOriginprice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="cancelQuoteBatchPriceLoading" @click="handleCancelBatchPrice">{{ language("LK_QUXIAOPILIANGJIAGE", "取消批量价格") }}</iButton>
+          <span class="saveBtn">
+            <span v-if="currentTab == 'packAndShip'">
+              <iButton @click="handleSave" v-if="!hidePackAndShipSave && !disabled" :loading="saveLoading">{{ language('BAOCUN', '保存') }}</iButton>
+            </span>
+            <span v-else>
+              <iButton @click="handleSave" v-if="currentTab != 'infoAndReq' && !disabled" :loading="saveLoading">{{ language('BAOCUN', '保存') }}</iButton>
+            </span>
+          </span>
+          <iButton @click="handleSubmit" v-if="!disabled" :loading="submitLoading">{{ language('TIJIAO', '提交') }}</iButton>
         </span>
         <logButton class="margin-left20" @click="log" />
         <span class="margin-left20">
@@ -48,23 +55,37 @@
 				</span>
       </div>
     </div>
-    <iCard class="info" :title="$t('LK_JICHUXINXI')" collapse v-loading="partInfoLoading">
+    <iCard class="info" :title="language('LK_JICHUXINXI', '基础信息')" collapse v-loading="partInfoLoading">
       <iFormGroup :key="$index" :row="4" inline>
-        <iFormItem v-for="item in partInfoItems.slice(0, partInfoItems.length - 1)" :key="item.props" :label="$t(item.key)">
+        <iFormItem v-for="item in partInfoItems.slice(0, partInfoItems.length - 1)" :key="item.props" :label="language(item.key, item.name)">
           <iText v-if="item.props === 'submitDate' || item.props === 'currentRoundsEndTime'">{{ partInfo[item.props] | dateFilter }}</iText>
+          <el-popover
+            v-else-if="item.props === 'referenceRate'"
+            placement="top"
+            width="300"
+            trigger="hover"
+            :disabled="!exchangeRates.length">
+            <template>
+              <div>
+                <p v-for="exchangeRate in exchangeRates" :key="exchangeRate.currencyCode">{{ exchangeRateProcess(exchangeRate) }}</p>
+              </div>
+            </template>
+            <iText slot="reference">{{ exchangeRates.map(item => `${ item.currencyCode }:${ item.originCurrencyCode } = ${ item.exchangeRate }`).join(", ") }}</iText>
+          </el-popover>
+          <iText v-else-if="item.props === 'cartypes'">{{ Array.isArray(partInfo[item.props]) ? partInfo[item.props].map(item => item.name).join(",") : "" }}</iText>
           <iText v-else>{{ partInfo[item.props] }}</iText>
         </iFormItem>
       </iFormGroup>
       <iFormGroup :key="$index" :row="1" inline>
-        <iFormItem :key="partInfoItems[partInfoItems.length - 1].props" :label="$t(partInfoItems[partInfoItems.length - 1].key)">
+        <iFormItem :key="partInfoItems[partInfoItems.length - 1].props" :label="language(partInfoItems[partInfoItems.length - 1].key, partInfoItems[partInfoItems.length - 1].name)">
           <iText>{{ partInfo[partInfoItems[partInfoItems.length - 1].props] }}</iText>
         </iFormItem>
       </iFormGroup>
     </iCard>
     <div id="tabList" v-loading="tabLoading">
       <iTabsList class="margin-top20" type="card" v-model="currentTab" :before-leave="tabLeaveBefore" @tab-click="tabChange">
-        <el-tab-pane v-for="(tab, $tabIndex) in trueTabs" :key="$tabIndex" :label="$t(tab.key)" :name="tab.name">
-          <component :ref="tab.name" :is="component" :partInfo="partInfo" v-for="(component, $componentIndex) in tab.components" :class="$componentIndex !== 0 ? 'margin-top20' : ''" :key="$componentIndex" :disabled="disabled || agentQutationDisabled" :isOriginprice="partInfo.isOriginprice" :isSteel="isSteel" :isDb="isDb" @changeReduceStatus="changeReduceStatus"/>
+        <el-tab-pane v-for="(tab, $tabIndex) in trueTabs" :key="$tabIndex" :label="language(tab.key, tab.label)" :name="tab.name">
+          <component :ref="tab.name" :is="component" :partInfo="partInfo" v-for="(component, $componentIndex) in tab.components" :class="$componentIndex !== 0 ? 'margin-top20' : ''" :key="$componentIndex" :disabled="disabled || agentQutationDisabled" :isOriginprice="partInfo.isOriginprice" :isSteel="isSteel" :isDb="isDb" :roundIsOnlineBidding='roundIsOnlineBidding' @changeReduceStatus="changeReduceStatus" @hidePackAndShipSave="hidePackAndShipSave = true"/>
         </el-tab-pane>
       </iTabsList>
     </div>
@@ -81,6 +102,7 @@
       </span>
     </iDialog>
     <startProductionDateDialog :visible.sync="startProductionDateDialogVisible" @confirm="confirmQuoteBatchPrice" />
+    <onlineBiddingDialog :show='show' :tabelData='biddingData'></onlineBiddingDialog>
   </iPage>
 </template>
 
@@ -100,13 +122,14 @@ import sampleDeliveryProgress from './components/sampleDeliveryProgress'
 import remarksAndAttachment from './components/remarksAndAttachment'
 import startProductionDateDialog from "./components/startProductionDateDialog"
 
-import { getPartsQuotations, getStates, submitPartsQuotation, quoteBatchPrice, cancelQuoteBatchPrice, quotations } from "@/api/rfqManageMent/quotationdetail"
+import { getPartsQuotations, getStates, submitPartsQuotation, quoteBatchPrice, cancelQuoteBatchPrice, quotations,contrastBidding,getNoticeStatus, searchQuotationExchange } from "@/api/rfqManageMent/quotationdetail"
 import { cloneDeep } from "lodash"
 import {partProjTypes} from '@/config'
+import {roundsType} from 'rise/web/config'
 import { getEnumValue as $enum } from "rise/web/config"
 import { getNominateDisabled } from "rise/web/common"
 import { priceStatusMixin } from "./components/mixins"
-
+import onlineBiddingDialog from 'rise/web/quotationdetail/components/dialogBidding'
 export default {
   components: { 
     iPage, 
@@ -130,7 +153,8 @@ export default {
     remarksAndAttachment,
     iInput,
     iDialog,
-    startProductionDateDialog
+    startProductionDateDialog,
+    onlineBiddingDialog
   },
   mixins: [ filters, priceStatusMixin ],
   data() {
@@ -140,7 +164,7 @@ export default {
       fsNum: "",
       partNum: "",
       parts: [],
-      partInfoItems,
+      partInfoItems:partInfoItems('modelNameZh'),
       currentTab: "infoAndReq",
       tabs: [
         { label: "信息与要求", name: "infoAndReq", key: "LK_XINXIYUYAOQIU", components: [ "infoAndReq" ] },
@@ -180,11 +204,20 @@ export default {
       acceptQuotationDisabled: true, // 是否禁用等待接收报价
       agentQutation: false, // 代报价
       agentQutationDisabled: true, // 是否禁用代报价
+
+      show:{show:false},
+      biddingData:{
+        tableTitle:[],
+        tabelData:[]
+      },
+      hidePackAndShipSave: false,
+      exchangeRates: []
     }
   },
   provide: function () {
     return {
-      updateCbdLevel: this.updateCbdLevel
+      updateCbdLevel: this.updateCbdLevel,
+      jjys:this.roundIsOnlineBidding
     }
   },
   computed: {
@@ -194,19 +227,27 @@ export default {
     }),
     trueTabs() {
       // Sprint10新增：供应商配件与附件的包装运输页面移除，报价成本汇总页面能够直接填写[原材料/散件成本][制造成本][报废成本][管理费][利润][包装费][运输费][操作费]，起步生产日期不做默认值，L2层级的[包装费][运输费][操作费]也是直接填写
-      if (this.partInfo.partProjectType === partProjTypes.PEIJIAN || this.partInfo.partProjectType === partProjTypes.FUJIAN) {
-        return this.tabs.filter(item => item.name !== 'packAndShip')
-      }
+      // if (this.partInfo.partProjectType === partProjTypes.PEIJIAN || this.partInfo.partProjectType === partProjTypes.FUJIAN) {
+      //   return this.tabs.filter(item => item.name !== 'packAndShip')
+      // } // 12/6 需要显示包装运输
       // Sprint11新增(US:CRW1-1591)：若某一零件的零件项目类型为[DB零件]，或是[一次性采购]且是DB零件，则在我的报价成本汇总页面，我可以看到DB零件的特殊页面
       // DB的报价单共有7个页签，分别是信息与要求，报价分析，降价计划，包装运输，送样进度，工装样件，报价附件与说明。
-      if (this.partInfo.partProjectType === partProjTypes.DBLINGJIAN || this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU) {
+      if (this.partInfo.partProjectType === partProjTypes.DBLINGJIAN || this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || this.partInfo.priceStatus == "DB") {
         const tabNames = ['infoAndReq','costsummary','packAndShip','reducePlan','sampleDeliveryProgress','sample','remarksAndAttachment']
         return this.tabs.filter(item => tabNames.includes(item.name))
       }
       return this.tabs
     },
+    /**
+     * @description: 判断当前的RFq类型是否是钢材 / 轮次类型是否是在线竞价 
+     * @param {*}
+     * @return {*}
+     */
     isSteel() {
-      return this.partInfo.partProjectType === partProjTypes.GANGCAIPILIANGCAIGOU || this.partInfo.partProjectType === partProjTypes.GANGCAIYICIXINGCAIGOU
+      return this.partInfo.partProjectType === partProjTypes.GANGCAIPILIANGCAIGOU || this.partInfo.partProjectType === partProjTypes.GANGCAIYICIXINGCAIGOU 
+    },
+    roundIsOnlineBidding(){
+      return this.partInfo.roundsType == roundsType.zxjjys
     }
   },
   watch: {
@@ -252,8 +293,72 @@ export default {
     // }});
   },
   methods: {
-    rejectPrice(){
-      this.dialogVisible = true
+    updateOnlineBiddingDialog(res){
+      // contrastBidding(this.partInfo.quotationId).then(res=>{
+      //   if(res.data && res.data.length > 0){
+      //     this.show.show = true
+      //     this.biddingData = this.translateDataBidding(res.data)
+      //   }
+      // }).catch(err=>{})
+      if(res && res.data && res.data.length > 0){
+          this.show.show = true
+          this.biddingData = this.translateDataBidding(res.data)
+      }
+    },
+    translateDataBidding(list){
+     try {
+      const tableTitle = []
+      let tabelData = {}
+      tabelData['items'] = {
+            quotation:'当前报价',
+            bidding:'竞价结果',
+            result:'差距百分比',
+            isColor:false,
+      }
+      list.forEach((r,indexs)=>{
+        tabelData['items'+indexs] = r
+        tableTitle.push({props:'items'+indexs,name:r.typeDesc})
+      })
+      return {
+        tableTitle:[...[{props:'items',name:''}],...tableTitle],
+        tabelData:[
+          tabelData,
+          tabelData,
+          tabelData
+        ]
+      }
+     } catch (error) {
+       console.log(error)
+       return {
+         tableTitle:[],
+         tabelData:[]
+       }
+     }
+    },
+    getNoticeStatus() {
+      this.agentQutationLoading = true
+
+      return new Promise(resolve => {
+        getNoticeStatus({
+          supplierId: this.supplierId,
+          type: "RFQ" // 该字段必传，但是这个把RFQ和CARBON的状态都返回了，所以这个接口只用调一次
+        })
+        .then(res => {
+          if (res.code == 200) {
+            // rfqStatus 询价承诺书状态  carbonStatus 可再生能源使用承诺书状态
+            if (!+res.data.rfqStatus) { // 0 拒绝  1同意 
+              iMessage.warn(this.language("GONGYINGSHANGWEIQIANSHUXUNJIACHENGNUOSHU", "供应商未签署《询价承诺书》，不可代报价"))
+              resolve(false)
+            } else {
+              resolve(true)
+            }
+          } else {
+            iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+            resolve(false)
+          }
+        })
+        .finally(() => this.agentQutationLoading = false)
+      })
     },
     /**
      * @description: 确认拒接按钮 
@@ -272,8 +377,17 @@ export default {
      * @param {*}
      * @return {*}
      */
-    agreePrice() {
+    async agreePrice() {
+      const status = await this.getNoticeStatus()
+      if (!status) return
+      
       this.updateQuotations(1)
+    },
+    async rejectPrice() {
+      // const status = await this.getNoticeStatus()
+      // if (!status) return
+
+      this.dialogVisible = true
     },
        /**
      * @description: 签收拒绝 
@@ -314,6 +428,8 @@ export default {
       .then(res => {
         if (res.code == 200) {
           let currentPart = {}
+          res.data[0].cartypes === null?this.partInfoItems = partInfoItems('modelNameZh'):this.partInfoItems = partInfoItems('cartypes')
+          // res.data[0].cartypes !== null? res.data[0].cartypes = res.data[0].cartypes.map(val=>val.name).join(','):''
           this.parts = 
             Array.isArray(res.data) ? 
             res.data.map(item => {
@@ -333,6 +449,7 @@ export default {
           this.partInfo = cloneDeep(currentPart)
 
           this.getStates().then(()=>{r()})
+          this.searchQuotationExchange()
 
           if (type != "save") {
             this.$nextTick(() => {
@@ -346,7 +463,7 @@ export default {
             })
           }
 
-          if(this.partInfo.partProjectType == '1000009'){
+          if(this.partInfo.partProjectType == partProjTypes.DBLINGJIAN || this.partInfo.priceStatus == "DB"){
             this.isDb = true
           }
         } else {
@@ -445,8 +562,10 @@ export default {
       this.saveLoading = true
 
       try {
-        await component.save(type)
+        const res = await component.save(type)
+        this.updateOnlineBiddingDialog(res)
         this.getPartsQuotations("save")
+        return res
       } finally {
         this.saveLoading = false
       }
@@ -466,7 +585,8 @@ export default {
       //   this.saveLoading = false
       // }
     },
-    handlePartChange(partNum) {
+    async handlePartChange(partNum) {
+      await this.getPartsQuotations()
       const part = this.parts.filter(item => item.value === partNum)[0]
       this.partInfo = cloneDeep(part)
       this.partNum = partNum
@@ -477,8 +597,8 @@ export default {
         //   if (typeof component.init === "function") component.init()
         // })
 
-        const component = this.$refs[this.currentTab][0]
-        if (typeof component.init === "function") component.init("redraw")
+        // const component = this.$refs[this.currentTab][0]
+        // if (typeof component.init === "function") component.init("redraw")
       })
       
       this.getStates()
@@ -486,7 +606,6 @@ export default {
     // 提交
     async handleSubmit() {
       this.submitLoading = true
-
       try {
         if (this.$refs[this.currentTab][0] && typeof this.$refs[this.currentTab][0].save === "function") {
           await this.handleSave("submit")
@@ -501,6 +620,7 @@ export default {
         .then(res => {
           if (res.code == 200) {
             iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+            this.updateOnlineBiddingDialog(res)
             this.getPartsQuotations()
           } else {
             iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
@@ -590,6 +710,24 @@ export default {
         }
       })
       .finally(() => this.cancelQuoteBatchPriceLoading = false)
+    },
+    // 获取汇率显示列表
+    searchQuotationExchange() {
+      searchQuotationExchange({
+        quotationId: this.partInfo.quotationId
+      })
+      .then(res => {
+        if (res.code == 200) {
+          this.exchangeRates = Array.isArray(res.data) ? res.data : []
+          console.log()
+        } else {
+          iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+        }
+      })
+    },
+    // 汇率显示处理
+    exchangeRateProcess(row) {
+      return `100${ row.currencyCode } = ${ math.multiply(math.bignumber(row.exchangeRate || 0), 100).toString() }${ row.originCurrencyCode }（${ row.exchangeRate }）`
     }
   }
 };
@@ -638,6 +776,19 @@ export default {
     right: -10px;
     width: 20px;
     height: 20px;
+  }
+
+  
+  .btns {
+    button {
+      margin-right: 10px;
+    }
+
+    .saveBtn {
+      & + button {
+        margin-right: 10px;
+      }
+    }
   }
 }
 

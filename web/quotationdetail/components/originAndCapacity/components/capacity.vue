@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-22 15:49:47
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-07-12 19:25:01
+ * @LastEditTime: 2021-11-10 17:08:51
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\originAndCapacity\components\capacity.vue
 -->
@@ -12,19 +12,19 @@
       <template #header>
         <div class="header">
           <div>
-            <span class="title">{{ $t('LK_SHENGCHANNENGLI') }}</span>
-            <span class="tip margin-left10">{{ $t('LK_SHENGCHANNENGLITIPS') }}</span>
+            <span class="title">{{ language('LK_SHENGCHANNENGLI', '生产能力') }}</span>
+            <span class="tip margin-left10">{{ language('LK_SHENGCHANNENGLITIPS', '上汽大众产能信息: 供应商针对此次询价车型承诺给上汽大众的产能') }}</span>
           </div>
           <div v-if="!disabled" class="control">
-            <iButton @click="handleAdd">{{ $t('LK_TIANJIAHANG') }}</iButton>
-            <iButton @click="handleDel">{{ $t('LK_SHANCHUHANG') }}</iButton>
+            <iButton @click="handleAdd">{{ language('LK_TIANJIAHANG', '添加行') }}</iButton>
+            <iButton @click="handleDel">{{ language('LK_SHANCHUHANG', '删除行') }}</iButton>
           </div>
         </div>
       </template>
       <div>
-        <tableList class="table" index :tableData="tableListData" :tableTitle="tableTitle" @handleSelectionChange="handleSelectionChange">
+        <tableList lang class="table" index :tableData="tableListData" :tableTitle="tableTitle" @handleSelectionChange="handleSelectionChange">
           <template #leadTime="scope">
-            <el-input v-if="!disabled" v-model="scope.row.leadTime"></el-input>
+            <el-input v-if="!disabled" v-model="scope.row.leadTime" maxlength="8"></el-input>
             <span v-else>{{ scope.row.leadTime }}</span>
           </template>
           <template #workDayWeek="scope">
@@ -32,15 +32,15 @@
             <span v-else>{{ scope.row.workDayWeek }}</span>
           </template>
           <template #weekDailyShift="scope">
-            <el-input v-if="!disabled" v-model="scope.row.weekDailyShift"></el-input>
+            <el-input v-if="!disabled" v-model="scope.row.weekDailyShift" maxlength="8"></el-input>
             <span v-else>{{ scope.row.weekDailyShift }}</span>
           </template>
           <template #weekManufactureCapability="scope">
-            <el-input v-if="!disabled" v-model="scope.row.weekManufactureCapability"></el-input>
+            <el-input v-if="!disabled" v-model="scope.row.weekManufactureCapability" maxlength="8"></el-input>
             <span v-else>{{ scope.row.weekManufactureCapability }}</span>
           </template>
           <template #maxWeekManufactureCapability="scope">
-            <el-input v-if="!disabled" v-model="scope.row.maxWeekManufactureCapability"></el-input>
+            <el-input v-if="!disabled" v-model="scope.row.maxWeekManufactureCapability" maxlength="8"></el-input>
             <span v-else>{{ scope.row.maxWeekManufactureCapability }}</span>
           </template>
           <template #maxWorkDayYear="scope">
@@ -75,14 +75,14 @@
           </template>
         </tableList>
         <div class="tip margin-top30">
-          <p>1. {{ $t('LK_CAPACITYTIPS_1') }}</p>
-          <p>2. {{ $t('LK_CAPACITYTIPS_2') }}</p>
-          <p>3. {{ $t('LK_CAPACITYTIPS_3') }}</p>
-          <p>4. {{ $t('LK_CAPACITYTIPS_4') }}</p>
-          <p>5. {{ $t('LK_CAPACITYTIPS_5') }}</p>
-          <p>6. {{ $t('LK_CAPACITYTIPS_6') }}</p>
-          <p>7. {{ $t('LK_CAPACITYTIPS_7') }}</p>
-          <p>8. {{ $t('LK_CAPACITYTIPS_8') }}</p>
+          <p>1. {{ language('LK_CAPACITYTIPS_1', '提前准备周期：以周为单位，是从当前加工工厂的能力水平出发，要提高到周最大产能所需要的时间(包括物料准备、人员准备等)。如果能力随时可以立即达到最大能力则此处填0；') }}</p>
+          <p>2. {{ language('LK_CAPACITYTIPS_2', '每周工作天数：是指周正常产能条件下，每周的工作日，一般为5天；') }}</p>
+          <p>3. {{ language('LK_CAPACITYTIPS_3', '每周班数：是指周正常产能条件下，基于每周工作天数的每天班数；') }}</p>
+          <p>4. {{ language('LK_CAPACITYTIPS_4', '周正常产能：正常工作班数和正常工作天数条件下，每周生产的零件数量，单位为件，请不要填写日能力或者年能力。要求周正常产能50周应不小于询价峰值年产量；') }}</p>
+          <p>5. {{ language('LK_CAPACITYTIPS_5', '周最大产能：通过增加班数或者每周工作日天数等措施，每周最大生产的零件数量，单位为件，请不要填写日能力或者年能力，周最大产能要求至少达到周正常产能+15%；') }}</p>
+          <p>6. {{ language('LK_CAPACITYTIPS_6', '年最大工作天数：是指最大产能条件下，每年的最大工作天数，单位为天；') }}</p>
+          <p>7. {{ language('LK_CAPACITYTIPS_7', '起始周：从何年何周起具备所填写的产能，可根据情况填写多条产能数据，但各条产能数据的时间需要连续，输入时间的时间格式必须为“yyyyww”六位，比如“201101”；') }}</p>
+          <p>8. {{ language('LK_CAPACITYTIPS_8', '截止周：到何年何周为止具备所填写的产能。最后一条产能数据的截至周必须为空。输入的时间格式必须为“yyyyww”六位，比如“201101”；') }}</p>
         </div>
       </div>
     </iCard>
@@ -158,37 +158,39 @@ export default {
       this.tableListData.push({})
     },
     handleDel() {
+      if (!this.multipleSelection.length) return iMessage.warn(this.language("QINGXUANZEXUYAOSHANCHUDEHANGSHUJU", "请选择需要删除的行数据"))
+
       this.tableListData = this.tableListData.filter(item => !this.multipleSelection.includes(item))
     },
     async validateForm() {
       this.tableListData.forEach((item, index) => {
-        if (!item.leadTime) throw this.$t("LK_TIQIANZHUNBEIQIZHOUBUNENGWEIKONG")
-        if (!item.workDayWeek) throw this.$t("LK_MEIZHOUGONGZUOTIANSHUBUNENGWEIKONG")
-        if (!item.weekDailyShift) throw this.$t("LK_MEITIANBANSHUBUNENGWEIKONG")
-        if (!item.weekManufactureCapability) throw this.$t("LK_ZHOUZHENGCHANGCHANNENGBUNENGWEIKONG")
-        if (!item.maxWeekManufactureCapability) throw this.$t("LK_ZHOUZUIDACHANNENGBUNENGWEIKONG")
-        if (!item.maxWorkDayYear) throw this.$t("LK_NIANZUIDAGONGZUOTIANSHUBUNENGWEIKONG")
-        if (!item.startWeek) throw this.$t("LK_QISHIZHOUBUNENGWEIKONG")
+        if (!item.leadTime) throw this.language("LK_TIQIANZHUNBEIQIZHOUBUNENGWEIKONG", "提前准备期(周)不能为空")
+        if (!item.workDayWeek) throw this.language("LK_MEIZHOUGONGZUOTIANSHUBUNENGWEIKONG", "每周工作天数不能为空")
+        if (!item.weekDailyShift) throw this.language("LK_MEITIANBANSHUBUNENGWEIKONG", "每天班数不能为空")
+        if (!item.weekManufactureCapability) throw this.language("LK_ZHOUZHENGCHANGCHANNENGBUNENGWEIKONG", "周正常产能不能为空")
+        if (!item.maxWeekManufactureCapability) throw this.language("LK_ZHOUZUIDACHANNENGBUNENGWEIKONG", "周最大产能不能为空")
+        if (!item.maxWorkDayYear) throw this.language("LK_NIANZUIDAGONGZUOTIANSHUBUNENGWEIKONG", "年最大工作天数不能为空")
+        if (!item.startWeek) throw this.language("LK_QISHIZHOUBUNENGWEIKONG", "起始周不能为空")
 
         if (index !== this.tableListData.length - 1 && !item.endWeek) {
-          throw this.$t("LK_FEIZUIHOUYIHANGJIEZHIZHOUBUNENGWEIKONG")
+          throw this.language("LK_FEIZUIHOUYIHANGJIEZHIZHOUBUNENGWEIKONG", "非最后一行截止周不能为空")
         }
         
         if (index === this.tableListData.length - 1 && item.endWeek) {
-          throw this.$t("LK_ZUIHOUYITIAOCHANNENGSHUJUDEJIEZHIZHOUBIXUWEIKONG")
+          throw this.language("LK_ZUIHOUYITIAOCHANNENGSHUJUDEJIEZHIZHOUBIXUWEIKONG", "最后一条产能数据的截至周必须为空")
         }
         
         if (item.endWeek) {
           // eslint-disable-next-line no-undef
-          if (+moment(item.endWeek) < +moment(item.startWeek)) throw this.$t("LK_JIEZHIZHOUBUNENGXIAOYUQISHIZHOU")
+          if (+moment(item.endWeek) < +moment(item.startWeek)) throw this.language("LK_JIEZHIZHOUBUNENGXIAOYUQISHIZHOU", "截止周不能小于起始周")
         }
 
         if (index !== 0) {
           if (+moment(item.startWeek) < +moment(this.tableListData[index - 1].endWeek)) {
             if (this.$i18n.locale === "zh") {
-              throw `第${ index + 1 }行 ${ this.$t("LK_QISHIZHOU") }${ this.$t("LK_BUNENGXIAOYU") } 第${ index }行 ${ this.$t("LK_JIEZHIZHOU") }`
+              throw `第${ index + 1 }行 ${ this.language("LK_QISHIZHOU", "起始周") }${ this.language("LK_BUNENGXIAOYU", "不能小于") } 第${ index }行 ${ this.language("LK_JIEZHIZHOU", "截止周") }`
             } else {
-              throw `Line: ${ index + 1 } ${ this.$t("LK_QISHIZHOU") }${ this.$t("LK_BUNENGXIAOYU") } Line: ${ index } ${ this.$t("LK_JIEZHIZHOU") }`
+              throw `Line: ${ index + 1 } ${ this.language("LK_QISHIZHOU", "起始周") }${ this.language("LK_BUNENGXIAOYU", "不能小于") } Line: ${ index } ${ this.language("LK_JIEZHIZHOU", "截止周") }`
             }
           }
         }

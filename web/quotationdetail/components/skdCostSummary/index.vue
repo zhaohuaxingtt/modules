@@ -1,7 +1,7 @@
 <template>
   <iCard class="skdCostSummary" v-loading="copyLoading" :title="showTitle ? this.language('SKDBAOJIA', 'SKD报价') : ''">
-    <iFormGroup row="4" class="formGroup">
-      <iFormItem :label="language('FUZHIBAOJIAZHI', '复制报价至')">
+    <iFormGroup row="4" class="formGroup" :class="{ 'formGroupDisabled': disabled, 'formGroup': !disabled }">
+      <iFormItem v-if="!disabled" :label="language('FUZHIBAOJIAZHI', '复制报价至')">
         <iSelect v-model="copyParts" :placeholder="language('QINGXUANZELINGJIAN', '请选择零件')" multiple collapse-tags @visible-change="visibleChange">
           <el-option 
             v-for="item in parts" 
@@ -12,10 +12,21 @@
         </iSelect>
       </iFormItem>
       <iFormItem :label="language('SKDQIBUSHENGCHANRIQI', 'SKD起步生产日期')">
-        <iDatePicker v-model="skdStartProductDate" type="date" />
+        <div class="startProductDate">
+          <iText v-if="disabled">{{ skdStartProductDate }}</iText>
+          <iDatePicker v-else v-model="skdStartProductDate" :disabled="isAutoCal"></iDatePicker>
+          <el-popover
+            placement="top"
+            width="200"
+            trigger="hover"
+            :content="language('SHIFOUZIDONGJISUAN', '是否自动计算')">
+              <el-checkbox class="isAutoCal" slot="reference" :disabled="disabled" v-model="isAutoCal" @change="handleChangeIsAutoCal"></el-checkbox>
+          </el-popover>
+        </div>
       </iFormItem>
       <iFormItem :label="language('HUOBI', '货币')">
-        <iSelect v-model="currency" @change="handleChangeByCurrency">
+        <iText v-if="disabled">{{ currencyText }}</iText>
+        <iSelect v-else v-model="currency" @change="handleChangeByCurrency">
           <el-option 
             v-for="item in currencyOptions" 
             :key="item.key" 
@@ -25,7 +36,7 @@
         </iSelect>
       </iFormItem>
       <iFormItem v-if="exchangeRate" :label="language('HUILV', '汇率')">
-        <span>{{ exchangeRate }} {{ currency }}=1.00 RMB</span>
+        <span>1.00 {{ currency }}={{ exchangeRate }} RMB</span>
       </iFormItem>
     </iFormGroup>
     <tableList
@@ -37,26 +48,45 @@
       :tableTitle="tableTitle"
       :tableData="tableListData">
       <template #overseasFactoryPrice="scope">
-        <iInput class="input" v-model="scope.row.overseasFactoryPrice" @input="handleInputByNumber($event, 'overseasFactoryPrice', scope.row, 2, value => { computeTotalPrice(value, 'overseasFactoryPrice', scope.row) })"></iInput>
+        <iInput v-if="!disabled" class="input" v-model="scope.row.overseasFactoryPrice" @input="handleInputByNumber($event, 'overseasFactoryPrice', scope.row, 2, value => { computeTotalPrice(value, 'overseasFactoryPrice', scope.row) })"></iInput>
+        <span v-else>{{ scope.row.overseasFactoryPrice }}</span>
       </template>
       <template #overseasBnkPrice="scope">
-        <iInput class="input" v-model="scope.row.overseasBnkPrice" @input="handleInputByNumber($event, 'overseasBnkPrice', scope.row, 2, value => { computeTotalPrice(value, 'overseasBnkPrice', scope.row) })"></iInput>
+        <iInput v-if="!disabled" class="input" v-model="scope.row.overseasBnkPrice" @input="handleInputByNumber($event, 'overseasBnkPrice', scope.row, 2, value => { computeTotalPrice(value, 'overseasBnkPrice', scope.row) })"></iInput>
+        <span v-else>{{ scope.row.overseasBnkPrice }}</span>
       </template>
       <template #tariff="scope">
-        <iInput class="input" v-model="scope.row.tariff" @input="handleInputByNumber($event, 'tariff', scope.row, 2, value => { computeTotalPrice(value, 'tariff', scope.row) })"></iInput>
+        <iInput v-if="!disabled" class="input" v-model="scope.row.tariff" @input="handleInputByNumber($event, 'tariff', scope.row, 2, value => { computeTotalPrice(value, 'tariff', scope.row) })"></iInput>
+        <span v-else>{{ scope.row.tariff }}</span>
       </template>
       <template #domesticFreight="scope">
-        <iInput class="input" v-model="scope.row.domesticFreight" @input="handleInputByNumber($event, 'domesticFreight', scope.row, 2, value => { computeTotalPrice(value, 'domesticFreight', scope.row) })"></iInput>
+        <iInput v-if="!disabled" class="input" v-model="scope.row.domesticFreight" @input="handleInputByNumber($event, 'domesticFreight', scope.row, 2, value => { computeTotalPrice(value, 'domesticFreight', scope.row) })"></iInput>
+        <span v-else>{{ scope.row.domesticFreight }}</span>
       </template>
       <template #manageSummary="scope">
-        <iInput class="input" v-model="scope.row.manageSummary" @input="handleInputByNumber($event, 'manageSummary', scope.row, 2, value => { computeTotalPrice(value, 'manageSummary', scope.row) })"></iInput>
+        <iInput v-if="!disabled" class="input" v-model="scope.row.manageSummary" @input="handleInputByNumber($event, 'manageSummary', scope.row, 2, value => { computeTotalPrice(value, 'manageSummary', scope.row) })"></iInput>
+        <span v-else>{{ scope.row.manageSummary }}</span>
       </template>
       <template #profitSummary="scope">
-        <iInput class="input" v-model="scope.row.profitSummary" @input="handleInputByNumber($event, 'profitSummary', scope.row, 2, value => { computeTotalPrice(value, 'profitSummary', scope.row) })"></iInput>
+        <iInput v-if="!disabled" class="input" v-model="scope.row.profitSummary" @input="handleInputByNumber($event, 'profitSummary', scope.row, 2, value => { computeTotalPrice(value, 'profitSummary', scope.row) })"></iInput>
+        <span v-else>{{ scope.row.profitSummary }}</span>
       </template>
-      <template #otherSummary="scope">
-        <iInput class="input" v-model="scope.row.otherSummary" @input="handleInputByNumber($event, 'otherSummary', scope.row, 2, value => { computeTotalPrice(value, 'otherSummary', scope.row) })"></iInput>
+      <template #packageCost="scope">
+        <iInput v-if="!disabled && bnkValid" class="input" v-model="scope.row.packageCost" @input="handleInputByNumber($event, 'packageCost', scope.row, 2, value => { computeSalesPrice(value, 'packageCost', scope.row) })"></iInput>
+        <span v-else>{{ scope.row.packageCost }}</span>
       </template>
+      <template #transportCost="scope">
+        <iInput v-if="!disabled && bnkValid" class="input" v-model="scope.row.transportCost" @input="handleInputByNumber($event, 'transportCost', scope.row, 2, value => { computeSalesPrice(value, 'transportCost', scope.row) })"></iInput>
+        <span v-else>{{ scope.row.transportCost }}</span>
+      </template>
+      <template #operateCost="scope">
+        <iInput v-if="!disabled && bnkValid" class="input" v-model="scope.row.operateCost" @input="handleInputByNumber($event, 'operateCost', scope.row, 2, value => { computeSalesPrice(value, 'operateCost', scope.row) })"></iInput>
+        <span v-else>{{ scope.row.operateCost }}</span>
+      </template>
+      <!-- <template #otherSummary="scope">
+        <iInput v-if="!disabled" class="input" v-model="scope.row.otherSummary" @input="handleInputByNumber($event, 'otherSummary', scope.row, 2, value => { computeTotalPrice(value, 'otherSummary', scope.row) })"></iInput>
+        <span v-else>{{ scope.row.otherSummary }}</span>
+      </template> -->
     </tableList>
     <percentage lang :data="percentageData" />
   </iCard>
@@ -65,17 +95,22 @@
 <script>
 /* eslint-disable no-undef */
 
-import { iCard, iFormGroup, iFormItem, iSelect, iDatePicker, iInput, iMessage, iMessageBox } from "rise"
+import { iCard, iFormGroup, iFormItem, iSelect, iText, iDatePicker, iInput, iMessage, iMessageBox } from "rise"
 import tableList from "rise/web/quotationdetail/components/tableList"
 import percentage from "./components/percentage"
 import { tableTitle } from "./components/data"
-import { getSkdCostSummary, saveSkdCostSummary, getPartsQuotationsSkd, copyPartsQuotationSkd } from "@/api/rfqManageMent/quotationdetail"
+import { getSkdCostSummary, saveSkdCostSummary, getPartsQuotationsSkd, copyPartsQuotationSkd, getIsAutoCal,copyPartsQuotation } from "@/api/rfqManageMent/quotationdetail"
 import { handleInputByNumber } from "../data"
 import { uuidv4 } from "rise/web/aeko/quotationdetail/components/aPriceChange/components/data"
+import { bnkValid } from "rise/web/quotationdetail/components/costsummary/components/data"
 
 export default {
-  components: { iCard, iFormGroup, iFormItem, iSelect, iDatePicker, iInput, tableList, percentage },
+  components: { iCard, iFormGroup, iFormItem, iSelect, iText, iDatePicker, iInput, tableList, percentage },
   props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     partInfo: {
       type: Object,
       default: () => ({})
@@ -87,6 +122,10 @@ export default {
     showTitle: {
       type: Boolean,
       default: false
+    },
+    isSkd:{
+      type:Boolean,
+      default:false,
     }
   },
   data() {
@@ -102,7 +141,9 @@ export default {
       supplierId: "",
       parts: [],
       copyParts: [],
-      copyLoading: false
+      copyLoading: false,
+      // updateStartProductDateLoading: false,
+      isAutoCal: false
     }
   },
   computed: {
@@ -112,14 +153,31 @@ export default {
     percentageData() {
       const data = this.tableListData[0]
       return {
-        overseasFactoryPrice: data.overseasFactoryPrice,
-        overseasPrice: math.add(math.bignumber(data.overseasBnkPrice || 0), math.bignumber(data.tariff || 0)).toFixed(2),
+        overseasFactoryPrice:math.multiply( math.bignumber(data.overseasFactoryPrice || 0 ) , math.bignumber(this.exchangeRate || 0 )).toFixed(2),
+        overseasPrice: 
+        math.chain(math.bignumber(data.overseasBnkPrice || 0))
+        .multiply(math.bignumber(this.exchangeRate || 0 ))
+        .add(math.bignumber(data.tariff || 0))
+        .done()
+        .toFixed(2),
         domesticFreight: data.domesticFreight,
         manageSummary: data.manageSummary,
         otherSummary: data.otherSummary,
         profitSummary: data.profitSummary
       }
     },
+    currencyText() {
+      const currency = this.currencyOptions.find(item => item.value === this.currency)
+
+      if (currency) {
+        return this.$i18n.locale === "zh" ? currency.label : currency.value
+      }
+
+      return this.currency
+    },
+    bnkValid() {
+      return bnkValid(this.partInfo.partProjectType)
+    }
   },
   created() {
     this.supplierId = this.$route.query.supplierId || this.userInfo.supplierId
@@ -163,13 +221,22 @@ export default {
               key: item.currencyCode,
               label: item.currencyName,
               value: item.currencyCode,
-              exchangeRate: item.currency
+              exchangeRate: item.exchangeRate
             })) :
             []
 
-          this.computeSalesPrice("", "", this.tableListData[0])
           this.skdStartProductDate = res.data.skdStartProductDate
           this.currency = res.data.currency || "RMB"
+          this.isAutoCal = res.data.isAutoCal
+          const quotationExt = res.data.quotationExt || {}
+
+          if (["overseasFactoryPrice", "overseasBnkPrice", "tariff", "domesticFreight", "manageSummary", "profitSummary", "otherSummary"].every(key => !res.data[key] && res.data[key] !== 0)) {
+            this.$set(this.tableListData[0], "totalPrice", quotationExt.skdAPrice || "0.00")
+            this.$set(this.tableListData[0], "salesPrice", quotationExt.skdBPrice || "0.00")
+            return
+          }
+
+          this.computeSalesPrice("", "", this.tableListData[0])
           this.handleChangeByCurrency()
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
@@ -205,6 +272,7 @@ export default {
       return saveSkdCostSummary({
         ...this.tableListData[0],
         skdStartProductDate: this.skdStartProductDate,
+        isAutoCal: this.isAutoCal,
         currency: this.currency,
         quotationId: this.partInfo.quotationId,
         exchangeRateVos: this.exchangeRateVos
@@ -241,7 +309,7 @@ export default {
     visibleChange(list) {
       if (this.copyParts.length) {
         iMessageBox(this.language("NINQUEDINGYAOJIANGBAOJIADANFUZHIDAOXUANZHONGDELINGJIANZHONGMA", "您确定要将报价单复制到选中的零件中吗？")).then(() => {
-          this.copyPartsQuotationSkd()
+           this.copyPartsQuotationSkd()
         }).catch(() => {
           this.copyParts = []
         })
@@ -249,12 +317,39 @@ export default {
     },
     copyPartsQuotationSkd() {
       this.copyLoading = true
+      
+      const {isSkd = false} = this;
 
       copyPartsQuotationSkd({
         partNums: this.copyParts,
         quotationId: this.partInfo.quotationId
       })
       .then(res => {
+        const message = this.$i18n.locale === "zh" ? res.desZh : res.desEn
+        
+        if (res.code == 200) {
+          if(!isSkd){
+            this.copyLoading = false;
+            this.copyPartsQuotation();
+          }else{
+            this.copyParts = []
+            iMessage.success(message)
+          }
+          
+        } else {
+          iMessage.error(message)
+        }
+      })
+      .finally(() => this.copyLoading = false)
+    },
+
+    //LC
+    copyPartsQuotation(){
+      this.copyLoading = true
+      copyPartsQuotation({
+        partNums: this.copyParts,
+        quotationId: this.partInfo.quotationId
+      }).then(res => {
         const message = this.$i18n.locale === "zh" ? res.desZh : res.desEn
         
         if (res.code == 200) {
@@ -265,6 +360,43 @@ export default {
         }
       })
       .finally(() => this.copyLoading = false)
+    },
+    // updateStartProductDate() {
+    //   this.updateStartProductDateLoading = true
+
+    //   getIsAutoCal({
+    //     isAutoCal: true,
+    //     quotationId: this.partInfo.quotationId,
+    //     supplierId: this.supplierId
+    //   })
+    //   .then(res => {
+    //     if (res.code == 200) {
+    //       this.skdStartProductDate = res.data.startProductDate
+    //       iMessage.success(this.language("HUOQUCHENGGONG", "获取成功"))
+    //     } else {
+    //       iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+    //     }
+    //   })
+    //   .finally(() => this.updateStartProductDateLoading = false)
+    // }
+    handleChangeIsAutoCal(value) {
+      if (value) {
+        this.getIsAutoCal()
+      }
+    },
+    getIsAutoCal() {
+      getIsAutoCal({
+        isAutoCal: true,
+        quotationId: this.partInfo.quotationId,
+        supplierId: this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId
+      })
+      .then(res => {
+        if (res.code == 200) {
+          this.skdStartProductDate = res.data.startProductDate
+        } else {
+          iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+        }
+      })
     }
   }
 }
@@ -305,6 +437,44 @@ export default {
           font-weight: bold;
         }
       }
+    }
+  }
+
+  .formGroupDisabled {
+    ::v-deep .el-form-item {
+      &:first-of-type {
+        width: 350px!important;
+
+        label {
+          width: 150px;
+        }
+      }
+
+      &:nth-of-type(2),
+      &:last-of-type {
+        width: 280px!important;
+
+        label {
+          width: 55px;
+        }
+      }
+
+      &:last-of-type {
+        .el-form-item__content {
+          text-align: left;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+
+  .startProductDate {
+    display: flex;
+    align-items: center;
+
+    .isAutoCal {
+      margin-left: 8px;
+      width: 0 !important;
     }
   }
 

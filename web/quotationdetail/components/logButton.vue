@@ -9,7 +9,7 @@
 <template>
   <div class="logButton" @click="$emit('click')">
     <icon symbol name="iconrizhiwuzi" class="icon" />
-    <span>{{ $t("LK_RIZHI") }}</span>
+    <span>{{ language("LK_RIZHI", "日志") }}</span>
   </div>
 </template>
 

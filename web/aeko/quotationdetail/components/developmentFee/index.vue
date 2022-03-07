@@ -5,7 +5,7 @@
 -->
 <template>
   <div class="developmentFee">
-    <developmentCost ref="devcost" :disabled="disabled" :partInfo="basicInfo" @save="handleSave" :isAeko="true"/>
+    <developmentCost ref="devcost" :disabled="disabled" :editDisabled="editDisabled" :partInfo="basicInfo" @save="handleSave" :isAeko="true"/>
   </div>
 </template>
 
@@ -25,6 +25,10 @@ export default {
       default:()=>{},
     },
     disabled: {
+      type: Boolean,
+      default: false
+    },
+    editDisabled: {
       type: Boolean,
       default: false
     },

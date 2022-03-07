@@ -23,6 +23,7 @@
             <span v-if="disabled" :class="{ changeClass: scope.row.ratio !== scope.row.originRatio }">{{ scope.row.ratio }}</span>
             <iInput class="input-center" v-else v-model="scope.row.ratio" :class="{ changeClass: scope.row.ratio !== scope.row.originRatio }" @input="handleInputByNumber($event, 'ratio', scope.row, 2, computeChangeAmount)"></iInput>
           </template>
+          <template #changeAmount="scope">{{ floatFixNum(scope.row.changeAmount) }}</template>
         </tableList>
       </div>
     </div>
@@ -35,6 +36,7 @@
 import { iButton, iInput } from "rise"
 import tableList from "rise/web/quotationdetail/components/tableList"
 import { profitTableTitle as tableTitle } from "../data"
+import { floatFixNum } from "../../../data"
 import { handleInputByNumber } from "rise/web/quotationdetail/components/data"
 
 export default {
@@ -81,26 +83,31 @@ export default {
     }
   },
   methods: {
+    floatFixNum,
     handleInputByNumber,
     computeChangeAmount() {
-      const profitChange = math.subtract(
-        math.multiply(
-          math.divide(math.bignumber(this.tableListData[0]?.ratio || 0), 100),
-          math.add(
-            math.bignumber(this.sumData.newMaterialCostSumByNotSvwAssignPriceParts || 0),
-            math.bignumber(this.sumData.newLaborCostSum || 0),
-            math.bignumber(this.sumData.newDeviceCostSum || 0)
+      let {ratio, originRatio} = this.tableListData[0]
+      let profitChange = null
+      if((ratio||ratio===0)&&(originRatio||originRatio===0)){
+        profitChange = math.subtract(
+          math.multiply(
+            math.divide(math.bignumber(ratio), 100),
+            math.add(
+              math.bignumber(this.sumData.newMaterialCostSumByNotSvwAssignPriceParts || 0),
+              math.bignumber(this.sumData.newLaborCostSum || 0),
+              math.bignumber(this.sumData.newDeviceCostSum || 0)
+            )
+          ),
+          math.multiply(
+            math.divide(math.bignumber(originRatio), 100),
+            math.add(
+              math.bignumber(this.sumData.originMaterialCostSumByNotSvwAssignPriceParts || 0),
+              math.bignumber(this.sumData.originLaborCostSum || 0),
+              math.bignumber(this.sumData.originDeviceCostSum || 0)
+            )
           )
-        ),
-        math.multiply(
-          math.divide(math.bignumber(this.tableListData[0]?.originRatio || 0), 100),
-          math.add(
-            math.bignumber(this.sumData.originMaterialCostSumByNotSvwAssignPriceParts || 0),
-            math.bignumber(this.sumData.originLaborCostSum || 0),
-            math.bignumber(this.sumData.originDeviceCostSum || 0)
-          )
-        )
-      ).toFixed(2)
+        ).toFixed(2)
+      }
 
       this.$set(this.tableListData[0], "changeAmount", profitChange)
       this.$emit("update:profitChange", profitChange)
@@ -127,8 +134,6 @@ export default {
       color: #131523;
       font-weight: bold;
     }
-
-    .control {}
   }
 
   ::v-deep .table {
