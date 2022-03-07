@@ -311,7 +311,7 @@ export default {
         }_${ this.partInfo.partNum }_T${ index }`,
         fixedAssetsName: "",
         assembledPartPrjCode: this.partInfo.fsNum,
-        carModeCode: this.partInfo.modelNameZh,
+        carModeCode: Array.isArray(this.partInfo.cartypes) && this.partInfo.cartypes[0] ? this.partInfo.cartypes.map(item => item.name).join(",") : this.partInfo.modelNameZh,
         isShared:this.partInfo.roundsType == "biddingRound"?0:''
       })
     },
