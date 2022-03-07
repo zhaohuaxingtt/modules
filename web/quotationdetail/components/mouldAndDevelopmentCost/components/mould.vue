@@ -308,7 +308,7 @@ export default {
           // this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId 
           // 依据优先级顺序：供应商SAP号>供应商SVW号>供应商临时号
           partInfo.sapCode || partInfo.svwCode || partInfo.svwTempCode || ''
-        }_${ this.partInfo.partNum }_T${ index }`,
+        }_${ this.partInfo.fsNum }_T${ index }`,
         fixedAssetsName: "",
         assembledPartPrjCode: this.partInfo.fsNum,
         carModeCode: Array.isArray(this.partInfo.cartypes) && this.partInfo.cartypes[0] ? this.partInfo.cartypes.map(item => item.name).join(",") : this.partInfo.modelNameZh,
