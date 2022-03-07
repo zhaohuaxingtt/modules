@@ -1,0 +1,17 @@
+## 日志展示组件
+
+'/bizlog': {
+  target: 'http://10.122.18.166:8013/bizlog',
+  changeOrigin: true,
+  pathRewrite: {
+    '^/bizlog': ''
+  }
+}
+
+- menuId: 菜单id
+- isDate: 是否时间查询，默认true
+- days: isDate为true 查询之前多少天，默认90
+
+```vue
+<iLog :show.sync="showDialog" :bizId="bizId" :menuId="menuId" isDate :days="90"/>
+```

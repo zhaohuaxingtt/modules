@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 15:20:44
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-07-14 11:46:55
+ * @LastEditTime: 2021-12-29 20:43:28
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\mouldOffer\components\moduleCost.vue
 -->
@@ -11,12 +11,12 @@
     <template #header  v-if='useCardSlot'>
       <div class="header">
         <div>
-          <span class="title">{{ $t('LK_MUJUFEIYONG') }}</span>
-          <span class="tip margin-left10">({{ $t('LK_DANWEI') }}：{{ $t('LK_YUAN') }})</span>
+          <span class="title">{{ language('LK_MUJUFEIYONG', '模具费用') }}</span>
+          <span class="tip margin-left10">({{ language('LK_DANWEI', '单位') }}：{{ language('LK_YUAN', '元') }})</span>
         </div>
         <div class="control">
-          <iButton @click="changeRelatingPartsVisible(true)">{{ $t('LK_GUANLIANLINGJIAN') }}</iButton>
-          <iButton @click="handleDownload">{{ $t('LK_XIAZAIMUJUCBD') }}</iButton>
+          <iButton @click="changeRelatingPartsVisible(true)">{{ language('LK_GUANLIANLINGJIAN', '关联零件') }}</iButton>
+          <iButton @click="handleDownload">{{ language('LK_XIAZAIMUJUCBD', '下载模具CBD') }}</iButton>
             <el-upload 
             class="uploadBtn" 
             multiple
@@ -26,11 +26,11 @@
             :show-file-list="false" 
             :before-upload="beforeUpload"
             accept=".xlsx">
-              <iButton :loading="uploadLoading">{{ $t('LK_SHANGCHUANBAOJIA') }}</iButton>
+              <iButton :loading="uploadLoading">{{ language('LK_SHANGCHUANBAOJIA', '上传报价') }}</iButton>
           </el-upload>
-          <iButton @click="handleAdd">{{ $t('LK_TIANJIAHANG') }}</iButton>
-          <iButton @click="handleDel">{{ $t('LK_SHANCHUHANG') }}</iButton>
-          <iButton @click="handleSave" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
+          <iButton @click="handleAdd">{{ language('LK_TIANJIAHANG', '添加行') }}</iButton>
+          <iButton @click="handleDel">{{ language('LK_SHANCHUHANG', '删除行') }}</iButton>
+          <iButton @click="handleSave" :loading="saveLoading">{{ language('LK_BAOCUN', '保存') }}</iButton>
           <!-- <iButton>提交</iButton> -->
         </div>
       </div>
@@ -45,8 +45,8 @@
             </iSelect>
           </div>
           <div class="control">
-            <iButton @click="changeRelatingPartsVisible(true)">{{ $t('LK_GUANLIANLINGJIAN') }}</iButton>
-            <iButton @click="handleDownload">{{ $t('LK_XIAZAIMUJUCBD') }}</iButton>
+            <iButton @click="changeRelatingPartsVisible(true)">{{ language('LK_GUANLIANLINGJIAN', '关联零件') }}</iButton>
+            <iButton @click="handleDownload">{{ language('LK_XIAZAIMUJUCBD', '下载模具CBD') }}</iButton>
             <template v-if='dgysBj'>
             <el-upload 
               class="uploadBtn" 
@@ -57,11 +57,12 @@
               :show-file-list="false" 
               :before-upload="beforeUpload"
               accept=".xlsx">
-                <iButton :loading="uploadLoading">{{ $t('LK_SHANGCHUANBAOJIA') }}</iButton>
+                <iButton :loading="uploadLoading">{{ language('LK_SHANGCHUANBAOJIA', '上传报价') }}</iButton>
             </el-upload>
-            <iButton @click="handleAdd">{{ $t('LK_TIANJIAHANG') }}</iButton>
-            <iButton @click="handleDel">{{ $t('LK_SHANCHUHANG') }}</iButton>
-            <iButton @click="handleSave" :loading="saveLoading">{{ $t('LK_BAOCUN') }}</iButton>
+            <iButton @click="handleAdd">{{ language('LK_TIANJIAHANG', '添加行') }}</iButton>
+            <iButton @click="handleDel">{{ language('LK_SHANCHUHANG', '删除行') }}</iButton>
+            <iButton @click="handleCancel">{{ language('QUXIAO', '取消') }}</iButton>
+            <iButton @click="handleSave" :loading="saveLoading">{{ language('LK_BAOCUN', '保存') }}</iButton>
             </template>
             <!-- <iButton>提交</iButton> -->
             <template v-else>
@@ -70,72 +71,79 @@
           </div>
         </div>
       </template>
-      <tableList height="100%" class="table" :tableData="tableListData" :tableTitle="tableTitle" @handleSelectionChange="handleSelectionChange">
+      <tableList :lang="true" height="100%" class="table" :tableData="tableListData" :tableTitle="tableTitle" @handleSelectionChange="handleSelectionChange">
+        <template #priceType="scope">
+          <span v-if="(disabled && !dgysBj) || !isSkdLc(scope.row)">{{ scope.row.priceType }}</span>
+          <iSelect v-else v-model="scope.row.priceType">
+            <el-option label="LC" value="LC"></el-option>
+            <el-option label="SKD" value="SKD"></el-option>
+          </iSelect>
+        </template>
         <template #stuffType="scope">
-          <iInput v-if="!disabled" v-model="scope.row.stuffType" />
+          <iInput v-if="!disabled && dgysBj" v-model="scope.row.stuffType" />
           <span v-else>{{ scope.row.stuffType }}</span>
         </template>
         <template #mouldType="scope">
-          <iInput v-if="!disabled" v-model="scope.row.mouldType" @input="handleInputByMouldType($event, scope.row)" />
+          <iInput v-if="!disabled && dgysBj" v-model="scope.row.mouldType" @input="handleInputByMouldType($event, scope.row)" />
           <span v-else>{{ scope.row.mouldType }}</span>
         </template>
         <template #assetTypeCode="scope">
-          <iSelect v-if="!disabled" v-model="scope.row.assetTypeCode">
+          <iSelect v-if="!disabled && dgysBj" v-model="scope.row.assetTypeCode">
             <el-option v-for="assetType in assetTypeCodeOptions" :key="assetType.value" :label="assetType.label" :value="assetType.value"></el-option>
           </iSelect>
           <span v-else>{{ scope.row.assetTypeCode }}</span>
         </template>
         <template #assembledPartName="scope">
-          <iInput v-if="!disabled" v-model="scope.row.assembledPartName" @input="handleInputByAssembledPartName($event, scope.row)" />
+          <iInput v-if="!disabled && dgysBj" v-model="scope.row.assembledPartName" @input="handleInputByAssembledPartName($event, scope.row)" />
           <span v-else>{{ scope.row.assembledPartName }}</span>
         </template>
         <template #assembledPartCode="scope">
-          <iSelect v-if="!disabled" v-model="scope.row.assembledPartCode" @change="handleChangeByAssembledPartCode($event, scope.row)">
+          <iSelect v-if="!disabled && dgysBj" v-model="scope.row.assembledPartCode" @change="handleChangeByAssembledPartCode($event, scope.row)">
             <el-option v-for="partNumObj in partNums" :key="partNumObj.value" :label="partNumObj.label" :value="partNumObj.value"></el-option>
           </iSelect>
           <span v-else>{{ scope.row.assembledPartCode }}</span>
         </template>
         <template #modeTotalLife="scope">
-          <iInput v-if="!disabled" v-model="scope.row.modeTotalLife" @input="handleInputByModeTotalLife($event, scope.row)"/>
+          <iInput v-if="!disabled && dgysBj" v-model="scope.row.modeTotalLife" @input="handleInputByModeTotalLife($event, scope.row)"/>
           <span v-else>{{ scope.row.modeTotalLife }}</span>
         </template>
         <template #assembledPartPrjCode="scope">
-          <iSelect v-if="!disabled" v-model="scope.row.assembledPartPrjCode" @change="handleChangeByAssembledPartPrjCode($event, scope.row)">
+          <iSelect v-if="!disabled && dgysBj" v-model="scope.row.assembledPartPrjCode" @change="handleChangeByAssembledPartPrjCode($event, scope.row)">
             <el-option v-for="fsNumObj in scope.row.assembledPartCode ? partNumMap[scope.row.assembledPartCode] : fsNums" :key="fsNumObj.value" :label="fsNumObj.label" :value="fsNumObj.value"></el-option>
           </iSelect>
           <span v-else>{{ scope.row.assembledPartPrjCode }}</span>
         </template>
         <template #supplierPartNameList="scope">
-          <iInput v-if="!disabled" v-model="scope.row.supplierPartNameList" @input="handleInputBySupplierPartNameList($event, scope.row)" />
+          <iInput v-if="!disabled && dgysBj" v-model="scope.row.supplierPartNameList" @input="handleInputBySupplierPartNameList($event, scope.row)" />
           <span v-else>{{ scope.row.supplierPartNameList }}</span>
         </template>
         <template #supplierPartCodeList="scope">
-          <iInput v-if="!disabled" v-model="scope.row.supplierPartCodeList" />
+          <iInput v-if="!disabled && dgysBj" v-model="scope.row.supplierPartCodeList" />
           <span v-else>{{ scope.row.supplierPartCodeList }}</span>
         </template>
         <template #quantity="scope">
-          <iInput v-if="!disabled" v-model="scope.row.quantity" @input="handleInputByQuantity($event, scope.row)" />
+          <iInput v-if="!disabled && dgysBj" v-model="scope.row.quantity" @input="handleInputByQuantity($event, scope.row)" />
           <span v-else>{{ scope.row.quantity }}</span>
         </template>
         <template #assetUnitPrice="scope">
-          <iInput v-if="!disabled" v-model="scope.row.assetUnitPrice" @input="handleInputByAssetUnitPrice($event, scope.row)" />
+          <iInput v-if="!disabled && dgysBj" v-model="scope.row.assetUnitPrice" @input="handleInputByAssetUnitPrice($event, scope.row)" />
           <span v-else>{{ scope.row.assetUnitPrice }}</span>
         </template>
         <template #isShared="scope">
-          <iSelect v-if="!disabled" v-model="scope.row.isShared" @change="updateTotal">
+          <iSelect v-if="!disabled && dgysBj" v-model="scope.row.isShared" @change="updateTotal">
             <el-option label="是" :value="1"></el-option>
             <el-option label="否" :value="0"></el-option>
           </iSelect>
           <span v-else>{{ scope.row.isShared | numberStatusFilter }}</span>
         </template>
       </tableList>
-      <div v-if="!disabled" class="totalCount margin-top30">{{ $t('LK_XIANSHI') }}<span class="count">{{ Array.isArray(tableListData) ? (tableListData.length > 0 ? 1 : 0) : 0 }}</span>{{ $t('LK_TIAODI') }}<span class="count">{{ Array.isArray(tableListData) ? tableListData.length : 0 }}</span>{{ $t('LK_TIAOJILU') }}，{{ $t('LK_GONG') }}<span class="count">{{ Array.isArray(tableListData) ? tableListData.length : 0 }}</span>{{ $t("LK_TIAOJILU") }}</div>
+      <div v-if="!disabled && dgysBj" class="totalCount margin-top30">{{ language('LK_XIANSHI', '显示') }}<span class="count">{{ Array.isArray(tableListData) ? (tableListData.length > 0 ? 1 : 0) : 0 }}</span>{{ language('LK_TIAODI', '条到第') }}<span class="count">{{ Array.isArray(tableListData) ? tableListData.length : 0 }}</span>{{ language('LK_TIAOJILU', '条记录') }}，{{ language('LK_GONG', '共') }}<span class="count">{{ Array.isArray(tableListData) ? tableListData.length : 0 }}</span>{{ language("LK_TIAOJILU", "条记录") }}</div>
       <iPagination
         v-else
         v-update
         class="pagination margin-top30"
-        @size-change="handleSizeChange($event, getData)"
-        @current-change="handleCurrentChange($event, getData)"
+        @size-change="handleSizeChange($event, getAllMouldFee)"
+        @current-change="handleCurrentChange($event, getAllMouldFee)"
         background
         :current-page="page.currPage"
         :page-sizes="page.pageSizes"
@@ -143,14 +151,14 @@
         :layout="page.layout"
         :total="page.totalCount" />
     </div>
-    <relatingParts :supplierId='supplierId' :dialogVisible="relatingPartsVisible" @changeVisible="changeRelatingPartsVisible" :partInfo="partInfo" :disabled="disabled" />
+    <relatingParts :supplierId='supplierId' :dialogVisible="relatingPartsVisible" @changeVisible="changeRelatingPartsVisible" :partInfo="partInfo" :disabled="disabled || !dgysBj" />
   </iCard>
 </template>
 
 <script>
 /* eslint-disable no-undef */
 
-import { iCard, iButton, iInput, iSelect, iMessage, iPagination } from "rise"
+import { iCard, iButton, iInput, iSelect, iMessage, iPagination,iMessageBox } from "rise"
 import tableList from "../../quotationdetail/components/tableList"
 import { moduleCostTableTitle as tableTitle } from "./data"
 import relatingParts from '../../quotationdetail/components/relatingParts'
@@ -194,7 +202,8 @@ export default {
       fromPage:'',
       supplierId:'',
       supplierList:[],
-      titleKey:''
+      titleKey:'',
+      sourceTableListData: []
     }
   },
   computed: {
@@ -223,8 +232,8 @@ export default {
       getAllMouldFee({
         rfqId: this.partInfo.rfqId,
         round: this.partInfo.currentRounds,
-        currPage: this.page.currPage,
-        pageSize: this.disabled ? this.page.pageSize : 999999,
+        current: this.page.currPage,
+        size: this.disabled || !this.dgysBj ? this.page.pageSize : 999999,
         supplierId:this.supplierId
       })
       .then(res => {
@@ -232,6 +241,7 @@ export default {
           if (res.data.mouldCbdEntityList) {
             if (Array.isArray(res.data.mouldCbdEntityList.records)) {
               this.tableListData = Array.isArray(res.data.mouldCbdEntityList.records) ? res.data.mouldCbdEntityList.records : []
+              this.sourceTableListData = _.cloneDeep(this.tableListData)
               this.page.totalCount = res.data.mouldCbdEntityList.total || 0
             }
           }
@@ -295,7 +305,7 @@ export default {
     uploadSuccess(res) {
       this.uploadLoading = false
       if (res.code == 200) {
-        iMessage.success(this.$t("LK_SHANGCHUANCHENGGONG"))
+        iMessage.success(this.language("LK_SHANGCHUANCHENGGONG", "上传成功"))
         this.getAllMouldFee()
       } else {
         iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
@@ -345,40 +355,53 @@ export default {
         mouldId: "",
         fixedAssetsName: "",
         assembledPartPrjCode: this.partInfo.fsNum,
-        carModeCode: this.partInfo.carTypeNames
+        carModeCode: this.partInfo.carTypeNames,
+        priceType: ""
       })
     },
     handleDel() {
       if (this.multipleSelection.length < 1) {
-        iMessage.warn(this.$t('LK_QINGXUANZEXUYAOSHANCHUDEHANG'))
+        iMessage.warn(this.language('LK_QINGXUANZEXUYAOSHANCHUDEHANG', '请选择需要删除的行'))
         return
       }
       this.tableListData = this.tableListData.filter(item => !this.multipleSelection.includes(item))
     },
     handleSave() {
-      this.saveLoading = true
-
-      saveModuleFee({
-        rfqId: this.partInfo.rfqId,
-        round: this.partInfo.currentRounds,
-        supplierId:this.supplierId,
-        mouldCbdBaseDTO: this.tableListData.map(item => ({
-          quotationId: item.quotationId,
-          mouldCbdBaseDTO: {
-            ...item
-          }
-        }))
+      iMessageBox(this.language('XIUGAIMUJUFEIYONGSFJX','修改模具费用会使对应零件的报价状态再次变为草稿，请问是否继续？')).then(r=>{
+          this.saveLoading = true
+          saveModuleFee({
+            rfqId: this.partInfo.rfqId,
+            round: this.partInfo.currentRounds,
+            supplierId:this.supplierId,
+            mouldCbdBaseDTO: this.tableListData.map(item => ({
+              quotationId: item.quotationId,
+              mouldCbdBaseDTO: {
+                ...item
+              }
+            }))
+          })
+          .then(res => {
+            if (res.code == 200) {
+              this.getAllMouldFee()
+              iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+            } else {
+              iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+            }
+            this.saveLoading = false
+          })
+          .catch(() => this.saveLoading = false)
       })
-      .then(res => {
-        if (res.code == 200) {
-          iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
-        } else {
-          iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
-        }
-
-        this.saveLoading = false
-      })
-      .catch(() => this.saveLoading = false)
+    },
+    handleCancel() {
+      if (!_.isEqual(this.sourceTableListData, this.tableListData)) {
+        iMessageBox(this.language("DISCARDCHANGE", "内容已经发生变化，是否确定要放弃修改？"))
+        .then(() => {
+          this.dgysBj = false
+          this.tableListData = _.cloneDeep(this.sourceTableListData)
+        })
+      } else {
+        this.dgysBj = false
+      }
     },
     // 零件号选择
     handleChangeByAssembledPartCode(partNum, row) {
@@ -406,6 +429,13 @@ export default {
     handleChangeByAssembledPartPrjCode(fsNum, row) {
       const fsObj = this.fsNums.filter(item => item.fsnrGsnrNum === fsNum)[0]
       this.$set(row, "quotationId", fsObj.quotationId)
+
+      if (fsObj.priceType === "SKDLC") {
+        this.$set(row, "priceType", "LC")
+      } else {
+        this.$set(row, "priceType", fsObj.priceType)
+      }
+
       if (!row.assembledPartCode) {
         this.$set(row, "assembledPartCode", fsObj.partNum)
         this.$set(row, "assembledPartName", fsObj.partName)
@@ -460,6 +490,22 @@ export default {
       ).toFixed(2)
     },
     getFee(){},
+    // 判断是否是SKDLC
+    isSkdLc(row) {
+      if (row.assembledPartPrjCode) {
+        const fsObj = this.fsNums.find(item => item.fsnrGsnrNum === row.assembledPartPrjCode)
+
+        if (fsObj) {
+          if (fsObj.priceType === "SKDLC") return true
+
+          return false
+        }
+
+        return false
+      } else {
+        return false
+      }
+    }
   }
 }
 </script>

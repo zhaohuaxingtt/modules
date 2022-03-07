@@ -631,7 +631,7 @@ export default {
   'LK_XIAZAIMUJUCBD': '下载模具CBD', // 下载模具CBD
   'LK_SHANGCHUANBAOJIA': '上传报价', // 上传报价
   'LK_GUDINGZICHANMINGCHENG': '固定资产名称', // 固定资产名称
-  'LK_GUDINGZICHANMINGCHENGTIPS': '<p style="text-align: center">由“零件总成名称”、“零部件名称”、<br/>“工模具种类”组成</p>', // 由“零件总成名称”、“零部件名称”、“工模具种类”组成
+  'LK_GUDINGZICHANMINGCHENGTIPS': '<p style="text-align: center">由“零件总成名称”、“散件名称”、<br/>“工模具种类”组成</p>', // 由“零件总成名称”、“零部件名称”、“工模具种类”组成
   'LK_GONGYILEIXING': '工艺类型', // 工艺类型
   'LK_GONGYILEIXINGTIPS': '如注塑，冲压，电镀等', // 如注塑，冲压，电镀等
   'LK_GONGMUJUZHONGLEI': '工模具种类', // 工模具种类

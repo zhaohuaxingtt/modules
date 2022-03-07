@@ -9,11 +9,11 @@
 <template>
   <div class="outputPlan">
     <div class="header">
-      <span class="title">{{ $t('LK_CHANLIANGJIHUA') }}</span>
-      <span class="tip margin-left10">{{ $t('LK_CHANLIANGJIHUATIPS') }}</span>
+      <span class="title">{{ language('LK_CHANLIANGJIHUA', '产量计划') }}</span>
+      <span class="tip margin-left10">{{ language('LK_CHANLIANGJIHUATIPS', '供应商保证满足上汽大众需求产量上下浮动15%的产能') }}</span>
     </div>
     <div class="body margin-top30">
-      <tableList class="table" :selection="false" :tableData="[data]" :tableTitle="tableTitle">
+      <tableList lang class="table" :selection="false" :tableData="[data]" :tableTitle="tableTitle">
         <template #sopDate="scope">
           <span>{{ scope.row.sopDate | dateFilter('YYYY-MM-DD') }}</span>
         </template>

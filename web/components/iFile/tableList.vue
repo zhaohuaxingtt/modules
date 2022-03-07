@@ -1,11 +1,12 @@
 <!--
  * @Author: haojiang
  * @Date: 2021-02-24 09:42:07
- * @LastEditTime: 2021-10-13 09:31:46
- * @LastEditors: Hao,Jiang
+ * @LastEditTime: 2022-01-26 10:37:42
+ * @LastEditors: Please set LastEditors
  * @Description: table组件
 -->
 <template>
+<div class="iFileTableList">
   <el-table
     fit
     tooltip-effect='light'
@@ -13,18 +14,19 @@
     v-loading='tableLoading'
     :height="height"
     :data='tableData'
-    :empty-text="$t('LK_ZANWUSHUJU')"
+    :empty-text="language('ZANWUSHUJU', '暂无数据')"
     :class="{'moviesTable': true, 'radio': radio}"
     :cell-style="borderLeft"
+    :span-method="spanMethod"
     @selection-change="handleSelectionChange"
     @select="handleSelect"
     @select-all="handleSelectAll"
     default-expand-all
     ref="moviesTable">
     <!----------------------复选框------------------------------------->
-    <el-table-column v-if="selection" type='selection' width="56" align='center'></el-table-column>
+    <el-table-column v-if="selection" type='selection' :width="selectConfig.width || 40" :align="selectConfig.align || 'center'" :header-align="selectConfig.headerAlign || 'center'" :selectable="selectConfig.selectable || selectable"></el-table-column>
     <!----------------------支持自定义的index插槽------------------------>
-    <el-table-column v-if='index' type='index' width='50' align='center' :label='indexLabel'>
+    <el-table-column v-if='index' type='index' :width='indexConfig.width || 32' :align="indexConfig.width || 'center'" :header-align="indexConfig.width || 'center'" :label="indexConfig.label || indexLabel">
       <template slot-scope="scope">
         <slot :name="`_index`" :row="scope.row" :$index="scope.$index">
           {{scope.$index+1}}
@@ -32,15 +34,15 @@
       </template>
     </el-table-column>
 
-    <template v-for="(items,index) in tableTitle">
+    <template v-for="(items,index) in header">
       <!----------------------需要高亮的列并且带有打开详情事件------------------------>
-      <el-table-column :key="index" align='center' :width="items.width" :min-width="items.minWidth ? items.minWidth.toString():''" :show-overflow-tooltip='items.tooltip' v-if='items.props == activeItems' :prop="items.props" :label="lang ? language(items.key, items.name) : $t(items.key)">
+      <el-table-column :key="`${items.props}_${index}`" align='center' :width="items.width" :min-width="items.minWidth ? items.minWidth.toString():''" :show-overflow-tooltip='items.tooltip' v-if='items.props == activeItems' :prop="items.props" :label="lang ? language(items.key, items.name) : $t(items.key)">
         <!-- slot header -->
-        <template slot="header">
+        <!-- <template slot="header">
           <div class="slotHeader" :class="{headerRequiredLeft: items._headerRequiredLeft, headerRequiredRight:items._headerRequiredRight }">
             {{lang ? language(items.key, items.name) : $t(items.key)}}
           </div>
-        </template>
+        </template> -->
         <!-- slot content -->
         <template slot-scope="row">
            <span class="flexRow">
@@ -56,7 +58,7 @@
       <el-table-column
         v-else
         align='center'
-        :key="index"
+        :key="`${items.props}_${index}`"
         :width="items.width"
         :min-width="items.minWidth ? items.minWidth.toString():''"
         :show-overflow-tooltip='items.tooltip'
@@ -64,11 +66,11 @@
         :prop="items.props"
         :class-name="items.tree ? 'tree' : ''">
         <!-- slot header -->
-        <template slot="header">
+        <!-- <template slot="header">
           <div class="slotHeader" :class="{headerRequiredLeft: items._headerRequiredLeft, headerRequiredRight:items._headerRequiredRight }">
             {{lang ? language(items.key, items.name) : $t(items.key)}}
           </div>
-        </template>
+        </template> -->
         <!-- slot content -->
         <template slot-scope="scope">
           <span :class="{normal: true, child: scope.row.children}">
@@ -80,9 +82,25 @@
       </el-table-column>
     </template>
   </el-table>
+  <!-- iTableHeaderSorter -->
+  <iTableHeaderSorter
+      v-if="enabletableHeadersetting"
+      :data="tableSettingColumns"
+      :show.sync="settingVisible"
+      :value="'value'"
+      :label="'label'"
+      :visiableKey="'hidden'"
+      @callback="handleSaveSetting"
+      @reset="handleResetSetting"
+    />
+</div>
+
 </template>
 <script>
+import {cloneDeep} from 'lodash'
 import {icon} from "rise"
+// import iTableHeaderSorter from './iTableHeaderSort'
+import {iTableHeaderSorter} from "rise"
 export default{
   props:{
     /**
@@ -110,11 +128,19 @@ export default{
      */    
     selection:{type:Boolean,default:true},
     /**
+     * @description: 是否支持选中逻辑
+     * @param {*}
+     * @return {*}
+     */    
+    selectable: {type:Function},
+    selectConfig: {type: Object, default: () => ({})},
+    /**
      * @description: 表格索引
      * @param {*}
      * @return {*}
      */    
     index:{type:Boolean,default:false},
+    indexConfig: {type: Object, default: () => ({})},
     /**
      * @description: 表格索引表头文本
      * @param {*}
@@ -156,10 +182,35 @@ export default{
      * @param {*}
      * @return {*}
      */    
-    lang: {type: Boolean}
+    lang: {type: Boolean},
+    /**
+     * @description: 表格合并
+     * @param {*}
+     * @return {*}
+     */    
+    spanMethod: { type: Function },
+    enabletableHeadersetting: {type: Boolean, default: false},
   },
   inject:['vm'],
-  components:{icon},
+  components:{iTableHeaderSorter, icon},
+  data() {
+    return {
+      settingVisible: false,
+      header: this.tableTitle,
+      cacheNewHeader: this.tableTitle,
+    }
+  },
+  computed: {
+    tableSettingColumns() {
+      const tableSettingColumns = cloneDeep(this.header)
+      return tableSettingColumns.map(o => {
+        !o.prop && o.props && (o.prop = o.props)
+        !o.label && o.name && (o.label = o.name)
+        o.i18n = o.i18n || o.key
+        return o
+      })
+    }
+  },
   methods:{
     /**
      * @description: 单选的实现
@@ -226,11 +277,40 @@ export default{
     borderLeft({row, columnIndex}){
       const style = `border-left:2px solid #1660F1;`
       return columnIndex === 0 && row.selectedBorder === true ? style : ''
-    }
+    },
+    renewTableHeader() {
+      const data = cloneDeep(this.cacheNewHeader)
+      const header = cloneDeep(data).filter(o => !o.isHidden)
+      this.header = header.map(o => {
+        !o.prop && o.props && (o.prop = o.props)
+        !o.label && o.name && (o.label = o.name)
+        o.i18n = o.i18n || o.key
+        return o
+      })
+    },
+    handleSaveSetting(data) {
+      // console.log('handleSaveSetting',data)
+      this.cacheNewHeader = cloneDeep(data)
+      if (this.$attrs.handleSaveSetting && typeof this.$attrs.handleSaveSetting === 'function') {
+        this.$attrs.handleSaveSetting({data, done: this.renewTableHeader})
+      }
+    },
+    handleResetSetting(data) {
+      console.log('handleSaveSetting',data)
+      this.cacheNewHeader = this.tableTitle
+      if (this.$attrs.handleResetSetting && typeof this.$attrs.handleResetSetting === 'function') {
+        this.$attrs.handleResetSetting({data: this.cacheNewHeader, done: this.renewTableHeader})
+      }
+    },
   }
 }
 </script>
 <style lang='scss' scoped>
+.iFileTableList {
+  ::v-deep.el-table__body-wrapper {
+    height: auto!important;
+  }
+}
   .openLinkText{
     color:$color-blue;
     &.underline {

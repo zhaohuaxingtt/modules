@@ -12,54 +12,57 @@
       <pInput v-model="search" :placeholder="$t('search') | capitalizeFilter" />
     </div>
     <div class="right">
-      <i-user-setting :userInfo="userInfo" :menus="menus"></i-user-setting>
+      <i-user-setting
+        :userInfo="userInfo"
+        :menus="menus"
+        :activeMenu="activeMenu"
+        @click-menu="clickMenu"
+      />
       <div class="language" @click="handleChangeLang">
-        <icon symbol v-if="lang === 'zh'" class="icon" name="iconzhongyingwenzhuanhuanzhong" />
+        <icon
+          symbol
+          v-if="lang === 'zh'"
+          class="icon"
+          name="iconzhongyingwenzhuanhuanzhong"
+        />
         <icon symbol v-else class="icon" name="iconzhongyingwenzhuanhuanying" />
       </div>
-      <iMailTrigger />
-      <!-- <div class="message" @click="showMessage">
-        <el-badge :value="messageCount" :hidden="!messageCount">
-          <icon symbol class="icon" name="iconxiaoxi" />
-        </el-badge>
-      </div> -->
+      <iMailTrigger ref="iMail"/>
     </div>
-    <!-- 消息列表 -->
-    <!-- <drawer
-      ref="drawer"
-      :visible="drawerVisible"
-      @afterClear="afterClear"
-      @updateMessageCount="getCountInMail"
-    /> -->
     <notify ref="notify" v-if="!drawerVisible" />
+    <profile :visible.sync="profileVisible" />
   </div>
 </template>
 <script>
 import pInput from './input.vue'
 import { icon } from 'rise'
-import drawer from '../message/drawer'
 import notify from '../message/notify'
 import filters from '@/utils/filters'
 import { getCountInMail } from '@/api/layout/topLayout'
-import { messageSocket } from '@/api/socket'
-import { removeToken, updataComponents } from '@/utils/index.js'
+import { removeToken } from '@/utils/index.js'
 import iMailTrigger from '../mail/trigger.vue'
 import iUserSetting from './userSetting.vue'
-import store from '@/store'
+import profile from '../profile'
 export default {
   mixins: [filters],
   components: {
     pInput,
     icon,
-    drawer,
     notify,
     iMailTrigger,
-    iUserSetting
+    iUserSetting,
+    profile
   },
   props: {
     menus: {
       type: Array,
-      default: function() {
+      default: function () {
+        return []
+      }
+    },
+    activeMenu: {
+      type: Array,
+      default: function () {
         return []
       }
     }
@@ -79,92 +82,51 @@ export default {
         notice: [],
         message: []
       },
-      isClose: true
+      isClose: true,
+      profileVisible: false
     }
   },
   computed: {
     // eslint-disable-next-line no-undef
     ...Vuex.mapState({
-      userInfo: state => state.permission.userInfo
+      userInfo: (state) => state.permission.userInfo
     })
   },
   created() {
     this.lang = localStorage.getItem('lang')
-    //this.getCountInMail();
-    this.getMessageBySocket('1001')
   },
 
   beforeDestroy() {
     this.socketVm && this.socketVm.close()
   },
   methods: {
+    clickMenu(val) {
+      if (val == 'logout') {
+        this.$refs.iMail.handleHideDrawer()
+        this.$emit('click-menu', val)
+        this.$nextTick(()=>{
+          removeToken()
+          window.sessionStorage.clear()
+          window.localStorage.clear()
+          this.$store.commit('SET_USER_INFO', {})
+          window.location.href = process.env.VUE_APP_LOGOUT_URL
+        })
+      } else {
+        this.$emit('click-menu')
+      }
+      if (val === 'profile') {
+        this.showProfile()
+      }
+    },
     //模拟退出登录方法
     loginOut() {
       removeToken()
       window.location.href = '/login'
       window.location.reload()
     },
-    getMessageBySocket(userId) {
-      messageSocket(userId)
-        .then(({ res, vm }) => {
-          this.socketVm = vm
-          this.isClose = false
-
-          window.addEventListener('beforeunload', () => {
-            vm.close()
-          })
-
-          document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-              this.timer = setTimeout(() => {
-                vm.close()
-                this.isClose = true
-              }, 180000)
-            } else {
-              clearTimeout(this.timer)
-              if (this.isClose) {
-                this.reconnectMessageSocket()
-              }
-            }
-          })
-
-          try {
-            const data = JSON.parse(res.data)
-            const msgTxt = data.msgTxt
-            if (msgTxt) {
-              if (msgTxt.type == '4' || msgTxt.type == '5') {
-                if (this.drawerVisible) {
-                  this.$refs.drawer.unshift(msgTxt)
-                } else {
-                  this.$refs.notify.unshift(msgTxt)
-                }
-
-                if (msgTxt.type == '5') this.messageCount += 1
-              }
-            }
-          } catch (e) {
-            console.log(e)
-          }
-        })
-        .catch(e => {
-          this.reconnectMessageSocket()
-        })
-    },
-    reconnectMessageSocket() {
-      if (!this.isClose) {
-        return
-      }
-
-      clearTimeout(this.reconnectTimer)
-
-      this.reconnectTimer = setTimeout(() => {
-        this.getMessageBySocket('1001')
-      }, 20000)
-    },
     handleChangeLang() {
       this.lang = this.lang === 'zh' ? 'en' : 'zh'
       this.$store.commit('SET_LANGUAGE', this.lang)
-      // localStorage.setItem('lang', this.lang)
       this.$i18n.locale = this.lang
       if (this.lang == 'en') {
         // eslint-disable-next-line no-undef
@@ -180,12 +142,17 @@ export default {
     },
     // 获取消息数目
     getCountInMail() {
-      getCountInMail({ receiverId: this.userInfo.id, inMailType: 5 }).then(res => {
-        this.messageCount = res.data
-      })
+      getCountInMail({ receiverId: this.userInfo.id, inMailType: 5 }).then(
+        (res) => {
+          this.messageCount = res.data
+        }
+      )
     },
     afterClear() {
       this.getCountInMail()
+    },
+    showProfile() {
+      this.profileVisible = true
     }
   }
 }

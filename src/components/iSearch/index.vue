@@ -1,8 +1,8 @@
 <!--
  * @Author: yuszhou
  * @Date: 2021-02-25 16:34:49
- * @LastEditTime: 2021-05-24 15:45:01
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-12-02 13:57:21
+ * @LastEditors: YoHo
  * @Description: 界面中存在的搜索区域，公共组件。
  * @FilePath: \rise\src\components\iSearch\index.vue
 -->
@@ -57,6 +57,9 @@ export default {
       stypeWidth:0
     }
   },
+  created() {
+    if (this.$vnode.componentOptions.children) this.processInput(this.$vnode.componentOptions.children)
+  },
   mounted(){
     this.getWidth()
   },
@@ -73,6 +76,21 @@ export default {
     toggle(){
       this.hidens = !this.hidens
       this.$emit('toggle', this.hidens)
+    },
+    processInput(vnodes) {
+      Array.prototype.forEach.call(vnodes, vnode => {
+        if(vnode.componentOptions)  // 过滤vnode.componentOptions不存在时的报错信息
+        if (vnode.componentOptions.tag === "iInput" && (!vnode.componentOptions.propsData.type || vnode.componentOptions.propsData.type === "text")) {
+          this.$nextTick(() => {
+            vnode.elm.addEventListener("input", e => {
+              const value = e.target.value === null || e.target.value === undefined ? '' : String(e.target.value)
+              e.target.value = value.trim()
+            }, true)
+          })
+        } else {
+          if (vnode.componentOptions.children) this.processInput(vnode.componentOptions.children)
+        }
+      })
     }
   }
 }

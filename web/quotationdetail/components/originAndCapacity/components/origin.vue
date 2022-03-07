@@ -8,12 +8,12 @@
 -->
 <template>
   <div class="origin">
-    <iCard :title="$t('LK_GONGYINGSHANGSHENGCHANDI')">
+    <iCard :title="language('LK_GONGYINGSHANGSHENGCHANDI', '供应商生产地')">
       <template v-if="!disabled" #header-control>
-        <iButton @click="selectOrigin">{{ $t('LK_XUANZESHENGCHANGONGCHANG') }}</iButton>
+        <iButton @click="selectOrigin">{{ language('LK_XUANZESHENGCHANGONGCHANG', '选择生产工厂') }}</iButton>
       </template>
       <div>
-        <tableList class="table" :selection="false" index :tableData="tableListData" :tableTitle="tableTitle">
+        <tableList lang class="table" :selection="false" index :tableData="tableListData" :tableTitle="tableTitle">
           <template #isNominate="scope">
             <span>{{ scope.row.isNominate | boolFilter }}</span>
           </template>
@@ -75,11 +75,15 @@ export default {
       })
       .then(res => {
         if (res.code == 200) {
-          this.tableListData = [{
-            ...res.data,
-            ...res.data.addressInfoVo,
-            id: res.data.id
-          }]
+          if (res.data) {
+            this.tableListData = [{
+              ...res.data,
+              ...res.data.addressInfoVo,
+              id: res.data.id
+            }]
+          } else {
+            this.tableListData = []
+          }
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
         }

@@ -10,8 +10,8 @@
   <div class="infoAndReq" v-loading="loading">
     <info ref="info" :data="partInfoGroup.partInfo" />
     <aggregate class="margin-top20" ref="aggregate" :data="partInfoGroup.aggregate" />
-    <bnkAttachmentByProject class="margin-top20" ref="bnkAttachmentByProject" :data="partInfoGroup.purchaseBnkList" />
-    <bnkAttachmentByLogistics class="margin-top20" ref="bnkAttachmentByLogistics" :data="partInfoGroup.logisticsBnkList" />
+    <bnkAttachmentByProject class="margin-top20" ref="bnkAttachmentByProject" :partInfo="partInfo" :data="partInfoGroup.purchaseBnkList" />
+    <bnkAttachmentByLogistics class="margin-top20" ref="bnkAttachmentByLogistics" :partInfo="partInfo" :data="partInfoGroup.logisticsBnkList" />
   </div>
 </template>
 
@@ -78,6 +78,9 @@ export default {
         this.loading = false
       })
       .catch(() => this.loading = false)
+
+      this.$refs.bnkAttachmentByProject.getBnkFiles()
+      this.$refs.bnkAttachmentByLogistics.getBnkFiles()
     }
   }
 }

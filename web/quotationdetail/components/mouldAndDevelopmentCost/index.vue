@@ -62,14 +62,12 @@ export default {
         this.$refs.skdDevelopmentCost.getDevFeeSKD()
         this.$refs.lcMould.getMouldFee()
         this.$refs.lcDevelopmentCost.getDevFee()
-      } {
+      } else {
         this.$refs.mould.getMouldFee()
         this.$refs.developmentCost.getDevFee()
       }
     },
     getParams(type, moduleRefName, devCostRefName) {
-      console.log("bbbbbbbbb", this.$refs[type !== "SKDLC" ? "mould" : moduleRefName])
-
       return {
         quotationId: this.partInfo.quotationId,
         moduleFeeDTOList: this.$refs[type !== "SKDLC" ? "mould" : moduleRefName].tableListData.map(item => ({
@@ -107,6 +105,8 @@ export default {
         }
       } else {
         if (this.$refs.skdMould.tableListData.some(item => item.isShared == 1)) {
+          console.log("this.$refs.skdMould.dataGroup.shareQuantity", this.$refs.skdMould.dataGroup.shareQuantity)
+
           if (!this.$refs.skdMould.dataGroup.shareQuantity || this.$refs.skdMould.dataGroup.shareQuantity == 0)
             throw iMessage.warn("SKD模具费用存在分摊数据，请填写一个大于0的分摊数量")
         }
@@ -134,7 +134,7 @@ export default {
           saveModuleDevFeeSkd(this.getParams("SKD"))
           .then(res => {
             if (res.code == 200) {
-              r()
+              r(res)
               if (type !== "submit") iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
               this.init()
             } else {
@@ -156,7 +156,16 @@ export default {
               this.init()
               r()
             } else {
-              iMessage.error(this.language("CAOZUOSHIBAI", "操作失败"))
+              this.$message({
+                dangerouslyUseHTMLString: true,
+                type: "error",
+                message: [res1, res2].reduce((acc, cur) => {
+                  if (cur.code != 200) return acc += `<p>${ this.$i18n.locale === "zh" ? cur.desZh : cur.desEn }</p>`
+                  else return acc
+                }, "")
+              })
+
+              j()
             }
           })
           .catch(() => {
@@ -166,7 +175,7 @@ export default {
           saveModuleDevFee(this.getParams("LC"))
           .then(res => {
             if (res.code == 200) {
-              r()
+              r(res)
               if (type !== "submit") iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
               this.init()
             } else {

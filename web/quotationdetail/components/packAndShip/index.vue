@@ -2,57 +2,63 @@
  * @Descripttion: 供应商报价界面-报价页面-零件报价-包装运输
  * @Author: Luoshuang
  * @Date: 2021-04-22 16:53:47
- * @LastEditTime: 2021-07-20 15:57:03
+ * @LastEditTime: 2021-11-25 01:55:19
 -->
 <template>
-  <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU" v-loading="loading">
-    <iCard :title="language('CANKAOBAOZHUANG','参考包装')">
-      <iFormGroup
-        :row="4"
-        inline
-        class="packAndShip-form margin-top20"
-      >
-        <iFormItem
-          v-for="item in referenceInputs"
-          :key="item.props"
-          :label="language(item.i18n, item.name) + '：'"
-        >
-          <iText></iText>
-        </iFormItem>
-      </iFormGroup>
+  <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU ||  partInfo.priceStatus == 'DB'" v-loading="loading">
+    <iCard v-if="url" class="packAndShip" v-loading="loading">
+      <iframe  class="iframe" :src="url"></iframe>
     </iCard>
-    <iCard :title="language('BAOZHUANGYAOQIU','包装要求')" class="margin-top20">
-      <iFormGroup
-        :row="4"
-        inline
-        class="packAndShip-form margin-top20"
-      >
-        <iFormItem
-          v-for="item in requireInputs"
-          :key="item.props"
-          :label="language(item.i18n, item.name) + '：'"
+    <div v-else>
+      <iCard :title="url ? '' : language('CANKAOBAOZHUANG','参考包装')">
+        <iFormGroup
+          :row="4"
+          inline
+          class="packAndShip-form margin-top20"
         >
-          <iText v-if="disabled">{{ item.type === 'select' ? getName(params[item.props]) : params[item.props] }}</iText>
-          <iSelect v-else-if="item.type === 'select'" v-model="params[item.props]">
-            <el-option
-              v-for="item in selectOptions[item.selectOption]"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </iSelect>
-          <iInput v-else :value="params[item.props]" title="" type="text" @input="val => handleInput(val, params, item.props)"></iInput>
-        </iFormItem>
-      </iFormGroup>
-    </iCard>
+          <iFormItem
+            v-for="item in referenceInputs"
+            :key="item.props"
+            :label="language(item.i18n, item.name) + '：'"
+          >
+            <iText></iText>
+          </iFormItem>
+        </iFormGroup>
+      </iCard>
+      <iCard :title="url ? '' : language('BAOZHUANGYAOQIU','包装要求')" class="margin-top20">
+        <iFormGroup
+          :row="4"
+          inline
+          class="packAndShip-form margin-top20"
+        >
+          <iFormItem
+            v-for="item in requireInputs"
+            :key="item.props"
+            :label="language(item.i18n, item.name) + '：'"
+          >
+            <iText v-if="disabled">{{ item.type === 'select' ? getName(params[item.props]) : params[item.props] }}</iText>
+            <iSelect v-else-if="item.type === 'select'" v-model="params[item.props]">
+              <el-option
+                v-for="item in selectOptions[item.selectOption]"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </iSelect>
+            <iInput v-else :value="params[item.props]" title="" type="text" @input="val => handleInput(val, params, item.props)"></iInput>
+          </iFormItem>
+        </iFormGroup>
+      </iCard>
+    </div>
   </div>
   <!----------------供应商报价界面-报价页面-零件报价-包装运输---------------------------------------------------->
   <!--- 先做出[包装费][运输费][操作费]三个文本输入框（只能输入数字，可以输入小数点后四位），提供给报价成本汇总使用----->
   <!----在未来BNK页面开发好后，再将该包装运输页面迁移到本系统内---------------------------------------------------->
   <iCard v-else class="packAndShip" v-loading="loading">
-    <div class="header">
-      <span class="title">{{ $t('LK_BAOZHUANGYUNSHU') }}</span>
-      <span class="tip margin-left10">{{ $t('LK_DANWEIYUAN') }}</span>
+    <iframe v-if="url" class="iframe" :src="url"></iframe>
+    <div class="header" v-else>
+      <span class="title">{{ language('LK_BAOZHUANGYUNSHU', '包装运输') }}</span>
+      <span class="tip margin-left10">{{ language('LK_DANWEIYUAN', '(单位：元)') }}</span>
     </div>
     <!-------输入框区域------->
     <iFormGroup
@@ -60,14 +66,15 @@
       inline
       class="packAndShip-form margin-top20"
       :rules="rules"
+      v-if="!url"
     >
       <iFormItem
         v-for="item in inputs"
         :key="item.props"
         :label="language(item.i18n, item.name) + '：'"
       >
-          <!-------只能输入数字，可以输入小数点后四位---------->
-        <iInput v-if="!disabled && item.editable" v-model="params[item.props]" title="" type="number" oninput="if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+5)}"></iInput>
+          <!-- -------只能输入数字，可以输入小数点后四位---------- -->
+        <iInput v-if="!disabled && item.editable" v-model="params[item.props]" :disabled='partInfo.roundsType == "biddingRound"' title="" type="number" oninput="if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+5)}"></iInput>
         <iText v-else>{{ params[item.props] }}</iText>
       </iFormItem>
     </iFormGroup>
@@ -80,6 +87,7 @@ import { savePackageTransport, getPackageTransport } from '@/api/rfqManageMent/q
 import { getDictByCode } from '@/api/dictionary'
 import {partProjTypes} from '@/config'
 import { priceStatusMixin } from "../mixins"
+import { bnkSupplierToken } from "@/api/aeko/quotationdetail"
 
 export default {
   components: {
@@ -100,9 +108,17 @@ export default {
         }
       }
     },
-    disabled: {type: Boolean}
+    disabled: {type: Boolean},
+    roundIsOnlineBidding: {
+      type: Boolean,
+      default: false
+    }
   },
   computed: {
+    // eslint-disable-next-line no-undef
+    ...Vuex.mapState({
+      userInfo: state => state.permission.userInfo,
+    }),
     inputs() {
       if (this.isSkd || this.isSkdLc) {
         this.params.logisticsQuotationStatus = undefined
@@ -144,13 +160,36 @@ export default {
         { props: "packageLs", name: "LS(PC)", i18n: 'LS_PC' },
         { props: "packageStack", name: "Stack", i18n: 'STACK' },
       ],
-      selectOptions: {}
+      selectOptions: {},
+      url: ""
     };
   },
   created() {
     this.getPackageOptions()
   },
   methods: {
+    bnkSupplierToken() {
+      return bnkSupplierToken({
+        partProjId: this.partInfo.projectPartId,
+        rfqId: this.partInfo.rfqId,
+        supplierId: this.userInfo.supplierId || this.$route.query.supplierId
+      })
+      .then(res => {
+        if (res.code == 200 && res.data) {
+          if (this.userInfo.supplierId) {
+            this.url = `${ process.env.VUE_APP_BNK_URL }/sol-bnk/pages/rise/quotes/lsp-view.jsf?partProjId=${ this.partInfo.projectPartId }&tmRfqId=${ this.partInfo.rfqId }&ppSupplierId=${ this.userInfo.supplierId }&ppSupplierUserId=${ this.userInfo.id }&token=${ res.data }`
+          } else if (this.$route.query.supplierId) {
+            this.url = `${ process.env.VUE_APP_BNK_URL }/sol-bnk/pages/rise/quotes/lsp-employee-view.jsf?partProjId=${ this.partInfo.projectPartId }&tmRfqId=${ this.partInfo.rfqId }&ppSupplierId=${ this.$route.query.supplierId }&ppSupplierUserId=-1&token=${ res.data }`
+          }
+          
+          this.$emit("hidePackAndShipSave")
+        } else {
+          this.url = ""
+          iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+        }
+      })
+    },
+    // 
     getName(val) {
       return this.selectOptions.PACKAGETYPE?.find(item => item.value === val)?.label
     },
@@ -180,8 +219,16 @@ export default {
      * @param {*}
      * @return {*}
      */    
-    init(){
-      this.getPackageTransport()
+    async init(){
+      if (!this.roundIsOnlineBidding){
+        this.bnkSupplierToken()
+      }else{
+        this.getPackageTransport()
+      }
+      
+      // if (!this.url) {
+      //   this.getPackageTransport()
+      // }
     },
     /**
      * 获取包装运输初始数据
@@ -209,6 +256,7 @@ export default {
      */
     save(type) {
       return new Promise((r,j)=>{
+        if (this.url) return r()
         this.loading = true
         savePackageTransport(this.params).then(res => {
           if (res && res.result) {
@@ -252,6 +300,11 @@ export default {
       width: 140px;
       font-size: 16px;
     }
+  }
+
+  .iframe {
+    width: 100%;
+    height: 80vh;
   }
 }
 </style>

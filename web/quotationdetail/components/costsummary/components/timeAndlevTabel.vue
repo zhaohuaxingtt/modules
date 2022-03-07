@@ -1,35 +1,45 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-23 15:38:31
- * @LastEditTime: 2021-07-14 11:46:12
+ * @LastEditTime: 2022-01-25 02:03:22
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\costsummary\components\timeAndlevTabel.vue
 -->
 <template>
-  <iCard class="topcontent" v-loading='copeData' :title="showTitle ? language('LCBAOJIA', 'LC报价') : ''">
+  <iCard class="topcontent" v-loading='copeData' :title="showTitle ? language('LCBAOJIA', 'LC报价') : ''" :class="{ noTitle: !showTitle }">
     <!--------------------------------------------------------->
     <!----------------------搜索区域  -------------------------->
     <!--------------------------------------------------------->        
     <iFormGroup row='4' class="tscss">
-      <i-form-item :label="$t('LK_COPE_BAOJIA')" v-if='!disabled'>
-        <iSelect :placeholder='$t("partsprocure.CHOOSE")' v-model="selectedList" multiple collapse-tags @visible-change='changeDataCope'>
+      <i-form-item :label="language('LK_COPE_BAOJIA', '复制报价至')" v-if='!disabled'>
+        <iSelect :placeholder='language("QINGXUANZE", "请选择")' v-model="selectedList" multiple collapse-tags @visible-change='changeDataCope'>
           <el-option v-for="items in selectList" :key='items.fsNum' :value='items.fsNum' :label="`${ items.partNum }_${ items.fsNum }`"></el-option>
         </iSelect>
       </i-form-item>
-      <i-form-item :label="showTitle ? language('LCQIBUSHENGCHANRIQI', 'LC起步生产日期') : $t('LK_STARTTIME')">
-        <iText v-if='disabled'>{{allTableData.startProductDate}}</iText> 
-        <iDatePicker v-else v-model="allTableData.startProductDate"></iDatePicker>
+      <i-form-item :label="showTitle ? language('LCQIBUSHENGCHANRIQI', 'LC起步生产日期') : language('LK_STARTTIME', '起步生产日期')">
+        <div class="startProductDate">
+          <iText v-if='disabled'>{{allTableData.startProductDate}}</iText>
+          <iDatePicker v-else v-model="allTableData.startProductDate" :disabled="isAutoCal"></iDatePicker>
+          <el-popover
+            v-if="!isSkdLc"
+            placement="top"
+            width="200"
+            trigger="hover"
+            :content="language('SHIFOUZIDONGJISUAN', '是否自动计算')">
+              <el-checkbox class="isAutoCal" slot="reference" :disabled="disabled" v-model="isAutoCal" @change="handleChangeIsAutoCal"></el-checkbox>
+          </el-popover>
+        </div>
       </i-form-item>
-      <i-form-item :label="$t('LK_CBDLINEKEY')">
+      <i-form-item :label="language('LK_CBDLINEKEY', 'CBD层级')">
         <iText v-if='disabled'>L{{allTableData.level}}</iText> 
         <iSelect v-else @change='changeCbdLev' :value='allTableData.level'>
           <el-option :value='items.value' :label="items.label" v-for="(items,index) in cbdlist" :key='index'></el-option>
         </iSelect>
       </i-form-item>
       <i-form-item class="rightFloat">
-        <el-checkbox v-if='!disabled' v-model="allTableData.editFlag" v-show="allTableData.level > 1">{{$t('LK_SHOUDONGSHURU')}}</el-checkbox>
-        <iButton @click="downloadFile" :loading='downLoadLoding'>{{$t('LK_XIAZAICBD')}}</iButton>
+        <el-checkbox v-if='!disabled && isSourcing' v-model="allTableData.editFlag" v-show="allTableData.level > 1">{{ language('LK_SHOUDONGSHURU', '手动输入')}}</el-checkbox> <!-- 开放此处，需要先确认CRW-2590 -->
+        <iButton @click="downloadFile" :loading='downLoadLoding'>{{ language('LK_XIAZAICBD', '下载CBD')}}</iButton>
         <el-upload
           v-if='!disabled' 
           class="floatright margin-left10"
@@ -45,27 +55,30 @@
           :on-error='onError'
           :on-success='fileSuccess'
         >
-          <iButton :loading='uploadLoading'>{{$t('LK_UPLOADBJ')}}</iButton>
+          <iButton :loading='uploadLoading'>{{ language('LK_UPLOADBJ', '上传CBD')}}</iButton>
         </el-upload>
       </i-form-item>
     </iFormGroup>
-    <div class="textAlingRight">{{$t('LK_DANWEI')}}：RMB/Pc.</div>
+    <div class="textAlingRight">{{ language('LK_DANWEI', '单位')}}：RMB/Pc.</div>
     <!--------------------------------------------------------->
     <!----------------------表格百分比-------------------------->
     <!--------------------------------------------------------->
-    <tableList :tableTitle='tableTilel1' :notEdit='disabled ? true : (allTableData.level == 1 ? false : !allTableData.editFlag)' :tableData='tableData.tableData' :isSteel="isSteel" class="margin-top10"></tableList>
-    <persent v-if='!tableData.persent.every(items=>items == 0)' :persentList='tableData.persent' :realDataList='tableData.tableData'></persent>
+    <tableList lang :tableTitle='tableTilel1' :notEdit='disabled' :tableData='tableData.tableData' :isSteel="isSteel" :roundIsOnlineBidding='roundIsOnlineBidding' class="margin-top10"></tableList>
+    <persent lang v-if='Array.isArray(tableData.persent) && !tableData.persent.every(items=>items == 0)' :persentList='tableData.persent' :realDataList='tableData.tableData'></persent>
   </iCard>
 </template>
 <script>
-import {iCard,iFormGroup,iFormItem,iText,iDatePicker,iSelect,iButton,iMessageBox,iMessage} from 'rise';
+import {iCard,iFormGroup,iFormItem,iText,iDatePicker,iSelect,iButton,iMessageBox,iMessage, icon} from 'rise';
 import tableList from '../../../../workingRfq/components/tableList'
 import {tableTilel1Fn} from './data'
 import persent from './persent'
-import {partsQuotations,copyPartsQuotation,downPartCbdLoadFile} from '@/api/rfqManageMent/quotationdetail'
+import {partsQuotations,copyPartsQuotation,downPartCbdLoadFile, getIsAutoCal} from '@/api/rfqManageMent/quotationdetail'
 import { getToken } from "@/utils";
+import { priceStatusMixin } from "rise/web/quotationdetail/components/mixins"
+
 export default{
-  components:{iCard,iFormGroup,iFormItem,iText,tableList,persent,iDatePicker,iSelect,iButton},
+  components:{iCard,iFormGroup,iFormItem,iText,tableList,persent,iDatePicker,iSelect,iButton, icon},
+  mixins: [ priceStatusMixin ],
   props:{
     tableData:{
       type:Object,
@@ -98,21 +111,46 @@ export default{
       type: Boolean,
       default: false,
     },
+    roundIsOnlineBidding:{
+      type:Boolean,
+      default:false
+    },
     showTitle: {
       type: Boolean,
       default: false
+    },
+    isAutoCal: {
+      type: Boolean,
+      default: false
+    },
+    partInfo: {
+      type: Object,
+      default: () => ({})
     }
   },
   inject:['vm'],
   data(){
     return {
-      uploadUrl:process.env.VUE_APP_SUPPLIER_CBHUIZ,
+      uploadUrl: process.env.VUE_APP_SOURCING,
       tableTilel1:[],
       selectList:[],
       selectedList:[],
       downLoadLoding:false,
       uploadLoading:false,
-      copeData:false
+      copeData:false,
+    }
+  },
+  computed: {
+    // eslint-disable-next-line no-undef
+    ...Vuex.mapState({
+      userInfo: state => state.permission.userInfo,
+    }),
+    isSourcing(){
+      try {
+        return this.$route.query.sourcing
+      } catch (error) {
+        return false
+      }
     }
   },
   methods:{
@@ -132,7 +170,7 @@ export default{
      * @return {*}
      */    
     translateTableTileData(lev){
-      this.tableTilel1 = tableTilel1Fn(lev, this.partType,this.partProjectType)
+      this.tableTilel1 = tableTilel1Fn(lev, this.partType, this.partProjectType)
     },
     /**
      * @description: 1.变换cbd层级。变换界面展示，影响界面：L1 除了汇总，只留cbd。 L2 替换表头展示的2.x L3:暂时没提供模板。
@@ -221,7 +259,30 @@ export default{
         iMessage.error("上传失败！")
       }
     },
-    getToken
+    getToken,
+    handleChangeIsAutoCal() {
+      if (this.isAutoCal) {
+        this.getIsAutoCal()
+      } else {
+        this.$emit("update:isAutoCal", false)
+      }
+    },
+    getIsAutoCal() {
+      getIsAutoCal({
+        isAutoCal: true,
+        quotationId: this.vm.partInfo.quotationId,
+        supplierId: this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId
+      })
+      .then(res => {
+        if (res.code == 200) {
+          this.allTableData.startProductDate = res.data.startProductDate
+          this.$emit("update:isAutoCal", true)
+        } else {
+          iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+          this.$emit("update:isAutoCal", false)
+        }
+      })
+    }
   }
 }
 </script>
@@ -247,5 +308,20 @@ export default{
   text-align: right;
   color: #485465;
   font-size: 12px;
+}
+
+.startProductDate {
+  display: flex;
+  align-items: center;
+
+  .isAutoCal {
+    margin-left: 8px;
+  }
+}
+
+.noTitle {
+  ::v-deep .cardBody {
+    padding-top: 30px!important;
+  }
 }
 </style>
