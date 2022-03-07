@@ -74,7 +74,7 @@
       <tableList :lang="true" height="100%" class="table" :tableData="tableListData" :tableTitle="tableTitle" @handleSelectionChange="handleSelectionChange">
         <template #priceType="scope">
           <span v-if="(disabled && !dgysBj) || !isSkdLc(scope.row)">{{ scope.row.priceType }}</span>
-          <iSelect v-else v-model="scope.row.priceType">
+          <iSelect v-else v-model="scope.row.priceType" @change="handleChangeByPriceType($event, scope.row)">
             <el-option label="LC" value="LC"></el-option>
             <el-option label="SKD" value="SKD"></el-option>
           </iSelect>
@@ -98,7 +98,7 @@
           <span v-else>{{ scope.row.assembledPartName }}</span>
         </template>
         <template #assembledPartCode="scope">
-          <iSelect v-if="!disabled && dgysBj" v-model="scope.row.assembledPartCode" @change="handleChangeByAssembledPartCode($event, scope.row.assembledPartPrjCode, scope.row)">
+          <iSelect v-if="!disabled && dgysBj" v-model="scope.row.assembledPartCode" @change="handleChangeByAssembledPartCode($event, scope.row)">
             <el-option v-for="partNumObj in partNums" :key="partNumObj.value" :label="partNumObj.label" :value="partNumObj.value"></el-option>
           </iSelect>
           <span v-else>{{ scope.row.assembledPartCode }}</span>
@@ -404,7 +404,7 @@ export default {
       }
     },
     // 零件号选择
-    handleChangeByAssembledPartCode(partNum, fsNum, row) {
+    handleChangeByAssembledPartCode(partNum, row) {
       this.$set(row, "assembledPartPrjCode", "")
       const fsObj = this.partNumMap[partNum][0]
       if (fsObj) {
@@ -412,7 +412,9 @@ export default {
         this.handleInputByAssembledPartName(fsObj.partName, row)
       }
 
-      const mouldIdIndexes = this.tableListData.map(item => {
+      this.$set(row, "mouldId", "")
+
+      const mouldIdIndexes = this.tableListData.filter(item => item.priceType === row.priceType).map(item => {
         const list = item.mouldId.split("_")
         return +list[list.length - 1].replace(/\D/g, "") || 0
       })
@@ -420,8 +422,8 @@ export default {
       mouldIdIndexes.sort((a, b) => b - a)
       const index = mouldIdIndexes[0] ? (mouldIdIndexes[0] >= 10 ? (mouldIdIndexes[0] + 1) + "" : "0" + (mouldIdIndexes[0] + 1)) : "01"
     
-      if (fsNum) {
-        this.$set(row, "mouldId", `${ this.partInfo.rfqId }_${ this.userInfo.supplierId }_${ fsNum }_T${ index }`)
+      if (row.assembledPartPrjCode && row.priceType) {
+        this.$set(row, "mouldId", `${ this.partInfo.rfqId }_${ this.userInfo.supplierId }_${ row.assembledPartPrjCode }_${ row.priceType === "LC" ? "TL" : "TS" }${ index }`)
       }
     },
     handleInputByModeTotalLife(val, row) {
@@ -442,8 +444,10 @@ export default {
         this.$set(row, "assembledPartCode", fsObj.partNum)
         this.$set(row, "assembledPartName", fsObj.partName)
         this.handleInputByAssembledPartName(fsObj.partName, row)
+
+        this.$set(row, "mouldId", "")
         
-        const mouldIdIndexes = this.tableListData.map(item => {
+        const mouldIdIndexes = this.tableListData.filter(item => item.priceType === row.priceType).map(item => {
           const list = item.mouldId.split("_")
           return +list[list.length - 1].replace(/\D/g, "") || 0
         })
@@ -451,9 +455,27 @@ export default {
         mouldIdIndexes.sort((a, b) => b - a)
         const index = mouldIdIndexes[0] ? (mouldIdIndexes[0] >= 10 ? (mouldIdIndexes[0] + 1) + "" : "0" + (mouldIdIndexes[0] + 1)) : "01"
       
-        if (fsNum) {
-          this.$set(row, "mouldId", `${ this.partInfo.rfqId }_${ this.userInfo.supplierId }_${ fsNum }_T${ index }`)
+        if (fsNum && row.priceType) {
+          this.$set(row, "mouldId", `${ this.partInfo.rfqId }_${ this.userInfo.supplierId }_${ fsNum }_${ row.priceType === "LC" ? "TL" : "TS" }${ index }`)
         }
+      }
+    },
+    // 价格类型选择
+    handleChangeByPriceType(priceType, row) {
+      this.$set(row, "mouldId", "")
+
+      console.log("priceType", priceType)
+
+      const mouldIdIndexes = this.tableListData.filter(item => item.priceType === priceType).map(item => {
+        const list = item.mouldId.split("_")
+        return +list[list.length - 1].replace(/\D/g, "") || 0
+      })
+
+      mouldIdIndexes.sort((a, b) => b - a)
+      const index = mouldIdIndexes[0] ? (mouldIdIndexes[0] >= 10 ? (mouldIdIndexes[0] + 1) + "" : "0" + (mouldIdIndexes[0] + 1)) : "01"
+
+      if (row.assembledPartPrjCode && priceType) {
+        this.$set(row, "mouldId", `${ this.partInfo.rfqId }_${ this.userInfo.supplierId }_${ row.assembledPartPrjCode }_${ priceType === "LC" ? "TL" : "TS" }${ index }`)
       }
     },
     handleInputByMouldType($event, row) {
