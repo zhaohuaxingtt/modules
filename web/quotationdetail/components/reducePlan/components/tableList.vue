@@ -149,7 +149,7 @@ export default {
             }
             .table-data-item{
                 p{
-                    min-width: 170px;
+                    width: 180px;
                     text-align:center;
                     font-size: 14px;
                     height: 50px;
@@ -158,6 +158,9 @@ export default {
                     padding: 0 24px;
                     margin-bottom: 2px;
                     margin-left: 2px;
+                    ::v-deep.el-input{
+                        width: 100%;
+                    }
                 }
             }
         }
