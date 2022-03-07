@@ -16,8 +16,9 @@
       v-else-if="title || $slots['header-control'] || headerControl"
       >
         <span v-if="title" class="title">
-          {{ title }}
+          <span v-html='title' class="title_content" @click="emitTile()"></span>  
           <span v-if="isRequired" class="required">*</span>  
+          <slot name="subInfo"></slot>
         </span>
         
         <div>
@@ -26,6 +27,10 @@
           </div>
           <i @click="handleCollapse" v-if='collapse' class="el-icon-arrow-up collapse margin-left20 cursor" :class="{ rotate: !collapseValue }"></i>
         </div>
+    </div>
+    <!-- body不折叠部分 -->
+    <div class="bodyShow" v-if="title">
+      <slot name="body"></slot>
     </div>
     <el-collapse-transition>
       <div v-show="collapseValue" v-if="$slots.default">
@@ -71,6 +76,9 @@ export default {
     }
   },
   methods: {
+    emitTile(){
+      this.$emit('handleTitle',this)
+    },
     handleCollapse() {
       this.collapseValue = !this.collapseValue
       this.$emit('handleCollapse', this.collapseValue)
@@ -131,6 +139,10 @@ export default {
   .cardBody {
     height: 100%;
     padding: 30px 40px;
+  }
+  
+  .bodyShow {
+    padding: 0px 40px;
   }
 }
 

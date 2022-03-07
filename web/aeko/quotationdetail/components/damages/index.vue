@@ -12,14 +12,15 @@
           <div>
             <span class="title">{{ language('LK_DAMAGES_ZHONGZHIFEI','终⽌费') }}</span>
           </div>
-          <div v-if="!disabled" class="control">
+          <div v-if="!disabled && !editDisabled" class="control">
             <iButton :loading="btnLoading" v-permission.auto="AEKO_BAOJIADAN_TAB_ZHONGZHIFEI_BUTTON_SAVE|保存"  @click="handleSave">{{language('LK_BAOCUN','保存')}}</iButton>
           </div>
         </div>
       </template>
       <div class="contain">
         <span class="contain-label">{{ language('LK_DAMAGES_ZHONGZHIFEI','终⽌费') }}:</span>
-        <iInput class="contain-input" :disabled="disabled" @input="handleInputBySampleUnitPrice" v-model.trim="value"></iInput>
+        <!-- <iInput class="contain-input" :disabled="disabled || editDisabled" @input="handleInputBySampleUnitPrice" v-model.trim="value"></iInput> -->
+        <thousandsFilterInput class="contain-input" :filterDisabled="disabled || editDisabled" :numberProcessor="2" @handleInput="handleInputBySampleUnitPrice" :inputValue="value"/>
       </div>
   </iCard>
 </template>
@@ -34,11 +35,13 @@ import {
 import { saveTerminationPrice } from '@/api/aeko/quotationdetail'
 import { cloneDeep } from "lodash"
 import { numberProcessor } from '@/utils'
+import thousandsFilterInput from 'rise/web/aeko/quotationdetail/components/thousandsFilterInput'
 export default {
   components:{
     iCard,
     iButton,
     iInput,
+    thousandsFilterInput,
   },
   props:{
     basicInfo:{
@@ -46,6 +49,10 @@ export default {
       default:()=>{},
     },
     disabled: {
+      type: Boolean,
+      default: false
+    },
+    editDisabled: {
       type: Boolean,
       default: false
     },
@@ -80,9 +87,9 @@ export default {
         }
       })
     },
-    saveTerminationPrice(beforeHook, afterHook) {
+    async saveTerminationPrice(beforeHook, afterHook) {
       const {value} = this;
-      if(!value) return iMessage.warn(this.language('LK_AEKO_TAB_DAMAGES_TIPS','请填写后提交'));
+      if(!value) throw iMessage.warn(this.language('LK_AEKO_TAB_DAMAGES_TIPS','请填写后提交'));
       const {basicInfo={}} = this;
       const {quotationId=""} = basicInfo;
       const data = {
@@ -96,8 +103,8 @@ export default {
         if (typeof afterHook === "function") afterHook()
       })
     },
-    handleInputBySampleUnitPrice(){
-      const {value} = this;
+    handleInputBySampleUnitPrice(value){
+      // const {value} = this;
       this.value = numberProcessor(value, 2)
     },
   }

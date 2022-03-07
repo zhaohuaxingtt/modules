@@ -6,7 +6,7 @@
  * @Description: 扩产能计划
 -->
 <template>
-  <iCard class="caexpan-card" :title="i18nLanguage('KUOCHANNENGJIHUA','扩产能计划')">
+  <iCard class="caexpan-card" :title="language('KUOCHANNENGJIHUA','扩产能计划')">
     <div class="caexpan-card-body">
       <el-table
         fit
@@ -15,13 +15,13 @@
         :data='dataList'
         width="100%"
         default-expand-all
-        :empty-text="i18nLanguage('LK_ZANWUSHUJU','暂无数据')"
+        :empty-text="language('ZANWUSHUJU','暂无数据')"
         class="capacityTable">
         <el-table-column
           align='center'
           width="150"
           prop="capacityExtPlan"
-          :label="i18nLanguage('KUOCHANNENGJIHUA','扩产能计划')">
+          :label="language('KUOCHANNENGJIHUA','扩产能计划')">
         </el-table-column>
         <el-table-column
           align='center'
@@ -29,7 +29,7 @@
           label="">
         <template slot="header">
           <div class="auoHeader">
-            <div class="auoHeaderRow">{{i18nLanguage('CAP_EATCHANNENGTIAN','E./AT产能/天')}}</div>
+            <div class="auoHeaderRow">{{language('CAP_EATCHANNENGTIAN','E./AT产能/天')}}</div>
             <div class="auoHeaderCol"><div>Norm.</div><div>Max.</div></div>
           </div>
         </template>
@@ -38,7 +38,7 @@
              <div>
               <iInput
                 v-model="scope.row.capacityNormDay"
-                :placeholder="i18nLanguage('LK_QINGSHURU','请输入')"
+                :placeholder="language('LK_QINGSHURU','请输入')"
                 :disabled="disabled"
                 clearable
               ></iInput>
@@ -46,7 +46,7 @@
             <div>
               <iInput
                 v-model="scope.row.capacityMaxDay"
-                :placeholder="i18nLanguage('LK_QINGSHURU','请输入')"
+                :placeholder="language('LK_QINGSHURU','请输入')"
                 :disabled="disabled"
                 clearable
               ></iInput>
@@ -60,7 +60,7 @@
           label="">
         <template slot="header">
           <div class="auoHeader">
-            <div class="auoHeaderRow">{{i18nLanguage('CAP_CHANNENGZHOU','E./AT产能/周')}}</div>
+            <div class="auoHeaderRow">{{language('CAP_CHANNENGZHOU','E./AT产能/周')}}</div>
             <div class="auoHeaderCol"><div>Norm.</div><div>Max.</div></div>
           </div>
         </template>
@@ -69,7 +69,7 @@
             <div>
               <iInput
                 v-model="scope.row.capacityNormWeek"
-                :placeholder="i18nLanguage('LK_QINGSHURU','请输入')"
+                :placeholder="language('LK_QINGSHURU','请输入')"
                 :disabled="disabled"
                 clearable
               ></iInput>
@@ -77,7 +77,7 @@
             <div>
               <iInput
                 v-model="scope.row.capacityMaxWeek"
-                :placeholder="i18nLanguage('LK_QINGSHURU','请输入')"
+                :placeholder="language('LK_QINGSHURU','请输入')"
                 :disabled="disabled"
                 clearable
               ></iInput>
@@ -91,7 +91,7 @@
           label="">
         <template slot="header">
           <div class="auoHeader">
-            <div class="auoHeaderRow">{{i18nLanguage('CAP_CHANNENGNIAN','E./AT产能/年')}}</div>
+            <div class="auoHeaderRow">{{language('CAP_CHANNENGNIAN','E./AT产能/年')}}</div>
             <div class="auoHeaderCol"><div>Norm.</div><div>Max.</div></div>
           </div>
         </template>
@@ -100,7 +100,7 @@
             <div>
               <iInput
                 v-model="scope.row.capacityNormYear"
-                :placeholder="i18nLanguage('LK_QINGSHURU','请输入')"
+                :placeholder="language('LK_QINGSHURU','请输入')"
                 :disabled="disabled"
                 clearable
               ></iInput>
@@ -108,7 +108,7 @@
             <div>
               <iInput
                 v-model="scope.row.capacityMaxYear"
-                :placeholder="i18nLanguage('LK_QINGSHURU','请输入')"
+                :placeholder="language('LK_QINGSHURU','请输入')"
                 :disabled="disabled"
                 clearable
               ></iInput>
@@ -190,7 +190,7 @@ export default {
         })
         if (res.code === '200') {
           this.getFetchData()
-          iMessage.success(this.i18nLanguage('LK_CAOZUOCHENGGONG','操作成功'))
+          iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
           state = true
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)

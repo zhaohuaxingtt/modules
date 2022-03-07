@@ -9,10 +9,10 @@
 <template>
   <div class="projectSchedule">
     <div class="header">
-      <span class="title">{{ $t('LK_XIANGMUJINDU') }}</span>
+      <span class="title">{{ language('LK_XIANGMUJINDU', '项目进度') }}</span>
     </div>
     <div class="body margin-top30">
-      <tableList class="table" :selection="false" :tableData="[data]" :tableTitle="tableTitle">
+      <tableList lang class="table" :selection="false" :tableData="[data]" :tableTitle="tableTitle">
         <template #vff="scope">
           <span>{{ scope.row.vff | dateFilter('YYYY-MM-DD') }}</span>
         </template>

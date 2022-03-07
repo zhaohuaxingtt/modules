@@ -7,7 +7,7 @@
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\infoAndReq\components\data.js
  */
 export const infos = [
-	{ props: "partProjectType", name: "采购项目类型", key: "LK_CAIGOUXIANGMULEIXING" },
+	{ props: "partProjectTypeDesc", name: "采购项目类型", key: "LK_CAIGOUXIANGMULEIXING" },
 	{ props: "categoryName", name: "材料组", key: "LK_CAILIAOZU" },
 	{ props: "stuffName", name: "工艺组", key: "LK_GONGYIZU" },
 	{ props: "carDosage", name: "每车用量", key: "LK_MEICHEYONGLIANG" },
@@ -46,7 +46,7 @@ export const projectScheduleTableTitle = [
 
 export const attachmentTableTitle = [
 	{ props: "fileTruename", name: "文件名称", tooltip: true, key: "LK_WENJIANMINGCHENG" },
-	{ props: "fileSizeDesc", name: "大小", tooltip: true, key: "LK_DAXIAO" },
+	{ props: "fileSize", name: "大小", tooltip: true, key: "LK_DAXIAO" },
 	{ props: "createDate", name: "上传日期", tooltip: true, key: "LK_SHANGCHUANRIQI" },
 	{ props: "createUserName", name: "上传人", tooltip: true, key: "LK_SHANGCHUANREN" }
 ]

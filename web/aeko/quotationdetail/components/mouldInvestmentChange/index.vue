@@ -1,7 +1,14 @@
+<!--
+ * @Author: YoHo
+ * @Date: 2021-10-22 19:14:28
+ * @LastEditTime: 2021-11-19 12:26:28
+ * @LastEditors: YoHo
+ * @Description: 
+-->
 <template>
   <div>
-    <module ref="module" :partInfo="partInfo" :disabled="disabled" @getBasicInfo="getBasicInfo" />
-    <sourcePartCBD ref="sourcePartCBD" class="margin-top20" :partInfo="partInfo" @quote="handleQuote" :disabled="disabled" />
+    <module v-permission.auto="AEKO_QUOTATION_DETAIL_MOULDLE_CBDCARD|模具投资变动_模具CBD编辑栏" ref="module" :partInfo="partInfo"  :disabled="disabled" @getBasicInfo="getBasicInfo" :editDisabled="editDisabled" />
+    <sourcePartCBD v-permission.auto="AEKO_QUOTATION_DETAIL_MOULDLE_TABLE_YUANLINGJIANMOJUCBD|模具投资变动_原零件模具CBD" ref="sourcePartCBD" class="margin-top20" :partInfo="partInfo" @quote="handleQuote" :disabled="disabled" :editDisabled="editDisabled" />
   </div>
 </template>
 
@@ -21,7 +28,11 @@ export default {
     disabled: {
       type: Boolean,
       default: false
-    }
+    },
+    editDisabled: {
+      type: Boolean,
+      default: false
+    },
   },
   methods: {
     handleQuote(list) {
@@ -30,6 +41,9 @@ export default {
     init() {
       this.$refs.module.getMoulds()
       this.$refs.sourcePartCBD.getMoldCbd()
+    },
+    async save(){
+      return await this.$refs.module.handleSave()
     }
   }
 }

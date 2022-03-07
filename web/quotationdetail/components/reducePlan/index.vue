@@ -6,32 +6,33 @@
 <template>
 	<iCard class="reducePlan" v-loading="loading">
 		<div class="header margin-bottom20">
-			<span class="title">{{ $t('LK_JIANGJIAJIHUA') }}</span>
+			<span class="title">{{ language('LK_JIANGJIAJIHUA', '降价计划') }}</span>
 			<span v-if="isSkd">
-				<span class="tip margin-left10">{{ language("JIANGJIAJISUANYIJINGWAICHUCHANGJIAWEIZHUN", "降价计算以境外出厂价为准") }}</span>
+				<span class="tip margin-left10">{{ language("JIANGJIAJISUANYICHUCHANGJIAWEIZHUN", "降价计算以出厂价为准") }}</span>
 			</span>
             <span v-else-if="isSkdLc">
-				<span class="tip margin-left10">{{ language("SKDBUFENYIJINGWAICHUCHANGJIAWEIZHUN", "SKD部分以境外出厂价为准") }}，{{ language("LCBUFENYIAJIAWEIZHUN", "LC部分以A价为准") }}</span>
+				<span class="tip margin-left10">{{ language("SKDBUFENYICHUCHANGJIAWEIZHUN", "SKD部分以出厂价为准") }}，{{ language("LCBUFENYIAJIAWEIZHUN", "LC部分以A价为准") }}</span>
 			</span>
 			<span v-else>
-				<span v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU">
+				<span v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || partInfo.priceStatus == 'DB'">
 					降价计划以{{basic}}为准
 				</span>
 				<!-----------配件报价的降价计划可以选择基于A价或B价，---------------------------------------------->
 				<span v-else-if="partInfo.partProjectType === partProjTypes.PEIJIAN"  class="tip margin-left15">
-					<span class="margin-right15">计算基准：</span>
+                    <span  class="tip margin-left10">降价计算以A价为准</span>
+					<!-- <span class="margin-right15">计算基准：</span>
 					<el-radio-group v-model="computedBasic" @change="handleABChange" :disabled="disabled || isOriginprice">
 						<el-radio label="01">A价</el-radio>
 						<el-radio label="02">B价</el-radio>
-					</el-radio-group>
+					</el-radio-group> -->
 				</span>
-				<!-----------附件的降价计划只能基于B价，---------------------------------------------->
-				<span v-else-if="partInfo.partProjectType === partProjTypes.FUJIAN" class="tip margin-left10">降价计算以B价为准</span>
+				<!-- ---------附件的降价计划只能基于B价，-------------------------------------------- -->
+				<!-- <span v-else-if="partInfo.partProjectType === partProjTypes.FUJIAN" class="tip margin-left10">降价计算以B价为准</span> -->
 				<!-------------正常流程FS零件只基于A价------------------------------------------>
-				<span v-else class="tip margin-left10">降价计算以A价为准</span>
+				<span class="tip margin-left10">降价计算以A价为准</span>
 			</span>
 		</div>
-		<tableList :tableTitle="tableTitle" :tableData="tableData" :reducePlanedit="!disabled && !isOriginprice" @rateChange="handleRateChange" :lcStartProductDate="lcStartProductDate" />
+		<tableList :tableTitle="tableTitle" v-if='partInfo.quotationId' :partInfo='partInfo'  :tableData="tableData" :reducePlanedit="!disabled && !isOriginprice" @rateChange="handleRateChange" @dateFocus="dateFocus" :lcStartProductDate="lcStartProductDate" />
 	</iCard>
 </template>
 
@@ -89,7 +90,9 @@ export default {
             computedBasic: '01',
             skdAPrice: "0",
             lcAPrice: "0",
-            lcStartProductDate: ""
+            lcStartProductDate: "",
+            currentKey: "",
+            currentDate: ""
         }                
     },
     created(){
@@ -121,15 +124,15 @@ export default {
          * @param {*}
          * @return {*}
          */        
-        handleABChange() {
-            if (this.computedBasic === '01' && !this.aprice) {
-                iMessage.warn('A价不存在，无法根据A价计算降价后的价格')
-            }
-            if (this.computedBasic === '02' && !this.bprice) {
-                iMessage.warn('B价不存在，无法根据B价计算降价后的价格')
-            }
-            this.tableData = this.computeReducePrice(this.computedBasic === '01' ? this.aprice : this.bprice, this.tableData)
-        },
+        // handleABChange() {
+        //     if (this.computedBasic === '01' && !this.aprice) {
+        //         iMessage.warn(this.language("AJIABUCUNZAIERROR", "A价不存在，无法根据A价计算降价后的价格"))
+        //     }
+        //     if (this.computedBasic === '02' && !this.bprice) {
+        //         iMessage.warn(this.language("BJIABUCUNZAIERROR", "B价不存在，无法根据B价计算降价后的价格"))
+        //     }
+        //     this.tableData = this.computeReducePrice(this.computedBasic === '01' ? this.aprice : this.bprice, this.tableData)
+        // },
         /**
          * @Description: 计算降价后的价格
          * @Author: Luoshuang
@@ -156,11 +159,18 @@ export default {
          * @param {*}
          * @return {*}
          */        
-        handleRateChange() {
+        handleRateChange(value, key, data) {
             if (this.isSkdLc) {
+                if ((moment(this.currentDate).format("YYYY-MM") === moment(this.lcStartProductDate).format("YYYY-MM")) && key === this.currentKey) {
+                    if (moment(value, "YYYY-MM") !== moment(this.lcStartProductDate, "YYYY-MM")) {
+                        this.$set(data, "priceReduceRate", "0.0000")
+                    }
+                }
+
                 this.tableData = this.computeSkdLc(this.skdAPrice, this.lcAPrice, this.tableData)
             } else {
-                this.tableData = this.computeReducePrice(this.computedBasic === '01' ? this.aprice : this.bprice, this.tableData)
+                // this.computedBasic === '01' ? this.aprice : this.bprice
+                this.tableData = this.computeReducePrice(this.aprice, this.tableData)
             }
         },
         /**
@@ -170,8 +180,6 @@ export default {
          * @return {*}
          */        
         async init() {
-            // 258869949
-            //this.partInfo.quotationId
             this.loading = true
 
             if (!this.isSkdLc) {
@@ -179,30 +187,32 @@ export default {
                 if (res?.result) {
                     if (!res.data.priceType) {
                         // 如果返回结果没有priceType，则配件默认为A价
-                        this.computedBasic = this.partInfo.partProjectType === partProjTypes.PEIJIAN ? '01' : this.partInfo.partProjectType === partProjTypes.FUJIAN ? '02' : (this.partInfo.partProjectType === partProjTypes.DBLINGJIAN || this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU) ? '3' : '01'
+                        this.computedBasic = this.partInfo.partProjectType === partProjTypes.PEIJIAN ? '01' : this.partInfo.partProjectType === partProjTypes.FUJIAN ? '02' : (this.partInfo.partProjectType === partProjTypes.DBLINGJIAN || this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU || this.partInfo.priceStatus == 'DB') ? '3' : '01'
                     } else {
                         this.computedBasic = res.data.priceType
                     }
                     this.aprice = res.data.aprice || 0
                     this.bprice = res.data.bprice || 0
-                    if (this.computedBasic === '01' && (!res.data.aprice || res.data.aprice == 0)) {
-                        iMessage.error('A价不存在或为0')
+                    if ((this.computedBasic === '01' || this.computedBasic === '02') && (!res.data.aprice || res.data.aprice == 0)) {
+                        iMessage.warn(this.language("AJIABUCUNZAIHUOWEILING", "出厂价不存在或为0"))
                     }
-                    if (this.computedBasic === '02' && (!res.data.bprice || res.data.bprice == 0)) {
-                        iMessage.error('B价不存在或为0')
-                    }
+                    // if (this.computedBasic === '02' && (!res.data.bprice || res.data.bprice == 0)) {
+                    //     iMessage.warn(this.language("BJIABUCUNZAIHUOWEILING", "B价不存在或为0"))
+                    // }
                     if (['3','4','5','6','7'].includes(this.computedBasic) && (!res.data.bprice || res.data.bprice == 0)) {
                         iMessage.error(this.basic+this.language('BUCUNZAIHUOWEIO','不存在或为0'))
                     }
-                    this.tableData = this.computeReducePrice(this.computedBasic === '01' ? this.aprice : this.bprice, res.data.pricePlanInfoVOS)
+                    // this.computedBasic === '01' ? this.aprice : this.bprice
+                    this.tableData = this.computeReducePrice(this.aprice, res.data.pricePlanInfoVOS)
                 } else {
                     iMessage.error(this.$i18n.locale === "zh" ? res?.desZh : res?.desEn)
+                    this.tableData = []
                 }
             } else {
                 const res = await getLtcPlanSkcLc(this.partInfo.quotationId)
                 if (res.code == 200) {
-                    if (!res.data.lcAPrice || !res.data.skdAPrice) iMessage.error(`${ this.language("AJIABUCUNZAIHUOWEILING", "A价不存在或为0") }`)
-                    if (!res.data.lcStartProductDate) iMessage.error(this.language("LCQIBUSHENGCHANRIQIWEIKONG", "LC起步生产日期为空"))
+                    if (!res.data.lcAPrice || res.data.lcAPrice == "0.00" || !res.data.skdAPrice || res.data.skdAPrice == "0.00") await iMessage.error(`${ this.language("AJIABUCUNZAIHUOWEILING", "出厂价不存在或为0") }`)
+                    if (!res.data.lcStartProductDate) await iMessage.error(this.language("LCQIBUSHENGCHANRIQIWEIKONG", "LC起步生产日期为空"))
                     this.computedBasic = '01'
                     this.lcStartProductDate = res.data.lcStartProductDate
                     this.skdAPrice = res.data.skdAPrice || "0"
@@ -211,10 +221,15 @@ export default {
                     this.tableData = this.computeSkdLc(this.skdAPrice, this.lcAPrice, res.data.pricePlanInfoVOS)
                 } else {
                     iMessage.error(this.$i18n.locale === "zh" ? res?.desZh : res?.desEn)
+                    this.tableData = []
                 }
             }
             
             this.loading = false   
+        },
+        dateFocus(value, key) {
+            this.currentKey = key
+            this.currentDate = value
         },
         computeSkdLc(baseSkdAprice, baseLcAprice, data) {
             let aprice = 0
@@ -246,12 +261,18 @@ export default {
                         ).toFixed(2)
                     } else {
                         cur.reducedPrice = math.bignumber(baseLcAprice).toFixed(2)
-                        cur.priceReduceRate = math.chain(math.bignumber((acc.length ? acc.slice(-1)[0].reducedPrice : aprice) || 0))
-                            .subtract(math.bignumber(cur.reducedPrice || 0))
-                            .divide(math.bignumber((acc.length ? acc.slice(-1)[0].reducedPrice : aprice) || 0))
-                            .multiply(100)
-                            .done()
-                            .toFixed(4)
+                        
+                        const price = acc.length ? acc.slice(-1)[0].reducedPrice : aprice
+                        if (+price) {
+                            cur.priceReduceRate = math.chain(math.bignumber((acc.length ? acc.slice(-1)[0].reducedPrice : aprice) || 0))
+                                .subtract(math.bignumber(cur.reducedPrice || 0))
+                                .divide(math.bignumber((acc.length ? acc.slice(-1)[0].reducedPrice : aprice) || 1))
+                                .multiply(100)
+                                .done()
+                                .toFixed(4)
+                        } else {
+                            cur.priceReduceRate = "0.0000"
+                        }
                     }
 
                     cur.reducedPriceShow = cur.reducedPrice

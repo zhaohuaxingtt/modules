@@ -2,7 +2,7 @@
  * @Author: ldh
  * @Date: 2021-04-23 00:21:08
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-07-12 16:00:25
+ * @LastEditTime: 2022-01-27 22:41:05
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\mouldAndDevelopmentCost\components\mould.vue
 -->
@@ -12,19 +12,19 @@
       <template #header>
         <div class="header">
           <div>
-            <span class="title">{{ `${ (showMode ? (isSkd ? "SKD" : "LC") : "") + " " }${ $t('LK_MUJUFEIYONG') }` }}</span>
-            <span class="tip margin-left10">({{ $t('LK_DANWEI') }}：{{ $t('LK_YUAN') }})</span>
+            <span class="title">{{ `${ (showMode ? (isSkd ? "SKD" : "LC") : "") + " " }${ language('LK_MUJUFEIYONG', '模具费用') }` }}</span>
+            <span class="tip margin-left10">({{ language('LK_DANWEI', '单位') }}：{{ language('LK_YUAN', '元') }})</span>
             <iFormGroup class="total margin-left20" :row="1" inline>
-              <iFormItem class="item" :label="`${ $t(mouldCostInfos[0].key) }`">
+              <iFormItem class="item" :label="`${ language(mouldCostInfos[0].key, mouldCostInfos[0].name) }`">
                 <iText>{{ dataGroup[mouldCostInfos[0].props] }}</iText>
               </iFormItem>
             </iFormGroup>
           </div>
           <div class="control">
-            <iButton @click="jump" v-if='whenCourcerLogin && !disabled'>{{ $t('LK_TIAOZHUANZHIRFQMUJUBAOJIA') }}</iButton>
-            <iButton @click="changeRelatingPartsVisible(true)" v-if="!disabled">{{ $t('LK_GUANLIANLINGJIAN') }}</iButton>
+            <iButton @click="jump" v-if='whenCourcerLogin && !disabled'>{{ language('LK_TIAOZHUANZHIRFQMUJUBAOJIA', '跳转至RFQ模具报价') }}</iButton>
+            <iButton @click="changeRelatingPartsVisible(true)" v-if="!disabled">{{ language('LK_GUANLIANLINGJIAN', '关联零件') }}</iButton>
             <!--------------在任何状态下，下载按钮可以被看见，供用户下载---------------->
-            <iButton v-if="!isSkd" @click="handleDownload">{{ $t('LK_XIAZAIMUJUCBD') }}</iButton>
+            <iButton v-if="!isSkd" @click="handleDownload(isSkd ? 'SKD' : 'LC')">{{ language('LK_XIAZAIMUJUCBD', '下载模具CBD') }}</iButton>
             <el-upload 
               v-if="!disabled && !isSkd"
               class="uploadBtn" 
@@ -35,15 +35,15 @@
               :show-file-list="false" 
               :before-upload="beforeUpload"
               accept=".xlsx">
-                <iButton :loading="uploadLoading">{{ $t('LK_SHANGCHUANBAOJIA') }}</iButton>
+                <iButton :loading="uploadLoading">{{ language('LK_SHANGCHUANBAOJIA', '上传报价') }}</iButton>
             </el-upload>
-            <iButton @click="handleAdd" v-if="!disabled">{{ $t('LK_TIANJIAHANG') }}</iButton>
-            <iButton @click="handleDel" v-if="!disabled">{{ $t('LK_SHANCHUHANG') }}</iButton>
+            <iButton @click="handleAdd" v-if="!disabled">{{ language('LK_TIANJIAHANG', '添加行') }}</iButton>
+            <iButton @click="handleDel" v-if="!disabled">{{ language('LK_SHANCHUHANG', '删除行') }}</iButton>
           </div>
         </div>
       </template>
       <div>
-        <tableList class="table" :tableData="tableListData" :tableTitle="tableTitle" @handleSelectionChange="handleSelectionChange">
+        <tableList lang class="table" :tableData="tableListData" :tableTitle="tableTitle" @handleSelectionChange="handleSelectionChange">
           <template #stuffType="scope">
             <iInput v-if="!disabled" v-model="scope.row.stuffType" />
             <span v-else>{{ scope.row.stuffType }}</span>
@@ -79,7 +79,7 @@
             <span v-else>{{ scope.row.assetUnitPrice }}</span>
           </template>
           <template #isShared="scope">
-            <iSelect v-if="!disabled" v-model="scope.row.isShared" @change="updateTotal">
+            <iSelect v-if="!disabled" v-model="scope.row.isShared" :disabled='partInfo.roundsType == "biddingRound"' @change="updateTotal($event,scope)">
               <el-option label="是" :value="1"></el-option>
               <el-option label="否" :value="0"></el-option>
             </iSelect>
@@ -87,10 +87,16 @@
           </template>
         </tableList>
         <iFormGroup class="subCost margin-top30" :row="4" inline>
-          <iFormItem class="item" v-for="(info, $index) in subMouldCostInfos" :key="$index" :label="`${ $t(info.key) }`">
-            <iInput v-if="info.props === 'shareQuantity' && !disabled" v-model="dataGroup[info.props]" @input="handleInputByShareQuantity" />
-            <iText v-else>{{ dataGroup[info.props] }}</iText>
-          </iFormItem>
+          <template v-for="(info, $index) in subMouldCostInfos">
+            <iFormItem class="item" v-if='info.props === "totalInvestmentCost"' :key="$index" :label="`${ language(info.key, info.name) }`">
+              <iText v-if='dataGroup["biddingTotalCost"]'>{{ dataGroup["biddingTotalCost"] }}</iText>
+              <iText v-else>{{ dataGroup[info.props] }}</iText>
+            </iFormItem>
+            <iFormItem class="item" v-else :key="$index" :label="`${ language(info.key, info.name) }`">
+              <iInput v-if="info.props === 'shareQuantity' && !disabled" v-model="dataGroup[info.props]" @input="handleInputByShareQuantity" />
+              <iText v-else>{{ dataGroup[info.props] }}</iText>
+            </iFormItem>
+          </template>
         </iFormGroup>
       </div>
       <relatingParts :dialogVisible="relatingPartsVisible" @changeVisible="changeRelatingPartsVisible" :partInfo="partInfo" :disabled="disabled" :isSkd="isSkd" />
@@ -109,6 +115,7 @@ import { cbdDownloadFile, uploadModuleCbd, getMouldFee, getMouldFeeSKD } from "@
 import { numberProcessor } from "@/utils"
 
 export default {
+  inject:['jjys'],
   components: {
 		iCard,
     iButton,
@@ -198,7 +205,7 @@ export default {
     uploadSuccess(res) {
       this.uploadLoading = false
       if (res.code == 200) {
-        iMessage.success(this.$t("LK_SHANGCHUANCHENGGONG"))
+        iMessage.success(this.language("LK_SHANGCHUANCHENGGONG", "上传成功"))
 
         if (this.isSkd) {
           this.getMouldFeeSKD()
@@ -242,6 +249,7 @@ export default {
           this.$set(this.dataGroup, "shareQuantity", res.data.shareQuantity)
           this.$set(this.dataGroup, "totalInvestmentCost", res.data.totalInvestmentCost)
           this.$set(this.dataGroup, "unitInvestmentCost", res.data.unitInvestmentCost)
+          this.$set(this.dataGroup,"biddingTotalCost",res.data.biddingTotalCost)
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
         }
@@ -276,12 +284,13 @@ export default {
     handleSelectionChange(list) {
       this.multipleSelection = list
     },
-    handleDownload() {
+    handleDownload(priceType) {
       cbdDownloadFile({
         rfqId: this.partInfo.rfqId,
         partNum: this.partInfo.partNum,
         round: this.partInfo.round,
-        supplierId: this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId
+        supplierId: this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId,
+        priceType
       })
     },
     handleAdd() {
@@ -293,16 +302,22 @@ export default {
       mouldIdIndexes.sort((a, b) => b - a)
       const index = mouldIdIndexes[0] ? (mouldIdIndexes[0] >= 10 ? (mouldIdIndexes[0] + 1) + "" : "0" + (mouldIdIndexes[0] + 1)) : "01"
 
+      const { partInfo={} } = this;
       this.tableListData.push({
-        mouldId: `${ this.partInfo.rfqId }_${ this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId }_${ this.partInfo.partNum }_T${ index }`,
+        mouldId: `${ this.partInfo.rfqId }_${ 
+          // this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId 
+          // 依据优先级顺序：供应商SAP号>供应商SVW号>供应商临时号
+          partInfo.sapCode || partInfo.svwCode || partInfo.svwTempCode || ''
+        }_${ this.partInfo.partNum }_T${ index }`,
         fixedAssetsName: "",
         assembledPartPrjCode: this.partInfo.fsNum,
-        carModeCode: this.partInfo.modelNameZh
+        carModeCode: Array.isArray(this.partInfo.cartypes) && this.partInfo.cartypes[0] ? this.partInfo.cartypes.map(item => item.name).join(",") : this.partInfo.modelNameZh,
+        isShared:this.partInfo.roundsType == "biddingRound"?0:''
       })
     },
     handleDel() {
       if (this.multipleSelection.length < 1) {
-        iMessage.warn(this.$t('LK_QINGXUANZEXUYAOSHANCHUDEHANG'))
+        iMessage.warn(this.language('LK_QINGXUANZEXUYAOSHANCHUDEHANG', '请选择需要删除的行'))
         return
       }
       this.tableListData = this.tableListData.filter(item => !this.multipleSelection.includes(item))
@@ -355,7 +370,8 @@ export default {
       this.updateTotal()
     },
     // 更新成本
-    updateTotal() {
+    updateTotal(e,scope) {
+      scope?scope.row.isShared = e:''
       let totalInvestmentCost = 0
       let shareInvestmentFee = 0
       this.tableListData.forEach(item => {

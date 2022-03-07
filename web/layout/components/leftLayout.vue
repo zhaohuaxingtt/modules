@@ -11,6 +11,7 @@
     <div class="leftLayout">
       <div class="content">
         <img class="logo" src="~@/assets/images/rise.png" alt="" />
+
         <div :class="iconChangeClass" class="centerBtn">
           <!-- <span
             v-for="(item, index) in menus"
@@ -21,7 +22,9 @@
           <span
             v-for="item in menus"
             :key="item.id"
-            :class="{ transparent: activeIndex === item.permissionKey }"
+            :class="{
+              transparent: activeIndex === item.permissionKey
+            }"
             @click="toggleSubMenu(item)"
           >
             <icon
@@ -33,7 +36,7 @@
           </span>
         </div>
         <div class="btn-button">
-          <img src="~@/assets/images/leftContent.png" alt="" />
+          <!-- <img src="~@/assets/images/leftContent.png" alt="" /> -->
         </div>
       </div>
     </div>
@@ -43,13 +46,7 @@
         name="iconcaidanzhankai"
         :class="{ menu: true, hiddenMenu: menuVisible, delay: !menuVisible }"
         @click.native="menuVisible = !menuVisible"
-        v-if="
-          menus
-            .map(item => {
-              return item.permissionKey
-            })
-            .includes(activeIndex)
-        "
+        v-if="menus.map((item) => item.permissionKey).includes(activeIndex)"
       />
       <div
         :class="{
@@ -59,13 +56,7 @@
         }"
       >
         <div class="meunTopContent">
-          <span>{{
-            activeIndex === 'RISE_HOME'
-              ? 'Personalized Modules'
-              : activeIndex === 'RISE_WORKBENCH'
-              ? 'Workbench'
-              : 'Common Function'
-          }}</span>
+          <span>{{ menuTextMap[activeIndex] }}</span>
           <icon
             symbol
             name="iconcaidanshouqi"
@@ -82,11 +73,18 @@
 <script>
 import { icon } from 'rise'
 export default {
+  name: 'leftLayout',
   components: { icon },
   props: {
     menus: {
       type: Array,
-      default: function() {
+      default: function () {
+        return []
+      }
+    },
+    activeMenu: {
+      type: Array,
+      default: function () {
         return []
       }
     }
@@ -96,98 +94,102 @@ export default {
       iconChangeClass: '',
       menuVisible: false,
       activeIndex: '',
-      mapMenu: {
-        cf: 'RISE_COMMON_FUNCTION',
-        wb: 'RISE_WORKBENCH',
-        home: 'RISE_HOME',
-        admin: 'RISE_ADMIN'
+      menuTextMap: {
+        RISE_HOME: 'Personalized Modules',
+        RISE_WORKBENCH: 'Workbench',
+        RISE_GP: 'General Purchase',
+        RISE_COMMON_FUNCTION: 'Common Function'
       }
     }
   },
   provide() {
     return this
   },
-  created() {
-    const rootIndex = this.getFirstMenuActive()
-
-    this.activeIndex = rootIndex
-    console.log('rootInex', rootIndex)
-    this.$emit('toggle-active', rootIndex)
-  },
-  mounted() {
-    document.addEventListener('click', e => {
-      this.clickListener(e)
-    })
-  },
-  beforeDestroy() {
-    document.removeEventListener('click', e => {
-      this.clickListener(e)
-    })
-  },
   watch: {
-    $route: {
-      handler: function(route) {
-        console.log('route', route)
-        if (route.path === '/index') {
-          this.showSideMenu()
-        }
-      },
-      immediate: true
+    activeMenu() {
+      this.setDefaultActiveIndex()
     }
   },
+  mounted() {
+    document.addEventListener('click', (e) => {
+      this.clickListener(e)
+    })
+    this.setDefaultActiveIndex()
+  },
+  beforeDestroy() {
+    document.removeEventListener('click', (e) => {
+      this.clickListener(e)
+    })
+  },
   methods: {
+    setDefaultActiveIndex() {
+      if (this.activeMenu && this.activeMenu.length) {
+        this.activeIndex = this.activeMenu[0]
+      }
+    },
     getFirstMenuActive() {
       return this.$route.meta.top || 'RISE_WORKBENCH'
     },
     clickListener(e) {
-      const leftLayoutRect = document
-        .getElementsByClassName('leftLayout')[0]
-        .getBoundingClientRect()
-      const sideRect = document
-        .getElementsByClassName('meunContent')[0]
-        .getBoundingClientRect()
-      const xt = 0
-      const xb = leftLayoutRect.width + sideRect.width
-      const yt = 0
-      const yb = leftLayoutRect.height
-      if (
-        e.clientY < yt ||
-        e.clientY > yb ||
-        e.clientX < xt ||
-        e.clientX > xb
-      ) {
-        this.menuVisible = false
+      const leftLayout = document.getElementsByClassName('leftLayout')
+      const side = document.getElementsByClassName('menuLayout')
+      if (leftLayout && leftLayout.length && side && side.length) {
+        const leftLayoutRect = leftLayout[0].getBoundingClientRect()
+        const sideRect = side[0].getBoundingClientRect()
+        const xt = 0
+        const xb = leftLayoutRect.width + sideRect.width
+        const yt = 0
+        const yb = leftLayoutRect.height
+        if (
+          e.clientY < yt ||
+          e.clientY > yb ||
+          e.clientX < xt ||
+          e.clientX > xb
+        ) {
+          this.menuVisible = false
+        }
       }
     },
     toggleSubMenu(item) {
-      const activeMenu = item
-      if (this.menus.length > 0) {
-        if (activeMenu.subMenus) {
-          if (this.activeIndex === item.permissionKey) {
-            if (this.menuVisible) {
-              this.hideSideMenu()
+      const href = window.location.href
+      const origin = window.location.origin
+      const path = href.replace(origin, '')
+      if (
+        item.permissionKey === 'RISE_HOME' &&
+        path.indexOf('/portal') === 0 &&
+        path.indexOf('#/index') > -1
+      ) {
+        this.activeIndex = 'RISE_HOME'
+        this.$emit('toggle-active', 'RISE_HOME')
+        this.showSideMenu()
+      } else {
+        const activeMenu = item
+        if (this.menus.length > 0) {
+          if (activeMenu.subMenus) {
+            if (this.activeIndex === item.permissionKey) {
+              if (this.menuVisible) {
+                this.hideSideMenu()
+              } else {
+                this.showSideMenu()
+              }
             } else {
               this.showSideMenu()
             }
-          } else {
-            this.showSideMenu()
+          } else if (activeMenu.url) {
+            if (
+              activeMenu.url.indexOf('http') !== -1 ||
+              activeMenu.url.indexOf('https') !== -1
+            ) {
+              location.href = activeMenu.url
+              /* activeMenu.target
+                ? window.open(activeMenu.url)
+                : (location.href = activeMenu.url) */
+            }
+            this.hideSideMenu()
           }
-        } else if (activeMenu.url) {
-          if (
-            activeMenu.url.indexOf('http') !== -1 ||
-            activeMenu.url.indexOf('https') !== -1
-          ) {
-            activeMenu.target
-              ? window.open(activeMenu.url)
-              : (location.href = activeMenu.url)
-          }
-          // if (this.$route.path !== activeMenu.url) {
-          //   this.$router.push({ path: activeMenu.url })
-          // }
-          this.hideSideMenu()
+          this.activeIndex = item.permissionKey
+          this.$emit('toggle-active', item.permissionKey)
         }
-        this.activeIndex = item.permissionKey
-        this.$emit('toggle-active', item.permissionKey)
       }
     },
     showSideMenu() {
@@ -222,7 +224,7 @@ export default {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 999;
+  z-index: 1001;
   padding-top: 11px;
   padding-bottom: 30px;
 
@@ -317,11 +319,11 @@ export default {
   .btn-button {
     width: 70px;
     height: 70px;
-    background: #f1f5ff;
+    // background: #f1f5ff;
     margin: 0 auto;
     padding: 13px;
-    border-radius: 15px;
-    cursor: pointer;
+    // border-radius: 15px;
+    // cursor: pointer;
 
     img {
       display: inline-block;
@@ -332,12 +334,13 @@ export default {
 }
 
 .menuLayout {
-  z-index: 998 !important;
+  z-index: 1000;
 
   .meunContent {
     position: absolute;
     left: 0px;
     top: 0px;
+    z-index: 1001;
     height: 100%;
     width: 386px;
     background: #eef2fb;

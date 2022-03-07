@@ -15,8 +15,9 @@
             <div class="table-data-item"  v-for="(item,index) in tableData" :key="'newTableData_'+index">
                 <p v-for="(titleItem,titleIndex) in tableTitle" :key="'newTableitem_'+titleIndex">
                     <template v-if="reducePlanedit" >
-                        <iInput v-if="titleItem.type == 'iInput' && !getIsLcStartProductDate(item.yearMonths)" type="number" oninput="if(value>100){value=100}if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+5)}" v-model="item[titleItem.key]" @input="val=>$emit('rateChange',val,titleIndex)"/>
+                        <iInput :disabled='partInfo.roundsType == "biddingRound"' v-if="titleItem.type == 'iInput' && !getIsLcStartProductDate(item.yearMonths)" v-model="item[titleItem.key]" @input="handleInputByPriceReduceRate($event, titleItem.key, item)"/>
                         <iDatePicker 
+                            :disabled='partInfo.roundsType == "biddingRound"'
                             v-else-if="titleItem.type == 'iDatePicker'" 
                             v-model="item[titleItem.key]"
                             value-format="yyyy-MM"
@@ -38,11 +39,15 @@
                                     }
                                     return false
                                 }}"
-                            @change="$emit('rateChange')"
+                            @change="$emit('rateChange', $event, titleItem.key, item)"
+                            @focus="$emit('dateFocus', item[titleItem.key], titleItem.key, item)"
                         />
                         <span v-else :class="{ lcPrice: titleItem.key == 'priceReduceRate' && getIsLcStartProductDate(item.yearMonths) }">{{item[titleItem.key]}}</span>
                     </template>
-                    <span v-else>{{item[titleItem.key]}}</span>
+                    <span v-else>
+                        <span v-if="titleItem.key === 'yearMonths'">{{ item[titleItem.key] | ymFormat }}</span>
+                        <span v-else>{{item[titleItem.key]}}</span>
+                    </span>
                 </p>
             </div>
         </div>
@@ -55,6 +60,7 @@ import {
     iDatePicker,
 } from 'rise';
 import moment from 'moment'
+import { numberProcessor } from '@/utils' 
 export default {
     name:'newTableList',
     components:{
@@ -77,11 +83,20 @@ export default {
         lcStartProductDate: {
             type: String,
             default: ""
+        },
+        partInfo:{
+            type:Object,
+            default:()=>{}
         }
     },
     data(){
         return{
             moment:moment,
+        }
+    },
+    filters: {
+        ymFormat(date) {
+            return moment(date).format("YYYY-MM")
         }
     },
     methods: {
@@ -93,6 +108,16 @@ export default {
             }
 
             return false
+        },
+        handleInputByPriceReduceRate(value, key, data) {
+            let v = numberProcessor(value, 4)
+
+            if (+value > 100) {
+                v = "100"
+            }
+
+            this.$set(data, key, v)
+            this.$emit('rateChange', v, key, data)
         }
     },
 }

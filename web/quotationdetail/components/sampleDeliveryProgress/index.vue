@@ -2,7 +2,7 @@
  * @Author: Luoshuang
  * @Date: 2021-05-27 15:54:05
  * @LastEditors: Hao,Jiang
- * @LastEditTime: 2021-09-13 14:10:30
+ * @LastEditTime: 2021-12-06 17:52:08
  * @Description: 送样进度
  * @FilePath: \front-modules\web\quotationdetail\components\sampleDeliveryProgress\index.vue
 -->
@@ -14,16 +14,18 @@
       <span class="margin-left10">
         <span class="tip">{{language('LK_YISHANGSONGYANGZHOUQIYIDINGDINASHIJIANWEIQISHIRI','备注：以上送样周期，均以定点时间为起始日')}}</span>
         <el-radio-group class="margin-left20" v-model="priceType" @change="tableData = tableDataCache[$event]">
-          <el-radio label="LC">LC</el-radio>
+          <el-radio label="LC">LC{{ !isSkd && !isSkdLc ? `（${ language("BITIAN", "必填") }）` : "" }}</el-radio>
           <el-radio label="SKD">SKD{{ isSkd || isSkdLc ? `（${ language("BITIAN", "必填") }）` : "" }}</el-radio>
         </el-radio-group>
       </span>
     </div>
-    <tableList :selection="false" :tableTitle="tableTitle" :tableData="tableData" :tableLoading="loading">
+    <tableList lang :selection="false" :tableTitle="tableTitle" :tableData="tableData" :tableLoading="loading">
       <template #supplierTime="scope">
-        <span v-if="!disabled && (['1st Tryout送样周期', 'EM送样周期'].includes(scope.row.sampleDeliverType) || isBmgpart)" class="required"></span>
-        <iInput v-if="!disabled" v-model="scope.row.supplierTime" @click="handleInputBySupplierTime($event, row)"/>
-        <span v-else>{{ scope.row.supplierTime }}</span>
+        <div class="flexWrapper">
+          <span class="flexpreffix"><span v-if="!disabled && (['1st Tryout送样周期', 'EM送样周期'].includes(scope.row.sampleDeliverType) || isBmgpart)" :class="requiredClass()"></span></span>
+          <iInput v-if="!disabled" v-model="scope.row.supplierTime" @input="handleInputBySupplierTime($event, scope.row)"/>
+          <span v-else>{{ scope.row.supplierTime }}</span>
+        </div>
       </template>
       <template #remark="scope">
         <iInput v-if="!disabled" v-model="scope.row.remark" />
@@ -79,15 +81,20 @@ export default {
       loading: false,
       priceType: 'LC',
       tableTitle: tableTitle,
-      tableData: cloneDeep(dateTemplate),
+      tableData: JSON.parse(JSON.stringify(dateTemplate)),
       tableDataCache: {
-        LC: cloneDeep(dateTemplate),
-        SKD: cloneDeep(dateTemplate)
+        LC: JSON.parse(JSON.stringify(dateTemplate)),
+        SKD: JSON.parse(JSON.stringify(dateTemplate))
       }
     }
   },
   methods: {
     init() {
+      this.tableDataCache = { // 请求初始化, 清除之前数据
+        LC: JSON.parse(JSON.stringify(dateTemplate)),
+        SKD: JSON.parse(JSON.stringify(dateTemplate))
+      }
+
       this.loading = true
       getSampleProgress({
         quotationId: this.partInfo.quotationId
@@ -117,6 +124,9 @@ export default {
                   break
               }
             })
+          }else{
+            //  this.tableDataCache.LC = JSON.parse(JSON.stringify(dateTemplate))
+            //  this.tableDataCache.SKD = JSON.parse(JSON.stringify(dateTemplate))
           }
 
           this.tableData = this.tableDataCache[this.priceType]
@@ -149,8 +159,10 @@ export default {
         //   iMessage.error(this.language('LK_BITIANXIANGBUNENGWEIKONG','请输入必填项'))
         // } else {
 
-          if (this.isSkd) {
-            sampleProgressDTOS.forEach(item => {
+          if (this.isSkd || this.isSkdLc) {
+            sampleProgressDTOS.forEach((item) => {
+              if (item.priceType == "LC") return
+
               switch(item.sampleDeliverType) { 
                 case "1st Tryout送样周期":
                   if (!item.supplierTime) {
@@ -218,7 +230,16 @@ export default {
         
     },
     handleInputBySupplierTime(value, row) {
-      row.supplierTime = numberProcessor(value, 2)
+      this.$set(row, "supplierTime", numberProcessor(value, 0))
+
+      if (+row.supplierTime > 53) this.$set(row, "supplierTime", "53")
+    },
+    requiredClass() {
+      if (this.isSkd || this.isSkdLc) {
+        return this.priceType === "SKD" ? { required: true } : {}
+      }
+
+      return this.priceType === "LC" ? { required: true } : {}
     }
   }
 }
@@ -243,13 +264,23 @@ export default {
         }
     }
 }
+.flexpreffix {
+  display: inline-block;
+  width: 10px;
+  line-height: 23px;
+  padding-right: 10px;
+}
 .required {
   display: inline-block;
   &:before {
     display: inline-block;
     content: '*';
     color: #f56c6c;
-    margin-right: 4px;
   }
+}
+
+.flexWrapper {
+  display: flex;
+  justify-content: center;
 }
 </style>

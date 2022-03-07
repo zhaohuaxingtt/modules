@@ -12,9 +12,9 @@
     <div class="body margin-top20">
       <el-table class="table" ref="table" :data="tableListData" :row-class-name="originRowClass" @selection-change="selectionChange">
         <el-table-column :label="language('ZHIZAOCHENGBEN', '制造成本')" align="center">
-          <el-table-column type="selection" align="center" width="40"></el-table-column>
+          <el-table-column type="selection" align="center" width="55" v-if="!disabled"></el-table-column>
           <el-table-column label="#" prop="index" align="center" width="55" ></el-table-column>
-          <el-table-column :label="language('ZHIZAOGONGXU', '制造工序')" align="center" width="136">
+          <el-table-column :label="language('ZHIZAOGONGXU', '制造工序')" align="center" width="120">
             <template v-slot="scope">
               <div class="manufacturingMethodColumn">
                 <iconFont v-if="scope.row.partCbdType == 2" class="iconFont" />
@@ -26,44 +26,45 @@
             </template>
           </el-table-column>
         </el-table-column>
-        <el-table-column align="center" width="126" :render-header="h => h('span', { domProps: { innerHTML: `${ language('DUIYINGYUANCAILIAOSANJIAN', '对应原材料/散件') }<br/>（Ref.-ID）` }})">
+        <el-table-column align="center" width="140" :render-header="h => h('span', { domProps: { innerHTML: `${ language('DUIYINGYUANCAILIAOSANJIAN', '对应原材料/散件') }<br/>(Ref.-ID)` }})">
           <template v-slot="scope">
             <iInput v-if="(scope.row.partCbdType == 1 || scope.row.partCbdType == 2) && !disabled" class="input-center" v-model="scope.row.material" :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.material !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].material) : false }"></iInput>
             <span v-else :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.material !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].material) : false }">{{ scope.row.material }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" width="110" :render-header="h => h('span', { domProps: { innerHTML: `${ language('SHEBEIMINGCHENGXINGHAO', '设备名称/型号') }<br/>（Ref.-Name）` }})">
+        <el-table-column align="center" width="120" :render-header="h => h('span', { domProps: { innerHTML: `${ language('SHEBEIMINGCHENGXINGHAO', '设备名称/型号') }<br/>(Ref.-Name)` }})">
           <template v-slot="scope">
             <iInput v-if="(scope.row.partCbdType == 1 || scope.row.partCbdType == 2) && !disabled" class="input-center" v-model="scope.row.machineName" :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.machineName !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].machineName) : false }"></iInput>
             <span v-else :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.machineName !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].machineName) : false }">{{ scope.row.machineName }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" width="132" :render-header="h => h('span', { domProps: { innerHTML: `${ language('SHANGQIDAZHONGZHUANYONGSHEBEIFEI', '上汽大众专用设备费') }<br/>（RMB）` }})">
+        <el-table-column align="center" width="160" :render-header="h => h('span', { domProps: { innerHTML: `${ language('SHANGQIDAZHONGZHUANYONGSHEBEIFEI', '上汽大众专用设备费') }<br/>（RMB）` }})">
           <template v-slot="scope">
-            <iInput v-if="(scope.row.partCbdType == 1 || scope.row.partCbdType == 2) && !disabled" class="input-center" v-model="scope.row.specialDeviceCost" :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.specialDeviceCost !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].specialDeviceCost) : false }" @input="handleInputByNumber($event, 'specialDeviceCost', scope.row, 2)"></iInput>
-            <span v-else :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.specialDeviceCost !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].specialDeviceCost) : false }" @input="handleInputByNumber($event, 'specialDeviceCost', scope.row, 2)">{{ scope.row.specialDeviceCost }}</span>
+            <!-- <iInput v-if="(scope.row.partCbdType == 1 || scope.row.partCbdType == 2) && !disabled" class="input-center" v-model="scope.row.specialDeviceCost" :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.specialDeviceCost !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].specialDeviceCost) : false }" @input="handleInputByNumber($event, 'specialDeviceCost', scope.row, 2)"></iInput> -->
+            <thousandsFilterInput v-if="(scope.row.partCbdType == 1 || scope.row.partCbdType == 2) && !disabled" class="input-center" :inputValue="scope.row.specialDeviceCost" :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.specialDeviceCost !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].specialDeviceCost) : false }" :numberProcessor="2" :handleArg="['specialDeviceCost', scope.row, 2]" @handleInput="handleInputByNumber"/>
+            <span v-else :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.specialDeviceCost !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].specialDeviceCost) : false }" @input="handleInputByNumber($event, 'specialDeviceCost', scope.row, 2)">{{ floatFixNum(scope.row.specialDeviceCost) }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" width="74" :render-header="h => h('span', { domProps: { innerHTML: `${ language('SHENGCHANJIEPAI', '生产节拍') }<br/>（Sec.）` }})">
+        <el-table-column align="center" width="85" :render-header="h => h('span', { domProps: { innerHTML: `${ language('SHENGCHANJIEPAI', '生产节拍') }<br/>（Sec.）` }})">
           <template v-slot="scope">
             <iInput v-if="(scope.row.partCbdType == 1 || scope.row.partCbdType == 2) && !disabled" class="input-center" v-model="scope.row.taktTime" :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.taktTime !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].taktTime) : false }" @input="handleInputByNumber($event, 'taktTime', scope.row, 2, updateTaktTime)"></iInput>
             <span v-else :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.taktTime !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].taktTime) : false }">{{ scope.row.taktTime }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" width="102" :render-header="h => h('span', { domProps: { innerHTML: `${ language('JIANSHUSHENGCHANJIEPAI', '件数/生产节拍') }<br/>（1..n）` }})">
+        <el-table-column align="center" width="120" :render-header="h => h('span', { domProps: { innerHTML: `${ language('JIANSHUSHENGCHANJIEPAI', '件数/生产节拍') }<br/>（1..n）` }})">
           <template v-slot="scope">
             <iInput v-if="(scope.row.partCbdType == 1 || scope.row.partCbdType == 2) && !disabled" class="input-center" v-model="scope.row.taktTimeNumber" :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.taktTimeNumber !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].taktTimeNumber) : false }" @input="handleInputByNumber($event, 'taktTimeNumber', scope.row, 0, updateTaktTimeNumber)"></iInput>
             <span v-else :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.taktTimeNumber !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].taktTimeNumber) : false }">{{ scope.row.taktTimeNumber }}</span>
           </template>
         </el-table-column>
         <el-table-column :label="language('RENGONGCHENGBEN', '人工成本')" align="center">
-          <el-table-column align="center" width="104" :render-header="h => h('span', { domProps: { innerHTML: `${ language('ZHIJIERENGONGFEILV', '直接人工费率') }<br/>（RMB/Hour）` }})">
+          <el-table-column align="center" width="115" :render-header="h => h('span', { domProps: { innerHTML: `${ language('ZHIJIERENGONGFEILV', '直接人工费率') }<br/>(RMB/Hour)` }})">
             <template v-slot="scope">
               <iInput v-if="(scope.row.partCbdType == 1 || scope.row.partCbdType == 2) && !disabled" class="input-center" v-model="scope.row.directLaborRate" :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.directLaborRate !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].directLaborRate) : false }" @input="handleInputByNumber($event, 'directLaborRate', scope.row, 2, updateDirectLaborRate)"></iInput>
-              <span v-else :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.directLaborRate !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].directLaborRate) : false }">{{ scope.row.directLaborRate }}</span>
+              <span v-else :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.directLaborRate !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].directLaborRate) : false }">{{ floatFixNum(scope.row.directLaborRate) }}</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" width="100" :render-header="h => h('span', { domProps: { innerHTML: `${ language('ZHIJIERENGONGSHULIANG', '直接人工数量') }<br/>（0..n）` }})">
+          <el-table-column align="center" width="112" :render-header="h => h('span', { domProps: { innerHTML: `${ language('ZHIJIERENGONGSHULIANG', '直接人工数量') }<br/>(0..n)` }})">
             <template v-slot="scope">
               <iInput v-if="(scope.row.partCbdType == 1 || scope.row.partCbdType == 2) && !disabled" class="input-center" v-model="scope.row.directLaborQuantity" :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.directLaborQuantity !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].directLaborQuantity) : false }" @input="handleInputByNumber($event, 'directLaborQuantity', scope.row, 0, updateDirectLaborQuantity)"></iInput>
               <span v-else :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.directLaborQuantity !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].directLaborQuantity) : false }">{{ scope.row.directLaborQuantity }}</span>
@@ -71,7 +72,7 @@
           </el-table-column>
         </el-table-column>
         <el-table-column :label="language('SHEBEIFEI', '设备费')" align="center">
-          <el-table-column align="center" width="104" :render-header="h => h('span', { domProps: { innerHTML: `${ language('SHEBEIFEILV', '设备费率') }<br/>（RMB/Hour）` }})">
+          <el-table-column align="center" width="125" :render-header="h => h('span', { domProps: { innerHTML: `${ language('SHEBEIFEILV', '设备费率') }<br/>（RMB/Hour）` }})">
             <template v-slot="scope">
               <iInput v-if="(scope.row.partCbdType == 1 || scope.row.partCbdType == 2) && !disabled" class="input-center" v-model="scope.row.deviceRate" :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.deviceRate !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].deviceRate) : false }" @input="handleInputByNumber($event, 'deviceRate', scope.row, 2, updateDeviceRate)"></iInput>
               <span v-else :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.deviceRate !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].deviceRate) : false }">{{ scope.row.deviceRate }}</span>
@@ -79,16 +80,22 @@
           </el-table-column>
         </el-table-column>
         <el-table-column :label="language('JIANJIEZHIZAOCHENGBEN', '间接制造成本')" align="center">
-          <el-table-column label="(%)" align="center" width="88">
+          <el-table-column label="(%)" align="center" width="70">
             <template v-slot="scope">
               <iInput v-if="(scope.row.partCbdType == 1 || scope.row.partCbdType == 2) && !disabled" class="input-center" v-model="scope.row.indirectManufacturingRate" :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.indirectManufacturingRate !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].indirectManufacturingRate) : false }" @input="handleInputByNumber($event, 'indirectManufacturingRate', scope.row, 2, updateIndirectManufacturingRate)"></iInput>
-              <span v-else :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.indirectManufacturingRate !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].indirectManufacturingRate) : false }">{{ scope.row.indirectManufacturingRate }}</span>
+              <span v-else :class="{ changeClass: originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId] ? (scope.row.indirectManufacturingRate !== originMap[scope.row.frontOriginProductionId ? scope.row.frontOriginProductionId : scope.row.originProductionId].indirectManufacturingRate) : false }">{{ floatFixNum(scope.row.indirectManufacturingRate) }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="(RMB/Pc.)" align="center" width="93" prop="indirectManufacturingAmount"></el-table-column>
+          <el-table-column label="(RMB/Pc.)" align="center" width="90" prop="indirectManufacturingAmount">
+            <template slot-scope="scope">{{ floatFixNum(scope.row.indirectManufacturingAmount) }}</template>
+          </el-table-column>
         </el-table-column>
-        <el-table-column align="center" width="100" prop="laborCost" :render-header="h => h('span', { domProps: { innerHTML: `${ language('RENGONGCHENGBEN', '人工成本') }<br/>（RMB/Pc.）` }})"></el-table-column>
-        <el-table-column align="center" min-width="102" prop="deviceCost" :render-header="h => h('span', { domProps: { innerHTML: `${ language('SHEBEICHENGBEN', '设备成本') }<br/>（RMB/Pc.）` }})"></el-table-column>
+        <el-table-column align="center" width="110" prop="laborCost" :render-header="h => h('span', { domProps: { innerHTML: `${ language('RENGONGCHENGBEN', '人工成本') }<br/>（RMB/Pc.）` }})">
+          <template slot-scope="scope">{{ floatFixNum(scope.row.laborCost) }}</template>
+        </el-table-column>
+        <el-table-column align="center" min-width="110" prop="deviceCost" :render-header="h => h('span', { domProps: { innerHTML: `${ language('SHEBEICHENGBEN', '设备成本') }<br/>（RMB/Pc.）` }})">
+          <template slot-scope="scope">{{ floatFixNum(scope.row.deviceCost) }}</template>
+        </el-table-column>
       </el-table>
     </div>
   </div>  
@@ -100,12 +107,13 @@
 import { iButton, iInput, iMessage, iMessageBox } from "rise"
 import iconFont from "../iconFont"
 import { uuidv4, originRowClass, validateChangeKeysByManufacturingCost as validateChangeKeys } from "../data"
-import { numberProcessor } from "@/utils"
+import { floatFixNum } from "../../../data"
 import { cloneDeep } from "lodash"
 import { handleInputByNumber } from "rise/web/quotationdetail/components/data"
+import thousandsFilterInput from 'rise/web/aeko/quotationdetail/components/thousandsFilterInput'
 
 export default {
-  components: { iButton, iInput, iconFont },
+  components: { iButton, iInput, iconFont,thousandsFilterInput },
   model: {
     prop: "tableListData",
     event: "change"
@@ -137,13 +145,13 @@ export default {
       multipleSelection: [],
       validateChangeKeys,
       sumDataReal: {
-        originLaborCostSum: 0,
-        newLaborCostSum: 0,
-        originDeviceCostSum: 0,
-        newDeviceCostSum: 0,
-        originIndirectManufacturingAmountSum: 0,
-        newIndirectManufacturingAmountSum: 0,
-        makeCostChange: 0
+        originLaborCostSum: null,
+        newLaborCostSum: null,
+        originDeviceCostSum: null,
+        newDeviceCostSum: null,
+        originIndirectManufacturingAmountSum: null,
+        newIndirectManufacturingAmountSum: null,
+        makeCostChange: null
       },
     }
   },
@@ -157,8 +165,11 @@ export default {
       } else 
         return false
     })
+    // 组件可能是已填写数据后重新隐藏的，加载时计算一次
+    this.allCompute()
   },
   methods: {
+    floatFixNum,
     originRowClass,
     selectionChange(list) {
       this.multipleSelection = list
@@ -175,7 +186,14 @@ export default {
       this.$set(this.originMap, data.frontProductionId, data)
     },
     handleAddNewData() {
-      if (!this.multipleSelection.length) return
+      if (!this.multipleSelection.length){
+        // 当列表有原零件数据时 提示用户勾选
+        if(this.tableListData.length){
+          return iMessage.warn(this.language('LK_HANDLEADDNEWDATA_TIPS_CHECK','请先勾选一条原零件CBD行项目'));
+        }else{ // 当列表无数据时提示条件行
+          return iMessage.warn(this.language('LK_HANDLEADDNEWDATA_TIPS','请先添加一行原零件CBD行项目'));
+        }
+      } 
 
       const originIdSet = new Set()
       
@@ -258,8 +276,9 @@ export default {
       })
 
       flag && (this.updateOriginDataIndex())
-
-      this.allCompute()
+      setTimeout(()=>{  // 触发change修改tableListData，时间上有延迟会导致计算错误，所以添加setTimeout
+        this.allCompute()
+      })
     },
     isRelatedNewData(originData, newData) {
       if (originData.id) return originData.id === newData.originProductionId || originData.id === newData.frontOriginProductionId
@@ -298,118 +317,126 @@ export default {
       this.computeLaborCost(value, key, row)
       this.computeDeviceCost(value, key, row)
     },
+    // 计算间接制造成本
     computeIndirectManufacturingAmount(originValue, originKey, row) {
-      const indirectManufacturingAmount = math.chain(
-        math.add(
-          math.bignumber(row.deviceRate || 0),
-          math.multiply(
-            math.bignumber(row.directLaborRate || 0),
-            math.bignumber(row.directLaborQuantity || 0)
+      let indirectManufacturingAmount = null
+      if((row.deviceRate||row.deviceRate===0)&&(row.directLaborRate||row.directLaborRate===0)&&(row.directLaborQuantity||row.directLaborQuantity===0)){
+        indirectManufacturingAmount = math.chain(
+          math.add(
+            math.bignumber(row.deviceRate || 0),
+            math.multiply(
+              math.bignumber(row.directLaborRate || 0),
+              math.bignumber(row.directLaborQuantity || 0)
+            )
           )
         )
-      )
-      .multiply(math.bignumber(row.taktTime || 0))
-      .divide(3600)
-      .divide(+row.taktTimeNumber ? math.bignumber(row.taktTimeNumber) : 1)
-      .multiply(
-        math.divide(math.bignumber(row.indirectManufacturingRate || 0), 100)
-      )
-      .done()
-      .toFixed(2)
+        .multiply(math.bignumber(row.taktTime || 0))
+        .divide(3600)
+        .divide(+row.taktTimeNumber ? math.bignumber(row.taktTimeNumber) : 1)
+        .multiply(
+          math.divide(math.bignumber(row.indirectManufacturingRate || 0), 100)
+        )
+        .done()
+        .toFixed(2)
+      }
 
       this.$set(row, "indirectManufacturingAmount", indirectManufacturingAmount)
     
-      this.computeMakeCost(indirectManufacturingAmount, "indirectManufacturingAmount", row)
+      this.computeMakeCost()
     },
+    // 计算人工成本
     computeLaborCost(originValue, originKey, row) {
-      const laborCost = math.chain(math.bignumber(row.directLaborRate || 0))
-      .multiply(math.bignumber(row.directLaborQuantity || 0))
-      .multiply(math.bignumber(row.taktTime || 0))
-      .divide(3600)
-      .divide(+row.taktTimeNumber ? math.bignumber(row.taktTimeNumber) : 1)
-      .multiply(
-        math.add(
-          1,
-          math.divide(math.bignumber(row.indirectManufacturingRate || 0), 100)
+      let laborCost = null
+      if((row.directLaborRate || row.directLaborRate===0)&&(row.directLaborQuantity || row.directLaborQuantity===0)&&(row.taktTime || row.taktTime===0)&&
+      // (row.taktTimeNumber || row.taktTimeNumber===0)&&
+      (row.indirectManufacturingRate || row.indirectManufacturingRate===0)){
+        laborCost = math.chain(math.bignumber(row.directLaborRate || 0))
+        .multiply(math.bignumber(row.directLaborQuantity || 0))
+        .multiply(math.bignumber(row.taktTime || 0))
+        .divide(3600)
+        .divide(+row.taktTimeNumber ? math.bignumber(row.taktTimeNumber) : 1)
+        .multiply(
+          math.add(
+            1,
+            math.divide(math.bignumber(row.indirectManufacturingRate || 0), 100)
+          )
         )
-      )
-      .done()
-      .toFixed(2)
+        .done()
+        .toFixed(2)
+      }
 
       this.$set(row, "laborCost", laborCost)
     
       this.computeLaborCostSum(laborCost, "laborCost", row)
     },
+    // 计算设备成本
     computeDeviceCost(originValue, originKey, row) {
-      const deviceCost = math.chain(math.bignumber(row.deviceRate || 0))
-      .multiply(math.bignumber(row.taktTime || 0))
-      .divide(3600)
-      .divide(+row.taktTimeNumber ? math.bignumber(row.taktTimeNumber) : 1)
-      .multiply(
-        math.add(
-          1,
-          math.divide(math.bignumber(row.indirectManufacturingRate || 0), 100)
+      let deviceCost = null
+      if((row.deviceRate || row.deviceRate===0)&&(row.taktTime || row.taktTime===0)&&
+      // (row.taktTimeNumber || row.taktTimeNumber===0)&&
+      (row.indirectManufacturingRate || row.indirectManufacturingRate===0)){
+        deviceCost = math.chain(math.bignumber(row.deviceRate || 0))
+        .multiply(math.bignumber(row.taktTime || 0))
+        .divide(3600)
+        .divide(+row.taktTimeNumber ? math.bignumber(row.taktTimeNumber) : 1)
+        .multiply(
+          math.add(
+            1,
+            math.divide(math.bignumber(row.indirectManufacturingRate || 0), 100)
+          )
         )
-      )
-      .done()
-      .toFixed(2)
+        .done()
+        .toFixed(2)
+      }
       
       this.$set(row, "deviceCost", deviceCost)
 
       this.computeDeviceCostSum(deviceCost, "deviceCost", row)
     },
+    // 计算新、原零件人工成本变动值
     computeLaborCostSum(originValue, originKey, row) {
       const originTableListData = []
       const newTableListData = []
 
-      const changeList = []
-      this.tableListData.forEach(item => {
-        if (item.partCbdType == 2) {
-          if (this.originMap[item.frontOriginProductionId ? item.frontOriginProductionId : item.originProductionId]) {
-            changeList.push(this.originMap[item.frontOriginProductionId ? item.frontOriginProductionId : item.originProductionId])
-          }
-
-          changeList.push(item)
-        }
-      })
-
-      changeList.forEach(item => {
-        if (item.partCbdType == 0 || item.partCbdType == 1) {
+      const tableListData = this.tableListData
+      tableListData.forEach(item => {
+        if (item.partCbdType == 0 || item.partCbdType == 1) { // 原零件
           originTableListData.push(item)
         }
 
-        if (item.partCbdType == 2) {
+        if (item.partCbdType == 2) {  // 新零件
           newTableListData.push(item)
         }
       })
-
+      // 原零件 总人工成本
       this.sumDataReal.originLaborCostSum = originTableListData.reduce((acc, cur) => {
-        return math.bignumber(math.add(acc, cur.laborCost || 0))
-      }, 0).toFixed(2)
-
+        if(cur.laborCost||cur.laborCost===0){
+          return math.bignumber(math.add(acc||0, cur.laborCost))
+        }else{
+          return acc
+        }
+      }, null)
+      this.sumDataReal.originLaborCostSum = this.sumDataReal.originLaborCostSum&&this.sumDataReal.originLaborCostSum.toFixed(2)
+      // 新零件 总人工成本
       this.sumDataReal.newLaborCostSum = newTableListData.reduce((acc, cur) => {
-        return math.bignumber(math.add(acc, cur.laborCost || 0))
-      }, 0).toFixed(2)
+        if(cur.laborCost||cur.laborCost===0){
+          return math.bignumber(math.add(acc||0, cur.laborCost))
+        }else{
+          return acc
+        }
+      }, null)
+      this.sumDataReal.newLaborCostSum = this.sumDataReal.newLaborCostSum&&this.sumDataReal.newLaborCostSum.toFixed(2)
 
       this.updateSumData()
       this.computeMakeCost()
     },
+    // 计算新、原零件设备成本变动值
     computeDeviceCostSum(originValue, originKey, row) {
       const originTableListData = []
       const newTableListData = []
 
-      const changeList = []
-      this.tableListData.forEach(item => {
-        if (item.partCbdType == 2) {
-          if (this.originMap[item.frontOriginProductionId ? item.frontOriginProductionId : item.originProductionId]) {
-            changeList.push(this.originMap[item.frontOriginProductionId ? item.frontOriginProductionId : item.originProductionId])
-          }
-
-          changeList.push(item)
-        }
-      })
-
-      changeList.forEach(item => {
+      const tableListData = this.tableListData
+      tableListData.forEach(item => {
         if (item.partCbdType == 0 || item.partCbdType == 1) {
           originTableListData.push(item)
         }
@@ -419,17 +446,29 @@ export default {
         }
       })
 
+      // 原零件 总设备成本
       this.sumDataReal.originDeviceCostSum = originTableListData.reduce((acc, cur) => {
-        return math.bignumber(math.add(acc, cur.deviceCost || 0))
-      }, 0).toFixed(2)
-
+        if(cur.deviceCost||cur.deviceCost===0){
+          return math.bignumber(math.add(acc||0, cur.deviceCost))
+        }else{
+          return acc
+        }
+      }, null)
+      this.sumDataReal.originDeviceCostSum = this.sumDataReal.originDeviceCostSum&&this.sumDataReal.originDeviceCostSum.toFixed(2)
+      // 新零件 总设备成本
       this.sumDataReal.newDeviceCostSum = newTableListData.reduce((acc, cur) => {
-        return math.bignumber(math.add(acc, cur.deviceCost || 0))
-      }, 0).toFixed(2)
+        if(cur.deviceCost||cur.deviceCost===0){
+          return math.bignumber(math.add(acc||0, cur.deviceCost))
+        }else{
+          return acc
+        }
+      }, null)
+      this.sumDataReal.newDeviceCostSum = this.sumDataReal.newDeviceCostSum&&this.sumDataReal.newDeviceCostSum.toFixed(2)
 
       this.updateSumData()
       this.computeMakeCost()
     },
+    // 未使用
     computeIndirectManufacturingAmountSum(originValue, originKey, row) {
       const originTableListData = []
       const newTableListData = []
@@ -456,36 +495,61 @@ export default {
       })
 
       this.sumDataReal.originIndirectManufacturingAmountSum = originTableListData.reduce((acc, cur) => {
-        return math.bignumber(math.add(acc, cur.indirectManufacturingAmount || 0))
-      }, 0).toFixed(2)
+        if(cur.indirectManufacturingAmount||cur.indirectManufacturingAmount===0){
+          return math.bignumber(math.add(acc||0, cur.indirectManufacturingAmount))
+        }else{
+          return acc
+        }
+      }, null)
+      this.sumDataReal.originIndirectManufacturingAmountSum = this.sumDataReal.originIndirectManufacturingAmountSum&&this.sumDataReal.originIndirectManufacturingAmountSum.toFixed(2)
       this.sumDataReal.newIndirectManufacturingAmountSum = newTableListData.reduce((acc, cur) => {
-        return math.bignumber(math.add(acc, cur.indirectManufacturingAmount || 0))
-      }, 0).toFixed(2)
+        if(cur.indirectManufacturingAmount||cur.indirectManufacturingAmount===0){
+          return math.bignumber(math.add(acc||0, cur.indirectManufacturingAmount))
+        }else{
+          return acc
+        }
+      }, null)
+      this.sumDataReal.newIndirectManufacturingAmountSum = this.sumDataReal.newIndirectManufacturingAmountSum&&this.sumDataReal.newIndirectManufacturingAmountSum.toFixed(2)
 
       this.updateSumData()
     },
+    // 计算新、原零件成本变动值汇总
     computeMakeCost(originValue, originKey, row) {
-      this.sumDataReal.makeCostChange = math.add(
-        math.subtract(math.bignumber(this.sumDataReal.newLaborCostSum), math.bignumber(this.sumDataReal.originLaborCostSum)),
-        math.subtract(math.bignumber(this.sumDataReal.newDeviceCostSum), math.bignumber(this.sumDataReal.originDeviceCostSum))
-      ).toFixed(2)
+      if(this.sumDataReal.newLaborCostSum!=null&&this.sumDataReal.originLaborCostSum!=null&&this.sumDataReal.newDeviceCostSum!=null&&this.sumDataReal.originDeviceCostSum!=null){
+        this.sumDataReal.makeCostChange = math.add(
+          math.subtract(math.bignumber(this.sumDataReal.newLaborCostSum), math.bignumber(this.sumDataReal.originLaborCostSum)),
+          math.subtract(math.bignumber(this.sumDataReal.newDeviceCostSum), math.bignumber(this.sumDataReal.originDeviceCostSum))
+        ).toFixed(2)
+      }else{
+        this.sumDataReal.makeCostChange = null
+      }
       
       this.updateSumData()
     },
+    // 更新父组件sumData，修改表格数据
     updateSumData(data) {
       const sumData = {}
-      
       Object.keys(this.sumDataReal).forEach(key => sumData[key] = this.sumDataReal[key])
 
       this.$emit("update:sumData", sumData)
     },
     allCompute() {
-      this.tableListData.forEach(item => {
-        this.computeIndirectManufacturingAmount("", "", item)
-        this.computeLaborCost("", "", item)
-        this.computeDeviceCost("", "", item)
-      })
+      if(this.tableListData.length){
+        this.tableListData.forEach(item => {
+          this.computeIndirectManufacturingAmount("", "", item) // 间接制造成本
+          this.computeLaborCost("", "", item) // 人工成本
+          this.computeDeviceCost("", "", item)  // 设备成本
+        })
+      }else{
+        Object.keys(this.sumDataReal).forEach(key => this.sumDataReal[key] = null)
+        this.$emit("update:sumData", this.sumDataReal)
+      }
     }
+  },
+  beforeDestroy(){
+    // 隐藏显示时,清空变动值
+    Object.keys(this.sumDataReal).forEach(key => this.sumDataReal[key] = null)
+    this.$emit("update:sumData", this.sumDataReal)
   }
 }
 </script>
@@ -508,8 +572,6 @@ export default {
       color: #131523;
       font-weight: bold;
     }
-
-    .control {}
   }
 
   .table {
