@@ -25,7 +25,7 @@
         </div>
       </iFormItem>
       <iFormItem :label="language('HUOBI', '货币')">
-        <iText v-if="disabled">{{ currencyText }}</iText>
+        <iText v-if="disabled" class="iFormcurrency">{{ currencyText }}</iText>
         <iSelect v-else v-model="currency" @change="handleChangeByCurrency">
           <el-option 
             v-for="item in currencyOptions" 
@@ -463,6 +463,9 @@ export default {
         .el-form-item__content {
           text-align: left;
           font-weight: bold;
+          .iFormcurrency{
+            font-weight: normal;
+          }
         }
       }
     }
