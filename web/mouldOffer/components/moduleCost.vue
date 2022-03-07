@@ -98,7 +98,7 @@
           <span v-else>{{ scope.row.assembledPartName }}</span>
         </template>
         <template #assembledPartCode="scope">
-          <iSelect v-if="!disabled && dgysBj" v-model="scope.row.assembledPartCode" @change="handleChangeByAssembledPartCode($event, scope.row)">
+          <iSelect v-if="!disabled && dgysBj" v-model="scope.row.assembledPartCode" @change="handleChangeByAssembledPartCode($event, scope.row.assembledPartPrjCode, scope.row)">
             <el-option v-for="partNumObj in partNums" :key="partNumObj.value" :label="partNumObj.label" :value="partNumObj.value"></el-option>
           </iSelect>
           <span v-else>{{ scope.row.assembledPartCode }}</span>
@@ -351,7 +351,7 @@ export default {
       // const index = mouldIdIndexes[0] ? (mouldIdIndexes[0] >= 10 ? (mouldIdIndexes[0] + 1) + "" : "0" + (mouldIdIndexes[0] + 1)) : "01"
 
       this.tableListData.push({
-        // mouldId: `${ this.partInfo.rfqId }_${ this.userInfo.supplierId }_${ this.partInfo.partNum }_T${ index }`,
+        // mouldId: `${ this.partInfo.rfqId }_${ this.userInfo.supplierId }_${ this.partInfo.fsNum }_T${ index }`,
         mouldId: "",
         fixedAssetsName: "",
         assembledPartPrjCode: this.partInfo.fsNum,
@@ -404,7 +404,7 @@ export default {
       }
     },
     // 零件号选择
-    handleChangeByAssembledPartCode(partNum, row) {
+    handleChangeByAssembledPartCode(partNum, fsNum, row) {
       this.$set(row, "assembledPartPrjCode", "")
       const fsObj = this.partNumMap[partNum][0]
       if (fsObj) {
@@ -420,7 +420,9 @@ export default {
       mouldIdIndexes.sort((a, b) => b - a)
       const index = mouldIdIndexes[0] ? (mouldIdIndexes[0] >= 10 ? (mouldIdIndexes[0] + 1) + "" : "0" + (mouldIdIndexes[0] + 1)) : "01"
     
-      this.$set(row, "mouldId", `${ this.partInfo.rfqId }_${ this.userInfo.supplierId }_${ partNum }_T${ index }`)
+      if (fsNum) {
+        this.$set(row, "mouldId", `${ this.partInfo.rfqId }_${ this.userInfo.supplierId }_${ fsNum }_T${ index }`)
+      }
     },
     handleInputByModeTotalLife(val, row) {
       row.modeTotalLife = numberProcessor(val, 0)
@@ -449,7 +451,9 @@ export default {
         mouldIdIndexes.sort((a, b) => b - a)
         const index = mouldIdIndexes[0] ? (mouldIdIndexes[0] >= 10 ? (mouldIdIndexes[0] + 1) + "" : "0" + (mouldIdIndexes[0] + 1)) : "01"
       
-        this.$set(row, "mouldId", `${ this.partInfo.rfqId }_${ this.userInfo.supplierId }_${ fsObj.partNum }_T${ index }`)
+        if (fsNum) {
+          this.$set(row, "mouldId", `${ this.partInfo.rfqId }_${ this.userInfo.supplierId }_${ fsNum }_T${ index }`)
+        }
       }
     },
     handleInputByMouldType($event, row) {
