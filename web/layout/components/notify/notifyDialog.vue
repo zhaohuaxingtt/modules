@@ -23,7 +23,7 @@
                         <el-input type="textarea" v-model="detail.content" disabled></el-input>
                     </div>
                     <div class="publishTime"><i class="el-icon-time"><span class="publishTime-content">{{detail.publishTime}}</span></i></div>
-                    <iButton @click="sureMessage" class="btn">{{language('确认')}}</iButton>
+                    <iButton @click="sureMessage" class="btn">{{language('确认','确认')}}</iButton>
               </div>
           </div>
       </div>
