@@ -287,7 +287,7 @@ export default {
         save(type){
             const { computedBasic,tableData,partInfo } = this;
 
-            if (this.isSkdLc && tableData.every(item => +moment(item.yearMonths).startOf("month") !== (this.lcStartProductDate ? +moment(this.lcStartProductDate).startOf("month") : -1))) throw iMessage.warn(this.language("JIANGJIAJIHUABIXUXUANZEQIBUSHENGCHANRIQI", "降级计划必须选择LC起步生产日期"))
+            if (this.isSkdLc && tableData.every(item => +moment(item.yearMonths).startOf("month") !== (this.lcStartProductDate ? +moment(this.lcStartProductDate).startOf("month") : -1))) throw iMessage.warn(this.language("JIANGJIAJIHUABIXUXUANZEQIBUSHENGCHANRIQI", "降价计划必须选择LC起步生产日期"))
 
             return new Promise((r,j)=>{
             const {quotationId} = partInfo; // 258869949
