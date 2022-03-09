@@ -128,13 +128,14 @@ export default {
 				this.clearNotify()
 			} else {
 				this.popupDataList.forEach((ele, index) => {
-					setTimeout(() => {
-						this.closeItemList[index] = {
-							notify: this.$notify({
-								duration: 0,
-								dangerouslyUseHTMLString: true,
-								customClass: 'notifyHandel',
-								message: `<div style='display: flex;justify-content: space-between;cursor:pointer'>
+					if (!document.querySelector('.notifyHandel_' + ele.id)) {
+						setTimeout(() => {
+							this.closeItemList[index] = {
+								notify: this.$notify({
+									duration: 0,
+									dangerouslyUseHTMLString: true,
+									customClass: 'notifyHandel notifyHandel_' + ele.id,
+									message: `<div style='display: flex;justify-content: space-between;cursor:pointer'>
                           <div class="popupLeft" style='width:50px;height:50px; '>
                               <img src="${
 																ele.picUrl
@@ -153,15 +154,16 @@ export default {
                               >${ele.content}</p>
                           </div>
                       </div>`,
-								position: 'bottom-right',
-								onClick() {
-									_this.openDialog(index)
-								},
-								onClose() {},
-							}),
-							// 'times':0
-						}
-					}, 1)
+									position: 'bottom-right',
+									onClick() {
+										_this.openDialog(index)
+									},
+									onClose() {},
+								}),
+								// 'times':0
+							}
+						}, 1)
+					}
 				})
 			}
 		},
