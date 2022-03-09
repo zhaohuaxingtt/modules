@@ -38,15 +38,15 @@ export default {
     })
   },
   beforeDestroy() {
-    if(this.closeItemList){
+    if(this.closeItemList.length > 0){
       this.closeItemList.forEach((ele) => {
         if(ele.notify){
           ele.notify.close()
         }
       })
+      this.closeItemList = []
+      this.popupDataList = []
     }
-    this.closeItemList = []
-    this.popupDataList = []
     this.closePopupSocket()
   },
   created(){
