@@ -276,7 +276,7 @@ export default {
         supplierPartCodeList: item.partsNum,
         quantity: item.count,
         originTotalPrice: item.assetTotal,
-        originPartNums: item.partsShareNum,
+        originPartNums: item.partsShareNum || item.partsTotalNum,
         isQuote: true,
       }))
 
