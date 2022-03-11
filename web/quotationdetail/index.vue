@@ -497,7 +497,7 @@ export default {
           this.tabLoading = false
           let fsStateDisabled = res.data.fsStateCode != $enum("PURCHASE_PROJECT_STATE_ENUM.HAS_RFQ") && res.data.fsStateCode != $enum("PURCHASE_PROJECT_STATE_ENUM.APPLICATION_DESIGNAT")
           let rfqStateDisabled = res.data.rfqStateCode != $enum("RFQ_STATE_ENUM.INQUIRY_ING") && res.data.rfqStateCode != $enum("RFQ_STATE_ENUM.NEGOTIATE_ING")
-          let quotationStateDisabled = res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.NOT_QUOTED") || res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.REFUSE")
+          let quotationStateDisabled = res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.NOT_QUOTED") || res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.REFUSE") || res.data.quotationStateCode == $enum("PART_QUOTATION_STATE_ENUM.DELEGATE_REFUSE")
           let rfqRoundStateDisabled = res.data.rfqRoundStateCode != $enum("RFQ_ROUNDS_STATE_ENUM.RUNNING")
           let roundDisabled = +this.partInfo.round != +res.data.currentRounds
 
