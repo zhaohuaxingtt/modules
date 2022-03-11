@@ -85,7 +85,7 @@ export default {
 		showNotify() {
 			this.clearNotify()
 			this.popupDataList.forEach((e) => {
-				Notification(this.getNotifyOption(e))
+				setTimeout(()=>Notification(this.getNotifyOption(e)),100)
 			})
 		},
 		getNotifyOption(ele) {
@@ -152,6 +152,9 @@ export default {
 		},
 		handleDialogSure() {
 			this.clearNotify()
+			this.$nextTick(()=>{
+				this.getLatest()
+			})
 		},
 	},
 }
