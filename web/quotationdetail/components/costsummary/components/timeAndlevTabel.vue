@@ -296,7 +296,7 @@ export default{
   }
 }
 .tscss{
-  height: 45px;
+  height: auto;
   overflow: hidden;
 }
 .topcontent{
