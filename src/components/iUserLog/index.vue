@@ -200,6 +200,15 @@ export default {
 			type: Boolean, // 是否默认显示关键查看记录
 			default: true,
 		},
+    /**
+     * @description: bizId 是否必传
+     * @param {*}
+     * @return {*}
+     */
+    hasBizId: {
+      type: Boolean,
+      default: false
+    }
 	},
 	data() {
 		return {
@@ -352,6 +361,9 @@ export default {
 			http.send(JSON.stringify({ isAdmin: false }))
 		},
 		getList() {
+      if(this.hasBizId){
+        if(!this.extendParams.bizId_obj_ae) return
+      }
 			this.loading = true
 			const http = new XMLHttpRequest()
 			const url = `${this.bizLogApiPrefix}/operationLog/findRecordLogs`
