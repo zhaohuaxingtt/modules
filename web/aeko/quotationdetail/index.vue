@@ -360,7 +360,13 @@ export default {
       }).then((res) => {
         this.tableLoading = false;
         if (res.code == 200) {
-          const link = `http://svmwt038/sol-bnk/pages/rise/quotes/lsp-view.jsf?${paramsStr}token=${res.data}`;
+
+          const linkObj = {
+            production:'http://bnk.csvw.com/sol-bnk/pages/rise/quotes/lsp-view.jsf',
+            others:'http://svmwt038/sol-bnk/pages/rise/quotes/lsp-view.jsf'
+          };
+          const link = `${process.env.NODE_ENV !== 'production' ? linkObj['others'] : linkObj['production']}?${paramsStr}token=${res.data}`;
+          // const link = `http://svmwt038/sol-bnk/pages/rise/quotes/lsp-view.jsf?${paramsStr}token=${res.data}`;
           window.open(link, '_blank');
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
