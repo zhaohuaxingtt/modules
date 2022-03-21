@@ -253,7 +253,7 @@ export default {
 			if (typeof beforeHook === "function") beforeHook()
 
 			return saveAekoCbdPriceSum({
-				isChange: this.isChange,
+				isChange: this.isChange ? true : false,
 				quotationId: this.partInfo.quotationId,
 				priceList: this.tableListData
 			})
