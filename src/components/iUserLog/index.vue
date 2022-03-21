@@ -256,7 +256,7 @@ export default {
 				sit: '/bizlogApi',
 				vmsit: '/bizlogApi',
 				uat: '/bizlogApi',
-				production: '/api',
+				production: '/bizlogApi',
 			}
 			return baseMap[this.appEnv.toLowerCase()] || '/api'
 		},
