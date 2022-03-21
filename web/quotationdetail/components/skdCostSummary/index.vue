@@ -227,6 +227,12 @@ export default {
 
           this.skdStartProductDate = res.data.skdStartProductDate
           this.currency = res.data.currency || "RMB"
+
+          // 展示默认的汇率
+          const currentCurrency = this.currencyOptions.find(item => item.value === this.currency)
+          this.exchangeRate = this.currency === "RMB" ? "1.00" : currentCurrency.exchangeRate;
+
+
           this.isAutoCal = res.data.isAutoCal
           const quotationExt = res.data.quotationExt || {}
 

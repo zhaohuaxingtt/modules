@@ -14,6 +14,12 @@ import {Select} from 'element-ui'
 export default{
   name:'iSelect',
   extends:Select,
+  props: {
+    filterable: {
+      type: Boolean,
+      default: true
+    }
+  },
     computed:{
     iconClass() {
         return this.remote && this.filterable ? '' : (this.visible ? ' is-reverse el-icon-caret-top' : ' el-icon-caret-top');

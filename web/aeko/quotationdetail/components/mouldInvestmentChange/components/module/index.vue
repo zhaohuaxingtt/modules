@@ -246,7 +246,7 @@ export default {
       }
 
       this.tableListData.push({
-        mouldId: `${this.partInfo.rfqId}_${this.$route.query.supplierCode}_${this.partInfo.partNum}_T${this.indexProcess(index)}`,
+        mouldId: `${this.partInfo.rfqId}_${this.$route.query.supplierCode}_${this.partInfo.fsNum}_T${this.indexProcess(index)}`,
         changeType: "新增",
         assembledPartCode:this.partInfo.partNum || null,
         assembledPartName:this.partInfo.partName || null,
@@ -276,7 +276,7 @@ export default {
         supplierPartCodeList: item.partsNum,
         quantity: item.count,
         originTotalPrice: item.assetTotal,
-        originPartNums: item.partsShareNum,
+        originPartNums: item.partsTotalNum,
         isQuote: true,
       }))
 

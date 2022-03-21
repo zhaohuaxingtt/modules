@@ -55,14 +55,11 @@
 							clearable
 						/>
 					</el-form-item>
-					<el-form-item
-						:label="language('')"
-						v-if="recordShow"
-						style="marginTop: 22px; line-height: 35px"
-					>
-						<el-checkbox v-model="query.isSee" :disabled="recordFlag"
-							>显示关键查看记录</el-checkbox
-						>
+					<el-form-item v-if="recordShow" style="padding-top: 10px">
+						<div slot="label" style="opacity: 0">显示关键查看记录</div>
+						<el-checkbox v-model="query.isSee" :disabled="recordFlag">{{
+						language('显示关键查看记录', '显示关键查看记录')
+						}}</el-checkbox>
 					</el-form-item>
 				</el-form>
 			</i-search>
@@ -203,6 +200,15 @@ export default {
 			type: Boolean, // 是否默认显示关键查看记录
 			default: true,
 		},
+    /**
+     * @description: bizId 是否必传
+     * @param {*}
+     * @return {*}
+     */
+    hasBizId: {
+      type: Boolean,
+      default: false
+    }
 	},
 	data() {
 		return {
@@ -355,6 +361,9 @@ export default {
 			http.send(JSON.stringify({ isAdmin: false }))
 		},
 		getList() {
+      if(this.hasBizId){
+        if(!this.extendParams.bizId_obj_ae) return
+      }
 			this.loading = true
 			const http = new XMLHttpRequest()
 			const url = `${this.bizLogApiPrefix}/operationLog/findRecordLogs`

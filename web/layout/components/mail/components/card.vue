@@ -208,18 +208,7 @@ export default {
 				this.$emit('read-callback', { tab: this.tab })
 				this.$emit('hide-drawer')
 				setTimeout(() => {
-					if (
-						this.item.url.indexOf('http://') !== -1 ||
-						this.item.url.indexOf('https://') !== -1
-					) {
-						location.href = this.item.url
-					} else {
-						if (this.item.url.indexOf('#') === -1) {
-							this.$router.replace(this.item.url)
-						} else {
-							location.href = this.item.url
-						}
-					}
+					location.href = this.item.url
 				}, 200)
 			}
 		},
