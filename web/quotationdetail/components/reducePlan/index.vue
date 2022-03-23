@@ -32,7 +32,7 @@
 				<span class="tip margin-left10">降价计算以A价为准</span>
 			</span>
 		</div>
-		<tableList :tableTitle="tableTitle" v-if='partInfo.quotationId' :partInfo='partInfo'  :tableData="tableData" :reducePlanedit="!disabled && !isOriginprice" @rateChange="handleRateChange" @dateFocus="dateFocus" :lcStartProductDate="lcStartProductDate" />
+		<tableList :tableTitle="tableTitle" v-if='partInfo.quotationId' :partInfo='partInfo'  :tableData="tableData" :reducePlanedit="!disabled && !isOriginprice" @rateChange="handleRateChange" @yearMonthsChange="handleYearMonthsChange" @dateFocus="dateFocus" :lcStartProductDate="lcStartProductDate" />
 	</iCard>
 </template>
 
@@ -145,7 +145,7 @@ export default {
                     if (!basicPrice) {
                         return [...accum, item]
                     }
-                    const reducedPrice = index === 0 ? (basicPrice * (1 - item.priceReduceRate / 100)) : (accum[index - 1].reducedPrice * (1 - item.priceReduceRate / 100))
+                    const reducedPrice = index === 0 ? (basicPrice * (1 - (item.priceReduceRate || 0) / 100)) : (accum[index - 1].reducedPrice * (1 - (item.priceReduceRate || 0) / 100))
                     return [...accum, {
                         ...item,
                         reducedPrice: cloneDeep(reducedPrice),
@@ -172,6 +172,18 @@ export default {
                 // this.computedBasic === '01' ? this.aprice : this.bprice
                 this.tableData = this.computeReducePrice(this.aprice, this.tableData)
             }
+        },
+        handleYearMonthsChange(value, key, data, index) {
+            this.tableData.forEach((item, i) => {
+                if (i > index) {
+                    this.$set(item, "yearMonths", "")
+                    this.$set(item, "priceReduceRate", "0.0000")
+                }
+
+                return
+            })
+
+            this.handleRateChange(value, key, data)
         },
         /**
          * @Description: 页面初始化函数，每次tab页切换到当前页面时会调用
@@ -243,7 +255,7 @@ export default {
                 }
 
                 return data.reduce((acc, cur) => {
-                    const currentMoth = +moment(cur.yearMonths).startOf("month")
+                    const currentMoth = cur.yearMonths ? +moment(cur.yearMonths).startOf("month") : 0
 
                     if (currentMoth < lcStartProductDate || currentMoth > lcStartProductDate) {
                         if ((currentMoth > lcStartProductDate) && acc.length && (+moment(acc.slice(-1)[0].yearMonths).startOf("month") <= lcStartProductDate)) {
@@ -256,7 +268,7 @@ export default {
                             math.bignumber(aprice || 0),
                             math.subtract(
                                 math.bignumber(1), 
-                                math.divide(math.bignumber(cur.priceReduceRate || 0), 100).toFixed(4)
+                                math.divide(math.bignumber(cur.priceReduceRate || 0), 100)
                             )
                         ).toFixed(2)
                     } else {
