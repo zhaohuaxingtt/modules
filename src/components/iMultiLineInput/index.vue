@@ -49,7 +49,7 @@ export default {
   methods: {
     handleInput(value) {
       const str = value || ''
-      this.$emit('input', str.replace(/\n|\r|\s/g, ',').split(',').filter(item => item || item === 0).map(item => item.trim()).join(','))
+      this.$emit('input', str.replace(/\n|\r/g, ',').split(',').filter(item => item || item === 0).map(item => item.trim()).join(','))
     },
     showMultiLineInputDialog() {
       this.text = this.value ? (this.value + "").replace(/,/g, '\n') : ''
