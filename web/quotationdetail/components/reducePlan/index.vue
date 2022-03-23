@@ -256,7 +256,7 @@ export default {
                             math.bignumber(aprice || 0),
                             math.subtract(
                                 math.bignumber(1), 
-                                math.divide(math.bignumber(cur.priceReduceRate || 0), 100).toFixed(4)
+                                math.divide(math.bignumber(cur.priceReduceRate || 0), 100)
                             )
                         ).toFixed(2)
                     } else {
