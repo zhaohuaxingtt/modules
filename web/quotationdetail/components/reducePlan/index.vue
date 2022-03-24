@@ -309,7 +309,7 @@ export default {
                 priceReducePlanInfoList:tableData.map(item => {
                     return {
                         ...item,
-                        yearMonths: moment(item.yearMonths).format('YYYY-MM-DD')
+                        yearMonths: item.yearMonths ? moment(item.yearMonths).format('YYYY-MM-DD') : ""
                     }
                 })
             }
