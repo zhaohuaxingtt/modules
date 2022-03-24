@@ -22,24 +22,17 @@
                             v-model="item[titleItem.key]"
                             value-format="yyyy-MM"
                             type="month"
-                            :clearable="false"
+                            clearable
                             :picker-options="{
                                 disabledDate(time){
                                     const pickDate = +moment(time)
-                                    const afterDate = +(moment(tableData[index+1] ? new Date(tableData[index+1][titleItem.key]) : null).startOf('month'))
                                     const beforeDate = +(moment((index-1)>-1 ? new Date(tableData[index-1][titleItem.key]) : null).endOf('month'))
-                                    if (afterDate && beforeDate) {
-                                        return pickDate <= beforeDate || pickDate >= afterDate
-                                    }
-                                    if (afterDate) {
-                                        return pickDate >= afterDate
-                                    }
                                     if (beforeDate) {
                                         return pickDate <= beforeDate
                                     }
                                     return false
                                 }}"
-                            @change="$emit('rateChange', $event, titleItem.key, item)"
+                            @change="$emit('yearMonthsChange', $event, titleItem.key, item, index)"
                             @focus="$emit('dateFocus', item[titleItem.key], titleItem.key, item)"
                         />
                         <span v-else :class="{ lcPrice: titleItem.key == 'priceReduceRate' && getIsLcStartProductDate(item.yearMonths) }">{{item[titleItem.key]}}</span>
