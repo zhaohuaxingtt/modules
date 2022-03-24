@@ -29,7 +29,7 @@
 import { iMessage } from "rise"
 import mould from "./components/mould"
 import developmentCost from "./components/developmentCost"
-import { saveModuleDevFee, saveModuleDevFeeSkd } from "@/api/rfqManageMent/quotationdetail"
+import { saveModuleDevFee, saveModuleDevFeeSkd, updatePriceReducePlan } from "@/api/rfqManageMent/quotationdetail"
 import { priceStatusMixin } from "../mixins"
 
 export default {
@@ -137,6 +137,7 @@ export default {
               r(res)
               if (type !== "submit") iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
               this.init()
+              this.updatePriceReducePlan()
             } else {
               j()
               iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
@@ -167,6 +168,10 @@ export default {
 
               j()
             }
+
+            if (res1.code == 200 || res2.code == 200) {
+              this.updatePriceReducePlan()
+            }
           })
           .catch(() => {
             j()
@@ -178,6 +183,8 @@ export default {
               r(res)
               if (type !== "submit") iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
               this.init()
+
+              this.updatePriceReducePlan()
             } else {
               j()
               iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
@@ -187,6 +194,19 @@ export default {
             j()
           })
         }
+      })
+    },
+    updatePriceReducePlan() {
+      updatePriceReducePlan({
+        quotationId: this.partInfo.quotationId
+      })
+      .then(res => {
+        if (res.code != 200) {
+          iMessage.error(this.language("JIANGJIAJIHUAGENGXINSHIBAI", "降价计划更新失败"))
+        }
+      })
+      .catch(() => {
+        iMessage.error(this.language("JIANGJIAJIHUAGENGXINSHIBAI", "降价计划更新失败"))
       })
     }
   }
