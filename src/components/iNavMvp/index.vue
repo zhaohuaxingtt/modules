@@ -21,7 +21,13 @@
 			@click="change(item, index)"
 			v-permission.auto="`${item[permissionKey]}|${item[permissionName]}`"
 		>
-			<span class="name" :class="index == activeIndex && 'active'">{{
+			<div v-if="item.slot" class="name" :class="index == activeIndex && 'active'">
+				<span :class="index == activeIndex && 'active'">{{
+					lang ? language(item.key, item.name) : $t(item.key)
+				}}</span>
+				<span v-if="item.slot" v-html="item.slot"></span>
+			</div>
+			<span v-else class="name" :class="index == activeIndex && 'active'">{{
 				lang ? language(item.key, item.name) : $t(item.key)
 			}}</span>
 			<!-- <span class="circle" v-show="item.message>0">{{item.message}}</span> -->
