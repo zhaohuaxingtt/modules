@@ -282,7 +282,7 @@ export default {
         currency: this.currency,
         quotationId: this.partInfo.quotationId,
         exchangeRateVos: this.exchangeRateVos
-      })
+      }, this.userInfo.supplierId ? this.userInfo.supplierId : this.$route.query.supplierId)
       .finally(() => {
 				if (typeof afterHook === "function") afterHook()
 			})
