@@ -255,7 +255,8 @@ export default {
     },
     getAllPartForMould() {
       getAllPartForMould({
-        rfqId: this.partInfo.rfqId
+        rfqId: this.partInfo.rfqId,
+        supplierId: this.supplierId
       })
       .then(res => {
         if (res.code == 200) {
