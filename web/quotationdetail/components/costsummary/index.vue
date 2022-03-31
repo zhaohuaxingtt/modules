@@ -191,7 +191,7 @@ import tableTemlate from './components/tableTemlate'
 import {persentDatalist,titleYcl,titleCbzz,titlebfcb,titleglf,titleqtfy,titlelr,titleCBD,allpagefrom,needContactData,Aprice,getAallPrice,getPersent,cbdlist, titleYclByL3, titleCbzzByL3, titlebfcbByL3, titleglfByL3, titleqtfyByL3, titlelrByL3} from './components/data'
 import {iButton,iMessage} from 'rise'
 import {getCostSummary,packageTransport} from '@/api/rfqManageMent/rfqDetail'
-import {postCostSummary,savePackageTransport,getCostSummaryDB,updateCostSummaryDB,getCategoryDetail} from '@/api/rfqManageMent/quotationdetail'
+import {postCostSummary,savePackageTransport,getCostSummaryDB,updateCostSummaryDB,getCategoryDetail, updatePriceReducePlan} from '@/api/rfqManageMent/quotationdetail'
 import {getFiles,deleteFiles,downloadUdFile} from '@/api/file'
 import {selectDictByKeys} from '@/api/dictionary'
 import quotationAnalysis from './components/quotationAnalysis'
@@ -1240,6 +1240,7 @@ export default{
             if (res.code == 200) {
               if (type !== "submit") {
                 iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
+                this.updatePriceReducePlan()
                 this.init()
               }
             } else {
@@ -1281,6 +1282,7 @@ export default{
                 this.init()
               }
 
+              this.updatePriceReducePlan()
               this.updateCbdLevel(this.allTableData.level)
             } else {
               iMessage.error(this.language("CAOZUOSHIBAI", "操作失败"))
@@ -1305,6 +1307,8 @@ export default{
                 iMessage.error(this.$i18n.locale === "zh" ? res1.desZh : res1.desEn)
               }
 
+              this.updatePriceReducePlan()
+
               if (flag) {
                 if (type !== "submit") {
                   iMessage.success(this.$i18n.locale === "zh" ? (res1 ? res1.desZh : res2.desZh) : (res1 ? res1.desEn : res2.desEn)) 
@@ -1318,6 +1322,8 @@ export default{
             if (type !== "submit") {
               iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn) 
             }
+
+            this.updatePriceReducePlan()
             this.init()
           } else {
             iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
@@ -1345,6 +1351,7 @@ export default{
             if (res1 && res1.code == 200 && res2 && res2.code == 200) {
               if (type !== "submit") {
                 iMessage.success(this.$i18n.locale === "zh" ? res1.desZh : res1.desEn)
+                this.updatePriceReducePlan()
                 this.init()
               }
 
@@ -1781,6 +1788,19 @@ export default{
         default:
           break
       }
+    },
+    updatePriceReducePlan() {
+      updatePriceReducePlan({
+        quotationId: this.partInfo.quotationId
+      })
+      .then(res => {
+        if (res.code != 200) {
+          iMessage.error(this.language("JIANGJIAJIHUAGENGXINSHIBAI", "降价计划更新失败"))
+        }
+      })
+      .catch(() => {
+        iMessage.error(this.language("JIANGJIAJIHUAGENGXINSHIBAI", "降价计划更新失败"))
+      })
     }
   }
 }
