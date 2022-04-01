@@ -1,8 +1,8 @@
 <!--
  * @Author: ldh
  * @Date: 2021-05-28 22:43:53
- * @LastEditTime: 2021-09-08 14:39:03
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-03-23 17:46:27
+ * @LastEditors: YoHo
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\src\components\iEditor\index.vue
 -->
@@ -291,7 +291,14 @@ export default {
 			z-index: 0;
 		}
 	}
+.w-e-content-mantle{
+	.w-e-text {
+		p {
+			word-break: break-all;
+		}
+	}
 
+}
 	.w-e-content-preview
 	.w-e-text {
 		p {
