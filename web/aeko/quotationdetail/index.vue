@@ -357,6 +357,7 @@ export default {
       await bnkSupplierToken({
         partProjId: aekoPartInfo.partProjectId,
         rfqId,
+        supplierId: supplierId,
       }).then((res) => {
         this.tableLoading = false;
         if (res.code == 200) {
