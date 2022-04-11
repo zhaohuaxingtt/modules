@@ -363,7 +363,7 @@ export default {
         if (res.code == 200) {
 
           const linkObj = {
-            production:'http://bnk.csvw.com/sol-bnk/pages/rise/quotes/lsp-view.jsf',
+            production:'https://rise.csvw.com/sol-bnk/pages/rise/quotes/lsp-view.jsf',
             others:'http://svmwt038/sol-bnk/pages/rise/quotes/lsp-view.jsf'
           };
           const link = `${process.env.NODE_ENV !== 'production' ? linkObj['others'] : linkObj['production']}?${paramsStr}token=${res.data}`;
