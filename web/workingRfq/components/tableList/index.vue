@@ -173,6 +173,7 @@
 import {icon,iSelect,iInput} from 'rise'
 import {_getMathNumber, numberProcessor} from '@/utils'
 import {getAallPrice,Aprice,Bprice} from '../../../quotationdetail/components/costsummary/components/data'
+import { uuidv4 } from "rise/web/aeko/quotationdetail/components/aPriceChange/components/data"
 export default{
   components:{icon,iSelect,iInput},
   props:{
@@ -204,6 +205,12 @@ export default{
     lang: {
       type: Boolean,
       default: false
+    }
+  },
+  watch: {
+    tableTitle() {
+      this.$refs.moviesTable.$vnode.key = uuidv4()
+      this.$forceUpdate()
     }
   },
   inject:['vm'],
