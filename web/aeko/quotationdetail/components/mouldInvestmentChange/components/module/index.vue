@@ -578,6 +578,7 @@ export default {
     margin-right: 5px;
   }
   ::v-deep .el-form-item{
+      margin-bottom: 0;
       &.is-error{
         .el-input{
           .el-input__inner{
