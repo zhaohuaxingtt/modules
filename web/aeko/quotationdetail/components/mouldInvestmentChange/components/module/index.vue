@@ -119,7 +119,7 @@
       </el-form>
       <iFormGroup ref="dataGroupForm" class="subCost margin-top30" :row="4" inline :model="{shareQuantity}">
         <template v-for="(info, $index) in mouldCostInfos">
-          <iFormItem class="item" :key="$index+required" prop="shareQuantity" v-if="info.props === 'shareQuantity'" :rules="shareQuantityRules">
+          <iFormItem class="item" :key="$index+required" prop="shareQuantity" v-if="info.props === 'shareQuantity'" :rules="shareQuantityRules" :show-message="false">
             <template #label>
               <span><span v-if="required && info.require" class="require">*</span>{{language(info.key, info.name)}}</span>
             </template>
@@ -226,7 +226,6 @@ export default {
     },
     shareQuantityRules(){
       let shareQuantityRules = this.required ? rules.shareQuantity : [{}]
-      shareQuantityRules[0].message = this.language('BIDDING_BITIAN','必填')
       return shareQuantityRules
     },
     ...Vuex.mapState({
