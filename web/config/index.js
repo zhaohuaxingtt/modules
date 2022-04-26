@@ -119,7 +119,9 @@ export const allitemsList = {
   // GS零件(TP)
   GSLINGJIANIP: '50000000',
   // FS Common Sourcing（PT09）
-  FSCOMMONSOURCING: '50002000'
+  FSCOMMONSOURCING: '50002000',
+  // DS零件
+  DSLINGJIAN: '1000062'
 }
 // 零件项目类型
 export const partProjTypes = Object.assign(JSON.parse(JSON.stringify(onlyselfProject)),JSON.parse(JSON.stringify(allitemsList)))
