@@ -225,7 +225,7 @@ export default {
       return (this.tableListData || []).some(item=>item.isShared)
     },
     shareQuantityRules(){
-      let shareQuantityRules = this.required ? rules.shareQuantity : [{}]
+      let shareQuantityRules = this.required ? rules.shareQuantity : undefined
       return shareQuantityRules
     },
     ...Vuex.mapState({

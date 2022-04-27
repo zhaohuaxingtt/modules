@@ -57,10 +57,11 @@ export default {
 				window.requestNotifiy = true
 				const accountId = JSON.parse(
 					sessionStorage.getItem('userInfo')
-				).accountId
+				)?.accountId
+				if(accountId)
 				getPopupList(accountId)
 					.then((res) => {
-						if (res.code == 200) {
+						if (res?.code == 200) {
 							let popupDataList = res.data
 							this.popupDataList = popupDataList.reverse()
 							this.showNotify()
