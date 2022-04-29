@@ -609,6 +609,7 @@ export default {
     },
     async submit(params) {
       this.submitLoading = true
+      let dsPartOriginPrice = false
 
       if (!this.partInfo.isOriginprice && this.partInfo.partProjectType == partProjTypes.DSLINGJIAN && !params) {
         try {
@@ -620,6 +621,7 @@ export default {
             rfqId: this.partInfo.rfqId,
           })
 
+          dsPartOriginPrice = res.data
           if (res.data === false) {
             const confirmInfo = await this.$confirm(this.language('AJIAFASHENGBIANHUASHIFOUQUERENTIJIAO', 'A价发生变化，是否确认提交'))
             if (confirmInfo === 'confirm') return this.submit(true)
@@ -645,7 +647,7 @@ export default {
           rfqId: this.partInfo.rfqId,
           cbdLevel: this.partInfo.currentCbdLevel || this.partInfo.cbdLevel,
           isOriginprice: this.partInfo.isOriginprice,
-          dsPartOriginPrice: true
+          dsPartOriginPrice
         })
         .then(async res => {
           if (res.code == 200) {
