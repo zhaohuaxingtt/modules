@@ -122,7 +122,7 @@ import sampleDeliveryProgress from './components/sampleDeliveryProgress'
 import remarksAndAttachment from './components/remarksAndAttachment'
 import startProductionDateDialog from "./components/startProductionDateDialog"
 
-import { getPartsQuotations, getStates, submitPartsQuotation, quoteBatchPrice, cancelQuoteBatchPrice, quotations,contrastBidding,getNoticeStatus, searchQuotationExchange } from "@/api/rfqManageMent/quotationdetail"
+import { getPartsQuotations, getStates, submitPartsQuotation, quoteBatchPrice, cancelQuoteBatchPrice, quotations,contrastBidding,getNoticeStatus, searchQuotationExchange, checkDsPart } from "@/api/rfqManageMent/quotationdetail"
 import { cloneDeep } from "lodash"
 import {partProjTypes} from '@/config'
 import {roundsType} from 'rise/web/config'
@@ -604,9 +604,36 @@ export default {
       this.getStates()
     },
     // 提交
-    async handleSubmit() {
+    handleSubmit() {
+      this.submit()
+    },
+    async submit(params) {
       this.submitLoading = true
+
+      if (!this.partInfo.isOriginprice && this.partInfo.partProjectType == partProjTypes.DSLINGJIAN && !params) {
+        try {
+          const res = await checkDsPart({
+            cbdLevel: this.partInfo.currentCbdLevel || this.partInfo.cbdLevel,
+            dsPartOriginPrice: false,
+            isOriginprice: this.partInfo.isOriginprice,
+            quotationId: this.partInfo.quotationId,
+            rfqId: this.partInfo.rfqId,
+          })
+
+          if (res.data === false) {
+            const confirmInfo = await this.$confirm(this.language('AJIAFASHENGBIANHUASHIFOUQUERENTIJIAO', 'A价发生变化，是否确认提交'))
+            if (confirmInfo === 'confirm') return this.submit(true)
+          }
+        } finally {
+          this.submitLoading = false
+        }
+        
+        return
+      }
+
       try {
+        this.submitLoading = true
+
         if (this.$refs[this.currentTab][0] && typeof this.$refs[this.currentTab][0].save === "function") {
           await this.handleSave("submit")
         }
@@ -615,9 +642,10 @@ export default {
           quotationId: this.partInfo.quotationId,
           rfqId: this.partInfo.rfqId,
           cbdLevel: this.partInfo.currentCbdLevel || this.partInfo.cbdLevel,
-          isOriginprice: this.partInfo.isOriginprice
+          isOriginprice: this.partInfo.isOriginprice,
+          dsPartOriginPrice: true
         })
-        .then(res => {
+        .then(async res => {
           if (res.code == 200) {
             iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
             this.updateOnlineBiddingDialog(res)
