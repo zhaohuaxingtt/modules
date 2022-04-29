@@ -623,6 +623,8 @@ export default {
           if (res.data === false) {
             const confirmInfo = await this.$confirm(this.language('AJIAFASHENGBIANHUASHIFOUQUERENTIJIAO', 'A价发生变化，是否确认提交'))
             if (confirmInfo === 'confirm') return this.submit(true)
+          } else {
+            this.submit(true)
           }
         } finally {
           this.submitLoading = false
