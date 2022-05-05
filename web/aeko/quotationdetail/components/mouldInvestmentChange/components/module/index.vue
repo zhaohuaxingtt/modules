@@ -19,103 +19,130 @@
           language("AEKOQUOTATIONMODULETIP_1", "当模具行项目不分摊进单价，”修模”或”减值”必须先引用原零件模具CBD; 当模具行项目将分摊进单价，”修模”或”减值”无需引用原零件模具CBD。")
         }}
       </div>
-      <tableList
-          lang
-          class="table"
-          v-loading="loading"
-          :tableTitle="tableTitle"
-          :tableData="tableListData"
-          @handleSelectionChange="handleSelectionChange">
-        <template #isShared="scope">
-          <iSelect v-if="!disabled && !isQuote(scope.row) && !editDisabled" v-model="scope.row.isShared"
-                   @change="handleChangeByIsShared($event, scope.row)">
-            <el-option :label="language('SHI', '是')" :value="1"></el-option>
-            <el-option :label="language('FOU', '否')" :value="0"></el-option>
-          </iSelect>
-          <span v-else>{{ scope.row.isShared | statesFilter }}</span>
+      <el-form :model="{tableListData}" ref="tableFrom" :show-message="false">
+        <tableList
+            lang
+            class="table"
+            v-loading="loading"
+            :tableTitle="tableTitle"
+            :tableData="tableListData"
+            @handleSelectionChange="handleSelectionChange">
+          <template #isShared="scope">
+            <el-form-item :prop="'tableListData.'+scope.$index+'.isShared'" :rules="rules.isShared">
+              <iSelect v-if="!disabled && !isQuote(scope.row) && !editDisabled" v-model="scope.row.isShared"
+                      @change="handleChangeByIsShared($event, scope.row)">
+                <el-option :label="language('SHI', '是')" :value="1"></el-option>
+                <el-option :label="language('FOU', '否')" :value="0"></el-option>
+              </iSelect>
+              <span v-else>{{ scope.row.isShared | statesFilter }}</span>
+            </el-form-item>
+          </template>
+          <!--类型选择--->
+          <template #changeType="scope">
+            <el-form-item :prop="'tableListData.'+scope.$index+'.changeType'" :rules="rules.changeType">
+              <iSelect v-if="(scope.row.isShared == 1 && !disabled && !editDisabled) || isQuote(scope.row)" v-model="scope.row.changeType"
+                      @change="handleChangeByChangeType($event, scope.row)">
+                <el-option v-if="!isQuote(scope.row) " :label="language('XINZENG', '新增')" value="新增"></el-option>
+                <el-option :label="language('XIUMU', '修模')" value="修模"></el-option>
+                <el-option :label="language('JIANZHI', '减值')" value="减值"></el-option>
+              </iSelect>
+              <span v-else>{{ scope.row.changeType }}</span>
+            </el-form-item>
+          </template>
+          <!--工艺类型-->
+          <template #stuffType="scope">
+          <el-form-item :prop="'tableListData.'+scope.$index+'.stuffType'" :rules="rules.stuffType">
+            <iInput v-if="!isQuote(scope.row) && !disabled && !editDisabled" v-model="scope.row.stuffType"></iInput>
+            <span v-else>{{ scope.row.stuffType }}</span>
+            </el-form-item>
+          </template>
+          <!--工模具种类-->
+          <template #mouldType="scope">
+            <el-form-item :prop="'tableListData.'+scope.$index+'.mouldType'" :rules="rules.mouldType">
+              <iInput v-if="!isQuote(scope.row) && !disabled && !editDisabled" v-model="scope.row.mouldType"
+                      @input="handleInputByMouldType($event, scope.row)"></iInput>
+              <span v-else>{{ scope.row.mouldType }}</span>
+            </el-form-item>
+          </template>
+          <!--资产分类编号-->
+          <template #assetTypeCode="scope">
+            <el-form-item :prop="'tableListData.'+scope.$index+'.assetTypeCode'" :rules="rules.assetTypeCode">
+              <iSelect v-if="!isQuote(scope.row) && !disabled && !editDisabled" v-model="scope.row.assetTypeCode">
+                <el-option v-for="assetType in assetTypeCodeOptions" :key="assetType.value"
+                          :label="`${assetType.value}-${assetType.label}`"
+                          :value="assetType.value"></el-option>
+              </iSelect>
+              <span v-else>{{ getAssetClassificationVal(scope.row.assetTypeCode) }}</span>
+            </el-form-item>
+          </template>
+          <!--FS号：自动填充，不可编辑-->
+          <template #assembledPartPrjCode="scope">
+            <span>{{ scope.row.assembledPartPrjCode }}</span>
+          </template>
+          <!--散件名称-->
+          <template #supplierPartNameList="scope">
+            <el-form-item :prop="'tableListData.'+scope.$index+'.supplierPartNameList'" :rules="rules.supplierPartNameList">
+              <iInput v-if="!isQuote(scope.row) && !disabled && !editDisabled" v-model="scope.row.supplierPartNameList"
+                      @input="handleInputBySupplierPartNameList($event, scope.row)"></iInput>
+              <span v-else>{{ scope.row.supplierPartNameList }}</span>
+            </el-form-item>
+          </template>
+          <!--散件零件号-->
+          <template #supplierPartCodeList="scope">
+            <iInput v-if="!isQuote(scope.row) && !disabled && !editDisabled"
+                    v-model="scope.row.supplierPartCodeList"></iInput>
+            <span v-else>{{ scope.row.supplierPartCodeList }}</span>
+          </template>
+          <!--数量-->
+          <template #quantity="scope">
+            <el-form-item :prop="'tableListData.'+scope.$index+'.quantity'" :rules="rules.quantity">
+              <iInput v-model="scope.row.quantity" v-if="!editDisabled"
+                      @input="handleInputByNumber($event, 'quantity', scope.row, 0, updateQuantity)"></iInput>
+              <span v-else>{{ floatFixNum(scope.row.quantity, 0, 0) }}</span>
+            </el-form-item>
+          </template>
+          <!--资产变动单价-->
+          <template #changeUnitPrice="scope">
+            <el-form-item :prop="'tableListData.'+scope.$index+'.changeUnitPrice'" :rules="rules.changeUnitPrice">
+              <iInput v-model="scope.row.changeUnitPrice" v-if="!editDisabled"
+                      @input="handleInputByNumber($event, 'changeUnitPrice', scope.row, 2, updateChangeUnitPrice, scope.row.changeType === '减值')"></iInput>
+              <span v-else>{{ floatFixNum(scope.row.changeUnitPrice) }}</span>
+            </el-form-item>
+          </template>
+          <!--资产变动总额-->
+          <template #changeTotalPrice="scope">{{ floatFixNum(scope.row.changeTotalPrice) }}</template>
+          <!--原零件资产总额-->
+          <template #originTotalPrice="scope">{{ floatFixNum(scope.row.originTotalPrice) }}</template>
+          <!--新零件资产总额-->
+          <template #totalPrice="scope">{{ floatFixNum(scope.row.totalPrice) }}</template>
+        </tableList>
+      </el-form>
+      <iFormGroup ref="dataGroupForm" class="subCost margin-top30" :row="4" inline :model="{shareQuantity}">
+        <template v-for="(info, $index) in mouldCostInfos">
+          <iFormItem class="item" :key="$index+required" prop="shareQuantity" v-if="info.props === 'shareQuantity'" :rules="shareQuantityRules" :show-message="false">
+            <template #label>
+              <span><span v-if="required && info.require" class="require">*</span>{{language(info.key, info.name)}}</span>
+            </template>
+            <iInput v-if="!disabled && !editDisabled" v-model="shareQuantity" @input="handleInputByShareQuantity"/>
+            <iText v-else>{{ floatFixNum(dataGroup[info.props], 0) }}</iText>
+          </iFormItem>
+          <iFormItem class="item" :key="$index" v-else>
+            <template #label>
+              <span>{{language(info.key, info.name)}}</span>
+            </template>
+            <iText>{{ floatFixNum(dataGroup[info.props], 2) }}</iText>
+          </iFormItem>
         </template>
-        <!--类型选择--->
-        <template #changeType="scope">
-          <iSelect v-if="(scope.row.isShared == 1 && !disabled && !editDisabled) || isQuote(scope.row)" v-model="scope.row.changeType"
-                   @change="handleChangeByChangeType($event, scope.row)">
-            <el-option v-if="!isQuote(scope.row) " :label="language('XINZENG', '新增')" value="新增"></el-option>
-            <el-option :label="language('XIUMU', '修模')" value="修模"></el-option>
-            <el-option :label="language('JIANZHI', '减值')" value="减值"></el-option>
-          </iSelect>
-          <span v-else>{{ scope.row.changeType }}</span>
-        </template>
-        <!--工艺类型-->
-        <template #stuffType="scope">
-          <iInput v-if="!isQuote(scope.row) && !disabled && !editDisabled" v-model="scope.row.stuffType"></iInput>
-          <span v-else>{{ scope.row.stuffType }}</span>
-        </template>
-        <!--工模具种类-->
-        <template #mouldType="scope">
-          <iInput v-if="!isQuote(scope.row) && !disabled && !editDisabled" v-model="scope.row.mouldType"
-                  @input="handleInputByMouldType($event, scope.row)"></iInput>
-          <span v-else>{{ scope.row.mouldType }}</span>
-        </template>
-        <!--资产分类编号-->
-        <template #assetTypeCode="scope">
-          <iSelect v-if="!isQuote(scope.row) && !disabled && !editDisabled" v-model="scope.row.assetTypeCode">
-            <el-option v-for="assetType in assetTypeCodeOptions" :key="assetType.value"
-                       :label="`${assetType.value}-${assetType.label}`"
-                       :value="assetType.value"></el-option>
-          </iSelect>
-          <span v-else>{{ getAssetClassificationVal(scope.row.assetTypeCode) }}</span>
-        </template>
-        <!--FS号：自动填充，不可编辑-->
-        <template #assembledPartPrjCode="scope">
-          <span>{{ scope.row.assembledPartPrjCode }}</span>
-        </template>
-        <!--散件名称-->
-        <template #supplierPartNameList="scope">
-          <iInput v-if="!isQuote(scope.row) && !disabled && !editDisabled" v-model="scope.row.supplierPartNameList"
-                  @input="handleInputBySupplierPartNameList($event, scope.row)"></iInput>
-          <span v-else>{{ scope.row.supplierPartNameList }}</span>
-        </template>
-        <!--散件零件号-->
-        <template #supplierPartCodeList="scope">
-          <iInput v-if="!isQuote(scope.row) && !disabled && !editDisabled"
-                  v-model="scope.row.supplierPartCodeList"></iInput>
-          <span v-else>{{ scope.row.supplierPartCodeList }}</span>
-        </template>
-        <!--数量-->
-        <template #quantity="scope">
-          <iInput v-model="scope.row.quantity" v-if="!editDisabled"
-                  @input="handleInputByNumber($event, 'quantity', scope.row, 0, updateQuantity)"></iInput>
-          <span v-else>{{ floatFixNum(scope.row.quantity, 0, 0) }}</span>
-        </template>
-        <!--资产变动单价-->
-        <template #changeUnitPrice="scope">
-          <iInput v-model="scope.row.changeUnitPrice" v-if="!editDisabled"
-                  @input="handleInputByNumber($event, 'changeUnitPrice', scope.row, 2, updateChangeUnitPrice, scope.row.changeType === '减值')"></iInput>
-          <span v-else>{{ floatFixNum(scope.row.changeUnitPrice) }}</span>
-        </template>
-        <!--资产变动总额-->
-        <template #changeTotalPrice="scope">{{ floatFixNum(scope.row.changeTotalPrice) }}</template>
-        <!--原零件资产总额-->
-        <template #originTotalPrice="scope">{{ floatFixNum(scope.row.originTotalPrice) }}</template>
-        <!--新零件资产总额-->
-        <template #totalPrice="scope">{{ floatFixNum(scope.row.totalPrice) }}</template>
-      </tableList>
-      <iFormGroup class="subCost margin-top30" :row="4" inline>
-        <iFormItem class="item" v-for="(info, $index) in mouldCostInfos" :key="$index"
-                   :label="`${ language(info.key, info.name) }`">
-          <iInput v-if="info.props === 'shareQuantity' && !disabled && !editDisabled" v-model="shareQuantity"
-                  @input="handleInputByShareQuantity"/>
-          <iText v-else>{{ floatFixNum(dataGroup[info.props], info.props == 'shareQuantity' ? 0 : 2) }}</iText>
-        </iFormItem>
       </iFormGroup>
     </div>
   </iCard>
 </template>
 
 <script>
-import {iCard, iButton, icon, iFormGroup, iFormItem, iSelect, iInput, iText, iMessageBox,} from "rise"
+import {iCard, iButton, icon, iFormGroup, iFormItem, iSelect, iInput, iText, iMessageBox, iMessage} from "rise"
 // import tableList from "rise/web/quotationdetail/components/tableList"
 import tableList from "rise/web/components/iTableSort/index.vue";
-import {moduleTableTitle as tableTitle, assetTypeCodeOptions, mouldCostInfos} from "../data"
+import {moduleTableTitle as tableTitle, assetTypeCodeOptions, mouldCostInfos, formRules as rules} from "../data"
 import {floatFixNum} from "../../../data"
 import {statesFilter} from "rise/web/quotationdetail/components/mouldAndDevelopmentCost/components/data"
 import {getMoulds, saveMoulds} from "@/api/aeko/quotationdetail"
@@ -141,8 +168,14 @@ export default {
   },
   data() {
     return {
+      rules,
       loading: false,
-      dataGroup: {},
+      dataGroup: {
+        totalPrice:"",
+        shareTotal:"",
+        shareQuantity:"",
+        shareAmount:"",
+      },
       tableTitle,
       tableListData: [],
       multipleSelection: [],
@@ -157,9 +190,9 @@ export default {
         "stuffType",
         "mouldType",
         "assetTypeCode",
-        "assembledPartPrjCode",
+        // "assembledPartPrjCode",
         "supplierPartNameList",
-        "supplierPartCodeList",
+        // "supplierPartCodeList",
         "quantity",
         "changeUnitPrice"
       ],
@@ -188,10 +221,24 @@ export default {
         this.dataGroup.shareQuantity = val
       }
     },
+    required(){
+      return (this.tableListData || []).some(item=>item.isShared)
+    },
+    shareQuantityRules(){
+      let shareQuantityRules = this.required ? rules.shareQuantity : undefined
+      return shareQuantityRules
+    },
     ...Vuex.mapState({
       userInfo: state => state.permission.userInfo,
 
     })
+  },
+  watch:{
+    '$i18n.locale'(){
+        this.$nextTick(() => {
+          this.$refs['dataGroupForm'].validate()
+        })
+      }
   },
   methods: {
     floatFixNum,
@@ -203,7 +250,7 @@ export default {
         quotationId: this.partInfo.quotationId
       })
           .then(res => {
-            if (res.code == 200) {
+            if (res?.code == 200) {
               this.tableListData = Array.isArray(res.data.mouldCbdEntityList) ? res.data.mouldCbdEntityList : []
               this.$set(this.dataGroup, "totalPrice", res.data.totalInvestmentCost)
               this.$set(this.dataGroup, "shareTotal", res.data.shareInvestmentFee)
@@ -419,7 +466,20 @@ export default {
 
       this.$set(this.dataGroup, "shareAmount", math.divide(shareTotal, shareQuantity).toFixed(2))
     },
-    save(){
+    // 必填项验证
+    checkValidator(){
+      let isValidate = true
+      this.$refs['tableFrom'].validate((res)=>{
+          isValidate = isValidate && res
+        })
+      this.$refs['dataGroupForm'].validate((res)=>{
+          isValidate = isValidate && res
+        })
+      return isValidate
+    },
+    async save(){
+      let result = this.checkValidator()
+      if(!result) return iMessage.warn(this.language('LK_BITIANXIANGBUNENGWEIKONG','请输入必填项'))
       this.saveLoading = true
       this.handleSave().then(res => {
             if (res.code == 200) {
@@ -512,5 +572,28 @@ export default {
       }
     }
   }
+  .require{
+    color: #f56c6c;
+    margin-right: 5px;
+  }
+  ::v-deep .el-form-item{
+      margin-bottom: 0;
+      &.is-error{
+        .el-input{
+          .el-input__inner{
+            border-color: #EF3737;
+          }
+        }
+        .el-textarea{
+          .el-textarea__inner{
+            border-color: #EF3737;
+          }
+        }
+      }
+      .el-form-item__content {
+          margin-left: 0!important;
+      }
+
+    }
 }
 </style>

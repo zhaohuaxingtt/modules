@@ -37,8 +37,8 @@
           <iButton v-if="!disabled && !agentQutationDisabled" @click="handleCancelQutation">{{ language("LK_QUXIAO", "取消") }}</iButton>
         </span>
         <span class="btns" v-if="!agentQutationDisabled">
-          <iButton v-if="!partInfo.isOriginprice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="quoteBatchPriceLoading" @click="handleQuoteBatchPrice">{{ language("LK_YINYONGPILIANGJIAGE", "引用批量价格") }}</iButton>
-          <iButton v-if="partInfo.isOriginprice && partInfo.partProjectType === partProjTypes.PEIJIAN && !disabled" :loading="cancelQuoteBatchPriceLoading" @click="handleCancelBatchPrice">{{ language("LK_QUXIAOPILIANGJIAGE", "取消批量价格") }}</iButton>
+          <iButton v-if="!partInfo.isOriginprice && (partInfo.partProjectType === partProjTypes.PEIJIAN || partInfo.partProjectType === partProjTypes.DSLINGJIAN) && !disabled" :loading="quoteBatchPriceLoading" @click="handleQuoteBatchPrice">{{ language("LK_YINYONGPILIANGJIAGE", "引用批量价格") }}</iButton>
+          <iButton v-if="partInfo.isOriginprice && (partInfo.partProjectType === partProjTypes.PEIJIAN || partInfo.partProjectType === partProjTypes.DSLINGJIAN) && !disabled" :loading="cancelQuoteBatchPriceLoading" @click="handleCancelBatchPrice">{{ language("LK_QUXIAOPILIANGJIAGE", "取消批量价格") }}</iButton>
           <span class="saveBtn">
             <span v-if="currentTab == 'packAndShip'">
               <iButton @click="handleSave" v-if="!hidePackAndShipSave && !disabled" :loading="saveLoading">{{ language('BAOCUN', '保存') }}</iButton>
@@ -122,7 +122,7 @@ import sampleDeliveryProgress from './components/sampleDeliveryProgress'
 import remarksAndAttachment from './components/remarksAndAttachment'
 import startProductionDateDialog from "./components/startProductionDateDialog"
 
-import { getPartsQuotations, getStates, submitPartsQuotation, quoteBatchPrice, cancelQuoteBatchPrice, quotations,contrastBidding,getNoticeStatus, searchQuotationExchange } from "@/api/rfqManageMent/quotationdetail"
+import { getPartsQuotations, getStates, submitPartsQuotation, quoteBatchPrice, cancelQuoteBatchPrice, quotations,contrastBidding,getNoticeStatus, searchQuotationExchange, checkDsPart } from "@/api/rfqManageMent/quotationdetail"
 import { cloneDeep } from "lodash"
 import {partProjTypes} from '@/config'
 import {roundsType} from 'rise/web/config'
@@ -604,9 +604,40 @@ export default {
       this.getStates()
     },
     // 提交
-    async handleSubmit() {
+    handleSubmit() {
+      this.submit()
+    },
+    async submit(params) {
       this.submitLoading = true
+      let dsPartOriginPrice = false
+
+      if (!this.partInfo.isOriginprice && this.partInfo.partProjectType == partProjTypes.DSLINGJIAN && !params) {
+        try {
+          const res = await checkDsPart({
+            cbdLevel: this.partInfo.currentCbdLevel || this.partInfo.cbdLevel,
+            dsPartOriginPrice: false,
+            isOriginprice: this.partInfo.isOriginprice,
+            quotationId: this.partInfo.quotationId,
+            rfqId: this.partInfo.rfqId,
+          })
+
+          dsPartOriginPrice = res.data
+          if (res.data === false) {
+            const confirmInfo = await this.$confirm(this.language('AJIAFASHENGBIANHUASHIFOUQUERENTIJIAO', 'A价发生变化，是否确认提交'))
+            if (confirmInfo === 'confirm') return this.submit(true)
+          } else {
+            this.submit(true)
+          }
+        } finally {
+          this.submitLoading = false
+        }
+        
+        return
+      }
+
       try {
+        this.submitLoading = true
+
         if (this.$refs[this.currentTab][0] && typeof this.$refs[this.currentTab][0].save === "function") {
           await this.handleSave("submit")
         }
@@ -615,9 +646,10 @@ export default {
           quotationId: this.partInfo.quotationId,
           rfqId: this.partInfo.rfqId,
           cbdLevel: this.partInfo.currentCbdLevel || this.partInfo.cbdLevel,
-          isOriginprice: this.partInfo.isOriginprice
+          isOriginprice: this.partInfo.isOriginprice,
+          dsPartOriginPrice
         })
-        .then(res => {
+        .then(async res => {
           if (res.code == 200) {
             iMessage.success(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
             this.updateOnlineBiddingDialog(res)
