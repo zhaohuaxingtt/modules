@@ -29,7 +29,7 @@
 				<!-- ---------附件的降价计划只能基于B价，-------------------------------------------- -->
 				<!-- <span v-else-if="partInfo.partProjectType === partProjTypes.FUJIAN" class="tip margin-left10">降价计算以B价为准</span> -->
 				<!-------------正常流程FS零件只基于A价------------------------------------------>
-				<span class="tip margin-left10">降价计算以A价为准</span>
+				<span v-else class="tip margin-left10">降价计算以A价为准</span>
 			</span>
 		</div>
 		<tableList :tableTitle="tableTitle" v-if='partInfo.quotationId' :partInfo='partInfo'  :tableData="tableData" :reducePlanedit="!disabled && !isOriginprice" @rateChange="handleRateChange" @yearMonthsChange="handleYearMonthsChange" @dateFocus="dateFocus" :lcStartProductDate="lcStartProductDate" />
