@@ -341,9 +341,10 @@ export default {
             iMessage.success(message)
           }
         } else {
-          this.copyParts = []
           iMessage.error(message)
         }
+
+        this.copyParts = []
       })
       .finally(() => this.copyLoading = false)
     },
