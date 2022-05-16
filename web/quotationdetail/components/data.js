@@ -8,7 +8,7 @@
  */
 import { numberProcessor } from "@/utils"
 
-export const  partInfoItems =(isGS) => [
+export const partInfoItems =(isGS) => [
   { props: "rfqId", name: "RFQ编号", key: "RFQBIANHAO" },
   { props: "supplier", name: "RFQ供应商", key: "LK_RFQGONGYINGSHANG" },
   { props: "round", name: "报价轮次", key: "LK_BAOJIALUNCI" },
@@ -25,7 +25,16 @@ export const  partInfoItems =(isGS) => [
   { props: "submitDate", name: "报价日期", key: "LK_BAOJIARIQI" },
   { props: "contactPerson", name: "联系人", key: "LK_LIANXIREN" },
   { props: "rejectReason", name: "拒绝理由", key: "LK_JUJUELIYOU" },
+  { props: "currencyCode", name: "货币", key: "LK_HUOBI" },
+  { props: "purchaseClause", name: "采购条款", key: "LK_CAIGOUTIAOKUAN" },
+  { props: "payClause", name: "支付条款", key: "LK_ZHIFUTIAOKUAN" },
   { props: "memo", name: "询价备注", key: "LK_XUNJIABEIZHU" }
+]
+
+export const DBItems = [
+  "currencyCode", // 货币
+  "purchaseClause", // 采购条款
+  "payClause" // 支付条款
 ]
 
 export const handleInputByNumber = function (value, key, row, precision, cb, negative) {
