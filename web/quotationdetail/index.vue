@@ -57,7 +57,7 @@
     </div>
     <iCard class="info" :title="language('LK_JICHUXINXI', '基础信息')" collapse v-loading="partInfoLoading">
       <iFormGroup :key="$index" :row="4" inline>
-        <iFormItem v-for="item in partInfoItems.slice(0, partInfoItems.length - 1)" :key="item.props" :label="language(item.key, item.name)">
+        <iFormItem v-for="item in partInfoItemRule(partInfoItems, dBRule, deleteLastRule)" :key="item.props" :label="language(item.key, item.name)">
           <iText v-if="item.props === 'submitDate' || item.props === 'currentRoundsEndTime'">{{ partInfo[item.props] | dateFilter }}</iText>
           <el-popover
             v-else-if="item.props === 'referenceRate'"
@@ -109,7 +109,7 @@
 <script>
 import { iPage, iButton,iDialog, iCard,iInput, iFormGroup, iFormItem, iText, iTabsList, iSelect, icon, iMessage, iMessageBox } from "rise"
 import logButton from "./components/logButton"
-import { partInfoItems } from "./components/data"
+import { partInfoItems, DBItems } from "./components/data"
 import infoAndReq from "./components/infoAndReq"
 import originAndCapacity from "./components/originAndCapacity"
 import mouldAndDevelopmentCost from "./components/mouldAndDevelopmentCost"
@@ -165,6 +165,7 @@ export default {
       partNum: "",
       parts: [],
       partInfoItems:partInfoItems('modelNameZh'),
+      DBItems,
       currentTab: "infoAndReq",
       tabs: [
         { label: "信息与要求", name: "infoAndReq", key: "LK_XINXIYUYAOQIU", components: [ "infoAndReq" ] },
@@ -760,6 +761,36 @@ export default {
     // 汇率显示处理
     exchangeRateProcess(row) {
       return `100${ row.currencyCode } = ${ math.multiply(math.bignumber(row.exchangeRate || 0), 100).toString() }${ row.originCurrencyCode }（${ row.exchangeRate }）`
+    },
+    partInfoItemRule() {
+      const args = Array.apply(null, arguments)
+      const items = args[0]
+      const rules = args.slice(1)
+
+      let result = items
+      rules.forEach(rule => {
+        if (typeof rule === "function") {
+          result = rule(result)
+        }
+      })
+
+      return result
+    },
+    dBRule(data) {
+      return data.filter(item => {
+        if (this.partInfo.partProjectType) {
+          if (this.partInfo.partProjectType === partProjTypes.DBLINGJIAN || this.partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU) {
+            return true
+          } else {
+            return DBItems.includes(item.props) ? false : true
+          }
+        } else {
+          return DBItems.includes(item.props) ? false : true
+        }
+      })
+    },
+    deleteLastRule(data) {
+      return data.slice(0, data.length - 1)
     }
   }
 };
