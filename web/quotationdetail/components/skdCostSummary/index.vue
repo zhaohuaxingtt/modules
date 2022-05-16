@@ -315,7 +315,7 @@ export default {
     visibleChange(list) {
       if (this.copyParts.length) {
         iMessageBox(this.language("NINQUEDINGYAOJIANGBAOJIADANFUZHIDAOXUANZHONGDELINGJIANZHONGMA", "您确定要将报价单复制到选中的零件中吗？")).then(() => {
-           this.copyPartsQuotationSkd()
+          this.copyPartsQuotationSkd()
         }).catch(() => {
           this.copyParts = []
         })
@@ -334,15 +334,14 @@ export default {
         const message = this.$i18n.locale === "zh" ? res.desZh : res.desEn
         
         if (res.code == 200) {
-          if(!isSkd){
+          if (!isSkd) {
             this.copyLoading = false;
             this.copyPartsQuotation();
-          }else{
-            this.copyParts = []
+          } else {
             iMessage.success(message)
           }
-          
         } else {
+          this.copyParts = []
           iMessage.error(message)
         }
       })
@@ -350,7 +349,7 @@ export default {
     },
 
     //LC
-    copyPartsQuotation(){
+    copyPartsQuotation() {
       this.copyLoading = true
       copyPartsQuotation({
         partNums: this.copyParts,
