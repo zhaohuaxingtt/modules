@@ -18,10 +18,11 @@ export const bnkValid = function(type) {
     partProjTypes.YICIXINGCAIGOU, // 一次性采购
     partProjTypes.DBYICHIXINGCAIGOU, // DB一次性采购
     partProjTypes.GONGXUWEIWAI, // 工序委外
-    partProjTypes.ZHANGJIALINGJIAN, // 涨价零件
+    // partProjTypes.ZHANGJIALINGJIAN, // 涨价零件
     partProjTypes.DBLINGJIAN, // DB零件
     partProjTypes.PEIJIAN, // 配件
     partProjTypes.FUJIAN // 附件
+    
   ]
 
   return exclusions.includes(type)
