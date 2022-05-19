@@ -73,6 +73,8 @@ export const onlyselfProject = {
   DBYICHIXINGCAIGOU: '50001001',
   // 工序委外（PT14）
   GONGXUWEIWAI: '1044297',
+  // 工序委外一次性采购
+  GONGXUWEIWAIYICIXINGCAIGOU: '1044299',
   // 一次性采购（PT06）
   YICIXINGCAIGOU: '50001000',
   // AEKO零件(新)
