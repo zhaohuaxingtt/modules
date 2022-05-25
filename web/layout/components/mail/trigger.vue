@@ -36,7 +36,7 @@ export default {
 		},
 		async getUnreadTotal() {
 			const result = await getUnreadTotal()
-			if (result?.code === '200' && result?.data) {
+			if (result?.code === '200') {
 				this.messageCount = result.data
 			}
 		},
