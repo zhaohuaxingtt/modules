@@ -36,7 +36,7 @@
           <span v-if="isSteel">{{ row.row.totalPrice }}</span>
           <!-- 如果onlinebidding 有回写B价，则显示B价--->
           <span v-else-if="row.row.biddingBPrice">{{row.row.biddingBPrice}}</span>
-          <span v-else>{{ isEmptyPriceCompute(['packageCost','transportCost','operateCost'],row.row) ? row.row.totalPriceBprice : getBallPrice(Bprice,row.row) }}</span>
+          <span v-else>{{ isEmptyPriceCompute(Aprice,row.row) && isEmptyPriceCompute(['packageCost','transportCost','operateCost'],row.row) ? row.row.totalPriceBprice : getBallPrice(Bprice,row.row) }}</span>
         </template>
       </el-table-column>
       <!----------------------需要高亮的列并且带有打开详情事件------------------------>
