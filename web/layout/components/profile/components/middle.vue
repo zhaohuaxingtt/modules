@@ -3,9 +3,7 @@
 		<middleItem label="Department:" :value="deptName" />
 		<middleItem
 			label="Position:"
-			:description="
-				positionList.length > 1 ? '多岗位时，单击非当前岗位名称可切换岗位' : ''
-			"
+			:description="positionList.length > 1 ? langSwitchPositionTips : ''"
 		>
 			<div class="position-panel">
 				<div
@@ -13,7 +11,7 @@
 					v-for="item in positionList"
 					:key="item.id"
 					:class="{ active: positionDtoId === item.id }"
-					:title="positionDtoId !== item.id ? '点击切换岗位' : ''"
+					:title="positionDtoId !== item.id ? langSwitchPosition : ''"
 					@click="handleSwitchPosition(item)"
 				>
 					<icon
@@ -50,6 +48,25 @@ export default {
 		deptName() {
 			return this.userInfo?.deptDTO?.nameZh
 		},
+		locale() {
+			return this.$i18n.locale || 'zh'
+		},
+		langSwitchPosition() {
+			return this.locale === 'zh' ? '点击切换岗位' : 'Click to switch posts'
+		},
+		langSwitchPositionTips() {
+			return this.locale === 'zh'
+				? '多岗位时，单击非当前岗位名称可切换岗位'
+				: 'If there are multiple positions, you can click a non-current position name to switch positions'
+		},
+		langConfirmTitle() {
+			return this.locale === 'zh' ? '确定信息' : 'Confirm'
+		},
+		langConfirmText() {
+			return this.locale === 'zh'
+				? '确定要切换岗位吗，切换岗位请关闭与系统相关的其他浏览器标签。'
+				: 'Are you sure you want to switch positions? To switch positions, please close other browser tabs related to the system.'
+		},
 	},
 	methods: {
 		handleSwitchPosition(position) {
@@ -57,15 +74,11 @@ export default {
 				return
 			}
 
-			this.$confirm(
-				`确定要切换岗位吗，切换岗位请关闭与系统相关的其他浏览器标签。`,
-				'确定信息',
-				{
-					confirmButtonText: this.$t('确认'),
-					cancelButtonText: this.$t('取消'),
-					type: 'warning',
-				}
-			)
+			this.$confirm(this.langConfirmText, this.langConfirmTitle, {
+				confirmButtonText: this.$t('确认'),
+				cancelButtonText: this.$t('取消'),
+				type: 'warning',
+			})
 				.then(() => {
 					const req = {
 						positionId: position.id,
@@ -73,7 +86,6 @@ export default {
 					switchPosition(req)
 						.then((res) => {
 							if (res.code == 200) {
-								console.log('切换了', position)
 								this.$emit('close')
 								window.sessionStorage.removeItem('userInfo')
 								window.sessionStorage.removeItem('cardList')
