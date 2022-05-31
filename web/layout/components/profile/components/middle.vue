@@ -2,6 +2,12 @@
 	<div class="middle">
 		<middleItem label="Department:" :value="deptName" />
 		<middleItem
+			v-if="!switchPositionEnable || positionList.length <= 1"
+			label=""
+			:value="positionDtoName"
+		/>
+		<middleItem
+			v-if="switchPositionEnable && positionList.length > 1"
 			label="Position:"
 			:description="positionList.length > 1 ? langSwitchPositionTips : ''"
 		>
@@ -39,11 +45,17 @@ export default {
 		userInfo() {
 			return this.$store.state.permission.userInfo || {}
 		},
+		switchPositionEnable() {
+			return this.userInfo.switchPosition
+		},
 		positionList() {
 			return this.userInfo.positionList || []
 		},
 		positionDtoId() {
 			return this.userInfo?.positionDTO?.id
+		},
+		positionDtoName() {
+			return this.userInfo?.positionDTO?.fullNameZh
 		},
 		deptName() {
 			return this.userInfo?.deptDTO?.nameZh
