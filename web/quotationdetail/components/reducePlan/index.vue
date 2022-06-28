@@ -149,7 +149,7 @@ export default {
                     return [...accum, {
                         ...item,
                         reducedPrice: cloneDeep(reducedPrice),
-                        reducedPriceShow: cloneDeep(reducedPrice).toFixed(2)
+                        reducedPriceShow: cloneDeep(reducedPrice).toFixed(6)
                     }]
                 },[])
         },
@@ -270,9 +270,9 @@ export default {
                                 math.bignumber(1), 
                                 math.divide(math.bignumber(cur.priceReduceRate || 0), 100)
                             )
-                        ).toFixed(2)
+                        ).toFixed(6)
                     } else {
-                        cur.reducedPrice = math.bignumber(baseLcAprice).toFixed(2)
+                        cur.reducedPrice = math.bignumber(baseLcAprice).toFixed(6)
                         
                         const price = acc.length ? acc.slice(-1)[0].reducedPrice : aprice
                         if (+price) {
