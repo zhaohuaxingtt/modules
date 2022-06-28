@@ -113,10 +113,7 @@ export default {
 			)
 		},
 		avatar() {
-			return (
-				this.userInfo?.profile?.path ||
-				'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3729239676,1542549068&fm=26&gp=0.jpg'
-			)
+			return this.userInfo?.profile?.path || ''
 		},
 	},
 	data() {
