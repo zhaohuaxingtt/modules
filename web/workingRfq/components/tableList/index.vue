@@ -145,7 +145,7 @@
             <span v-else>{{ scope.row[items.props] }}</span>
           </template>
           <template v-else-if='items.type == "input"'>
-            <iInput v-model="scope.row[items.props]" v-if='!notEdit' @input="handleInput($event, scope.row, items.props, items)"></iInput>
+            <iInput v-model="scope.row[items.props]" v-if='!notEdit || items.edit' @input="handleInput($event, scope.row, items.props, items)"></iInput>
             <span v-else>{{scope.row[items.props]}}</span>
           </template>
           <template v-else-if='items.type == "inputRate"'>
