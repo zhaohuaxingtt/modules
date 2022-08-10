@@ -27,7 +27,9 @@ message.prototype.warn = (message)=>{
 message.prototype.error = (message)=>{
   Message({
     message: message || this.message,
-    type: 'error'
+    type: 'error',
+    duration: 10000, // error 错误提示显示10秒
+    showClose: true
   })
 }
 const iMessage = new message()
