@@ -1075,23 +1075,22 @@ export default {
       const sendData = this.topTableData.tableData[0];
 
       const baseSumDTO = {
-        ...sendData,
-        // cbdBlockId: sendData.cbdBlockId,
-        // cbdHdrId: sendData.cbdHdrId,
-        // cbdId: sendData.cbdId,
-        // cbdPlantCapId: sendData.cbdPlantCapId,
-        // ckdManageRate: sendData.ckdManageRate,
-        // id: sendData.id,
-        // kentSummary: sendData.kentSummary,
-        // lcManageRate: sendData.lcManageRate,
-        // manageSummary: sendData.manageSummary,
-        // materialSummary: sendData.materialSummary,
-        // mouldCbdId: sendData.mouldCbdId,
-        // otherSummary: sendData.otherSummary,
-        // productionSummary: sendData.productionSummary,
-        // profitSummary: sendData.profitSummary,
-        // scrapSummary: sendData.scrapSummary,
-        // totalPrice: sendData.totalPrice,
+        cbdBlockId: sendData.cbdBlockId,
+        cbdHdrId: sendData.cbdHdrId,
+        cbdId: sendData.cbdId,
+        cbdPlantCapId: sendData.cbdPlantCapId,
+        ckdManageRate: sendData.ckdManageRate,
+        id: sendData.id,
+        kentSummary: sendData.kentSummary,
+        lcManageRate: sendData.lcManageRate,
+        manageSummary: sendData.manageSummary,
+        materialSummary: sendData.materialSummary,
+        mouldCbdId: sendData.mouldCbdId,
+        otherSummary: sendData.otherSummary,
+        productionSummary: sendData.productionSummary,
+        profitSummary: sendData.profitSummary,
+        scrapSummary: sendData.scrapSummary,
+        totalPrice: sendData.totalPrice,
       };
 
       const form = {
@@ -1654,7 +1653,9 @@ export default {
         this.partInfo.partProjectType === partProjTypes.GONGXUWEIWAI ||
         this.partInfo.partProjectType === partProjTypes.ZHANGJIALINGJIAN ||
         this.partInfo.partProjectType === partProjTypes.PEIJIAN ||
-        this.partInfo.partProjectType === partProjTypes.FUJIAN
+        this.partInfo.partProjectType === partProjTypes.FUJIAN ||
+        this.partInfo.partProjectType ===
+          partProjTypes.GONGXUWEIWAIYICIXINGCAIGOU
       ) {
         if (this.isSkdLc) {
           if (
