@@ -1626,6 +1626,27 @@ export default {
      */
     save(type) {
       if (this.isSkd) {
+        if (this.partInfo.partType == "S") {
+          // 零件类型：本体
+          return Promise.all([
+            this.$refs.skdCostSummary.save(),
+            this.saveBzfreeAndYunshuFree(),
+          ]).then(([res1, res2]) => {
+            if (res1 && res1.code == 200 && res2 && res2.code == 200) {
+              if (type !== "submit") {
+                iMessage.success(
+                  this.$i18n.locale === "zh" ? res1.desZh : res1.desEn
+                );
+                this.init();
+              }
+
+              this.updatePriceReducePlan();
+              this.updateCbdLevel(this.allTableData.level);
+            } else {
+              iMessage.error(this.language("CAOZUOSHIBAI", "操作失败"));
+            }
+          });
+        }
         return new Promise((r) => {
           this.$refs.skdCostSummary.save().then((res) => {
             r(res);
@@ -1655,7 +1676,8 @@ export default {
         this.partInfo.partProjectType === partProjTypes.PEIJIAN ||
         this.partInfo.partProjectType === partProjTypes.FUJIAN ||
         this.partInfo.partProjectType ===
-          partProjTypes.GONGXUWEIWAIYICIXINGCAIGOU
+          partProjTypes.GONGXUWEIWAIYICIXINGCAIGOU ||
+        this.partInfo.partType == "S"
       ) {
         if (this.isSkdLc) {
           if (
@@ -1812,6 +1834,7 @@ export default {
           return Promise.all([
             this.$refs.skdCostSummary.save(),
             this.postCostSummary(),
+            this.saveBzfreeAndYunshuFree(),
           ]).then(([res1, res2]) => {
             if (res1 && res1.code == 200 && res2 && res2.code == 200) {
               if (type !== "submit") {
@@ -1828,7 +1851,49 @@ export default {
             }
           });
         }
+        if (this.partInfo.partType == "S") {
+          // 零件类型：本体
+          return Promise.all([
+            this.postCostSummary(),
+            this.saveBzfreeAndYunshuFree(),
+          ]).then(([res1, res2]) => {
+            let flag = true;
+            if (res1.code == 200) {
+              flag = true;
+              this.updateCbdLevel(this.allTableData.level);
+              this.init();
+            } else {
+              iMessage.error(
+                this.$i18n.locale === "zh" ? res1.desZh : res1.desEn
+              );
+            }
 
+            if (res2.code == 200) {
+              flag = true;
+              if (res1.code != 200) this.init();
+            } else {
+              iMessage.error(
+                this.$i18n.locale === "zh" ? res1.desZh : res1.desEn
+              );
+            }
+
+            this.updatePriceReducePlan();
+
+            if (flag) {
+              if (type !== "submit") {
+                iMessage.success(
+                  this.$i18n.locale === "zh"
+                    ? res1
+                      ? res1.desZh
+                      : res2.desZh
+                    : res1
+                    ? res1.desEn
+                    : res2.desEn
+                );
+              }
+            } else throw [res1, res2];
+          });
+        }
         return new Promise((r) => {
           this.postCostSummary().then((res) => {
             r(res);
