@@ -7,40 +7,46 @@
  * @FilePath: \Front\src\components\iInput\index.vue
  -->
 <script>
-import { DatePicker } from 'element-ui' 
+import { DatePicker } from "element-ui";
 /**
  * @example ./README.me
-*/
-export default{
-  extends:DatePicker,
-	props:{
-		valueFormat:{
-			type:String,
-			default:'yyyy-MM-dd HH:mm:ss'
-		}
-	}
-}
+ */
+export default {
+  extends: DatePicker,
+  props: {
+    valueFormat: {
+      type: String,
+      default: "yyyy-MM-dd HH:mm:ss",
+    },
+    defaultTime: {
+      type: Array,
+      default: () => {
+        return ["00:00:00", "23:59:59"];
+      },
+    },
+  },
+};
 </script>
 <style lang='scss' scoped>
-	.el-input{
-		width: 100%;
-		height: $input-height;
-		::v-deep .el-input__inner{
-			@include input_inner;
-		}
-	}
- .el-range-editor.el-input__inner {
-    width: auto;
+.el-input {
+  width: 100%;
+  height: $input-height;
+  ::v-deep .el-input__inner {
     @include input_inner;
-  } 
-  .el-range-editor .el-range-input {
-    width: 40%;
   }
-  .el-date-editor .el-range-separator {
-    line-height: 22px;
-    width: 10%;
-  }
-  .el-date-editor .el-range__close-icon {
-    display: none;
-  }
+}
+.el-range-editor.el-input__inner {
+  width: auto;
+  @include input_inner;
+}
+.el-range-editor .el-range-input {
+  width: 40%;
+}
+.el-date-editor .el-range-separator {
+  line-height: 22px;
+  width: 10%;
+}
+.el-date-editor .el-range__close-icon {
+  display: none;
+}
 </style>
