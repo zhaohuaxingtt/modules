@@ -21,9 +21,40 @@ export default {
 		tableVisibleColumns() {
 			// 表格的列
 			if (this.tableColumns.length) {
-				return this.tableColumns.filter(
-					(e) => !e.isHidden && !this.unCols.includes(e.prop)
-				)
+				const filterColumns = []
+				// const filterColumns = this.tableColumns.filter(
+				//   (e) => !e.isHidden && !this.unCols.includes(e.prop)
+				// )
+				this.tableColumns.forEach((e) => {
+					if (!e.isHidden && !this.unCols.includes(e.prop)) {
+						const column = this.columns.find((c) => c.prop === e.prop)
+						if (
+							column &&
+							!filterColumns.some(
+								(fc) => fc.type === column.type && column.type
+							)
+						) {
+							filterColumns.push(column)
+						}
+					}
+				})
+				const columns = []
+				const noSettingColumns = [
+					'selection',
+					'customSelection',
+					'index',
+					'fullIndex',
+					'customIndex'
+				]
+				this.columns.forEach((e) => {
+					if (
+						noSettingColumns.includes(e.type) &&
+						!filterColumns.find((fe) => fe.type === e.type)
+					) {
+						columns.push(e)
+					}
+				})
+				return columns.concat(filterColumns)
 			}
 			return this.columns.filter((e) => !this.unCols.includes(e.prop))
 		},
@@ -122,9 +153,9 @@ export default {
 		},
 		querySetting() {
 			/*  const userInfo = window.sessionStorage.getItem('userInfo') || ''
-    if (userInfo) {
-      const userData = JSON.parse(userInfo)
-      const accountId = userData?.accountId */
+		if (userInfo) {
+			const userData = JSON.parse(userInfo)
+			const accountId = userData?.accountId */
 			const http = new XMLHttpRequest()
 			const url = `${this.usercenterApiPrefix}/web/getUserListMemory`
 			http.open('POST', url, true)
