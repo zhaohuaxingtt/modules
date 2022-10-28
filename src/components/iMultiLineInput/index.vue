@@ -1,69 +1,102 @@
 <template>
   <div class="iMultiLineInput">
-    <iInput type="text" v-model.trim="value" @input="handleInput" :placeholder="placeholder">
+    <iInput
+      type="text"
+      v-model.trim="value"
+      @input="handleInput"
+      :placeholder="placeholder"
+    >
       <template slot="append">
         <el-button slot="append" @click.native="showMultiLineInputDialog">
           <icon symbol name="iconbianji" />
         </el-button>
       </template>
     </iInput>
-    <iDialog class="multiLineInputDialog" :visible.sync="visible" :title="title">
+    <iDialog
+      class="multiLineInputDialog"
+      :visible.sync="visible"
+      :title="title"
+      append-to-body
+    >
       <div class="body">
-        <iInput type="textarea" v-model="text" :rows="9" :placeholder="language('QINGSHURU', '请输入')" />
+        <iInput
+          type="textarea"
+          v-model="text"
+          :rows="9"
+          :placeholder="language('QINGSHURU', '请输入')"
+        />
       </div>
       <template #footer class="footer">
-        <iButton @click="handleConfirm">{{ language("QUEREN", "确认") }}</iButton>
+        <iButton @click="handleConfirm">{{
+          language("QUEREN", "确认")
+        }}</iButton>
       </template>
     </iDialog>
   </div>
 </template>
 
 <script>
-import iInput from '../iInput'
-import iDialog from '../iDialog'
-import iButton from '../iButton'
-import icon from '../icon'
+import iInput from "../iInput";
+import iDialog from "../iDialog";
+import iButton from "../iButton";
+import icon from "../icon";
 
 export default {
-  name: 'iMultiLineInput',
+  name: "iMultiLineInput",
   components: { iInput, iDialog, iButton, icon },
   model: {
-    event: 'input'
+    event: "input",
   },
   props: {
     value: String,
     title: String,
-    placeholder: String
+    placeholder: String,
   },
   data() {
     return {
       visible: false,
-      text: ''
-    }
+      text: "",
+    };
   },
   watch: {
     visible(status) {
-      if(!status) this.text = ''
-    }
+      if (!status) this.text = "";
+    },
   },
   methods: {
     handleInput(value) {
-      const str = value || ''
-      this.$emit('input', str.replace(/\n|\r/g, ',').split(',').filter(item => item || item === 0).map(item => item.trim()).join(','))
+      const str = value || "";
+      this.$emit(
+        "input",
+        str
+          .replace(/\n|\r/g, ",")
+          .split(",")
+          .filter((item) => item || item === 0)
+          .map((item) => item.trim())
+          .join(",")
+      );
     },
     showMultiLineInputDialog() {
-      this.text = this.value ? (this.value + "").replace(/,/g, '\n') : ''
+      this.text = this.value ? (this.value + "").replace(/,/g, "\n") : "";
 
-      this.visible = true
+      this.visible = true;
     },
     handleConfirm() {
-      if (!this.text) this.text = ''
-      this.$emit('input', this.text.replace(/\n|\r/g, ',').split(',').filter(item => item || item === 0).map(item => item.trim()).join(','))
+      if (!this.text) this.text = "";
+      this.$emit(
+        "input",
+        this.text
+          .replace(/\n|\r/g, ",")
+          .split(",")
+          .filter((item) => item || item === 0)
+          .map((item) => item.trim())
+          .join(",")
+      );
 
-      this.visible = false
-    }
-  }
-}
+      this.visible = false;
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
