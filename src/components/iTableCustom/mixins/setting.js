@@ -21,12 +21,21 @@ export default {
 		tableVisibleColumns() {
 			// 表格的列
 			if (this.tableColumns.length) {
+				const noSettingColumns = [
+					'selection',
+					'customSelection',
+					'index',
+					'fullIndex',
+					'customIndex'
+				]
+				// filterColumns：记录过滤固定序号列后剩余表格项
 				const filterColumns = []
 				// const filterColumns = this.tableColumns.filter(
 				//   (e) => !e.isHidden && !this.unCols.includes(e.prop)
 				// )
 				this.tableColumns.forEach((e) => {
-					if (!e.isHidden && !this.unCols.includes(e.prop)) {
+					// 表格数项添加到filterColumns
+					if (!e.isHidden && !noSettingColumns.includes(e.type) && !this.unCols.includes(e.prop)) {
 						const column = this.columns.find((c) => c.prop === e.prop)
 						if (
 							column &&
@@ -38,14 +47,8 @@ export default {
 						}
 					}
 				})
+				// columns: 表格中使用到的固定项，从noSettingColumns中标注的几种过滤
 				const columns = []
-				const noSettingColumns = [
-					'selection',
-					'customSelection',
-					'index',
-					'fullIndex',
-					'customIndex'
-				]
 				this.columns.forEach((e) => {
 					if (
 						noSettingColumns.includes(e.type) &&
