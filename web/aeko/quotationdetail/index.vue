@@ -267,6 +267,7 @@ export default {
             supplierId = '',
             rfqId = '',
             fsnrGsnrNum = '',
+            submitDate = "",
             source = '',
             round,
             objectAekoId
@@ -276,7 +277,8 @@ export default {
             ...aekoPartInfo,
             quotationId,
             rfqId,
-            fsNum: fsnrGsnrNum,
+            submitDate,
+            fsnrGsnrNum: fsnrGsnrNum,
             round,
             objectAekoId
           };
@@ -308,7 +310,7 @@ export default {
 
     async getStates() {
       return getStates({
-        fsNum: this.partInfo.fsNum,
+        fsNum: this.partInfo.fsnrGsnrNum,
         quotationId: this.partInfo.quotationId,
         rfqId: this.partInfo.rfqId,
       })
