@@ -12,9 +12,9 @@ export const infoItems = [
   { props: "procureFactory", key: "CAIGOUGONGCHANG", name: "采购工厂", permissionKey: "AEKO_QUOTATION_DETAIL_TEXT_CAIGOUGONGCHANG|采购工厂" },
   { props: "quotationStatus", key: "BAOJIAZHUANGTAI", name: "报价状态", permissionKey: "AEKO_QUOTATION_DETAIL_TEXT_BAOJIAZHUANGTAI|报价状态" },
   { props: "hasDelegateQuotation", key: "DAIBAOJIA", name: "代报价", permissionKey: "AEKO_QUOTATION_DETAIL_TEXT_DAIBAOJIA|代报价" },
-  { props: "rfqId", key: "LK_RFQHAO", name: "RFQ号",},
-  { props: "fsnrGsnrNum", key: "LINGJIANCAIGOUXIANGMUHAO", name: "采购项目号"},
-  { props: "submitDate", key: "报价单提交时间", name: "报价单提交时间"},
+  { props: "rfqId", key: "LK_RFQHAO", name: "RFQ号",permissionKey: "AEKO_QUOTATION_DETAIL_TEXT_RFQ|RFQ号" },
+  { props: "fsnrGsnrNum", key: "LINGJIANCAIGOUXIANGMUHAO", name: "采购项目号",permissionKey: "AEKO_QUOTATION_DETAIL_TEXT_LJCGXMH|采购项目号" },
+  { props: "submitDate", key: "报价单提交时间", name: "报价单提交时间",permissionKey: "AEKO_QUOTATION_DETAIL_TEXT_BJDTJSJ|报价单提交时间" },
 ]
 
 export const tableTitle = [
