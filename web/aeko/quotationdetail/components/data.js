@@ -17,6 +17,7 @@ export const infoItems = [
   { props: "submitDate", key: "报价单提交时间", name: "报价单提交时间",permissionKey: "AEKO_QUOTATION_DETAIL_TEXT_BJDTJSJ|报价单提交时间" },
 ]
 
+
 export const tableTitle = [
   { props: "originalAPrice", key: "YUANAJIA", name: "原A价", tooltip: true },
   { props: "apriceChange", key: "AJIABIANDONGHANFENTAN", name: "A价变动(含分摊)", tooltip: true },
