@@ -18,7 +18,7 @@
       <iFormGroup :key="$index" :row="4" inline>
         <iFormItem v-for="item in infoItems" :key="item.props" :label="language(item.key, item.name)"
                    v-permission.dynamic.auto="item.permissionKey">
-          <iText>{{ partInfo[item.props] || '-' }}</iText>
+          <iText @click="ynzheng(partInfo,item.props)">{{ partInfo[item.props] || '-' }}</iText>
         </iFormItem>
       </iFormGroup>
     </iCard>
@@ -216,6 +216,10 @@ export default {
     }
   },
   methods: {
+    ynzheng(a,b){
+      console.log(a)
+      console.log(b)
+    },
     // 保留千分位
     floatFixNum,
     // 日志
