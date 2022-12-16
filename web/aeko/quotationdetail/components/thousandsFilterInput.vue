@@ -44,7 +44,7 @@ export default {
     computed:{
         filterValue(){
             const value = this.inputValue;
-            return value ? thousands(value) : '';
+            return value ? thousands(value, this.numProcessor) : '';
         }
     },
     data(){
