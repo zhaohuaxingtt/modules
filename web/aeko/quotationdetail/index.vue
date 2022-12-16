@@ -279,6 +279,7 @@ export default {
             rfqId,
             submitDate,
             fsnrGsnrNum: fsnrGsnrNum,
+            fsNum: fsnrGsnrNum,
             round,
             objectAekoId
           };
@@ -310,7 +311,7 @@ export default {
 
     async getStates() {
       return getStates({
-        fsNum: this.partInfo.fsnrGsnrNum,
+        fsNum: this.partInfo.fsNum,
         quotationId: this.partInfo.quotationId,
         rfqId: this.partInfo.rfqId,
       })
