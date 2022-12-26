@@ -299,7 +299,7 @@ export default {
 				id: '',
 				isSee: '',
 			}
-			// this.date = ""
+			this.date = null
 			if (this.disabledBiz) {
 				this.query.bizId = this.bizId
 				this.query.menuId = this.menuId
