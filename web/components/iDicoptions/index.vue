@@ -1,8 +1,8 @@
 <!--
  * @Author: haojiang
  * @Date: 2021-02-25 16:34:49
- * @LastEditTime: 2021-10-18 18:06:11
- * @LastEditors: Hao,Jiang
+ * @LastEditTime: 2022-12-26 15:34:21
+ * @LastEditors: 余继鹏 917955345@qq.com
  * @Description: 通过selectDictByKeyss字典接口查询的下拉值。
  * @FilePath: \rise\src\components\iDicoptions\index.vue
 -->
@@ -20,7 +20,7 @@
     ></el-option>
     <el-option
       :value="items.code"
-      :label="$getLabel ? $getLabel(items.value, item.nameEn) : items.value"
+      :label="$getLabel ? $getLabel(items.value, items.nameEn) : items.value"
       v-for="(items, index) in options"
       :key="index"
     ></el-option>
