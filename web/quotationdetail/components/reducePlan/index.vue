@@ -176,7 +176,13 @@ export default {
         handleYearMonthsChange(value, key, data, index) {
             this.tableData.forEach((item, i) => {
                 if (i > index) {
-                    this.$set(item, "yearMonths", "")
+                    // 调整时间之后，默认填充后面的时间：按年递增取1月1号
+                    if(value){
+                        let year = value.split('-')[0]
+                        this.$set(item, "yearMonths", `${Number(year)+(i-index)}-01`)
+                    }else{
+                        this.$set(item, "yearMonths", "")
+                    }
                     this.$set(item, "priceReduceRate", "0.0000")
                 }
 
