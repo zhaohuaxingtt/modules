@@ -92,7 +92,8 @@ export default {
             lcAPrice: "0",
             lcStartProductDate: "",
             currentKey: "",
-            currentDate: ""
+            currentDate: "",
+            yearObj:{}
         }                
     },
     created(){
@@ -118,6 +119,16 @@ export default {
         }
     },
     methods: {
+        getYear(arr){
+            let obj = {}
+            if(Array.isArray(arr)){
+                arr.forEach(item=>{
+                    let key = moment(item.yearMonths).format("YYYY-MM")
+                    obj[key] = item.priceReduceRate
+                })
+            }
+            this.yearObj = obj
+        },
         /**
          * @Description: AB价切换时更新tableData
          * @Author: Luoshuang
@@ -179,11 +190,17 @@ export default {
                     // 调整时间之后，默认填充后面的时间：按年递增取1月1号
                     if(value){
                         let year = value.split('-')[0]
-                        this.$set(item, "yearMonths", `${Number(year)+(i-index)}-01`)
+                        let yearMonths = `${Number(year)+(i-index)}-01`
+                        this.$set(item, "yearMonths", yearMonths)
+                        if(this.yearObj[yearMonths]){
+                            this.$set(item, "priceReduceRate", this.yearObj[yearMonths])
+                        }else{
+                            this.$set(item, "priceReduceRate", "0.0000")
+                        }
                     }else{
                         this.$set(item, "yearMonths", "")
+                        this.$set(item, "priceReduceRate", "0.0000")
                     }
-                    this.$set(item, "priceReduceRate", "0.0000")
                 }
 
                 return
@@ -221,6 +238,7 @@ export default {
                         iMessage.error(this.basic+this.language('BUCUNZAIHUOWEIO','不存在或为0'))
                     }
                     // this.computedBasic === '01' ? this.aprice : this.bprice
+                    this.getYear(res.data.pricePlanInfoVOS)
                     this.tableData = this.computeReducePrice(this.aprice, res.data.pricePlanInfoVOS)
                 } else {
                     iMessage.error(this.$i18n.locale === "zh" ? res?.desZh : res?.desEn)
@@ -236,6 +254,7 @@ export default {
                     this.skdAPrice = res.data.skdAPrice || "0"
                     this.lcAPrice = res.data.lcAPrice || "0"
 
+                    this.getYear(res.data.pricePlanInfoVOS)
                     this.tableData = this.computeSkdLc(this.skdAPrice, this.lcAPrice, res.data.pricePlanInfoVOS)
                 } else {
                     iMessage.error(this.$i18n.locale === "zh" ? res?.desZh : res?.desEn)
