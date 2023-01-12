@@ -112,7 +112,7 @@ export default {
       })
       .then(res => {
         if (res.code == 200) {
-          this.content = res.data.content
+          this.content = res.data.content || ''
           this.disabled = false
         } else {
           iMessage.error(this.$i18n.locale === "zh" ? res.desZh : res.desEn)
