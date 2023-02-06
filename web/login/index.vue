@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-03-10 15:22:16
- * @LastEditTime: 2023-02-06 16:19:48
+ * @LastEditTime: 2023-02-06 18:21:21
  * @LastEditors: 余继鹏 917955345@qq.com
  * @Description: In User Settings Edit
  * @FilePath: \rise\src\views\login\index.vue
@@ -111,7 +111,8 @@ export default {
         redirectUrl =
           process.env.VUE_APP_LOGIN_URL+`?state=${encodeURIComponent(this.$route.query.state)}` || process.env.VUE_APP_LOGOUT_URL
       }
-      if (redirectUrl && redirectUrl !== '/order/#/login') {
+      // 有重定向地址则跳转
+      if (redirectUrl && this.$route.query.state) {
         this.ssoLogin = true
         location.href = redirectUrl
       }
