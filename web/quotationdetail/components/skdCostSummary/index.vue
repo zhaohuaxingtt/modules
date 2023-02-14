@@ -72,15 +72,15 @@
         <span v-else>{{ scope.row.profitSummary }}</span>
       </template>
       <template #packageCost="scope">
-        <iInput v-if="!disabled && bnkValid" class="input" v-model="scope.row.packageCost" @input="handleInputByNumber($event, 'packageCost', scope.row, 2, value => { computeSalesPrice(value, 'packageCost', scope.row) })"></iInput>
+        <iInput v-if="!disabled && bnkValid && !partInfo.isOriginprice" class="input" v-model="scope.row.packageCost" @input="handleInputByNumber($event, 'packageCost', scope.row, 2, value => { computeSalesPrice(value, 'packageCost', scope.row) })"></iInput>
         <span v-else>{{ scope.row.packageCost }}</span>
       </template>
       <template #transportCost="scope">
-        <iInput v-if="!disabled && bnkValid" class="input" v-model="scope.row.transportCost" @input="handleInputByNumber($event, 'transportCost', scope.row, 2, value => { computeSalesPrice(value, 'transportCost', scope.row) })"></iInput>
+        <iInput v-if="!disabled && bnkValid && !partInfo.isOriginprice" class="input" v-model="scope.row.transportCost" @input="handleInputByNumber($event, 'transportCost', scope.row, 2, value => { computeSalesPrice(value, 'transportCost', scope.row) })"></iInput>
         <span v-else>{{ scope.row.transportCost }}</span>
       </template>
       <template #operateCost="scope">
-        <iInput v-if="!disabled && bnkValid" class="input" v-model="scope.row.operateCost" @input="handleInputByNumber($event, 'operateCost', scope.row, 2, value => { computeSalesPrice(value, 'operateCost', scope.row) })"></iInput>
+        <iInput v-if="!disabled && bnkValid && !partInfo.isOriginprice" class="input" v-model="scope.row.operateCost" @input="handleInputByNumber($event, 'operateCost', scope.row, 2, value => { computeSalesPrice(value, 'operateCost', scope.row) })"></iInput>
         <span v-else>{{ scope.row.operateCost }}</span>
       </template>
       <!-- <template #otherSummary="scope">
