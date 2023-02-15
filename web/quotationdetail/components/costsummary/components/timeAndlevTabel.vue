@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-23 15:38:31
- * @LastEditTime: 2022-01-25 02:03:22
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-02-15 17:30:12
+ * @LastEditors: 余继鹏 917955345@qq.com
  * @Description: In User Settings Edit
  * @FilePath: \front-supplier\src\views\rfqManageMent\quotationdetail\components\costsummary\components\timeAndlevTabel.vue
 -->
@@ -63,7 +63,7 @@
     <!--------------------------------------------------------->
     <!----------------------表格百分比-------------------------->
     <!--------------------------------------------------------->
-    <tableList lang :tableTitle='tableTilel1' :notEdit='disabled' :tableData='tableData.tableData' :isSteel="isSteel" :roundIsOnlineBidding='roundIsOnlineBidding' class="margin-top10"></tableList>
+    <tableList lang :tableTitle='tableTilel1' :notEdit='disabled && partInfo.isOriginprice' :tableData='tableData.tableData' :isSteel="isSteel" :roundIsOnlineBidding='roundIsOnlineBidding' class="margin-top10"></tableList>
     <persent lang v-if='Array.isArray(tableData.persent) && !tableData.persent.every(items=>items == 0)' :persentList='tableData.persent' :realDataList='tableData.tableData'></persent>
   </iCard>
 </template>
