@@ -122,7 +122,7 @@ import sampleDeliveryProgress from './components/sampleDeliveryProgress'
 import remarksAndAttachment from './components/remarksAndAttachment'
 import startProductionDateDialog from "./components/startProductionDateDialog"
 
-import { getPartsQuotations, getStates, submitPartsQuotation, quoteBatchPrice, cancelQuoteBatchPrice, quotations,contrastBidding,getNoticeStatus, searchQuotationExchange, checkDsPart } from "@/api/rfqManageMent/quotationdetail"
+import { checkTag,getPartsQuotations, getStates, submitPartsQuotation, quoteBatchPrice, cancelQuoteBatchPrice, quotations,contrastBidding,getNoticeStatus, searchQuotationExchange, checkDsPart } from "@/api/rfqManageMent/quotationdetail"
 import { cloneDeep } from "lodash"
 import {partProjTypes} from '@/config'
 import {roundsType} from 'rise/web/config'
@@ -379,10 +379,28 @@ export default {
      * @return {*}
      */
     async agreePrice() {
-      const status = await this.getNoticeStatus()
-      if (!status) return
-      
-      this.updateQuotations(1)
+      if(process.env.NODE_ENV=='production'){
+          const status = await this.getNoticeStatus()
+        if (!status) return
+        this.updateQuotations(1)
+      }else{
+        const check=await checkTag(this.supplierId)
+          if(check?.data){
+            this.$alert(this.$t('请供应商用户看到此提示后，尽快根据要求完成信息更改。若因系统留存信息与供应商实际情况不一致所引发的问题或纠纷，上汽大众概不承担责任。'), this.$t('完成供应商信息修改提醒'), {
+              confirmButtonText: '确定',
+              callback:(async () => {
+              const status = await this.getNoticeStatus()
+                  if (!status) return
+                  this.updateQuotations(1)
+            })
+          })
+        }else{
+          const status = await this.getNoticeStatus()
+          if (!status) return
+          this.updateQuotations(1)
+        }
+      }
+    
     },
     async rejectPrice() {
       // const status = await this.getNoticeStatus()
@@ -606,7 +624,40 @@ export default {
     },
     // 提交
     handleSubmit() {
-      this.submit()
+      if(process.env.NODE_ENV=='production'){
+        this.submit()
+      }else{
+        const isurl=this.$route.path.indexOf('sourceinquirypoint')>0
+        checkTag(this.supplierId).then(res=>{
+            if(res.data){
+              if(isurl){
+                this.$alert(this.$t('请供应商用户看到此提示后，尽快根据要求完成信息更改。若因系统留存信息与供应商实际情况不一致所引发的问题或纠纷，上汽大众概不承担责任。'), this.$t('完成供应商信息修改提醒'), {
+                  confirmButtonText: '确定',
+                  callback:(async () => {
+                    this.submit()
+                    })
+                })
+              }else{
+                this.$confirm(this.$t('请供应商用户看到此提示后，尽快根据要求完成信息更改。若因系统留存信息与供应商实际情况不一致所引发的问题或纠纷，上汽大众概不承担责任。'), this.$t('完成供应商信息修改提醒'), {
+                  confirmButtonText: '修改信息',
+                  cancelButtonText: '取消',
+                  distinguishCancelAndClose: true,
+                }).then(() => {
+                    window.open(
+                      `/site/#/supplier/supplierDetail`,
+                      '_blank'
+                    )
+                }).catch((action ) => {
+                    if(action=='cancel'){
+                      this.submit()
+                    }
+                });
+              }
+          }else{
+            this.submit()
+          }
+        })
+      }
     },
     async submit(params) {
       this.submitLoading = true
