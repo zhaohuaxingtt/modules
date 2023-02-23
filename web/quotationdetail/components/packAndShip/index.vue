@@ -2,7 +2,7 @@
  * @Descripttion: 供应商报价界面-报价页面-零件报价-包装运输
  * @Author: Luoshuang
  * @Date: 2021-04-22 16:53:47
- * @LastEditTime: 2021-11-25 01:55:19
+ * @LastEditTime: 2023-02-23 16:24:08
 -->
 <template>
   <div v-if="partInfo.partProjectType === partProjTypes.DBLINGJIAN || partInfo.partProjectType === partProjTypes.DBYICHIXINGCAIGOU ||  partInfo.priceStatus == 'DB'" v-loading="loading">
@@ -176,10 +176,16 @@ export default {
       })
       .then(res => {
         if (res.code == 200 && res.data) {
+          let bnkUrl = ''
+          if(process.env.NODE_ENV == 'production'){
+            bnkUrl = process.env.VUE_APP_BNK_URL
+          }else{
+            bnkUrl = 'http://svmwt038'
+          }
           if (this.userInfo.supplierId) {
-            this.url = `${ process.env.VUE_APP_BNK_URL }/sol-bnk/pages/rise/quotes/lsp-view.jsf?partProjId=${ this.partInfo.projectPartId }&tmRfqId=${ this.partInfo.rfqId }&ppSupplierId=${ this.userInfo.supplierId }&ppSupplierUserId=${ this.userInfo.id }&token=${ res.data }`
+            this.url = `${ bnkUrl }/sol-bnk/pages/rise/quotes/lsp-view.jsf?partProjId=${ this.partInfo.projectPartId }&tmRfqId=${ this.partInfo.rfqId }&ppSupplierId=${ this.userInfo.supplierId }&ppSupplierUserId=${ this.userInfo.id }&token=${ res.data }`
           } else if (this.$route.query.supplierId) {
-            this.url = `${ process.env.VUE_APP_BNK_URL }/sol-bnk/pages/rise/quotes/lsp-employee-view.jsf?partProjId=${ this.partInfo.projectPartId }&tmRfqId=${ this.partInfo.rfqId }&ppSupplierId=${ this.$route.query.supplierId }&ppSupplierUserId=-1&token=${ res.data }`
+            this.url = `${ bnkUrl }/sol-bnk/pages/rise/quotes/lsp-employee-view.jsf?partProjId=${ this.partInfo.projectPartId }&tmRfqId=${ this.partInfo.rfqId }&ppSupplierId=${ this.$route.query.supplierId }&ppSupplierUserId=-1&token=${ res.data }`
           }
           
           this.$emit("hidePackAndShipSave")
