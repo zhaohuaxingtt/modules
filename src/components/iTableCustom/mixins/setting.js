@@ -26,7 +26,8 @@ export default {
 					'customSelection',
 					'index',
 					'fullIndex',
-					'customIndex'
+					'customIndex',
+					'expanded',
 				]
 				// filterColumns：记录过滤固定序号列后剩余表格项
 				const filterColumns = []
@@ -69,6 +70,7 @@ export default {
 				'index',
 				'fullIndex',
 				'customIndex',
+				'expanded',
 			]
 			if (this.tableColumns.length) {
 				return this.tableColumns.filter(
