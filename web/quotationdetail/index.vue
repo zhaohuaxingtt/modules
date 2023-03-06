@@ -1,8 +1,8 @@
 <!--
  * @Author: ldh
  * @Date: 2021-04-21 15:35:19
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-12-14 21:58:58
+ * @LastEditors: 余继鹏 917955345@qq.com
+ * @LastEditTime: 2023-03-06 23:22:06
  * @Description: In User Settings Edit
  * @FilePath: \front-modules\web\quotationdetail\index.vue
 -->
@@ -383,7 +383,7 @@ export default {
           const status = await this.getNoticeStatus()
         if (!status) return
         this.updateQuotations(1)
-      }else{
+      }else if(typeof checkTag == 'function'){
         const check=await checkTag(this.supplierId)
           if(check?.data){
             this.$alert(this.$t('请供应商用户看到此提示后，尽快根据要求完成信息更改。若因系统留存信息与供应商实际情况不一致所引发的问题或纠纷，上汽大众概不承担责任。'), this.$t('完成供应商信息修改提醒'), {
@@ -399,6 +399,10 @@ export default {
           if (!status) return
           this.updateQuotations(1)
         }
+      }else{
+        const status = await this.getNoticeStatus()
+        if (!status) return
+        this.updateQuotations(1)
       }
     
     },
@@ -626,7 +630,7 @@ export default {
     handleSubmit() {
       if(process.env.NODE_ENV=='production'){
         this.submit()
-      }else{
+      }else if(typeof checkTag == 'function'){  // 暂时判断,避免其它工程因为checkTag不存在出现报错
         const isurl=this.$route.path.indexOf('sourceinquirypoint')>0
         checkTag(this.supplierId).then(res=>{
             if(res.data){
@@ -657,6 +661,8 @@ export default {
             this.submit()
           }
         })
+      }else{
+        this.submit()
       }
     },
     async submit(params) {
