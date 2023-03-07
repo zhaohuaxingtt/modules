@@ -33,7 +33,7 @@
       <slot name="body"></slot>
     </div>
     <el-collapse-transition>
-      <div v-show="collapseValue" v-if="$slots.default">
+      <div class="card-body-box" v-show="collapseValue" v-if="$slots.default">
         <div class="cardBody" :style="{ paddingTop: !($slots.header || header || title || $slots['header-control'] || headerControl) || 0 }">
           <slot></slot>
         </div>
