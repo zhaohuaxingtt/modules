@@ -99,7 +99,10 @@ export default {
     }
   },
   created() {
-    if (this.$route.path.indexOf('superLogin') > -1) {
+    if (
+      this.$route.path.indexOf('superLogin') > -1 &&
+      !['production'].includes(process.env.NODE_ENV)
+    ) {
       //nothing to do
     } else {
       const token = getToken()
@@ -111,8 +114,7 @@ export default {
         redirectUrl =
           process.env.VUE_APP_LOGIN_URL+`?state=${encodeURIComponent(this.$route.query.state)}` || process.env.VUE_APP_LOGOUT_URL
       }
-      // 有重定向地址则跳转
-      if (redirectUrl && this.$route.query.state) {
+      if (redirectUrl) {
         this.ssoLogin = true
         location.href = redirectUrl
       }
