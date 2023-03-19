@@ -1,6 +1,9 @@
 <template>
   <div class="i-pagination clearFloat">
-    <p class="page-info" v-if="showPageInfo">{{ language('LK_XIANSHI', '显示') }}<span class="item">{{ total > 0 ? (currentPage - 1) * pageSize + 1 : 0 }}</span>{{ language('LK_TIAODI', '条到第') }}<span class="item">{{ total > 0 ? (currentPage * pageSize > total ? (currentPage * pageSize - (currentPage * pageSize - total)) : currentPage * pageSize) : 0 }}</span>{{ language('LK_TIAOJILU', '条记录') }}，{{ language('LK_GONG', '共') }}<span class="item">{{ $props.total }}</span>{{ language('LK_TIAOJILU', '条记录') }}</p>
+    <div class="page-info-box">
+      <p class="page-info" v-if="showPageInfo">{{ language('LK_XIANSHI', '显示') }}<span class="item">{{ total > 0 ? (currentPage - 1) * pageSize + 1 : 0 }}</span>{{ language('LK_TIAODI', '条到第') }}<span class="item">{{ total > 0 ? (currentPage * pageSize > total ? (currentPage * pageSize - (currentPage * pageSize - total)) : currentPage * pageSize) : 0 }}</span>{{ language('LK_TIAOJILU', '条记录') }}，{{ language('LK_GONG', '共') }}<span class="item">{{ $props.total }}</span>{{ language('LK_TIAOJILU', '条记录') }}</p>
+      <iButton size="mini" v-if="showBtn" @click="excelExport">{{language('导出当页')}}</iButton>
+    </div>
     <el-pagination 
       class="pagination" 
       v-bind="$props" 
@@ -16,7 +19,9 @@
 </template>
 
 <script>
+import iButton from "../iButton";
 import { Pagination } from 'element-ui'
+import { excelExport } from "/utils/filedowLoad"
 /**
  * @example ./README.me
 */
@@ -24,7 +29,23 @@ export default {
   name:'iPagination',
   props: {
     ...Pagination.props,
-    showPageInfo: { type: Boolean, default: true }
+    showPageInfo: { type: Boolean, default: true },
+    showBtn: { type: Boolean, default: false },
+    tableData: {
+      type: Array, 
+      default:()=>[]
+    },
+    tableTitle: {
+      type: Array, 
+      default:()=>[]
+    },
+    fileName: {
+      type: String,
+      default: 'download'
+    }
+  },
+  components:{
+    iButton
   },
   computed: {
     currentPageNum() {
@@ -42,12 +63,29 @@ export default {
     pagerCountNum() {
       return +this.pagerCount
     }
+  },
+  methods:{
+    // 
+    excelExport(){
+      let filterList = ['selection']  // 过滤复选框
+      let tableTitle = this.tableTitle.filter(item=>(item.prop||item.props)&&!filterList.includes(item.prop||item.props))
+      console.log(tableTitle);
+      excelExport(this.tableData,tableTitle,this.fileName)
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
 .i-pagination {
+  margin-top: 15px;
+  display: flex;
+  .page-info-box{
+    flex: 1;
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+  }
   .page-info {
     float: left;
     height: 35px;
@@ -65,7 +103,8 @@ export default {
 
   ::v-deep .pagination {
     padding: 0;
-    margin-top: 15px;
+    // margin-top: 15px;
+    margin-top: 0;
 
     .el-pager {
       .more {
