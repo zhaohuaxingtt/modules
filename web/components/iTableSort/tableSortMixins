@@ -5,9 +5,14 @@
  */
  export const tableSortMixins = {
    data(){
-     return {}
+     return {
+      hiddenCount: 0
+     }
    },
    methods:{
+    setHiddenCount(title){
+      this.hiddenCount = title.filter(item=>item.isHidden).length || 0
+    },
     edittableHeader() {
         this.$refs.tableList.settingVisible = true
       },

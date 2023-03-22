@@ -140,6 +140,7 @@ export default {
 						} else {
 							iMessage.error('保存失败')
 						}
+						this.$emit('setHiddenCount', this.tableColumns)
 					}
 				}
 				const requestData = {
@@ -176,8 +177,10 @@ export default {
 					} else {
 						this.tableColumns = this.columns
 					}
+					this.$emit('setHiddenCount', this.tableColumns)
 				} else {
 					this.tableColumns = this.columns
+					this.$emit('setHiddenCount', this.tableColumns)
 				}
 			}
 			const requestData = {
