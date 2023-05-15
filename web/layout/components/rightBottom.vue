@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="btn-button">
-      <div @click.stop="openJira" class="jira-edit margin-bottom10">
+      <div v-permission="'HOME_JIRA_IMG'" @click.stop="openJira" class="jira-edit margin-bottom10">
         <img :src="jiraEdit" alt="" />
         <p>{{ language("我要提问", "我要提问") }}</p>
       </div>
