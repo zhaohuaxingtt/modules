@@ -21,8 +21,8 @@
 		>
 			<mail-card
 				:tab="tab"
-				v-for="(item, index) in list"
-				:key="index"
+				v-for="item in list"
+				:key="item.id"
 				:item="item"
 				@read-callback="handleReadCallback"
 				@del-callback="handleDelCallback"
