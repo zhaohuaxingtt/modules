@@ -17,6 +17,7 @@
     :accept="accept"
     v-bind="props"
     ref="uploadRef"
+    :disabled="uploading"
   >
 		<iButton :loading="uploading">{{buttonText || language('SHANGCHUANFUJIJAN',"上传附件")}}</iButton>
 		<div v-if="!hideTip" slot="tip" class="el-upload__tip">{{errorTipsText || language('LK_ZHINENGSHANGCHUANWENJIAN','只能上传文件')}}</div>
