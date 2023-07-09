@@ -147,7 +147,7 @@ export default {
 		handleClick(tab) {
 			const li = parseInt(tab.name)
 			this.$refs.list[li].getTypeOptions()
-			this.$refs.list[li].getList()
+			this.$refs.list[li].getNewList()
 			this.$refs.list[li].getUnreadCount()
 		},
 		handleUnreadCallback(val) {
