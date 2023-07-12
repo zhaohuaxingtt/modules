@@ -5,11 +5,13 @@
 			:action="uploadURL"
 			:on-preview="handlePreview"
 			:on-remove="handleRemove"
+      		:before-upload="beforeUpload"
 			:on-success="handleSuccess"
 			:on-error="handleError"
 			:on-progress="handleProgress"
 			:file-list="fileList"
 			:data="extraData"
+			:disabled="loading"
 			:accept="
 				fileTypes
 					.map((type) => {
@@ -18,7 +20,7 @@
 					.join(',')
 			"
 		>
-			<el-button type="primary">
+			<el-button :loading="loading" type="primary">
 				<i class="el-icon-upload2"></i>
 				上传文件
 			</el-button>
@@ -125,6 +127,7 @@ export default {
 		return {
 			uploadURL: '/fileud/udSingleFile',
 			fileList: [],
+			loading: false
 		}
 	},
 	methods: {
@@ -136,11 +139,17 @@ export default {
 			console.log('remove', file, fileList)
 			this.$emit('callback', fileList)
 		},
+		beforeUpload(){
+			this.loading = true
+			return true
+		},
 		handleSuccess(response, file, fileList) {
+			this.loading = false
 			console.log('success', response, file, fileList)
 			this.$emit('callback', fileList)
 		},
 		handleError(err, file, fileList) {
+			this.loading = false
 			console.log('err', err, file, fileList)
 		},
 		handelProgress(event, file, fileList) {
