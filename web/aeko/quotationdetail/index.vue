@@ -79,8 +79,7 @@
             <template #reference>
               <!-- 针对供应商报价可跳转 点击icon也可以跳转 -->
               <div @click="goToBNK">
-                <span
-                    :class="`margin-right5 ${userInfo &&userInfo.userType&&userInfo.userType == 2 ? 'link-underline' : ''}`">{{ scope.row.logisticsQuotationStatus ? floatFixNum(scope.row.bnkFee) : '' }}</span>
+                <span class="margin-right5 link-underline">{{ scope.row.logisticsQuotationStatus ? floatFixNum(scope.row.bnkFee) : '' }}</span>
                 <icon v-if="scope.row.bnkFee != scope.row.originBnkFee" symbol name="iconzengjiacailiaochengben_lan"
                       class="font15 rotate180"/>
               </div>
@@ -335,7 +334,7 @@ export default {
     async goToBNK() {
       const {userInfo = {}} = this;
       const {userType = null} = userInfo;
-      if (userType == 1) return;
+      // if (userType == 1) return;
 
       const {basicInfo = {}} = this;
       const {aekoPartInfo = {}, rfqId, supplierId} = basicInfo;
@@ -368,11 +367,19 @@ export default {
       }).then((res) => {
         this.tableLoading = false;
         if (res.code == 200) {
-
-          const linkObj = {
-            production:'https://rise.csvw.com/sol-bnk/pages/rise/quotes/lsp-view.jsf',
-            others:'http://svmwt038/sol-bnk/pages/rise/quotes/lsp-view.jsf'
-          };
+          let linkObj = {}
+          if (userType == 1) {
+            // 采购员调整页面
+            linkObj = {
+              production:'https://rise.csvw.com/sol-bnk/pages/rise/quotes/lsp-employee-view.jsf',
+              others:'http://svmwt038/sol-bnk/pages/rise/quotes/lsp-employee-view.jsf'
+            };
+          }else{
+            linkObj = {
+              production:'https://rise.csvw.com/sol-bnk/pages/rise/quotes/lsp-view.jsf',
+              others:'http://svmwt038/sol-bnk/pages/rise/quotes/lsp-view.jsf'
+            };
+          }
           const link = `${process.env.NODE_ENV !== 'production' ? linkObj['others'] : linkObj['production']}?${paramsStr}token=${res.data}`;
           // const link = `http://svmwt038/sol-bnk/pages/rise/quotes/lsp-view.jsf?${paramsStr}token=${res.data}`;
           window.open(link, '_blank');
