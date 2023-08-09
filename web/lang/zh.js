@@ -568,7 +568,7 @@ export default {
   'LK_XINGMING': '姓名', // 姓名
   'LK_DIANHUA': '电话', // 电话
   'LK_YOUXINAG': '邮箱', // 邮箱
-  'LK_XIANGMUJINDU': '项目进度', // 项目进度
+  'LK_XIANGMUJINDU': '项目进度(整车报交时间)', // 项目进度
   'LK_SHENGMINGZHOUQI': '生命周期', // 生命周期
   'LK_VFF': 'VFF', // VFF
   'LK_PVS': 'PVS', // PVS
