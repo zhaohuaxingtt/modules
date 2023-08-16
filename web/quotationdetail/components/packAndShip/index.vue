@@ -180,7 +180,8 @@ export default {
           if(process.env.NODE_ENV == 'production'){
             bnkUrl = process.env.VUE_APP_BNK_URL
           }else{
-            bnkUrl = 'http://svmwt038'
+            // bnkUrl = 'http://svmwt038'
+            bnkUrl = 'https://riseuat.csvw.com'
           }
           if (this.userInfo.supplierId) {
             this.url = `${ bnkUrl }/sol-bnk/pages/rise/quotes/lsp-view.jsf?partProjId=${ this.partInfo.projectPartId }&tmRfqId=${ this.partInfo.rfqId }&ppSupplierId=${ this.userInfo.supplierId }&ppSupplierUserId=${ this.userInfo.id }&token=${ res.data }`

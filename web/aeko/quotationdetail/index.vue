@@ -372,12 +372,14 @@ export default {
             // 采购员调整页面
             linkObj = {
               production:'https://rise.csvw.com/sol-bnk/pages/rise/quotes/lsp-employee-view.jsf',
-              others:'http://svmwt038/sol-bnk/pages/rise/quotes/lsp-employee-view.jsf'
+              others:'https://riseuat.csvw.com/sol-bnk/pages/rise/quotes/lsp-employee-view.jsf'
+              // others:'http://svmwt038/sol-bnk/pages/rise/quotes/lsp-employee-view.jsf'
             };
           }else{
             linkObj = {
               production:'https://rise.csvw.com/sol-bnk/pages/rise/quotes/lsp-view.jsf',
-              others:'http://svmwt038/sol-bnk/pages/rise/quotes/lsp-view.jsf'
+              others:'https://riseuat.csvw.com/sol-bnk/pages/rise/quotes/lsp-view.jsf'
+              // others:'http://svmwt038/sol-bnk/pages/rise/quotes/lsp-view.jsf'
             };
           }
           const link = `${process.env.NODE_ENV !== 'production' ? linkObj['others'] : linkObj['production']}?${paramsStr}token=${res.data}`;
