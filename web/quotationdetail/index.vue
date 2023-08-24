@@ -218,7 +218,8 @@ export default {
   provide: function () {
     return {
       updateCbdLevel: this.updateCbdLevel,
-      jjys:this.roundIsOnlineBidding
+      jjys:this.roundIsOnlineBidding,
+      refreshPartInfo: this.refreshPartInfo
     }
   },
   computed: {
@@ -439,6 +440,47 @@ export default {
       })
     },
     log() {},
+    // 刷新零件基本信息及状态
+    refreshPartInfo(){
+      this.partInfoLoading = true
+      getPartsQuotations({
+        rfqId: this.$route.query.rfqId,
+        round: this.$route.query.round,
+        supplierId: this.supplierId
+      }).then(res=>{
+        if(res?.code==200){
+          let currentPart = {}
+          res.data[0].cartypes === null?this.partInfoItems = partInfoItems('modelNameZh'):this.partInfoItems = partInfoItems('cartypes')
+          this.parts =
+            Array.isArray(res.data) ?
+              res.data.map(item => {
+                const result = {
+                  ...item,
+                  label: `${ item.partNum }_${ item.fsNum }_${ item.procureFactoryName }_${ item.partProjectStatusDesc }`,
+                  value: item.fsNum,
+                  key: item.fsNum
+                }
+                if (result.fsNum == this.fsNum) currentPart = cloneDeep(result)
+                return result
+              }) :
+              []
+          this.partInfo = cloneDeep(currentPart)
+          if(this.partInfo.partProjectType == partProjTypes.DBLINGJIAN || this.partInfo.priceStatus == "DB"){
+            this.isDb = true
+          }
+          this.getStates()
+        }else{
+          iMessage.error(this.$i18n.locale === 'zh' ? res.desZh : res.desEn)
+          this.parts = []
+          this.partInfo = {}
+        }
+      }).catch(()=>{
+        this.parts = []
+        this.partInfo = {}
+      }).finally(()=>{
+        this.partInfoLoading = false
+      })
+    },
     getPartsQuotations(type) {
       return new Promise(r=>{
          this.partInfoLoading = true

@@ -224,7 +224,7 @@ import {
 import { numberProcessor } from "@/utils";
 
 export default {
-  inject: ["jjys"],
+  inject: ["jjys","refreshPartInfo"],
   components: {
     iCard,
     iButton,
@@ -324,7 +324,7 @@ export default {
       this.uploadLoading = false;
       if (res.code == 200) {
         iMessage.success(this.language("LK_SHANGCHUANCHENGGONG", "上传成功"));
-
+        this.refreshPartInfo()
         if (this.isSkd) {
           this.getMouldFeeSKD();
         } else {
