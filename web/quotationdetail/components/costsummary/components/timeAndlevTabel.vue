@@ -128,7 +128,7 @@ export default{
       default: () => ({})
     }
   },
-  inject:['vm'],
+  inject:['vm','refreshPartInfo'],
   data(){
     return {
       uploadUrl: process.env.VUE_APP_SOURCING,
@@ -159,6 +159,7 @@ export default{
         this.vm.init()
         this.uploadLoading=false;
         iMessage.success("上传成功！")
+        this.refreshPartInfo()
       }else{
         this.uploadLoading = false;
         iMessage.error(res.desZh)
