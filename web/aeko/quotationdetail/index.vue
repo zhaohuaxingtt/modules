@@ -117,7 +117,6 @@ import sampleFee from "./components/sampleFee"
 import {infoItems, tableTitle, floatFixNum} from "./components/data"
 import {
   bnkSupplierToken,
-  bnkSupplierAekoToken,
   getQuotationInfo,
   submitAekoQuotation,
 } from '@/api/aeko/quotationdetail'
@@ -361,9 +360,7 @@ export default {
       this.tableLoading = true;
       // partProjId    零件采购项目Id String
       // rfqId           rfqId  String
-      // await bnkSupplierToken({
-      // 区分aeko页面报价和其它页面报价跳转BNK获取token方式
-      await bnkSupplierAekoToken({
+      await bnkSupplierToken({
         partProjId: aekoPartInfo.partProjectId,
         rfqId,
         supplierId: supplierId,

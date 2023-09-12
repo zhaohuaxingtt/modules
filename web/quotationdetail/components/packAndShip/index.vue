@@ -186,7 +186,7 @@ export default {
           if (this.userInfo.supplierId) {
             this.url = `${ bnkUrl }/sol-bnk/pages/rise/quotes/lsp-view.jsf?partProjId=${ this.partInfo.projectPartId }&tmRfqId=${ this.partInfo.rfqId }&ppSupplierId=${ this.userInfo.supplierId }&ppSupplierUserId=${ this.userInfo.id }&token=${ res.data }`
           } else if (this.$route.query.supplierId) {
-            this.url = `${ bnkUrl }/sol-bnk/pages/rise/quotes/lsp-employee-view.jsf?partProjId=${ this.partInfo.projectPartId }&tmRfqId=${ this.partInfo.rfqId }&ppSupplierId=${ this.$route.query.supplierId }&ppSupplierUserId=-1&token=${ res.data }`
+            this.url = `${ bnkUrl }/sol-bnk/pages/rise/quotes/lsp-employee-view.jsf?partProjId=${ this.partInfo.projectPartId }&tmRfqId=${ this.partInfo.rfqId }&ppSupplierId=${ this.$route.query.supplierId }&ppSupplierUserId=${ this.userInfo.id }&token=${ res.data }`
           }
           
           this.$emit("hidePackAndShipSave")
