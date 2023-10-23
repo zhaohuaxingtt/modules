@@ -19,13 +19,15 @@
         @click-menu="clickMenu"
       />
       <div class="language" @click="handleChangeLang">
-        <icon
+        <img  v-if="lang === 'zh'" src="../../assets/images/Group 1.svg" alt="SVG Icon">
+        <!-- <icon
           symbol
           v-if="lang === 'zh'"
           class="icon"
           name="iconzhongyingwenzhuanhuanzhong"
-        />
-        <icon symbol v-else class="icon" name="iconzhongyingwenzhuanhuanying" />
+        /> -->
+        <img  v-else src="../../assets/images/Group 4.svg" alt="SVG Icon">
+        <!-- <icon symbol v-else class="icon" name="iconzhongyingwenzhuanhuanying" /> -->
       </div>
       <iMailTrigger ref="iMail"/>
     </div>
@@ -162,7 +164,7 @@ export default {
   height: 60px;
   width: 100%;
   min-width: 1400px;
-  background-color: $color-white;
+  background-color: $color-black;
   position: fixed;
   top: 0px;
   left: 0px;
@@ -177,7 +179,7 @@ export default {
     height: 60px;
     line-height: 60px;
     padding-left: 60px;
-    background-color: #ffffff;
+    background-color: #000;
   }
 
   .right {
@@ -185,7 +187,7 @@ export default {
     top: 0;
     right: 0;
     height: 60px;
-    color: $color-header-black;
+    color: #fff;
     padding-right: 33px;
     display: flex;
     align-items: center;
@@ -199,7 +201,9 @@ export default {
       .icon {
         width: 44px;
         height: 44px;
-
+        use{
+          fill:#000
+        }
         ::v-deep img {
           position: relative;
           left: 50%;

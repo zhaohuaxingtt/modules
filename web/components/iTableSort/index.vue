@@ -426,7 +426,7 @@ export default {
      * @return {*}
      */
     borderLeft({ row, columnIndex }) {
-      const style = `border-left:2px solid #1660F1;`;
+      const style = `border-left:2px solid #67C23A;`;
       return columnIndex === 0 && row.selectedBorder === true ? style : "";
     },
     renewTableHeader(data) {

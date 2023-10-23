@@ -10,7 +10,10 @@
 	<div class="left-layout">
 		<div class="leftLayout">
 			<div class="content">
-				<img class="logo" src="~@/assets/images/rise.png" alt="" />
+				<div class="logoWrapper">
+					<img class="logo" :src="imgLogo" alt="" />
+				</div>
+				
 
 				<div :class="iconChangeClass" class="centerBtn">
 					<!-- <span
@@ -72,6 +75,7 @@
 </template>
 <script>
 import { icon } from 'rise'
+import imgLogo from '@/assets/images/back2.png'
 export default {
 	name: 'leftLayout',
 	components: { icon },
@@ -100,6 +104,7 @@ export default {
 				RISE_GP: 'General Purchase',
 				RISE_COMMON_FUNCTION: 'Common Function',
 			},
+			imgLogo
 		}
 	},
 	provide() {
@@ -199,7 +204,7 @@ export default {
 	top: 0;
 	left: 0;
 	z-index: 1001;
-	padding-top: 11px;
+	// padding-top: 11px;
 	padding-bottom: 30px;
 
 	.menu {
@@ -281,14 +286,21 @@ export default {
 			}
 		}
 	}
-
+.logoWrapper{
+	background-color: #000;
+	width: 100%;
+	height: 60px;
+	display: flex;
+	align-items: center;
 	.logo {
-		width: 63px;
-		height: 32px;
-		display: block;
+		width: 80px;
+		height: 26px;
+		// display: block;
 		margin: 0 auto;
 		cursor: pointer;
 	}
+}
+	
 
 	.btn-button {
 		width: 70px;

@@ -141,7 +141,7 @@ export default {
 <style lang="scss">
 .i-calendar {
   input {
-    border-radius: 4px;
+    border-radius: none;
     border: 1px solid #dcdfe6;
     height: 40px;
     line-height: 40px;

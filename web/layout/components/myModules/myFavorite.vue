@@ -115,7 +115,7 @@ export default {
   display: flex;
   position: relative;
   padding-left: 10px;
-  border-left: solid 3px #1763f7;
+  border-left: solid 3px #67C23A;
   color: #001847;
   font-size: 18px;
   justify-content: space-between;

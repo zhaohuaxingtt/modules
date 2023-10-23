@@ -197,7 +197,7 @@
 				height: 10px;
 				width: 10px;
 				border-radius: 50%;
-				background-color: #1660F1;
+				background-color: #67C23A;
 				display: inline-block;
 				position: absolute;
 				left: 0px;

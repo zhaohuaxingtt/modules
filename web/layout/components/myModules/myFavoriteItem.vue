@@ -67,7 +67,7 @@ export default {
   }
   .icon-type {
     font-size: 18px;
-    color: #1763f7;
+    color: #67C23A;
     font-weight: bold;
   }
   .icon-type-c {

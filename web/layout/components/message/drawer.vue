@@ -201,7 +201,7 @@ export default {
 
       .clear {
         position: absolute;
-        color: #1660f1;
+        color: #67C23A;
         height: 20px;
         line-height: 20px;
         top: 50%;

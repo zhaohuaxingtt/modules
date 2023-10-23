@@ -162,12 +162,12 @@ export default {
 
   ::v-deep .changeClass {
     font-style: italic;
-    color: #1660F1;
+    color: #67C23A;
 
     .staticInputInner,
     input {
       font-style: italic;
-      color: #1660F1;
+      color: #67C23A;
     }
   }
 }

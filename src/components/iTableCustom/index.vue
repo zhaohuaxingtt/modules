@@ -919,7 +919,7 @@ export default {
   line-height: 40px;
   cursor: pointer;
   &:hover {
-    color: #1763f7;
+    color: #67C23A;
   }
 }
 .checkbox-panel {

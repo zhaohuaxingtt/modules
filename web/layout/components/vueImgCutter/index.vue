@@ -2163,7 +2163,7 @@ export default {
 	line-height: 40px;
 	padding: 0 20px;
 	box-sizing: border-box;
-	border-radius: 4px;
+	border-radius: none;
 	cursor: pointer;
 	border: 1px solid;
 	font-size: 14px;
@@ -2289,7 +2289,7 @@ export default {
 	line-height: 40px;
 	padding: 0 10px;
 	box-sizing: border-box;
-	border-radius: 4px;
+	border-radius: none;
 	border: 1px solid #dedede;
 }
 

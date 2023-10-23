@@ -145,7 +145,7 @@ export default {
 		font-size: 18px;
 		font-weight: bold;
 		padding-left: 10px;
-		border-left: 3px solid #1763f7;
+		border-left: 3px solid #67C23A;
 	}
 	> .search-container {
 		margin-top: 20px;

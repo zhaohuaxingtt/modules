@@ -18,7 +18,7 @@
 				<el-switch
 					v-model="item.isHidden"
 					active-color="#CDD4E2"
-					inactive-color="#1660F1"
+					inactive-color="#67C23A"
 				/>
 				<div>{{ item.i18n ? language(item.i18n) : item.label }}</div>
 			</div>

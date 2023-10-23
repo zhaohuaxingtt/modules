@@ -210,7 +210,7 @@ export default {
 				// position: absolute;
 				display: inline-block;
 				// bottom: 60px;
-				color: #1660f1;
+				color: #67C23A;
 				margin: 20px 0;
 				.publishTime-content {
 					color: #666666;
@@ -289,7 +289,7 @@ export default {
 			.publishTime {
 				// width: 250px;
 				padding: 5px;
-				color: #1660f1;
+				color: #67C23A;
 				// border: solid rgb(229, 229, 229) 1px;
 				.publishTime-content {
 					margin-left: 20px;
@@ -343,7 +343,7 @@ export default {
 				display: inline-block;
 				margin: 20px 0;
 				// bottom: 60px;
-				color: #1660f1;
+				color: #67C23A;
 				.publishTime-content {
 					color: #ffffff;
 					margin-left: 20px;

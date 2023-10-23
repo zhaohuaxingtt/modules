@@ -272,7 +272,7 @@ export default {
 		}
 
 		.active {
-			color: #1660f1;
+			color: #67C23A;
 			box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.08);
 			background: #ffffff;
 			font-weight: bold;
@@ -288,7 +288,7 @@ export default {
 				padding: 0 4px;
 				height: 18px;
 				line-height: 18px;
-				background: #1660f1;
+				background: #67C23A;
 				vertical-align: middle;
 			}
 		}
@@ -414,7 +414,7 @@ export default {
 	.active {
 		box-shadow: initial !important;
 		font-size: 18px !important;
-		color: #1660f1 !important;
+		color: #67C23A !important;
 		background: transparent !important;
 	}
 

@@ -60,7 +60,7 @@ export default {
   padding: 0px;
 
   .active {
-    background: #1660f1;
+    background: #67C23A;
     span {
       color: white;
     }

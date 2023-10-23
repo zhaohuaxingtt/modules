@@ -84,7 +84,7 @@ export default {
       menus_admin: [],
       menu2IconMap: {
         RISE_HOME: ['iconshouyehei', 'iconshouyelan'],
-        RISE_WORKBENCH: ['iconcshei', 'iconcslan'],
+        RISE_WORKBENCH: ['icontongyonggongnenghei', 'icontongyonggongnenghei'],
         RISE_GP: ['icona-GPtubiaohei', 'icona-GPtubiaolan'],
         RISE_COMMON_FUNCTION: [
           'icontongyonggongnenghei',

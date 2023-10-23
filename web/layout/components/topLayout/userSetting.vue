@@ -209,7 +209,7 @@ export default {
 	cursor: pointer;
 
 	&.active {
-		border-bottom: 3px solid #1763f7;
+		border-bottom: 3px solid #67C23A;
 	}
 
 	.icon {
@@ -279,7 +279,7 @@ export default {
 
 				&:hover,
 				&.active {
-					border-left: 3px solid #1660f1;
+					border-left: 3px solid #67C23A;
 					font-weight: bold;
 					background: rgba(22, 96, 241, 0.08);
 				}

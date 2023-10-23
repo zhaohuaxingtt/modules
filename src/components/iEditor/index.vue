@@ -269,11 +269,11 @@ export default {
 <style lang="scss" scoped>
 ::v-deep .editor {
 	box-shadow: 0 0 0.1875rem rgb(0 38 98 / 15%);
-	border-radius: 4px;
+	border-radius: none;
 
 	.w-e-toolbar,
 	.w-e-text-container {
-		border-radius: 4px;
+		border-radius: none;
 	}
 
 	.w-e-toolbar {

@@ -102,7 +102,7 @@ export default {
   }
 }
 .btn-edit {
-  color: #1763f7;
+  color: #67C23A;
   font-size: 12px;
   margin-left: 30px;
   cursor: pointer;

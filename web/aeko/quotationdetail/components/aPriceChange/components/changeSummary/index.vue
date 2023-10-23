@@ -368,7 +368,7 @@ export default {
 		}
 
 		::v-deep .el-checkbox__input.is-checked + .el-checkbox__label {
-			color: #1763F7;
+			color: #67C23A;
 		}
 	}
 	
